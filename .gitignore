@@ -1,0 +1,20 @@
+# jinroプラグイン、マクロに関係しないファイルはignoreする
+data/bgimage/
+data/bgm/
+data/fgimage/
+data/image/
+data/others/3d/
+data/others/*.js
+data/others/plugin/for/
+data/scenario/cg.ks
+data/scenario/config.ks
+data/scenario/make.ks
+data/scenario/replay.ks
+data/scenario/tyrano.ks
+data/sound/
+data/system/
+data/video/
+tyrano/
+index.html
+readme.txt
+studio_config.json
