@@ -26,7 +26,7 @@
   
   ; 0番目がボタンで選択したPCの役職、それ以降がNPCの役職になるようにする。
   tmpRoleIdList.splice(tmpRoleIdList.indexOf(tf.pcRoleId), 1);
-  f.VillagersRoleIdList = [tf.pcRoleId].concat(tmpRoleIdList);
+  f.villagersRoleIdList = [tf.pcRoleId].concat(tmpRoleIdList);
 [endscript]
 
 ; メッセージ削除してゲーム開始

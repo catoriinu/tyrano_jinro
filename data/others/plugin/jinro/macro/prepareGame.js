@@ -10,20 +10,20 @@ function prepareGameMain() {
     // 参加者のキャラクターID配列
     TYRANO_VAR_F.participantsIdList = getParticipantsIdList();
     // 参加している役職ID配列
-    TYRANO_VAR_F.VillagersRoleIdList = getVillagersRoleIdList();
+    TYRANO_VAR_F.villagersRoleIdList = getVillagersRoleIdList();
   }
   
   // 参加者数と役職数が等しいことをチェックしてから先に進む
   // TODO 配列が入っていることの確認もしたほうがいいかも
-  if (TYRANO_VAR_F.participantsIdList.length != TYRANO_VAR_F.VillagersRoleIdList.length) {
-    alert('参加者数(' + participantsIdList.length + ')と役職数(' + TYRANO_VAR_F.VillagersRoleIdList.length + ')が合っていません！');
+  if (TYRANO_VAR_F.participantsIdList.length != TYRANO_VAR_F.villagersRoleIdList.length) {
+    alert('参加者数(' + participantsIdList.length + ')と役職数(' + TYRANO_VAR_F.villagersRoleIdList.length + ')が合っていません！');
   }
 
   // キャラクターに役職を割り当てた状態の、キャラクターオブジェクト配列を取得する
   const characterObjects = {};
   for (let i = 0; i < TYRANO_VAR_F.participantsIdList.length; i++) {
     const characterId = TYRANO_VAR_F.participantsIdList[i];
-    characterObjects[characterId] = new Character(characterId, TYRANO_VAR_F.VillagersRoleIdList[i]);
+    characterObjects[characterId] = new Character(characterId, TYRANO_VAR_F.villagersRoleIdList[i]);
 
     // 配列先頭のキャラは、プレイヤーキャラとする
     if (i == 0) {
@@ -32,7 +32,7 @@ function prepareGameMain() {
     }
   }
   // 共通の視点オブジェクトをティラノ変数に、各キャラの視点オブジェクトを各自のcharacterObject.perspectiveに格納する
-  setDefaultPerspective(characterObjects, TYRANO_VAR_F.participantsIdList, TYRANO_VAR_F.VillagersRoleIdList);
+  setDefaultPerspective(characterObjects, TYRANO_VAR_F.participantsIdList, TYRANO_VAR_F.villagersRoleIdList);
 
   // 以下のデータは、ティラノの変数にも格納しておく
   // キャラクターオブジェクト配列をティラノのキャラクターオブジェクト変数に格納する
@@ -87,13 +87,13 @@ function setSpeakersName(characterObjects) {
  * 初期状態の、共通の視点オブジェクト、各キャラの視点オブジェクト（自分の役職分を考慮する）を生成する
  * @param {Array} characterObjects キャラクターオブジェクト配列。このメソッド内でperspectiveを更新する。
  * @param {Array} participantsIdList 参加者のキャラクターID配列
- * @param {Array} VillagersRoleIdList この村の役職のID配列
+ * @param {Array} villagersRoleIdList この村の役職のID配列
  */
-function setDefaultPerspective(characterObjects, participantsIdList, VillagersRoleIdList) {
+function setDefaultPerspective(characterObjects, participantsIdList, villagersRoleIdList) {
   // 役職数をカウントしてオブジェクトに入れる
   let roleCountObject = {};
-  for (let i = 0; i < VillagersRoleIdList.length; i++) {
-    let key = VillagersRoleIdList[i];
+  for (let i = 0; i < villagersRoleIdList.length; i++) {
+    let key = villagersRoleIdList[i];
     roleCountObject[key] = roleCountObject[key] ? roleCountObject[key] + 1 : 1;
   }
   // 重複のない、村の役職ID配列をティラノ変数に入れておく
@@ -102,7 +102,7 @@ function setDefaultPerspective(characterObjects, participantsIdList, VillagersRo
   // 役職の割合をオブジェクトに入れる
   let roleRatioObject = {};
   for (let rId of Object.keys(roleCountObject)) {
-    roleRatioObject[rId] = roleCountObject[rId] / VillagersRoleIdList.length;
+    roleRatioObject[rId] = roleCountObject[rId] / villagersRoleIdList.length;
   }
 
   // 共通視点オブジェクトを生成する
