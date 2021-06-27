@@ -7,7 +7,6 @@
 [start_keyconfig]
 
 
-
 [bg storage="black.png" time="300"]
 
 ;メニューボタンの表示
@@ -112,17 +111,18 @@
 
 ; 初日夜のNPCの行動。占い師のみ行動する。
 [iscript]
-    ; 夜時間開始時の生存者である、かつプレイヤー以外のキャラクターオブジェクトから、真占い師のID配列を抽出する。
-    tf.fortuneTellerNpcCharacterIds = getValuesFromObjectArray(
-        getHaveTheRoleObjects(
-            getCharacterObjectsFromCharacterIds(
-                getSurvivorObjects(f.characterObjectsHistory[f.day]),
-                [f.playerCharacterId],
-                false
-            ),
-            [ROLE_ID_FORTUNE_TELLER]
-        ),
-        'characterId');
+  ; 夜時間開始時の生存者である、かつプレイヤー以外のキャラクターオブジェクトから、真占い師のID配列を抽出する。
+  tf.fortuneTellerNpcCharacterIds = getValuesFromObjectArray(
+    getHaveTheRoleObjects(
+      getCharacterObjectsFromCharacterIds(
+        getSurvivorObjects(f.characterObjectsHistory[f.day]),
+        [f.playerCharacterId],
+        false
+      ),
+      [ROLE_ID_FORTUNE_TELLER]
+    ),
+    'characterId'
+  );
 [endscript]
 
 ; ID配列なので、includesでチェックしていく。仮に候補者が複数人いても対応可能。
@@ -304,15 +304,15 @@
 ; NOTE:f.surviveNpcCharacterIdsはCO結果を受けてのパラメータ変動時などに使う想定でいるが、なるべくcharacterObjectsだけで運用できるよう心がけていく。
 [if exp="!f.gottenSurviveNpcCharacterIds"]
   [iscript]
-  ; 生存者である、かつプレイヤー以外のキャラクターID配列を抽出する。
-  f.surviveNpcCharacterIds = getValuesFromObjectArray(
+    ; 生存者である、かつプレイヤー以外のキャラクターID配列を抽出する。
+    f.surviveNpcCharacterIds = getValuesFromObjectArray(
       getCharacterObjectsFromCharacterIds(
-          getSurvivorObjects(f.characterObjects),
-          [f.playerCharacterId],
-          false
+        getSurvivorObjects(f.characterObjects),
+        [f.playerCharacterId],
+        false
       ),
       'characterId'
-  );
+    );
   [endscript]
   [eval exp="f.gottenSurviveNpcCharacterIds = true"]
 [endif]
@@ -446,7 +446,7 @@
 ; 今日のCOが終わったキャラはisDoneTodaysCOをtrueにする
 [eval exp="f.characterObjects[tf.COCandidateId].isDoneTodaysCO = true"]
 ; COしたため共通および各キャラの視点オブジェクトを更新する TODO 初回だけで充分。2回目以降やっても問題はないが無駄処理になる
- ; TODO:騙りCOの場合も無害ではあるが、やりたくないので避けるようにしたい
+; TODO:騙りCOの場合も無害ではあるが、やりたくないので避けるようにしたい
 [j_cloneRolePerspectiveForCO characterId="&f.characterObjects[tf.COCandidateId].characterId" CORoleId="fortuneTeller"]
 [eval exp="tf.tmpZeroRoleIds = [ROLE_ID_VILLAGER]"]
 [j_updateCommonPerspective characterId="&f.characterObjects[tf.COCandidateId].characterId" zeroRoleIds="&tf.tmpZeroRoleIds"]
@@ -477,16 +477,15 @@
 さて、誰に投票しようか？[p]
 
 [iscript]
-; 生存者である、かつプレイヤー以外のキャラクターオブジェクトを選択肢候補変数に格納する。
-tf.candidateObjects = getCharacterObjectsFromCharacterIds(
+  ; 生存者である、かつプレイヤー以外のキャラクターオブジェクトを選択肢候補変数に格納する。
+  tf.candidateObjects = getCharacterObjectsFromCharacterIds(
     getSurvivorObjects(f.characterObjects),
     [f.playerCharacterId],
     false
-);
+  );
 
-; TODO ……のが正しいが、テスト用に生存者全員を投票対象にしておく。
-tf.candidateObjects = getSurvivorObjects(f.characterObjects);
-
+  ; TODO ……のが正しいが、テスト用に生存者全員を投票対象にしておく。
+  tf.candidateObjects = getSurvivorObjects(f.characterObjects);
 [endscript]
 
 ; 選択肢ボタン表示と入力受付
@@ -517,7 +516,6 @@ tf.candidateObjects = getSurvivorObjects(f.characterObjects);
   [jump target="*voteEnd"]
 
 [elsif exp="tf.targetCharacterId == CHARACTER_ID_MIKI"]
-
   # &f.speaker['ミキ']
   や、やめなさい！私は違うと言っているでしょう！[p]
 
@@ -525,7 +523,6 @@ tf.candidateObjects = getSurvivorObjects(f.characterObjects);
   [jump target="*voteEnd"]
 
 [elsif exp="tf.targetCharacterId == CHARACTER_ID_DUMMY"]
-
   # &f.speaker['ダミー']
   あっ……ホンマ……[p]
 
@@ -665,21 +662,22 @@ NPCが行動しています……[p]
 
 ;NPCの占い師フェイズ（真、騙り共通）
 [iscript]
-; 夜開始時点の生存者である、かつプレイヤー以外のキャラクターオブジェクトから、占い師のID配列を抽出する。
-; 真占い師も騙り占い師もここで処理する。j_fortuneTellingマクロ内で真か騙りかで処理を分けているため問題ない。
-tf.fortuneTellerNpcCharacterIds = getValuesFromObjectArray(
+  ; 夜開始時点の生存者である、かつプレイヤー以外のキャラクターオブジェクトから、占い師のID配列を抽出する。
+  ; 真占い師も騙り占い師もここで処理する。j_fortuneTellingマクロ内で真か騙りかで処理を分けているため問題ない。
+  tf.fortuneTellerNpcCharacterIds = getValuesFromObjectArray(
     getHaveTheRoleObjects(
-        getCharacterObjectsFromCharacterIds(
-            getSurvivorObjects(f.characterObjectsHistory[f.day]),
-            [f.playerCharacterId],
-            false
-        ),
-        [ROLE_ID_FORTUNE_TELLER],
-        true,
-        true,
-        true
+      getCharacterObjectsFromCharacterIds(
+        getSurvivorObjects(f.characterObjectsHistory[f.day]),
+        [f.playerCharacterId],
+        false
+      ),
+      [ROLE_ID_FORTUNE_TELLER],
+      true,
+      true,
+      true
     ),
-    'characterId');
+    'characterId'
+  );
 [endscript]
 
 ; ID配列なので、includesでチェックしていく。仮に候補者が複数人いても対応可能。
@@ -705,17 +703,18 @@ tf.fortuneTellerNpcCharacterIds = getValuesFromObjectArray(
 
   ;NPCの人狼フェイズ
   [iscript]
-  ; 夜開始時点の生存者である、かつプレイヤー以外のキャラクターオブジェクトから、人狼のID配列を抽出する。
-  tf.werewolfNpcCharacterIds = getValuesFromObjectArray(
+    ; 夜開始時点の生存者である、かつプレイヤー以外のキャラクターオブジェクトから、人狼のID配列を抽出する。
+    tf.werewolfNpcCharacterIds = getValuesFromObjectArray(
       getHaveTheRoleObjects(
-          getCharacterObjectsFromCharacterIds(
-              getSurvivorObjects(f.characterObjectsHistory[f.day]),
-              [f.playerCharacterId],
-              false
-          ),
-          [ROLE_ID_WEREWOLF]
+        getCharacterObjectsFromCharacterIds(
+          getSurvivorObjects(f.characterObjectsHistory[f.day]),
+          [f.playerCharacterId],
+          false
+        ),
+        [ROLE_ID_WEREWOLF]
       ),
-      'characterId');
+      'characterId'
+    );
   [endscript]
 
   ; ID配列なので、includesでチェックしていく。仮に候補者が複数人いても対応可能。
