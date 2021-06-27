@@ -25,13 +25,9 @@ function getVillagersRoleIdList() {
   // この中で、ゲーム変数を読み込んだりロジックを書くなどして返却値を決めること
 
   let VillagersRoleIdList = [
-    //ROLE_ID_WEREWOLF,//
-    ROLE_ID_MADMAN,
     ROLE_ID_FORTUNE_TELLER,
     ROLE_ID_VILLAGER,
-    //ROLE_ID_FORTUNE_TELLER,
-    //ROLE_ID_VILLAGER,//
-    //ROLE_ID_MADMAN,
+    ROLE_ID_MADMAN,
     ROLE_ID_WEREWOLF,
     ROLE_ID_VILLAGER,
   ];

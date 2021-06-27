@@ -1,4 +1,4 @@
-;ティラノスクリプトサンプルゲーム
+; 人狼ゲームのメインシナリオファイル
 
 *start
 
@@ -189,9 +189,9 @@
 
     ; COするしないボタン表示
     [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (0 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
-    [glink  color="blue"  storage="scene1.ks"  size="28"  x="360"  width="500"  y="&tf.y"  text="占いCOする"  target="*FortuneTellerCO"  ]
+    [glink  color="blue"  storage="playJinro.ks"  size="28"  x="360"  width="500"  y="&tf.y"  text="占いCOする"  target="*FortuneTellerCO"  ]
     [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (1 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
-    [glink  color="blue"  storage="scene1.ks"  size="28"  x="360"  width="500"  y="&tf.y"  text="何もしない"  target="*noCO"  ]
+    [glink  color="blue"  storage="playJinro.ks"  size="28"  x="360"  width="500"  y="&tf.y"  text="何もしない"  target="*noCO"  ]
     [s]
 
     *FortuneTellerCO
@@ -242,9 +242,9 @@
     [endif]
 
     [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (0 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
-    [glink  color="blue"  storage="scene1.ks"  size="28"  x="360"  width="500"  y="&tf.y"  text="占いCOする"  target="*fakeFortuneTellerCO"  ]
+    [glink  color="blue"  storage="playJinro.ks"  size="28"  x="360"  width="500"  y="&tf.y"  text="占いCOする"  target="*fakeFortuneTellerCO"  ]
     [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (1 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
-    [glink  color="blue"  storage="scene1.ks"  size="28"  x="360"  width="500"  y="&tf.y"  text="何もしない"  target="*noCO"  ]
+    [glink  color="blue"  storage="playJinro.ks"  size="28"  x="360"  width="500"  y="&tf.y"  text="何もしない"  target="*noCO"  ]
     [s]
 
     *fakeFortuneTellerCO
@@ -545,7 +545,7 @@
 
 
 ; 勝敗判定
-[j_judgeWinnerCampAndJump storage="scene1.ks" target="*gameOver"]
+[j_judgeWinnerCampAndJump storage="playJinro.ks" target="*gameOver"]
 
 
 ; 夜時間開始
@@ -739,13 +739,13 @@ NPCが行動しています……[p]
 
 
 ; 勝敗判定
-[j_judgeWinnerCampAndJump storage="scene1.ks" target="*gameOver"]
+[j_judgeWinnerCampAndJump storage="playJinro.ks" target="*gameOver"]
 
 
 [bg storage="room.jpg" time="100"]
 
 @jump target="*startDaytime"
-;@jump storage="scene1.ks"
+;@jump storage="playJinro.ks"
 
 
 *gameOver

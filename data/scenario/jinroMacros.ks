@@ -34,7 +34,7 @@
 
 
 ; 勝利陣営がいるかを判定し、勝利陣営がいた場合、指定されたラベルにジャンプする（storage, targetともに必須）
-; ex: [j_judgeWinnerCampAndJump storage="scene1.ks" target="*gameOver"]
+; ex: [j_judgeWinnerCampAndJump storage="playJinro.ks" target="*gameOver"]
 [macro name=j_judgeWinnerCampAndJump]
 #
 勝敗判定中……

@@ -5,19 +5,25 @@
 function prepareGameMain() {
 
   // 今回の参加者のキャラクターIDと、配役される役職IDを取得する
-  const participantsIdList = getParticipantsIdList();
-  const VillagersRoleIdList = getVillagersRoleIdList();
-
+  // TODO selectStage.ksを経由して事前に取得するように完全移行できたら、この判定は不要になる
+  if (typeof TYRANO_VAR_F.participantsIdList == 'undefined') {
+    // 参加者のキャラクターID配列
+    TYRANO_VAR_F.participantsIdList = getParticipantsIdList();
+    // 参加している役職ID配列
+    TYRANO_VAR_F.VillagersRoleIdList = getVillagersRoleIdList();
+  }
+  
   // 参加者数と役職数が等しいことをチェックしてから先に進む
-  if (participantsIdList.length != VillagersRoleIdList.length) {
-    alert('参加者数(' + participantsIdList.length + ')と役職数(' + VillagersRoleIdList.length + ')が合っていません！');
+  // TODO 配列が入っていることの確認もしたほうがいいかも
+  if (TYRANO_VAR_F.participantsIdList.length != TYRANO_VAR_F.VillagersRoleIdList.length) {
+    alert('参加者数(' + participantsIdList.length + ')と役職数(' + TYRANO_VAR_F.VillagersRoleIdList.length + ')が合っていません！');
   }
 
   // キャラクターに役職を割り当てた状態の、キャラクターオブジェクト配列を取得する
   const characterObjects = {};
-  for (let i = 0; i < participantsIdList.length; i++) {
-    const characterId = participantsIdList[i];
-    characterObjects[characterId] = new Character(characterId, VillagersRoleIdList[i]);
+  for (let i = 0; i < TYRANO_VAR_F.participantsIdList.length; i++) {
+    const characterId = TYRANO_VAR_F.participantsIdList[i];
+    characterObjects[characterId] = new Character(characterId, TYRANO_VAR_F.VillagersRoleIdList[i]);
 
     // 配列先頭のキャラは、プレイヤーキャラとする
     if (i == 0) {
@@ -26,18 +32,14 @@ function prepareGameMain() {
     }
   }
   // 共通の視点オブジェクトをティラノ変数に、各キャラの視点オブジェクトを各自のcharacterObject.perspectiveに格納する
-  setDefaultPerspective(characterObjects, participantsIdList, VillagersRoleIdList);
+  setDefaultPerspective(characterObjects, TYRANO_VAR_F.participantsIdList, TYRANO_VAR_F.VillagersRoleIdList);
 
   // 以下のデータは、ティラノの変数にも格納しておく
-  // 参加者のキャラクターID配列
-  TYRANO_VAR_F.participantsIdList = participantsIdList;
-  // 参加している役職ID配列
-  TYRANO_VAR_F.VillagersRoleIdList = VillagersRoleIdList;
   // キャラクターオブジェクト配列をティラノのキャラクターオブジェクト変数に格納する
   TYRANO_VAR_F.characterObjects = characterObjects;
+
   // 噛み先履歴オブジェクトの初期化
   TYRANO_VAR_F.bitingHistory = {};
-
 
   // 発話者の名前オブジェクト。ksファイル内で、# &f.speaker['名前'] の形式で使う。
   TYRANO_VAR_F.speaker = setSpeakersName(characterObjects);
