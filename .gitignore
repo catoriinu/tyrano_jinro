@@ -6,6 +6,7 @@ data/image/
 data/others/3d/
 data/others/*.js
 data/others/plugin/for/
+data/others/plugin/jinro/memo/*.drawio
 data/scenario/cg.ks
 data/scenario/config.ks
 data/scenario/make.ks
