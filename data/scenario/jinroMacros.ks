@@ -292,12 +292,12 @@
   [iscript]
     ; TODO:直前（PC、NPCどちらも）のCOの内容によって、各キャラ内のCOしたい度が変動するようにする
 
-    ; キャラクターID配列を回してCO意思があるかつisDoneTodaysCOがfalseであれば、isCOMyRoll()を噛ませる。
+    ; キャラクターID配列を回してCOできる役職かつisDoneTodaysCOがfalseであれば、isCOMyRoll()を噛ませる。
     let maxProbability = 0;
     let COCandidateIdArray = [];
     tf.COCandidateId = '';
     for (let i = 0; i < mp.characterIds.length; i++) {
-      if (f.characterObjects[mp.characterIds[i]].role.willCO && !f.characterObjects[mp.characterIds[i]].isDoneTodaysCO) {
+      if (f.characterObjects[mp.characterIds[i]].role.allowCO && !f.characterObjects[mp.characterIds[i]].isDoneTodaysCO) {
         console.log('キャラクターID: ' + mp.characterIds[i]);
         let [probability, isCO] = isCOMyRoll(mp.characterIds[i]);
         ; COしたい、かつCO確率が現在保存中の最大の確率以上であれば、キャラクターIDをCO候補配列に格納する
@@ -327,8 +327,8 @@
   [iscript]
     tf.isNeedToAskPCWantToCO = false;
     ; 以下の条件を満たした場合、PCがCOしたいかを確認する必要があると判定する
-    ; 生存している && 現在CO意思があるか && 今日は未COか
-    if (f.characterObjects[f.playerCharacterId].isAlive && f.characterObjects[f.playerCharacterId].role.willCO && !f.characterObjects[f.playerCharacterId].isDoneTodaysCO) {
+    ; 生存している && COできる役職か && 今日は未COか
+    if (f.characterObjects[f.playerCharacterId].isAlive && f.characterObjects[f.playerCharacterId].role.allowCO && !f.characterObjects[f.playerCharacterId].isDoneTodaysCO) {
       tf.isNeedToAskPCWantToCO = true;
     }
   [endscript]

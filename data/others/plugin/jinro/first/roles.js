@@ -4,15 +4,15 @@
  * @prop {String} roleName 役職名
  * @prop {Number} camp 陣営。どの陣営が勝利したときに、自身の役職が勝利になるのか（※勝利陣営判定とは別） 0:村人陣営 1:人狼陣営
  * @prop {Boolean} isWerewolves 人狼か。勝利陣営判定時に人狼陣営として扱うか。また、占い・霊能結果で人狼判定が出るかにも利用する。
- * @prop {Boolean} willCO 村役職CO（結果COも含む）する意思（可能性）が現在少しでもあるか。false=ない場合、CO候補者判定の対象外にする。
+ * @prop {Boolean} allowCO 村役職COすることができる役職か。false=ない場合、CO候補者判定の対象外にする。
  * @prop {Object} rolePerspective その役職の視点オブジェクト。本人の思考はこちらを元にする。ただし騙り時、fakeRole.rolePerspectiveは利用しないので空オブジェクトのままとなる。
  */
-function Role(roleId, roleName, camp, isWerewolves, willCO) {
+function Role(roleId, roleName, camp, isWerewolves, allowCO) {
   this.roleId = roleId;
   this.roleName = roleName;
   this.camp = camp;
   this.isWerewolves = isWerewolves;
-  this.willCO = willCO
+  this.allowCO = allowCO
   this.rolePerspective = {};
 }
 
