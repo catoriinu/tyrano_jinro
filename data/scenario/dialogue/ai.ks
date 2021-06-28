@@ -1,7 +1,7 @@
 ; アイのdialogueサブルーチン
 
 ; noticeRole_{roleId}
-; シチュエーション：初日、役職を告知されたときの反応
+; シーン：初日、役職を告知されたときの反応
 ; 備考：PCのみ想定
 *noticeRole_villager
   私は村人なんだね。[r]
@@ -25,7 +25,7 @@
 
 
 ; announcedFortuneTellingResult_{result}
-; シチュエーション：真占い師で、占い実行結果を知ったときの反応
+; シーン：真占い師で、占い実行結果を知ったときの反応
 ; 備考：PCのみ想定
 *announcedFortuneTellingResult_true
   ……[emb exp="f.characterObjects[tf.todayResultObject.characterId].name"]が人狼だったんだね……。[p]
@@ -37,7 +37,7 @@
 
 
 ; executed
-; シチュエーション：投票により処刑対象に決まったときの反応
+; シーン：投票により処刑対象に決まったときの反応
 *executed
   そっか……。信じてもらえなくて残念だよ。[p]
 [return]
