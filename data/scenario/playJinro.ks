@@ -45,67 +45,23 @@
 [eval exp="f.characterObjectsHistory = {}"]
 [eval exp="f.characterObjectsHistory[f.day] = clone(f.characterObjects)"]
 
+; プレイヤーの役職確認セリフ出力
+[d_noticeRole characterId="&f.playerCharacterId" roleId="&f.characterObjects[f.playerCharacterId].role.roleId"]
 
-; プレイヤーの配役確認部（＋占い師なら初日占い実行）
-; 村人
-[if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_VILLAGER"]
+; 占い師なら初日占い実行
+[if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_FORTUNE_TELLER"]
 
-  [if exp="f.playerCharacterId == CHARACTER_ID_AI"]
-    # &f.speaker['アイ']
-    私は村人なんだね。[r]
-    推理で人狼を見つけて平和な村にしないと。[p]
-  [endif]
+  ; 占いカットイン発生
+  [j_cutin1]
 
-; 占い師
-[elsif exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_FORTUNE_TELLER"]
+  ; 占い実行
+  [call storage="./fortuneTellingForPC.ks" target="*fortuneTellingForPC"]
 
-  [if exp="f.playerCharacterId == CHARACTER_ID_AI"]
+  ; 占い結果に合わせてセリフ出力
+  [d_announcedFortuneTellingResult characterId="&f.playerCharacterId" result="&tf.todayResultObject.result"]
 
-    # &f.speaker['アイ']
-    私は占い師か……。[r]
-    誰を占おうか？[p]
-
-    ; 占いカットイン発生
-    [j_cutin1]
-
-    ; 占い実行
-    [call storage="./fortuneTellingForPC.ks" target="*fortuneTellingForPC"]
-
-    ; 占い結果に合わせてメッセージを表示
-    [if exp="tf.todayResultObject.result"]
-
-      # &f.speaker['アイ']
-      ……[emb exp="f.characterObjects[tf.todayResultObject.characterId].name"]が人狼だったんだね……。[p]
-
-    [else]
-
-      # &f.speaker['アイ']
-      [emb exp="f.characterObjects[tf.todayResultObject.characterId].name"]は人狼じゃないみたい。[p]
-      
-    [endif]
-
-    ; 占いカットイン解放
-    [freeimage layer="1" time=400 wait="false"]
-
-  [endif]
-
-; 人狼
-[elsif exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_WEREWOLF"]
-
-  [if exp="f.playerCharacterId == CHARACTER_ID_AI"]
-    # &f.speaker['アイ']
-    私は人狼……。[r]
-    この村の人間を食い尽くしてやる！[p]
-  [endif]
-
-; 狂人
-[elsif exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_MADMAN"]
-
-  [if exp="f.playerCharacterId == CHARACTER_ID_AI"]
-    # &f.speaker['アイ']
-    私は狂人か……。[r]
-    ふふふ、全ては人狼のために！[p]
-  [endif]
+  ; 占いカットイン解放
+  [freeimage layer="1" time=400 wait="false"]
 
 [endif]
 
@@ -494,44 +450,9 @@
 ; キャラ画像解放
 [freeimage layer="1" time=400 wait="false"]
 
-[if exp="tf.targetCharacterId == CHARACTER_ID_AI"]
-  # &f.speaker['アイ']
-  そっか……。信じてもらえなくて残念だよ。[p]
-
-  [j_execution characterId=&f.characterObjects.ai.characterId]
-  [jump target="*voteEnd"]
-
-[elsif exp="tf.targetCharacterId == CHARACTER_ID_HIYORI"]
-  # &f.speaker['ヒヨリ']
-  わたし、人狼なんかじゃないよ……っ[p]
-
-  [j_execution characterId=&f.characterObjects.hiyori.characterId]
-  [jump target="*voteEnd"]
-
-[elsif exp="tf.targetCharacterId == CHARACTER_ID_FUTABA"]
-  # &f.speaker['フタバ']
-  ええーっ！後悔しても遅いんだからねっ！[p]
-
-  [j_execution characterId=&f.characterObjects.futaba.characterId]
-  [jump target="*voteEnd"]
-
-[elsif exp="tf.targetCharacterId == CHARACTER_ID_MIKI"]
-  # &f.speaker['ミキ']
-  や、やめなさい！私は違うと言っているでしょう！[p]
-
-  [j_execution characterId=&f.characterObjects.miki.characterId]
-  [jump target="*voteEnd"]
-
-[elsif exp="tf.targetCharacterId == CHARACTER_ID_DUMMY"]
-  # &f.speaker['ダミー']
-  あっ……ホンマ……[p]
-
-  [j_execution characterId=&f.characterObjects.dummy.characterId]
-  [jump target="*voteEnd"]
-
-[endif]
-
-*voteEnd
+; 処刑セリフと処刑処理（TODO 今はこの順番だが、処刑事の演出がどうなるかによっては逆にしてもいい）
+[d_executed characterId="&tf.targetCharacterId"]
+[j_execution characterId="&tf.targetCharacterId"]
 
 [if exp="f.characterObjects.ai.isAlive"]
   # &f.speaker['アイ']

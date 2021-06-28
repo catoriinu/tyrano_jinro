@@ -12,6 +12,7 @@
 ;ゲームで必ず必要な初期化処理はこのファイルに記述するのがオススメ
 [plugin name="jinro"] 
 [call storage="jinroMacros.ks"]
+[call storage="dialogueMacros.ks"]
 
 ; 開発モードか？ TODO:公開前にはOFFにすること！
 [eval exp="f.developmentMode = false"]
