@@ -450,7 +450,7 @@
 ; キャラ画像解放
 [freeimage layer="1" time=400 wait="false"]
 
-; 処刑セリフと処刑処理（TODO 今はこの順番だが、処刑事の演出がどうなるかによっては逆にしてもいい）
+; 処刑セリフと処刑処理（TODO 今はこの順番だが、処刑ごとの演出がどうなるかによっては逆にしてもいい）
 [d_executed characterId="&tf.targetCharacterId"]
 [j_execution characterId="&tf.targetCharacterId"]
 
