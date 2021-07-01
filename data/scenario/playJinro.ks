@@ -128,102 +128,50 @@
 [j_setIsNeedToAskPCWantToCO]
 [if exp="tf.isNeedToAskPCWantToCO"]
 
-  ;プレイヤーが占い師、人狼、狂人なら、占い師COするか？（騙りの場合、ここで占い結果も偽装する）
-  [if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_FORTUNE_TELLER"]
+  ; 占い師COすることができる役職・CO状態であれば
+  [j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
+  [if exp="tf.canCOFortuneTellerStatus > 0"]
 
-    [if exp="f.notExistCOCandidateNPC"]
-      [if exp="f.playerCharacterId == CHARACTER_ID_AI"]
-        # &f.speaker['アイ']
-        （さて、今度こそCOしようか……？）[p]
-      [endif]
-    [else]
-      [if exp="f.playerCharacterId == CHARACTER_ID_AI"]
-        # &f.speaker['アイ']
-        （夜の間に占った結果をCOしようか……？）[p]
-      [endif]
-    [endif]
+    [d_askFortuneTellerCO canCOFortuneTellerStatus="&tf.canCOFortuneTellerStatus"]
 
     ; COするしないボタン表示
     [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (0 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
-    [glink  color="blue"  storage="playJinro.ks"  size="28"  x="360"  width="500"  y="&tf.y"  text="占いCOする"  target="*FortuneTellerCO"  ]
+    [glink color="blue" storage="playJinro.ks" size="28" x="360" width="500" y="&tf.y" text="占いCOする" target="*FortuneTellerCO"]
     [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (1 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
-    [glink  color="blue"  storage="playJinro.ks"  size="28"  x="360"  width="500"  y="&tf.y"  text="何もしない"  target="*noCO"  ]
+    [glink color="blue" storage="playJinro.ks" size="28" x="360" width="500" y="&tf.y" text="何もしない" target="*noCO"]
     [s]
 
     *FortuneTellerCO
 
-    [if exp="f.playerCharacterId == CHARACTER_ID_AI"]
-
-      ; 最新の占い結果を元にCO文を表示する
-      [j_COfortuneTellingResultLastNight fortuneTellerId="ai"][p]
-
+    ; 占い未COかつ、占い騙りをすると決めた場合、騙り役職オブジェクトを取得する
+    [if exp="tf.canCOFortuneTellerStatus == 3"]
+      [j_assignmentFakeRole characterId="&f.characterObjects[f.playerCharacterId].characterId" roleId="fortuneTeller"]
+      ; 前日までの分、騙り占い実行
+      [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingCOMultipleDaysForPC"]
     [endif]
+
+    ; 最新の占い結果を元にCO文を表示する
+    [j_COfortuneTellingResultLastNight fortuneTellerId="&f.playerCharacterId"][p]
 
     ; 占いカットイン解放
     [freeimage layer="1" time=400 wait="false"]
 
     [eval exp="f.characterObjects[f.playerCharacterId].isDoneTodaysCO = true"]
-    ; COしたため共通および各キャラの視点オブジェクトを更新する TODO 初回だけで充分。2回目以降やっても問題はないが無駄処理になる
-    [j_cloneRolePerspectiveForCO characterId="&f.characterObjects.ai.characterId" CORoleId="fortuneTeller"]
-    [eval exp="tf.tmpZeroRoleIds = [ROLE_ID_VILLAGER]"]
-    [j_updateCommonPerspective characterId="&f.characterObjects.ai.characterId" zeroRoleIds="&tf.tmpZeroRoleIds"]
-    @jump target="*COEnd"
 
-  [elsif exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_WEREWOLF"]
+    ; 初回CO時のみの処理
+    [if exp="tf.canCOFortuneTellerStatus == 1 || tf.canCOFortuneTellerStatus == 3"]
+      ; キャラクターオブジェクトにCOした役職IDを格納する
+      [eval exp="f.characterObjects[f.playerCharacterId].CORoleId = ROLE_ID_FORTUNE_TELLER"]
 
-    [if exp="f.playerCharacterId == CHARACTER_ID_AI"]
+      ; 共通および各キャラの視点オブジェクトを更新する
+      [j_cloneRolePerspectiveForCO characterId="&f.characterObjects[f.playerCharacterId].characterId" CORoleId="fortuneTeller"]
+      [eval exp="tf.tmpZeroRoleIds = [ROLE_ID_VILLAGER]"]
+      [j_updateCommonPerspective characterId="&f.characterObjects[f.playerCharacterId].characterId" zeroRoleIds="&tf.tmpZeroRoleIds"]
     [endif]
 
-  [elsif exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_MADMAN"]
-
-    [if exp="f.playerCharacterId == CHARACTER_ID_AI"]
-    [endif]
+    [jump target="*COEnd"]
 
   [endif]
-  ; 人狼、狂人の場合のみここに来る
-
-  ; 占い騙りCOをまだしていない場合
-  [if exp="f.characterObjects[f.playerCharacterId].fakeRole.roleId != ROLE_ID_FORTUNE_TELLER"]
-
-    [if exp="f.notExistCOCandidateNPC"]
-      [if exp="f.playerCharacterId == CHARACTER_ID_AI"]
-        # &f.speaker['アイ']
-        （さて、今度こそ占い師を騙ろうか？）[p]
-      [endif]
-    [else]
-      [if exp="f.playerCharacterId == CHARACTER_ID_AI"]
-        # &f.speaker['アイ']
-        （これから占い師を騙ろうか？）[p]
-      [endif]
-    [endif]
-
-    [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (0 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
-    [glink  color="blue"  storage="playJinro.ks"  size="28"  x="360"  width="500"  y="&tf.y"  text="占いCOする"  target="*fakeFortuneTellerCO"  ]
-    [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (1 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
-    [glink  color="blue"  storage="playJinro.ks"  size="28"  x="360"  width="500"  y="&tf.y"  text="何もしない"  target="*noCO"  ]
-    [s]
-
-    *fakeFortuneTellerCO
-    ; 未COかつ、占い騙りをすると決めた場合、騙り役職オブジェクトを取得する
-    [j_assignmentFakeRole characterId="&f.characterObjects[f.playerCharacterId].characterId" roleId="fortuneTeller"]
-
-    ; 前日までの分、騙り占い実行
-    [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingCOMultipleDaysForPC"]
-
-  [endif]
-
-  ; TODO このままだと、既に騙り占いをCO済みの場合、必ず翌日以降の昼時間のCOフェイズの最初に、昨夜の占い偽装結果をCOしてしまう。
-  ; 最終的にはそれを目指していたため問題ないのだが、他のパターンもちゃんと実装すること。
-  [j_COfortuneTellingResultLastNight fortuneTellerId="ai"][p]
-  
-  ; 占いカットイン解放
-  [freeimage layer="1" time=400 wait="false"]
-  
-  [eval exp="f.characterObjects[f.playerCharacterId].isDoneTodaysCO = true"]
-  ; COしたため共通および各キャラの視点オブジェクトを更新する TODO 初回だけで充分。2回目以降やっても問題はないが無駄処理になる
-  [eval exp="tf.tmpZeroRoleIds = [ROLE_ID_VILLAGER]"]
-  [j_updateCommonPerspective characterId="&f.characterObjects.ai.characterId" zeroRoleIds="&tf.tmpZeroRoleIds"]
-  @jump target="*COEnd"
 
 
   ; 汎用　COなし

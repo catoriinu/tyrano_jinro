@@ -12,7 +12,7 @@ function Role(roleId, roleName, camp, isWerewolves, allowCO) {
   this.roleName = roleName;
   this.camp = camp;
   this.isWerewolves = isWerewolves;
-  this.allowCO = allowCO
+  this.allowCO = allowCO;
   this.rolePerspective = {};
 }
 

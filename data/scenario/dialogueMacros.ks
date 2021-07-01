@@ -8,7 +8,7 @@
 ; ・可能な限りサブルーチンラベル内では分岐は行わないが、シチュエーションごとにセリフ差分が必要な場合は許可する。
 
 
-; シチュエーション：初日、役職を告知されたときの反応
+; シーン：初日、役職を告知されたときの反応
 ; @param characterId 発言者のキャラクターID。必須
 ; @param roleId 発言者の役職ID。必須
 [macro name="d_noticeRole"]
@@ -19,7 +19,7 @@
 [endmacro]
 
 
-; シチュエーション：真占い師で、占い実行結果を知ったときの反応
+; シーン：真占い師で、占い実行結果を知ったときの反応
 ; @param characterId 発言者のキャラクターID。必須
 ; @param result 占い結果（true:●/false:○）。必須
 ; boolean型で渡されても問題ない（文字列と結合する際にString型にキャストされるため）
@@ -31,7 +31,16 @@
 [endmacro]
 
 
-; シチュエーション：投票により処刑対象に決まったときの反応
+; シーン：占いCOをするかを問うシステムメッセージ
+; @param canCOFortuneTellerStatus 占い師COすることができる役職・CO状態かの定数。必須。関連マクロ：j_setCanCOFortuneTellerStatus
+[macro name="d_askFortuneTellerCO"]
+  [eval exp="tf.dialogueStorage = './dialogue/system.ks'"]
+  [eval exp="tf.dialogueTarget = '*askFortuneTellerCO_' + mp.canCOFortuneTellerStatus"]
+  [call storage="&tf.dialogueStorage" target="&tf.dialogueTarget"]
+[endmacro]
+
+
+; シーン：投票により処刑対象に決まったときの反応
 ; @param characterId 発言者のキャラクターID。必須
 [macro name="d_executed"]
   # &f.speaker[f.characterObjects[mp.characterId].name]
