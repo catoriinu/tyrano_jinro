@@ -170,32 +170,19 @@
     [endif]
 
     [jump target="*COEnd"]
-
   [endif]
 
-
-  ; 汎用　COなし
+  ; COなし
   *noCO
 
   [if exp="f.notExistCOCandidateNPC"]
     ; COフェイズ終了(NPCにCO候補者がいないため、これ以上COする者はいないとする)
-
-    [if exp="f.playerCharacterId == CHARACTER_ID_AI"]
-      # &f.speaker['アイ']
-      （いや、このまま議論に移ろう）[p]
-    [endif]
-
-    @jump target="*discussionPhase"
-
-  [endif]
-  ; COフェイズ継続(まだNPCにCO候補者がいるので、NPCのCOを確認する)
-
-  [if exp="f.playerCharacterId == CHARACTER_ID_AI"]
-    # &f.speaker['アイ']
-    （いや、ここは様子見をしよう）[p]
+    [jump target="*discussionPhase"]
+  [else]
+    ; COフェイズ継続(まだNPCにCO候補者がいるので、NPCのCOを確認する)
+    [jump target="*COEnd"]
   [endif]
 
-  @jump target="*COEnd"
 [endif]
 
 *COEnd
