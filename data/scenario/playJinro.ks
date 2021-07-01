@@ -46,7 +46,7 @@
 [eval exp="f.characterObjectsHistory[f.day] = clone(f.characterObjects)"]
 
 ; プレイヤーの役職確認セリフ出力
-[d_noticeRole characterId="&f.playerCharacterId" roleId="&f.characterObjects[f.playerCharacterId].role.roleId"]
+[m_noticeRole characterId="&f.playerCharacterId" roleId="&f.characterObjects[f.playerCharacterId].role.roleId"]
 
 ; 占い師なら初日占い実行
 [if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_FORTUNE_TELLER"]
@@ -58,7 +58,7 @@
   [call storage="./fortuneTellingForPC.ks" target="*fortuneTellingForPC"]
 
   ; 占い結果に合わせてセリフ出力
-  [d_announcedFortuneTellingResult characterId="&f.playerCharacterId" result="&tf.todayResultObject.result"]
+  [m_announcedFortuneTellingResult characterId="&f.playerCharacterId" result="&tf.todayResultObject.result"]
 
   ; 占いカットイン解放
   [freeimage layer="1" time=400 wait="false"]
@@ -132,7 +132,7 @@
   [j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
   [if exp="tf.canCOFortuneTellerStatus > 0"]
 
-    [d_askFortuneTellerCO canCOFortuneTellerStatus="&tf.canCOFortuneTellerStatus"]
+    [m_askFortuneTellerCO canCOFortuneTellerStatus="&tf.canCOFortuneTellerStatus"]
 
     ; COするしないボタン表示
     [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (0 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
@@ -399,7 +399,7 @@
 [freeimage layer="1" time=400 wait="false"]
 
 ; 処刑セリフと処刑処理（TODO 今はこの順番だが、処刑ごとの演出がどうなるかによっては逆にしてもいい）
-[d_executed characterId="&tf.targetCharacterId"]
+[m_executed characterId="&tf.targetCharacterId"]
 [j_execution characterId="&tf.targetCharacterId"]
 
 [if exp="f.characterObjects.ai.isAlive"]

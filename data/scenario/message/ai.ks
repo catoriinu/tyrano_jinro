@@ -1,4 +1,4 @@
-; アイのdialogueサブルーチン
+; アイのmessageサブルーチン
 
 ; noticeRole_{roleId}
 ; シーン：初日、役職を告知されたときの反応
