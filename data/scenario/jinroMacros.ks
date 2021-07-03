@@ -122,7 +122,8 @@
   [endscript]
 
   [eval exp="tf.fortuneTelledDay = 0"]
-  ; マクロ変数に入れていると、マクロ内で呼んだマクロの終了時に消されてしまうため、一時変数に格納しておく
+  ; ※マクロ内で別マクロを呼び出すと、別マクロの終了時にmp変数が全て空にされてしまう。
+  ; そのため、元マクロ側の引数を元マクロ内で引き続き使いたい場合は、一時変数などに格納しておかないといけない。
   [eval exp="tf.fortuneTellerId = mp.fortuneTellerId"]
   *fakeFortuneTellingCOMultipleDays_loopstart
 

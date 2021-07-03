@@ -218,136 +218,64 @@
   #
   ……沈黙が流れた。これ以上、COしたい者はいないようだ。[p]
 
-
   [j_setIsNeedToAskPCWantToCO]
   [if exp="!tf.isNeedToAskPCWantToCO"]
     ; COフェイズ終了(PCはco確認する必要がない状態のため、これ以上COする者はいないとする)
-    @jump target="*discussionPhase"
+    [jump target="*discussionPhase"]
   [else]
     ; COフェイズ継続(NPCにCO者がいないことを受けて、PCのCOを確認する)
-    @jump target="*COPhasePlayer"
+    [jump target="*COPhasePlayer"]
   [endif]
 
-[elsif]
+[else]
+  ; CO候補者がいるなら、そのキャラクターの行動を開始する
   [eval exp="f.notExistCOCandidateNPC = false"]
-[endif]
 
-; ヒヨリ
-[if exp="tf.COCandidateId == CHARACTER_ID_HIYORI"]
-
-  ;占い師
-  [if exp="f.characterObjects.hiyori.role.roleId == ROLE_ID_FORTUNE_TELLER"]
-
-    # &f.speaker['ヒヨリ']
-    う、占いCOです！[r]
-    [j_COfortuneTellingResultLastNight fortuneTellerId="hiyori"][p]
-
-  ;人狼または狂人
-  [elsif exp="f.characterObjects.hiyori.role.roleId == ROLE_ID_WEREWOLF || f.characterObjects.hiyori.role.roleId == ROLE_ID_MADMAN"]
-    ; 占い騙りがまだなら、騙り役職を取得し、昨夜までの分を占ってからCOする
-    [if exp="f.characterObjects.hiyori.fakeRole.roleId != ROLE_ID_FORTUNE_TELLER"]
-      [j_assignmentFakeRole characterId="&f.characterObjects.hiyori.characterId" roleId='fortuneTeller']
-      [j_fakeFortuneTellingCOMultipleDays fortuneTellerId="&f.characterObjects.hiyori.characterId"]
-    [endif]
-
-    # &f.speaker['ヒヨリ']
-    う、占いCOです！[r]
-    [j_COfortuneTellingResultLastNight fortuneTellerId="hiyori"][p]
-
+  ; 占い騙りがまだなら、騙り役職オブジェクトを取得し、昨夜までの分を占ってからCOする
+  [j_setCanCOFortuneTellerStatus characterId="&tf.COCandidateId"]
+  [if exp="tf.canCOFortuneTellerStatus == 3"]
+    [j_assignmentFakeRole characterId="&tf.COCandidateId" roleId="fortuneTeller"]
+    [j_fakeFortuneTellingCOMultipleDays fortuneTellerId="&tf.COCandidateId"]
   [endif]
 
-; フタバ
-[elsif exp="tf.COCandidateId == CHARACTER_ID_FUTABA"]
+  ; 占いカットイン発生
+  [j_cutin1]
 
-  ;占い師
-  [if exp="f.characterObjects.futaba.role.roleId == ROLE_ID_FORTUNE_TELLER"]
+  ; 指定した占い師の最新の占い履歴オブジェクトをtf.fortuneTellingHistoryObjectに格納する
+  [j_fortuneTellingHistoryObjectThatDay fortuneTellerId="&tf.COCandidateId"]
+  
+  ; ホバー時用の画像を画面外からスライドインさせる TODO ボタンごとにキャラに合わせた画像を表示する
+  [image layer="1" x="1280" y="80" visible="true" storage="01_sad.png" name="01"]
+  [anim name="01" left=850 time=350]
 
-    # &f.speaker['フタバ']
-    [j_COfortuneTellingResultLastNight fortuneTellerId="futaba"][p]
+  [m_COFortuneTellingResult characterId="&tf.COCandidateId" result="&tf.fortuneTellingHistoryObject.result"]
 
-  ;人狼または狂人
-  [elsif exp="f.characterObjects.futaba.role.roleId == ROLE_ID_WEREWOLF || f.characterObjects.futaba.role.roleId == ROLE_ID_MADMAN"]
-    ;占い騙りがまだなら、騙り役職を取得し、昨夜までの分を占ってからCOする
-    [if exp="f.characterObjects.futaba.fakeRole.roleId != ROLE_ID_FORTUNE_TELLER"]
-      [j_assignmentFakeRole characterId="&f.characterObjects.futaba.characterId" roleId='fortuneTeller']
-      [j_fakeFortuneTellingCOMultipleDays fortuneTellerId="&f.characterObjects.futaba.characterId"]
-    [endif]
+  ; 占いカットイン解放
+  [freeimage layer="1" time=400 wait="false"]
 
-    # &f.speaker['フタバ']
-    [j_COfortuneTellingResultLastNight fortuneTellerId="futaba"][p]
+  ; TODO: どのように、前のCO内容を次のCOの確率に影響させるか？　今日のCO内容をどこかの配列に保存しておく必要がありそう？
 
+  ; 今日のCOが終わったキャラはisDoneTodaysCOをtrueにする
+  [eval exp="f.characterObjects[tf.COCandidateId].isDoneTodaysCO = true"]
+
+  ; 初回CO時のみの処理
+  [if exp="tf.canCOFortuneTellerStatus == 1 || tf.canCOFortuneTellerStatus == 3"]
+    ; キャラクターオブジェクトにCOした役職IDを格納する
+    [eval exp="f.characterObjects[tf.COCandidateId].CORoleId = ROLE_ID_FORTUNE_TELLER"]
+
+    ; 共通および各キャラの視点オブジェクトを更新する
+    [j_cloneRolePerspectiveForCO characterId="&tf.COCandidateId" CORoleId="fortuneTeller"]
+    [eval exp="tf.tmpZeroRoleIds = [ROLE_ID_VILLAGER]"]
+    [j_updateCommonPerspective characterId="&tf.COCandidateId" zeroRoleIds="&tf.tmpZeroRoleIds"]
   [endif]
-
-; ミキ
-[elsif exp="tf.COCandidateId == CHARACTER_ID_MIKI"]
-
-  ;占い師
-  [if exp="f.characterObjects.miki.role.roleId == ROLE_ID_FORTUNE_TELLER"]
-
-    # &f.speaker['ミキ']
-    私の占い結果を聞きなさい！[r]
-    [j_COfortuneTellingResultLastNight fortuneTellerId="miki"][p]
-
-  ;人狼または狂人
-  [elsif exp="f.characterObjects.miki.role.roleId == ROLE_ID_WEREWOLF || f.characterObjects.miki.role.roleId == ROLE_ID_MADMAN"]
-    ;占い騙りがまだなら、騙り役職を取得し、昨夜までの分を占ってからCOする
-    [if exp="f.characterObjects.miki.fakeRole.roleId != ROLE_ID_FORTUNE_TELLER"]
-      [j_assignmentFakeRole characterId="&f.characterObjects.miki.characterId" roleId='fortuneTeller']
-      [j_fakeFortuneTellingCOMultipleDays fortuneTellerId="&f.characterObjects.miki.characterId"]
-    [endif]
-
-    # &f.speaker['ミキ']
-    私の占い結果を聞きなさい！[r]
-    [j_COfortuneTellingResultLastNight fortuneTellerId="miki"][p]
-
-  [endif]
-
-[elsif exp="tf.COCandidateId == CHARACTER_ID_DUMMY"]
-
-  ;占い師
-  [if exp="f.characterObjects.dummy.role.roleId == ROLE_ID_FORTUNE_TELLER"]
-
-    # &f.speaker['ダミー']
-    占いCOやで！[r]
-    [j_COfortuneTellingResultLastNight fortuneTellerId="dummy"][p]
-
-  ;人狼または狂人
-  [elsif exp="f.characterObjects.dummy.role.roleId == ROLE_ID_WEREWOLF || f.characterObjects.dummy.role.roleId == ROLE_ID_MADMAN"]
-    ; NOTE: 霊能など他の役職のCOを実装することになった際は、ここでCOする役職ごとに分岐するようにする
-
-    ; 占い騙りがまだなら、騙り役職を取得し、昨夜までの分を占ってからCOする
-    [if exp="f.characterObjects.dummy.fakeRole.roleId != ROLE_ID_FORTUNE_TELLER"]
-      [j_assignmentFakeRole characterId="&f.characterObjects.dummy.characterId" roleId='fortuneTeller']
-      [j_fakeFortuneTellingCOMultipleDays fortuneTellerId="&f.characterObjects.dummy.characterId"]
-    [endif]
-
-    # &f.speaker['ダミー']
-    占いCOやで！[r]
-    [j_COfortuneTellingResultLastNight fortuneTellerId="dummy"][p]
-
-  [endif]
-
-[endif]
-
-; 占いカットイン解放
-[freeimage layer="1" time=400 wait="false"]
-
-; TODO: どのように、前のCO内容を次のCOの確率に影響させるか？　今日のCO内容をどこかの配列に保存しておく必要がありそう？
-
-; 今日のCOが終わったキャラはisDoneTodaysCOをtrueにする
-[eval exp="f.characterObjects[tf.COCandidateId].isDoneTodaysCO = true"]
-; COしたため共通および各キャラの視点オブジェクトを更新する TODO 初回だけで充分。2回目以降やっても問題はないが無駄処理になる
-; TODO:騙りCOの場合も無害ではあるが、やりたくないので避けるようにしたい
-[j_cloneRolePerspectiveForCO characterId="&f.characterObjects[tf.COCandidateId].characterId" CORoleId="fortuneTeller"]
-[eval exp="tf.tmpZeroRoleIds = [ROLE_ID_VILLAGER]"]
-[j_updateCommonPerspective characterId="&f.characterObjects[tf.COCandidateId].characterId" zeroRoleIds="&tf.tmpZeroRoleIds"]
 ; TODO 占い結果を聞いて、各キャラのrolePerspectiveで真偽をつける
 
 ; NPCのCOが終了したら、他のNPCのCOを確認しに戻る
 ; ※NPCのCOが1人終わるごとにPCにCO有無を確認しに戻るのはPCの操作が面倒になるはず。
 ; CO順を理解できるAIが実装できるようになるまでは、NPCのCOはまとめて行ってしまうようにする。
 ; もし毎回PCにCO有無を確認しに戻るようにしたい場合は、@jump target="*COPhasePlayer"にする。
-@jump target="*COPhaseNPC"
+  [jump target="*COPhaseNPC"]
+[endif]
 
 
 

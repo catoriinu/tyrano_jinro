@@ -40,6 +40,18 @@
 [endmacro]
 
 
+; シーン：前日の占い結果をCOするときのセリフ
+; @param characterId 発言者のキャラクターID。必須
+; @param result 占い結果（true:●/false:○）。必須
+; boolean型で渡されても問題ない（文字列と結合する際にString型にキャストされるため）
+[macro name="m_COFortuneTellingResult"]
+  # &f.speaker[f.characterObjects[mp.characterId].name]
+  [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
+  [eval exp="tf.messageTarget = '*COFortuneTellingResult_' + mp.result"]
+  [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+[endmacro]
+
+
 ; シーン：投票により処刑対象に決まったときの反応
 ; @param characterId 発言者のキャラクターID。必須
 [macro name="m_executed"]
