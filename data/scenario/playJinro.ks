@@ -103,11 +103,7 @@
 #
 [eval exp="timePasses()"]
 [bg storage="room.jpg" time="500"]
-
-
-#
-夜が明けた……。[r]
-この中に人狼が潜んでいる……。[p]
+[m_timePasses isDaytime="&f.isDaytime"]
 
 #
 ～COフェイズ～[p]
@@ -317,14 +313,11 @@
 [m_executed characterId="&tf.targetCharacterId"]
 [j_execution characterId="&tf.targetCharacterId"]
 
+; 処刑後の反応（TODO 誰が発言するかを決定するマクロ等が必要）
 [if exp="f.characterObjects.ai.isAlive"]
-  # &f.speaker['アイ']
-  もし間違ってたら、ごめん……。[p]
-
+  [m_afterExecution characterId="ai"]
 [elsif exp="f.characterObjects.hiyori.isAlive"]
-  # &f.speaker['ヒヨリ']
-  もう嫌だよ……こんなのがまだ続くの……？[p]
-
+  [m_afterExecution characterId="hiyori"]
 [endif]
 
 
@@ -335,11 +328,10 @@
 ; 夜時間開始
 *nightPhase
 
-[bg storage="black.png" time="300"]
 [eval exp="timePasses()"]
+[bg storage="black.png" time="300"]
+[m_timePasses isDaytime="&f.isDaytime"]
 
-#
-恐ろしい夜がやってきた。[p]
 
 ; 夜時間開始時に、夜時間中に生存しているかを参照するためのcharacterObjectを複製する。占い、噛みなどの記録は本物のf.characterObjectsに更新していく。
 [eval exp="f.characterObjectsHistory[f.day] = clone(f.characterObjects)"]

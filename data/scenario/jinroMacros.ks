@@ -36,8 +36,8 @@
 ; 勝利陣営がいるかを判定し、勝利陣営がいた場合、指定されたラベルにジャンプする（storage, targetともに必須）
 ; ex: [j_judgeWinnerCampAndJump storage="playJinro.ks" target="*gameOver"]
 [macro name=j_judgeWinnerCampAndJump]
-#
-勝敗判定中……
+  #
+  勝敗判定中……
   [iscript]
     tf.winnerCamp = judgeWinnerCamp(f.characterObjects);
     if (f.developmentMode) {
@@ -45,9 +45,9 @@
     }
   [endscript]
 
-[if exp="tf.winnerCamp != null"]
-  @jump *
-[endif]
+  [if exp="tf.winnerCamp != null"]
+    [jump *]
+  [endif]
 [endmacro]
 
 

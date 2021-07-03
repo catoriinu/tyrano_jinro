@@ -21,3 +21,11 @@
 *executed
   わたし、人狼なんかじゃないよ……っ[p]
 [return]
+
+
+; afterExecution
+; シーン：処刑後の反応
+; TODO：どのように呼び出すかから考えること
+*afterExecution
+  もう嫌だよ……こんなのがまだ続くの……？[p]
+[return]

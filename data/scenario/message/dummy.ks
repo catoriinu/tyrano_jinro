@@ -19,3 +19,11 @@
 *executed
   あっ……ホンマ……[p]
 [return]
+
+
+; afterExecution
+; シーン：処刑後の反応
+; TODO：どのように呼び出すかから考えること
+*afterExecution
+  （未作成）[p]
+[return]

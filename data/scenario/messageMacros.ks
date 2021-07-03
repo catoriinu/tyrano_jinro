@@ -34,6 +34,7 @@
 ; シーン：占いCOをするかを問うシステムメッセージ
 ; @param canCOFortuneTellerStatus 占い師COすることができる役職・CO状態かの定数。必須。関連マクロ：j_setCanCOFortuneTellerStatus
 [macro name="m_askFortuneTellerCO"]
+  #
   [eval exp="tf.messageStorage = './message/system.ks'"]
   [eval exp="tf.messageTarget = '*askFortuneTellerCO_' + mp.canCOFortuneTellerStatus"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
@@ -58,5 +59,25 @@
   # &f.speaker[f.characterObjects[mp.characterId].name]
   [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
   [eval exp="tf.messageTarget = '*executed'"]
+  [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+[endmacro]
+
+
+; シーン：処刑後の反応
+; @param characterId 発言者のキャラクターID。必須
+[macro name="m_afterExecution"]
+  # &f.speaker[f.characterObjects[mp.characterId].name]
+  [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
+  [eval exp="tf.messageTarget = '*afterExecution'"]
+  [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+[endmacro]
+
+
+; シーン：時間が経過したときのシステムメッセージ
+; @param isDaytime （true:昼/faklse:夜）になったか。必須。関連メソッド：timePasses()
+[macro name="m_timePasses"]
+  #
+  [eval exp="tf.messageStorage = './message/system.ks'"]
+  [eval exp="tf.messageTarget = '*timePasses_' + mp.isDaytime"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
 [endmacro]

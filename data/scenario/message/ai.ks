@@ -41,3 +41,11 @@
 *executed
   そっか……。信じてもらえなくて残念だよ。[p]
 [return]
+
+
+; afterExecution
+; シーン：処刑後の反応
+; TODO：どのように呼び出すかから考えること
+*afterExecution
+  もし間違ってたら、ごめん……。[p]
+[return]
