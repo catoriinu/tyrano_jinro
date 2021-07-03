@@ -27,3 +27,13 @@
 *timePasses_false
   恐ろしい夜がやってきた。[p]
 [return]
+
+
+; シーン：占い先を決めることを促すシステムメッセージ
+*askFortuneTellingTarget_true
+  今夜の占い先を選択してください。[p]
+[return]
+
+*askFortuneTellingTarget_false
+  今夜の占い結果の偽装をしてください。[p]
+[return]

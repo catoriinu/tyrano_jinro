@@ -32,7 +32,7 @@
 
 
 ; シーン：占いCOをするかを問うシステムメッセージ
-; @param canCOFortuneTellerStatus 占い師COすることができる役職・CO状態かの定数。必須。関連マクロ：j_setCanCOFortuneTellerStatus
+; @param canCOFortuneTellerStatus 占い師COすることができる役職・CO状態かの定数。必須。関連マクロ：[j_setCanCOFortuneTellerStatus]
 [macro name="m_askFortuneTellerCO"]
   #
   [eval exp="tf.messageStorage = './message/system.ks'"]
@@ -79,5 +79,15 @@
   #
   [eval exp="tf.messageStorage = './message/system.ks'"]
   [eval exp="tf.messageTarget = '*timePasses_' + mp.isDaytime"]
+  [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+[endmacro]
+
+
+; シーン：占い先を決めることを促すシステムメッセージ
+; @param isFortuneTeller 真占い師(true)か、騙り占い師か(false)。必須。関連マクロ：[j_setCanCOFortuneTellerStatus]を元に呼び元でbooleanに変換しておくこと。
+[macro name="m_askFortuneTellingTarget"]
+  #
+  [eval exp="tf.messageStorage = './message/system.ks'"]
+  [eval exp="tf.messageTarget = '*askFortuneTellingTarget_' + mp.isFortuneTeller"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
 [endmacro]

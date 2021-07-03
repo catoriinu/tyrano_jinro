@@ -344,48 +344,16 @@
 
   ; 村人
   [if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_VILLAGER"]
-
     村人なので行動できません。[p]
+  [endif]
 
-  ; 占い師
-  [elsif exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_FORTUNE_TELLER"]
+  ; 占い師、または騙り占い師CO済みであれば
+  [j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
+  [if exp="tf.canCOFortuneTellerStatus == 1 || tf.canCOFortuneTellerStatus == 2 || tf.canCOFortuneTellerStatus == 4"]
 
-    [if exp="f.playerCharacterId == CHARACTER_ID_AI"]
-
-      # &f.speaker['アイ']
-      今夜は誰を占おうか？[p]
-
-      ; 占いカットイン発生
-      [j_cutin1]
-
-      ; 占い実行
-      [call storage="./fortuneTellingForPC.ks" target="*fortuneTellingForPC"]
-
-      ; 占い結果に合わせてメッセージを表示
-      [if exp="tf.todayResultObject.result"]
-        # &f.speaker['アイ']
-        ……[emb exp="f.characterObjects[tf.todayResultObject.characterId].name"]が人狼だったんだね……。[p]
-
-      [else]
-        # &f.speaker['アイ']
-        [emb exp="f.characterObjects[tf.todayResultObject.characterId].name"]は人狼じゃないみたい。[p]
-        
-      [endif]
-
-      ; 占いカットイン解放
-      [freeimage layer="1" time=400 wait="false"]
-    [endif]
-
-  ; 人狼または狂人
-  [elsif exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_WEREWOLF || f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_MADMAN"]
-
-    ; 占い騙り中なら（夜時間に騙り始めることはできない）
-    [if exp="f.characterObjects[f.playerCharacterId].fakeRole.roleId == ROLE_ID_FORTUNE_TELLER"]
-
-      [if exp="f.playerCharacterId == CHARACTER_ID_AI"]
-        # &f.speaker['アイ']
-        今夜は、誰を占ったことにしようか？[p]
-      [endif]
+    ; 騙り占い師の場合
+    [if exp="tf.canCOFortuneTellerStatus == 4"]
+      [m_askFortuneTellingTarget isFortuneTeller="false"]
 
       ; 占いカットイン発生
       [j_cutin1]
@@ -393,10 +361,23 @@
       ; 騙り占い実行
       [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingForPC"]
 
-      ; 占いカットイン解放
-      [freeimage layer="1" time=400 wait="false"]
+    [else]
+      ; 真占い師の場合
+      [m_askFortuneTellingTarget isFortuneTeller="true"]
+
+      ; 占いカットイン発生
+      [j_cutin1]
+
+      ; 占い実行
+      [call storage="./fortuneTellingForPC.ks" target="*fortuneTellingForPC"]
+
+      ; 占い結果に合わせてセリフ出力
+      [m_announcedFortuneTellingResult characterId="&f.playerCharacterId" result="&tf.todayResultObject.result"]
 
     [endif]
+
+    ; 占いカットイン解放
+    [freeimage layer="1" time=400 wait="false"]
 
   [endif]
 
