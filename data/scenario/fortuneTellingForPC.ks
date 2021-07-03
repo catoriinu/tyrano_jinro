@@ -45,12 +45,12 @@
 *fakeResultBlack
   [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" characterId="&tf.targetCharacterId" result="true" day="&tf.fortuneTelledDay"]
   人狼だったと言うことにした。[p]
-  @jump target="*fakeFortuneTellingForPC_end"
+  [jump target="*fakeFortuneTellingForPC_end"]
 
 *fakeResultWhite
   [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" characterId="&tf.targetCharacterId" result="false" day="&tf.fortuneTelledDay"]
   人狼ではなかったと言うことにした。[p]
-  @jump target="*fakeFortuneTellingForPC_end"
+  [jump target="*fakeFortuneTellingForPC_end"]
 
 *fakeFortuneTellingForPC_end
 

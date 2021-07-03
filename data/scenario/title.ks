@@ -1,9 +1,9 @@
 
 [cm]
 
-@clearstack
-@bg storage ="title.jpg" time=100
-@wait time = 200
+[clearstack]
+[bg storage ="title.jpg" time=100]
+[wait time = 200]
 
 *start 
 
@@ -18,11 +18,11 @@
 
 *gamestart
 ;人狼ゲームのメインシナリオファイルへジャンプする
-@jump storage="playJinro.ks"
+[jump storage="playJinro.ks"]
 
 
 *selectStage
 ;ステージ選択（TODO 現在はPCの役職のみ選択可能）シナリオファイルへジャンプする
-@jump storage="selectStage.ks"
+[jump storage="selectStage.ks"]
 
 

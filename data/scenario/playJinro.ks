@@ -10,7 +10,7 @@
 [bg storage="black.png" time="300"]
 
 ;メニューボタンの表示
-@showmenubutton
+[showmenubutton]
 
 ;メッセージウィンドウの設定
 [position layer="message0" left=160 top=500 width=1000 height=200 page=fore visible=true]
@@ -20,7 +20,7 @@
 
 
 ;メッセージウィンドウの表示
-@layopt layer=message0 visible=true
+[layopt layer=message0 visible=true]
 
 ;キャラクターの名前が表示される文字領域
 [ptext name="chara_name_area" layer="message0" color="white" size=28 bold=true x=180 y=510]
@@ -269,7 +269,7 @@
 ; NPCのCOが終了したら、他のNPCのCOを確認しに戻る
 ; ※NPCのCOが1人終わるごとにPCにCO有無を確認しに戻るのはPCの操作が面倒になるはず。
 ; CO順を理解できるAIが実装できるようになるまでは、NPCのCOはまとめて行ってしまうようにする。
-; もし毎回PCにCO有無を確認しに戻るようにしたい場合は、@jump target="*COPhasePlayer"にする。
+; もし毎回PCにCO有無を確認しに戻るようにしたい場合は、[jump target="*COPhasePlayer"]にする。
   [jump target="*COPhaseNPC"]
 [endif]
 
@@ -501,8 +501,7 @@ NPCが行動しています……[p]
 
 [bg storage="room.jpg" time="100"]
 
-@jump target="*startDaytime"
-;@jump storage="playJinro.ks"
+[jump target="*startDaytime"]
 
 
 *gameOver
@@ -512,13 +511,13 @@ NPCが行動しています……[p]
 
 [if exp="tf.winnerCamp == 'villagers'"]
 
-#
-村人の勝利！[p]
+  #
+  村人の勝利！[p]
 
 [elsif exp="tf.winnerCamp == 'werewolves'"]
 
-#
-人狼の勝利！[p]
+  #
+  人狼の勝利！[p]
 
 [endif]
 
