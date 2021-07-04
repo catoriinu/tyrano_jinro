@@ -24,22 +24,18 @@ function getVillagersRoleIdList() {
   // 呼び出し元が何も考えず呼び出せるよう、引数はとらない方針
   // この中で、ゲーム変数を読み込んだりロジックを書くなどして返却値を決めること
 
-  let VillagersRoleIdList = [
-    //ROLE_ID_WEREWOLF,//
-    ROLE_ID_MADMAN,
+  let villagersRoleIdList = [
     ROLE_ID_FORTUNE_TELLER,
     ROLE_ID_VILLAGER,
-    //ROLE_ID_FORTUNE_TELLER,
-    //ROLE_ID_VILLAGER,//
-    //ROLE_ID_MADMAN,
+    ROLE_ID_MADMAN,
     ROLE_ID_WEREWOLF,
     ROLE_ID_VILLAGER,
   ];
 
   // シャッフルしてから返却する
-  //return shuffleElements(VillagersRoleIdList);
+  //return shuffleElements(villagersRoleIdList);
   // TODO テスト用にそのまま返却
-  return VillagersRoleIdList;
+  return villagersRoleIdList;
 }
 
 

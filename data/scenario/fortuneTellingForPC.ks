@@ -1,14 +1,14 @@
 ; PCの占いサブルーチン
 *fortuneTellingForPC
 
-; 占い候補のキャラオブジェクト配列を取得
-[eval exp="tf.candidateObjects = f.characterObjects[f.playerCharacterId].role.getCandidateObjects(f.playerCharacterId)"]
+  ; 占い候補のキャラオブジェクト配列を取得
+  [eval exp="tf.candidateObjects = f.characterObjects[f.playerCharacterId].role.getCandidateObjects(f.playerCharacterId)"]
 
-; 占い候補からボタンを生成。ボタン入力を受け付ける
-[call target="*glinkFromCandidateObjects"]
+  ; 占い候補からボタンを生成。ボタン入力を受け付ける
+  [call target="*glinkFromCandidateObjects"]
 
-; 占い実行。占い結果をtf.todayResultObjectに格納する
-[j_fortuneTelling fortuneTellerId=&f.playerCharacterId characterId=&tf.targetCharacterId]
+  ; 占い実行。占い結果をtf.todayResultObjectに格納する
+  [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" characterId="&tf.targetCharacterId"]
 
 [return]
 
@@ -19,40 +19,31 @@
 ; （上記サブルーチン内で、tf.fortuneTelledDayの格納を行っておく必要がある）
 *fakeFortuneTellingForPC
 
-; 夜時間の呼び出しであれば、占い指定日に当日を格納する
-[if exp="!f.isDaytime"]
-  [eval exp="tf.fortuneTelledDay = f.day"]
-[endif]
+  ; 夜時間の呼び出しであれば、占い指定日に当日を格納する
+  [if exp="!f.isDaytime"]
+    [eval exp="tf.fortuneTelledDay = f.day"]
+  [endif]
 
-; 騙り占い候補のキャラオブジェクト配列を取得。指定された日の夜時間開始時の生存者を参照する。
-[eval exp="tf.candidateObjects = f.characterObjects[f.playerCharacterId].fakeRole.getCandidateObjects(f.playerCharacterId, tf.fortuneTelledDay)"]
+  ; 騙り占い候補のキャラオブジェクト配列を取得。指定された日の夜時間開始時の生存者を参照する。
+  [eval exp="tf.candidateObjects = f.characterObjects[f.playerCharacterId].fakeRole.getCandidateObjects(f.playerCharacterId, tf.fortuneTelledDay)"]
 
-; 騙り占い候補からボタンを生成。ボタン入力を受け付ける
-[call target="*glinkFromCandidateObjects"]
+  ; 騙り占い候補からボタンを生成。ボタン入力を受け付ける
+  [call target="*glinkFromCandidateObjects"]
 
-; 騙り占い先のキャラクター名をメッセージに表示する
-#
-[emb exp="f.characterObjects[tf.targetCharacterId].name"]を……
+  ; 騙り占い先のキャラクター名をメッセージに表示する
+  [m_displayFakeFortuneTellingTarget]
 
-; 騙り結果入力を受け付ける
-[eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (0 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
-[glink  color="black" size="28"  x="360"  width="500"  y="&tf.y"  text="●（人狼だった）とCOする"  target="*fakeResultBlack"  ]
-[eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (1 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
-[glink  color="white" size="28"  x="360"  width="500"  y="&tf.y"  text="○（人狼ではなかった）とCOする"  target="*fakeResultWhite"  ]
-[s]
+  ; 騙り結果入力を受け付ける
+  [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (0 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
+  [glink color="black" size="28" x="360" width="500" y="&tf.y" text="●（人狼だった）とCOする" target="*doFakeFortuneTelling" exp="tf.declarationResult = true"]
+  [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (1 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
+  [glink color="white" size="28" x="360" width="500" y="&tf.y" text="○（人狼ではなかった）とCOする" target="*doFakeFortuneTelling" exp="tf.declarationResult = false"]
+  [s]
 
-; 騙り占い実行。占い結果をtf.todayResultObjectに格納する
-*fakeResultBlack
-  [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" characterId="&tf.targetCharacterId" result="true" day="&tf.fortuneTelledDay"]
-  人狼だったと言うことにした。[p]
-  @jump target="*fakeFortuneTellingForPC_end"
-
-*fakeResultWhite
-  [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" characterId="&tf.targetCharacterId" result="false" day="&tf.fortuneTelledDay"]
-  人狼ではなかったと言うことにした。[p]
-  @jump target="*fakeFortuneTellingForPC_end"
-
-*fakeFortuneTellingForPC_end
+  ; 騙り占い実行。占い結果をtf.todayResultObjectに格納する
+  *doFakeFortuneTelling
+  [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" day="&tf.fortuneTelledDay" characterId="&tf.targetCharacterId" result="&tf.declarationResult"]
+  [m_displayFakeFortuneTellingResult result="&tf.declarationResult"]
 
 [return]
 
@@ -130,6 +121,7 @@
 [return]
 
 
+; 未使用サブルーチン
 ; 全キャラ分の占い結果CO文章を表示するサブルーチン
 ; サブルーチンの引数として、以下の変数を格納しておくこと。
 ; tf.fortuneTellingHistoryObject = COする占い師の占い履歴オブジェクト
@@ -137,77 +129,7 @@
 ; 関連マクロ：[j_fortuneTellingHistoryObjectThatDay]、[j_COfortuneTellingResultLastNight]
 ; TODO とりあえずここのファイルに置いておくが、全キャラの占いCOに使えるのでUtil的なファイルのほうが良いと思う。
 *COfortuneTellingResult
-
-; ホバー時用の画像を画面外からスライドインさせる TODO ボタンごとにキャラに合わせた画像を表示する
-[image layer="1" x="1280" y="80" visible="true" storage="01_sad.png" name="01"]
-[anim name="01" left=850 time=350]
-
-; アイ
-[if exp="tf.fortuneTellerId == CHARACTER_ID_AI"]
-
-  [if exp="tf.fortuneTellingHistoryObject.result"]
-    [eval exp="tf.fortuneTellingResultMessage = '人狼だった……。'"]
-  [else]
-    [eval exp="tf.fortuneTellingResultMessage = '人狼じゃなかった。'"]
-  [endif]
-
-  # &f.speaker['アイ']
-  昨夜は[emb exp="f.characterObjects[tf.fortuneTellingHistoryObject.characterId].name"]を占ったよ。[r]
-  結果は[emb exp="tf.fortuneTellingResultMessage"]
-
-; ヒヨリ
-[elsif exp="tf.fortuneTellerId == CHARACTER_ID_HIYORI"]
-
-  [if exp="tf.fortuneTellingHistoryObject.result"]
-    [eval exp="tf.fortuneTellingResultMessage = 'じ、人狼だったんです……！'"]
-  [else]
-    [eval exp="tf.fortuneTellingResultMessage = '人狼ではなかったです。'"]
-  [endif]
-
-  # &f.speaker['ヒヨリ']
-  わたし、[emb exp="f.characterObjects[tf.fortuneTellingHistoryObject.characterId].name"]さんを占いました。[r]
-  [emb exp="f.characterObjects[tf.fortuneTellingHistoryObject.characterId].name"]さんは、[emb exp="tf.fortuneTellingResultMessage"]
-
-; フタバ
-[elsif exp="tf.fortuneTellerId == CHARACTER_ID_FUTABA"]
-
-  [if exp="tf.fortuneTellingHistoryObject.result"]
-    [eval exp="tf.fortuneTellingResultMessage = '●（クロ）だよ！へへ、覚悟しなよ！'"]
-  [else]
-    [eval exp="tf.fortuneTellingResultMessage = '○（シロ）だったよ。'"]
-  [endif]
-
-  # &f.speaker['フタバ']
-  占いCO！[r]
-  [emb exp="f.characterObjects[tf.fortuneTellingHistoryObject.characterId].name"]は[emb exp="tf.fortuneTellingResultMessage"]
-
-; ミキ
-[elsif exp="tf.fortuneTellerId == CHARACTER_ID_MIKI"]
-
-  [if exp="tf.fortuneTellingHistoryObject.result"]
-    [eval exp="tf.fortuneTellingResultMessage = '人狼だったわ！　早く吊るのよ！'"]
-  [else]
-    [eval exp="tf.fortuneTellingResultMessage = '人狼じゃなかったわ。'"]
-  [endif]
-  # &f.speaker['ミキ']
-  [emb exp="f.characterObjects[tf.fortuneTellingHistoryObject.characterId].name"]は[emb exp="tf.fortuneTellingResultMessage"]
-
-; ダミー
-[elsif exp="tf.fortuneTellerId == CHARACTER_ID_DUMMY"]
-
-  [if exp="tf.fortuneTellingHistoryObject.result"]
-    [eval exp="tf.fortuneTellingResultMessage = '人狼やでー！'"]
-  [else]
-    [eval exp="tf.fortuneTellingResultMessage = '人狼やあらへんかったわ。'"]
-  [endif]
-
-  # &f.speaker['ダミー']
-  [emb exp="f.characterObjects[tf.fortuneTellingHistoryObject.characterId].name"]は[emb exp="tf.fortuneTellingResultMessage"]
-
-[else]
-  ちゃんと格納できてないのでは？[p]
-[endif]
-
+  COfortuneTellingResultサブルーチンは削除済（念のためしばらく置いておく）[p]
 [return]
 
 
@@ -221,8 +143,7 @@
   [eval exp="tf.fortuneTelledDayMsg = '初日の夜'"]
   *fakeFortuneTellingCOMultipleDays_loopstart
     
-    #
-    [emb exp="tf.fortuneTelledDayMsg"]の占い先は……
+    [m_fortuneTelledDayMsg]
     ; PCの騙り占いサブルーチンを、初日(day=0)から最新の日の日付までループ実行していく
     [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingForPC"]
 

@@ -17,6 +17,7 @@
 [endmacro]
 
 
+; 未使用マクロ
 ; 襲撃マクロ
 [macro name=j_attack]
 ; 引数テスト:[emb exp="mp.character_id"][p]
@@ -34,10 +35,10 @@
 
 
 ; 勝利陣営がいるかを判定し、勝利陣営がいた場合、指定されたラベルにジャンプする（storage, targetともに必須）
-; ex: [j_judgeWinnerCampAndJump storage="scene1.ks" target="*gameOver"]
+; ex: [j_judgeWinnerCampAndJump storage="playJinro.ks" target="*gameOver"]
 [macro name=j_judgeWinnerCampAndJump]
-#
-勝敗判定中……
+  #
+  勝敗判定中……
   [iscript]
     tf.winnerCamp = judgeWinnerCamp(f.characterObjects);
     if (f.developmentMode) {
@@ -45,45 +46,44 @@
     }
   [endscript]
 
-[if exp="tf.winnerCamp != null"]
-  @jump *
-[endif]
+  [if exp="tf.winnerCamp != null"]
+    [jump *]
+  [endif]
 [endmacro]
 
 
 ; 占いマクロ
 ; @param fortuneTellerId 占い実行者のID。真占い師、占い騙りに関わらず、必須。
+; @param day 占った日付。指定がない場合のデフォルトは当日。占い騙りのように前日の夜に占ったことを偽装する必要がある場合は指定すること。
 ; @param characterId 占う対象のID。入っているなら、実行者はプレイヤーである。入っていないなら実行者はNPCのため、メソッド内部で対象を決める。
-; @param result プレイヤーかつ騙りの占い師の場合のみ必要。宣言する占い結果をで渡す。※string型
-; @param day 占った日付。当日であれば指定不要。
+; @param result プレイヤーかつ騙りの占い師の場合のみ必要。宣言する占い結果をbooleanまたはstringで渡す。
 [macro name=j_fortuneTelling]
   [iscript]
-    ; 型をstring→boolに変換する ※マクロにboolやnumを渡しても、stringに型変換されてしまうため、人狼プラグインのメソッドに渡す前に変換する。
-    ; jsは空文字でないstringをtrueと評価するため、確実に'true'でないとtrueを入れないようにする。
-    const boolResult = (mp.result == 'true') ? true : false;
-
-    ; 占った日付を入れる。真占い師ならば当日の夜に占う（デフォルト）が、占い騙りのように前日の夜に占ったことを偽装する必要がある場合にmp.dayを渡す。
+    ; jsに渡す引数の準備。マクロへの指定がなければデフォルト値を入れる
     const day = (typeof mp.day == 'undefined') ? f.day : parseInt(mp.day);
+    const targetCharacterId = (typeof mp.characterId == 'undefined') ? '' : mp.characterId;
+    const declarationResult = (function(){
+      if (typeof mp.result == 'string') {
+        ; ※マクロの引数としてベタ書きでboolやnumを渡しても、stringに型変換されてしまうため、jinroプラグインに渡す前にstring→boolに変換する。
+        ; jsは空文字でないstringをtrueと評価するため、確実に'true'でないとtrueを入れないようにする。
+        return (mp.result === 'true') ? true : false;
+      } else if (typeof mp.result == 'boolean') {
+        ; boolean型ならそのまま格納する（マクロの引数に変数としてbooleanで渡して来た場合を考慮）
+        return mp.result;
+      } else {
+        ; その他の型（未指定でundefined）ならnull
+        return null;
+      }
+    })();
 
     let todayResult = {};
-    ; ターゲットが決まっている（＝実行者がプレイヤー）なら
-    if (mp.characterId) {
-      if (f.characterObjects[f.playerCharacterId].fakeRole.roleId == ROLE_ID_FORTUNE_TELLER) {
-        ; 占い騙りの場合
-        todayResult = f.characterObjects[f.playerCharacterId].fakeRole.fortuneTelling(mp.fortuneTellerId, day, mp.characterId, boolResult);
-      } else {
-        ; 真占いの場合
-        todayResult = f.characterObjects[f.playerCharacterId].role.fortuneTelling(mp.fortuneTellerId, day, mp.characterId);
-      }
-    ; ターゲットが決まっていない（＝実行者がNPC）なら
+    ; 占い実行
+    if (f.characterObjects[mp.fortuneTellerId].fakeRole.roleId == ROLE_ID_FORTUNE_TELLER) {
+      ; 占い騙りの場合
+      todayResult = f.characterObjects[mp.fortuneTellerId].fakeRole.fortuneTelling(mp.fortuneTellerId, day, targetCharacterId, declarationResult);
     } else {
-      if (f.characterObjects[mp.fortuneTellerId].fakeRole.roleId == ROLE_ID_FORTUNE_TELLER) {
-        ; 占い騙りの場合
-        todayResult = f.characterObjects[mp.fortuneTellerId].fakeRole.fortuneTelling(mp.fortuneTellerId, day);
-      } else {
-        ; 真占いの場合
-        todayResult = f.characterObjects[mp.fortuneTellerId].role.fortuneTelling(mp.fortuneTellerId, day);
-      }
+      ; 真占いの場合
+      todayResult = f.characterObjects[mp.fortuneTellerId].role.fortuneTelling(mp.fortuneTellerId, day, targetCharacterId);
     }
 
     ; 占い師の視点整理。
@@ -96,7 +96,7 @@
       f.characterObjects[mp.fortuneTellerId].role.rolePerspective = organizePerspective (f.characterObjects[mp.fortuneTellerId].role.rolePerspective, todayResult.characterId, getRoleIdsForOrganizePerspective(todayResult.result));
     }
     
-    ; 返り値用の一時変数に格納
+    ; 一時変数に占い結果格納
     tf.todayResultObject = todayResult;
 
     if (f.developmentMode) {
@@ -104,7 +104,6 @@
       alert(f.characterObjects[mp.fortuneTellerId].name + 'は'
       + f.characterObjects[todayResult.characterId].name + 'を占いました。\n結果　【' + resultMassage + '】');
     }
-
   [endscript]
 [endmacro]
 
@@ -122,7 +121,8 @@
   [endscript]
 
   [eval exp="tf.fortuneTelledDay = 0"]
-  ; マクロ変数に入れていると、マクロ内で呼んだマクロの終了時に消されてしまうため、一時変数に格納しておく
+  ; ※マクロ内で別マクロを呼び出すと、別マクロの終了時にmp変数が全て空にされてしまう。
+  ; そのため、元マクロ側の引数を元マクロ内で引き続き使いたい場合は、一時変数などに格納しておかないといけない。
   [eval exp="tf.fortuneTellerId = mp.fortuneTellerId"]
   *fakeFortuneTellingCOMultipleDays_loopstart
 
@@ -134,6 +134,45 @@
   [jump target="*fakeFortuneTellingCOMultipleDays_loopstart"]
 
   *fakeFortuneTellingCOMultipleDays_loopend
+[endmacro]
+
+
+; 夜時間のNPCの占い師（真、騙り共通）の占い実行をまとめて行うマクロ
+[macro name="j_nightPhaseFortuneTellingForNPC"]
+  [iscript]
+    ; 夜開始時点の生存者である、かつプレイヤー以外のキャラクターオブジェクトから、占い師のID配列を抽出する。
+    ; 真占い師も騙り占い師もここで処理する。j_fortuneTellingマクロ内で真か騙りかで処理を分けているため問題ない。
+    ; 初日夜も同様の処理で良い（初日夜にはまだ騙り占い師はいないため、必然的に真しか取得しない）
+    tf.fortuneTellerNpcCharacterIds = getValuesFromObjectArray (
+      getHaveTheRoleObjects (
+        getCharacterObjectsFromCharacterIds (
+          getSurvivorObjects(f.characterObjectsHistory[f.day]),
+          [f.playerCharacterId],
+          false
+        ),
+        [ROLE_ID_FORTUNE_TELLER],
+        true,
+        true,
+        true
+      ),
+      'characterId'
+    );
+  [endscript]
+
+  [eval exp="tf.idsLength = tf.fortuneTellerNpcCharacterIds.length"]
+  ; 行動する占い師がいない場合は、ループに入らず終了する（占いマクロへの引数がとれずエラーになる）
+  [jump target="*j_nightPhaseFortuneTellingForNPC_loopend" cond="tf.idsLength == 0"]
+
+  [eval exp="tf.cnt = 0"]
+  *j_nightPhaseFortuneTellingForNPC_loopstart
+
+    [j_fortuneTelling fortuneTellerId="&tf.fortuneTellerNpcCharacterIds[tf.cnt]"]
+
+    [jump target="*j_nightPhaseFortuneTellingForNPC_loopend" cond="tf.cnt == (tf.idsLength - 1)"]
+    [eval exp="tf.cnt++"]
+    [jump target="*j_nightPhaseFortuneTellingForNPC_loopstart"]
+  *j_nightPhaseFortuneTellingForNPC_loopend
+
 [endmacro]
 
 
@@ -154,6 +193,30 @@
     let resultMassage = todayResult.result ? f.characterObjects[todayResult.characterId].name + 'は無残な姿で発見された。' : '平和な朝を迎えた。';
     alert(resultMassage);
   [endscript]
+[endmacro]
+
+
+; 夜時間のNPCの人狼の噛み実行を行うマクロ（襲撃人数は1人）
+; PCによる噛み実行と被らないようにするのは、呼び元で行うこと
+[macro name="j_nightPhaseBitingForNPC"]
+  [iscript]
+    ; 夜開始時点の生存者である、かつプレイヤー以外のキャラクターオブジェクトから、人狼のID配列を抽出する。
+    tf.werewolfNpcCharacterIds = getValuesFromObjectArray (
+      getHaveTheRoleObjects (
+        getCharacterObjectsFromCharacterIds (
+          getSurvivorObjects (f.characterObjectsHistory[f.day]),
+          [f.playerCharacterId],
+          false
+        ),
+        [ROLE_ID_WEREWOLF]
+      ),
+      'characterId'
+    );
+  [endscript]
+
+  ; TODO 生存中のNPCに人狼が2人以上いた場合に、誰が（誰の思考で）襲撃するようにするかの判定と処理を実装する。
+  ; 今は人狼1人想定なので、0要素目を確定で渡す
+  [j_biting biterId="&tf.werewolfNpcCharacterIds[0]"]
 [endmacro]
 
 
@@ -259,30 +322,12 @@
 [endmacro]
 
 
+; ※未使用メソッド
 ; 指定したキャラクターの最新の占い履歴をもとに、占いCO文を出力する。
 ; 占い師、占い騙り両対応。
 ; @param fortuneTellerId 取得したい占い師（騙り占い）のキャラクターID。必須
 [macro name=j_COfortuneTellingResultLastNight]
-
-  ; COする占い師名も格納する
-  ; 別マクロを呼び出す前に一時変数に格納すること！（理由は後述）
-  [eval exp="tf.fortuneTellerId = mp.fortuneTellerId"]
-
-  ; 占いカットイン発生
-  [j_cutin1]
-
-  [iscript]
-    console.log('カットイン終了');
-  [endscript]
-
-  ; 指定した占い師の最新の占い履歴オブジェクトをtf.fortuneTellingHistoryObjectに格納する
-  ; ※マクロ内で別マクロを呼び出すと、別マクロの終了時にmp変数が全て空にされてしまう。
-  ; そのため、元マクロ側の引数を元マクロ内で引き続き使いたい場合は、一時変数などに格納しておかないといけない。
-  [j_fortuneTellingHistoryObjectThatDay fortuneTellerId="&tf.fortuneTellerId"]
-
-  ; 一時変数を元に、サブルーチン内でCO文を出力する
-  [call storage="./fortuneTellingForPC.ks" target="*COfortuneTellingResult"]
-
+  j_COfortuneTellingResultLastNightマクロは削除済（念のためしばらく置いておく）[p]
 [endmacro]
 
 
@@ -292,12 +337,12 @@
   [iscript]
     ; TODO:直前（PC、NPCどちらも）のCOの内容によって、各キャラ内のCOしたい度が変動するようにする
 
-    ; キャラクターID配列を回してCO意思があるかつisDoneTodaysCOがfalseであれば、isCOMyRoll()を噛ませる。
+    ; キャラクターID配列を回してCOできる役職かつisDoneTodaysCOがfalseであれば、isCOMyRoll()を噛ませる。
     let maxProbability = 0;
     let COCandidateIdArray = [];
     tf.COCandidateId = '';
     for (let i = 0; i < mp.characterIds.length; i++) {
-      if (f.characterObjects[mp.characterIds[i]].role.willCO && !f.characterObjects[mp.characterIds[i]].isDoneTodaysCO) {
+      if (f.characterObjects[mp.characterIds[i]].role.allowCO && !f.characterObjects[mp.characterIds[i]].isDoneTodaysCO) {
         console.log('キャラクターID: ' + mp.characterIds[i]);
         let [probability, isCO] = isCOMyRoll(mp.characterIds[i]);
         ; COしたい、かつCO確率が現在保存中の最大の確率以上であれば、キャラクターIDをCO候補配列に格納する
@@ -327,8 +372,8 @@
   [iscript]
     tf.isNeedToAskPCWantToCO = false;
     ; 以下の条件を満たした場合、PCがCOしたいかを確認する必要があると判定する
-    ; 生存している && 現在CO意思があるか && 今日は未COか
-    if (f.characterObjects[f.playerCharacterId].isAlive && f.characterObjects[f.playerCharacterId].role.willCO && !f.characterObjects[f.playerCharacterId].isDoneTodaysCO) {
+    ; 生存している && COできる役職か && 今日は未COか
+    if (f.characterObjects[f.playerCharacterId].isAlive && f.characterObjects[f.playerCharacterId].role.allowCO && !f.characterObjects[f.playerCharacterId].isDoneTodaysCO) {
       tf.isNeedToAskPCWantToCO = true;
     }
   [endscript]
@@ -384,6 +429,39 @@
     [wait time=700]
     [fadeoutse time="1800"]
 
+[endmacro]
+
+
+; 占い師COすることができる役職・CO状態かを判定し、tf.canCOFortuneTellerStatusに結果を入れる。内訳はコード内のコメント参照
+; 定数の並び順が昇順ではないのは、「if文は肯定形にする」と「未COに+1したらCO済みとする」の2つを優先したため。
+; @param characterId 判定対象のキャラクターID。必須。
+[macro name=j_setCanCOFortuneTellerStatus]
+  [iscript]
+
+    ; 0: 占い師CO不可の役職、またはCO状態
+    tf.canCOFortuneTellerStatus = 0;
+    if (f.characterObjects[mp.characterId].role.roleId == ROLE_ID_FORTUNE_TELLER) {
+      if (f.characterObjects[mp.characterId].CORoleId == ROLE_ID_FORTUNE_TELLER) {
+        ; 2: 真占い師であり、CO済み
+        tf.canCOFortuneTellerStatus = 2;
+
+      } else {
+        ; 1: 真占い師で、未CO
+        tf.canCOFortuneTellerStatus = 1;
+      }
+      
+    } else if (f.characterObjects[mp.characterId].role.roleId == ROLE_ID_WEREWOLF || f.characterObjects[mp.characterId].role.roleId == ROLE_ID_MADMAN) {
+      if (f.characterObjects[mp.characterId].CORoleId == ROLE_ID_FORTUNE_TELLER) {
+        ; 4: 騙り占い師としてCO済み
+        tf.canCOFortuneTellerStatus = 4;
+
+      } else if (f.characterObjects[mp.characterId].CORoleId == '') {
+        ; 3: 騙り占い師としてCO可能な役職で、未CO
+        tf.canCOFortuneTellerStatus = 3;
+      }
+      ; 占い師以外の役職としてCO済みなら、占い師COは不可
+    }
+  [endscript]
 [endmacro]
 
 

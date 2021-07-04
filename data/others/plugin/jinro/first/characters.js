@@ -6,10 +6,10 @@
  * @prop {String} name キャラクターの名前
  * @prop {Object} role 役職オブジェクト
  * @prop {Object} fakeRole 騙りの役職オブジェクト。騙りCOするときに格納する。
+ * @prop {String} CORoleId 自身がCOしている役職ID。空文字は未CO（役職なし＝村人と同義）
  * @prop {*} personality 性格 TODO 現在は性格の文字列。性格オブジェクトを入れるようにする
  * @prop {Boolean} isAlive 生存者か
  * @prop {Boolean} isPlayer プレイヤーか
- * @prop {Boolean} isDoneCO 役職COが済んでいるか
  * @prop {Boolean} isDoneTodaysCO 今日の役職COが済んでいるか
  * @prop {Object} perspective 現在CO中の視点オブジェクト（未COなら村人として振る舞う）
  */
@@ -20,9 +20,9 @@ function Character(characterId, roleId) {
   this.personality = characterData.myPersonality;
   this.role = roleAssignment(roleId);
   this.fakeRole = {};
+  this.CORoleId = '';
   this.isAlive = true;
   this.isPlayer = false;
-  this.isDoneCO = false;
   this.isDoneTodaysCO = false;
   this.perspective = {};
   
