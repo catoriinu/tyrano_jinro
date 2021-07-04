@@ -53,37 +53,36 @@
 
 ; 占いマクロ
 ; @param fortuneTellerId 占い実行者のID。真占い師、占い騙りに関わらず、必須。
+; @param day 占った日付。指定がない場合のデフォルトは当日。占い騙りのように前日の夜に占ったことを偽装する必要がある場合は指定すること。
 ; @param characterId 占う対象のID。入っているなら、実行者はプレイヤーである。入っていないなら実行者はNPCのため、メソッド内部で対象を決める。
-; @param result プレイヤーかつ騙りの占い師の場合のみ必要。宣言する占い結果をで渡す。※string型
-; @param day 占った日付。当日であれば指定不要。
+; @param result プレイヤーかつ騙りの占い師の場合のみ必要。宣言する占い結果をで渡す。
 [macro name=j_fortuneTelling]
   [iscript]
-    ; 型をstring→boolに変換する ※マクロにboolやnumを渡しても、stringに型変換されてしまうため、人狼プラグインのメソッドに渡す前に変換する。
-    ; jsは空文字でないstringをtrueと評価するため、確実に'true'でないとtrueを入れないようにする。
-    const boolResult = (mp.result == 'true') ? true : false;
-
-    ; 占った日付を入れる。真占い師ならば当日の夜に占う（デフォルト）が、占い騙りのように前日の夜に占ったことを偽装する必要がある場合にmp.dayを渡す。
+    ; jsに渡す引数の準備。マクロへの指定がなければデフォルト値を入れる
     const day = (typeof mp.day == 'undefined') ? f.day : parseInt(mp.day);
+    const targetCharacterId = (typeof mp.characterId == 'undefined') ? '' : mp.characterId;
+    const declarationResult = (function(){
+      if (typeof mp.result == 'string') {
+        ; ※マクロの引数としてベタ書きでboolやnumを渡しても、stringに型変換されてしまうため、jinroプラグインに渡す前にstring→boolに変換する。
+        ; jsは空文字でないstringをtrueと評価するため、確実に'true'でないとtrueを入れないようにする。
+        return (mp.result === 'true') ? true : false;
+      } else if (typeof mp.result == 'boolean') {
+        ; boolean型ならそのまま格納する（マクロの引数に変数としてbooleanで渡して来た場合を考慮）
+        return mp.result;
+      } else {
+        ; その他の型（未指定でundefined）ならnull
+        return null;
+      }
+    })();
 
     let todayResult = {};
-    ; ターゲットが決まっている（＝実行者がプレイヤー）なら
-    if (mp.characterId) {
-      if (f.characterObjects[f.playerCharacterId].fakeRole.roleId == ROLE_ID_FORTUNE_TELLER) {
-        ; 占い騙りの場合
-        todayResult = f.characterObjects[f.playerCharacterId].fakeRole.fortuneTelling(mp.fortuneTellerId, day, mp.characterId, boolResult);
-      } else {
-        ; 真占いの場合
-        todayResult = f.characterObjects[f.playerCharacterId].role.fortuneTelling(mp.fortuneTellerId, day, mp.characterId);
-      }
-    ; ターゲットが決まっていない（＝実行者がNPC）なら
+    ; 占い実行
+    if (f.characterObjects[mp.fortuneTellerId].fakeRole.roleId == ROLE_ID_FORTUNE_TELLER) {
+      ; 占い騙りの場合
+      todayResult = f.characterObjects[mp.fortuneTellerId].fakeRole.fortuneTelling(mp.fortuneTellerId, day, targetCharacterId, declarationResult);
     } else {
-      if (f.characterObjects[mp.fortuneTellerId].fakeRole.roleId == ROLE_ID_FORTUNE_TELLER) {
-        ; 占い騙りの場合
-        todayResult = f.characterObjects[mp.fortuneTellerId].fakeRole.fortuneTelling(mp.fortuneTellerId, day);
-      } else {
-        ; 真占いの場合
-        todayResult = f.characterObjects[mp.fortuneTellerId].role.fortuneTelling(mp.fortuneTellerId, day);
-      }
+      ; 真占いの場合
+      todayResult = f.characterObjects[mp.fortuneTellerId].role.fortuneTelling(mp.fortuneTellerId, day, targetCharacterId);
     }
 
     ; 占い師の視点整理。
@@ -96,7 +95,7 @@
       f.characterObjects[mp.fortuneTellerId].role.rolePerspective = organizePerspective (f.characterObjects[mp.fortuneTellerId].role.rolePerspective, todayResult.characterId, getRoleIdsForOrganizePerspective(todayResult.result));
     }
     
-    ; 返り値用の一時変数に格納
+    ; 一時変数に占い結果格納
     tf.todayResultObject = todayResult;
 
     if (f.developmentMode) {

@@ -44,7 +44,7 @@ function FortuneTeller() {
    * @param {Object} result PCの騙り占い師による結果騙り入力(t:●/f:○) デフォルト（PCの真占い師、またはNPCの場合）はnull
    * @returns {Object} 占いCOする結果オブジェクト{characterId, result(t:●/f:○)}
    */
-  roleObject.fortuneTelling = function (fortuneTellerId, day = TYRANO_VAR_F.day, targetCharacterId = "", result = null) {
+  roleObject.fortuneTelling = function (fortuneTellerId, day = TYRANO_VAR_F.day, targetCharacterId = '', result = null) {
     
     // 占い先が未決定の場合、決める（NPC専用。プレイヤーなら占い先を先に決めているため）
     if (!targetCharacterId) {

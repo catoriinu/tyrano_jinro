@@ -8,7 +8,7 @@
 [call target="*glinkFromCandidateObjects"]
 
 ; 占い実行。占い結果をtf.todayResultObjectに格納する
-[j_fortuneTelling fortuneTellerId=&f.playerCharacterId characterId=&tf.targetCharacterId]
+[j_fortuneTelling fortuneTellerId="&f.playerCharacterId" characterId="&tf.targetCharacterId"]
 
 [return]
 
