@@ -66,38 +66,7 @@
 [endif]
 
 ; 初日夜のNPCの行動。占い師のみ行動する。
-[iscript]
-  ; 夜時間開始時の生存者である、かつプレイヤー以外のキャラクターオブジェクトから、真占い師のID配列を抽出する。
-  tf.fortuneTellerNpcCharacterIds = getValuesFromObjectArray(
-    getHaveTheRoleObjects(
-      getCharacterObjectsFromCharacterIds(
-        getSurvivorObjects(f.characterObjectsHistory[f.day]),
-        [f.playerCharacterId],
-        false
-      ),
-      [ROLE_ID_FORTUNE_TELLER]
-    ),
-    'characterId'
-  );
-[endscript]
-
-; ID配列なので、includesでチェックしていく。仮に候補者が複数人いても対応可能。
-[if exp="tf.fortuneTellerNpcCharacterIds.includes(CHARACTER_ID_HIYORI)"]
-  [j_fortuneTelling fortuneTellerId="hiyori"]
-[endif]
-
-[if exp="tf.fortuneTellerNpcCharacterIds.includes(CHARACTER_ID_FUTABA)"]
-  [j_fortuneTelling fortuneTellerId="futaba"]
-[endif]
-
-[if exp="tf.fortuneTellerNpcCharacterIds.includes(CHARACTER_ID_MIKI)"]
-  [j_fortuneTelling fortuneTellerId="miki"]
-[endif]
-
-[if exp="tf.fortuneTellerNpcCharacterIds.includes(CHARACTER_ID_DUMMY)"]
-  [j_fortuneTelling fortuneTellerId="dummy"]
-[endif]
-
+[j_nightPhaseFortuneTellingForNPC]
 
 *startDaytime
 #
@@ -174,7 +143,7 @@
       [j_updateCommonPerspective characterId="&f.characterObjects[f.playerCharacterId].characterId" zeroRoleIds="&tf.tmpZeroRoleIds"]
     [endif]
 
-    [jump target="*COEnd"]
+    [jump target="*COPhaseNPC"]
   [endif]
 
   ; COなし
@@ -185,12 +154,10 @@
     [jump target="*discussionPhase"]
   [else]
     ; COフェイズ継続(まだNPCにCO候補者がいるので、NPCのCOを確認する)
-    [jump target="*COEnd"]
+    [jump target="*COPhaseNPC"]
   [endif]
 
 [endif]
-
-*COEnd
 
 
 *COPhaseNPC
@@ -426,90 +393,18 @@
 #
 NPCが行動しています……[p]
 
-;NPCの占い師フェイズ（真、騙り共通）
-[iscript]
-  ; 夜開始時点の生存者である、かつプレイヤー以外のキャラクターオブジェクトから、占い師のID配列を抽出する。
-  ; 真占い師も騙り占い師もここで処理する。j_fortuneTellingマクロ内で真か騙りかで処理を分けているため問題ない。
-  tf.fortuneTellerNpcCharacterIds = getValuesFromObjectArray(
-    getHaveTheRoleObjects(
-      getCharacterObjectsFromCharacterIds(
-        getSurvivorObjects(f.characterObjectsHistory[f.day]),
-        [f.playerCharacterId],
-        false
-      ),
-      [ROLE_ID_FORTUNE_TELLER],
-      true,
-      true,
-      true
-    ),
-    'characterId'
-  );
-[endscript]
+; 占い師（真、騙り共通）の占い実行
+[j_nightPhaseFortuneTellingForNPC]
 
-; ID配列なので、includesでチェックしていく。仮に候補者が複数人いても対応可能。
-[if exp="tf.fortuneTellerNpcCharacterIds.includes(CHARACTER_ID_HIYORI)"]
-  [j_fortuneTelling fortuneTellerId="hiyori"]
-[endif]
-
-[if exp="tf.fortuneTellerNpcCharacterIds.includes(CHARACTER_ID_FUTABA)"]
-  [j_fortuneTelling fortuneTellerId="futaba"]
-[endif]
-
-[if exp="tf.fortuneTellerNpcCharacterIds.includes(CHARACTER_ID_MIKI)"]
-  [j_fortuneTelling fortuneTellerId="miki"]
-[endif]
-
-[if exp="tf.fortuneTellerNpcCharacterIds.includes(CHARACTER_ID_DUMMY)"]
-  [j_fortuneTelling fortuneTellerId="dummy"]
-[endif]
-
-
-; 噛み未実行なら（＝PCが人狼ではないなら）
+; 噛み未実行なら（＝PCが人狼ではないなら）噛み実行
 [if exp="!f.isBiteEnd"]
-
-  ;NPCの人狼フェイズ
-  [iscript]
-    ; 夜開始時点の生存者である、かつプレイヤー以外のキャラクターオブジェクトから、人狼のID配列を抽出する。
-    tf.werewolfNpcCharacterIds = getValuesFromObjectArray(
-      getHaveTheRoleObjects(
-        getCharacterObjectsFromCharacterIds(
-          getSurvivorObjects(f.characterObjectsHistory[f.day]),
-          [f.playerCharacterId],
-          false
-        ),
-        [ROLE_ID_WEREWOLF]
-      ),
-      'characterId'
-    );
-  [endscript]
-
-  ; ID配列なので、includesでチェックしていく。仮に候補者が複数人いても対応可能。
-  ; TODO 生存中のNPCに人狼が2人以上いた場合に、その人数分襲撃してしまう。1人だけ襲撃するように修正したい。（設定で襲撃人数を保持）
-  [if exp="tf.werewolfNpcCharacterIds.includes(CHARACTER_ID_HIYORI)"]
-    [j_biting biterId="&f.characterObjects.hiyori.characterId"]
-  [endif]
-
-  [if exp="tf.werewolfNpcCharacterIds.includes(CHARACTER_ID_FUTABA)"]
-    [j_biting biterId="&f.characterObjects.futaba.characterId"]
-  [endif]
-
-  [if exp="tf.werewolfNpcCharacterIds.includes(CHARACTER_ID_MIKI)"]
-    [j_biting biterId="&f.characterObjects.miki.characterId"]
-  [endif]
-
-  [if exp="tf.werewolfNpcCharacterIds.includes(CHARACTER_ID_DUMMY)"]
-    [j_biting biterId="&f.characterObjects.dummy.characterId"]
-  [endif]
-
+  [j_nightPhaseBitingForNPC]
 [endif]
-
 
 ; 勝敗判定
 [j_judgeWinnerCampAndJump storage="playJinro.ks" target="*gameOver"]
 
-
 [bg storage="room.jpg" time="100"]
-
 [jump target="*startDaytime"]
 
 

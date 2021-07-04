@@ -17,6 +17,7 @@
 [endmacro]
 
 
+; 未使用マクロ
 ; 襲撃マクロ
 [macro name=j_attack]
 ; 引数テスト:[emb exp="mp.character_id"][p]
@@ -103,7 +104,6 @@
       alert(f.characterObjects[mp.fortuneTellerId].name + 'は'
       + f.characterObjects[todayResult.characterId].name + 'を占いました。\n結果　【' + resultMassage + '】');
     }
-
   [endscript]
 [endmacro]
 
@@ -137,6 +137,45 @@
 [endmacro]
 
 
+; 夜時間のNPCの占い師（真、騙り共通）の占い実行をまとめて行うマクロ
+[macro name="j_nightPhaseFortuneTellingForNPC"]
+  [iscript]
+    ; 夜開始時点の生存者である、かつプレイヤー以外のキャラクターオブジェクトから、占い師のID配列を抽出する。
+    ; 真占い師も騙り占い師もここで処理する。j_fortuneTellingマクロ内で真か騙りかで処理を分けているため問題ない。
+    ; 初日夜も同様の処理で良い（初日夜にはまだ騙り占い師はいないため、必然的に真しか取得しない）
+    tf.fortuneTellerNpcCharacterIds = getValuesFromObjectArray (
+      getHaveTheRoleObjects (
+        getCharacterObjectsFromCharacterIds (
+          getSurvivorObjects(f.characterObjectsHistory[f.day]),
+          [f.playerCharacterId],
+          false
+        ),
+        [ROLE_ID_FORTUNE_TELLER],
+        true,
+        true,
+        true
+      ),
+      'characterId'
+    );
+  [endscript]
+
+  [eval exp="tf.idsLength = tf.fortuneTellerNpcCharacterIds.length"]
+  ; 行動する占い師がいない場合は、ループに入らず終了する（占いマクロへの引数がとれずエラーになる）
+  [jump target="*j_nightPhaseFortuneTellingForNPC_loopend" cond="tf.idsLength == 0"]
+
+  [eval exp="tf.cnt = 0"]
+  *j_nightPhaseFortuneTellingForNPC_loopstart
+
+    [j_fortuneTelling fortuneTellerId="&tf.fortuneTellerNpcCharacterIds[tf.cnt]"]
+
+    [jump target="*j_nightPhaseFortuneTellingForNPC_loopend" cond="tf.cnt == (tf.idsLength - 1)"]
+    [eval exp="tf.cnt++"]
+    [jump target="*j_nightPhaseFortuneTellingForNPC_loopstart"]
+  *j_nightPhaseFortuneTellingForNPC_loopend
+
+[endmacro]
+
+
 ; 噛みマクロ
 ; @param biterId 噛み実行者のID。必須。ただし、猫又（噛んだ人狼が無残する）のように、誰が噛んだかを管理する必要が出るまではメッセージ表示用にしか利用しない。
 ; @param characterId 噛み対象のID。入っているなら、実行者はプレイヤーである。入っていないなら実行者はNPCのため、メソッド内部で対象を決める。
@@ -154,6 +193,30 @@
     let resultMassage = todayResult.result ? f.characterObjects[todayResult.characterId].name + 'は無残な姿で発見された。' : '平和な朝を迎えた。';
     alert(resultMassage);
   [endscript]
+[endmacro]
+
+
+; 夜時間のNPCの人狼の噛み実行を行うマクロ（襲撃人数は1人）
+; PCによる噛み実行と被らないようにするのは、呼び元で行うこと
+[macro name="j_nightPhaseBitingForNPC"]
+  [iscript]
+    ; 夜開始時点の生存者である、かつプレイヤー以外のキャラクターオブジェクトから、人狼のID配列を抽出する。
+    tf.werewolfNpcCharacterIds = getValuesFromObjectArray (
+      getHaveTheRoleObjects (
+        getCharacterObjectsFromCharacterIds (
+          getSurvivorObjects (f.characterObjectsHistory[f.day]),
+          [f.playerCharacterId],
+          false
+        ),
+        [ROLE_ID_WEREWOLF]
+      ),
+      'characterId'
+    );
+  [endscript]
+
+  ; TODO 生存中のNPCに人狼が2人以上いた場合に、誰が（誰の思考で）襲撃するようにするかの判定と処理を実装する。
+  ; 今は人狼1人想定なので、0要素目を確定で渡す
+  [j_biting biterId="&tf.werewolfNpcCharacterIds[0]"]
 [endmacro]
 
 
