@@ -13,8 +13,8 @@
 
 # 更新履歴
 - ver.0.2(20210704)
-  - (messageマクロ)[./data/scenario/messageMacros.ks]と(messageサブルーチン)[data/scenario/message]にセリフやシステムメッセージを集約
-  - (playJinro.ks)[./data/scenario/playJinro.ks]（scene1.ksから名称変更）をリファクタリング。キャラクターIDに依存していた処理をほぼ脱却
+  - [messageマクロ](./data/scenario/messageMacros.ks)と[messageサブルーチン](data/scenario/message)にセリフやシステムメッセージを集約
+  - [playJinro.ks](./data/scenario/playJinro.ks)（scene1.ksから名称変更）をリファクタリング。キャラクターIDに依存していた処理をほぼ脱却
   - PCの役職を選択できる画面を追加（将来のステージ選択機能の仮実装）
 - ver.0.1(20210627)
   - ある程度動いたところで初版公開
