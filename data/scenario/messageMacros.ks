@@ -93,7 +93,7 @@
 [endmacro]
 
 
-; シーン：偽の占い対象を入力した後、それを表示しつつそのCO結果を決めることを促すシステムメッセージ
+; シーン：騙り占いCO時、過去の占い履歴を決めていく際の日付を表示するシステムメッセージ
 [macro name="m_fortuneTelledDayMsg"]
   #
   [eval exp="tf.messageStorage = './message/system.ks'"]
@@ -117,5 +117,15 @@
   #
   [eval exp="tf.messageStorage = './message/system.ks'"]
   [eval exp="tf.messageTarget = '*displayFakeFortuneTellingResult_' + mp.result"]
+  [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+[endmacro]
+
+
+; シーン：ゲームの勝敗判定結果を表示するシステムメッセージ
+; @param winnerCamp 勝利陣営。必須
+[macro name="m_displayGameOverAndWinnerCamp"]
+  #
+  [eval exp="tf.messageStorage = './message/system.ks'"]
+  [eval exp="tf.messageTarget = '*displayGameOverAndWinnerCamp_' + mp.winnerCamp"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
 [endmacro]

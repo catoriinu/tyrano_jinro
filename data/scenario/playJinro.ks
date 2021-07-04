@@ -382,6 +382,9 @@
       ; 噛み実行
       [j_biting biterId="&f.playerCharacterId" characterId="&tf.targetCharacterId"]
 
+      ; キャラ画像解放
+      [freeimage layer="1" time=400 wait="false"]
+
       ; 噛み実行済みフラグを立てる
       [eval exp="f.isBiteEnd = true"]
     [endif]
@@ -409,22 +412,8 @@ NPCが行動しています……[p]
 
 
 *gameOver
+[m_displayGameOverAndWinnerCamp winnerCamp="&tf.winnerCamp"]
 
-#
-ゲームが終了しました。[p]
-
-[if exp="tf.winnerCamp == 'villagers'"]
-
-  #
-  村人の勝利！[p]
-
-[elsif exp="tf.winnerCamp == 'werewolves'"]
-
-  #
-  人狼の勝利！[p]
-
-[endif]
-
-おわり。
+おわり。[p]
 [j_saveJson]
 [s]

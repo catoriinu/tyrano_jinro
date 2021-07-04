@@ -59,3 +59,15 @@
 *displayFakeFortuneTellingResult_false
   人狼ではなかったと言うことにした。[p]
 [return]
+
+
+; シーン：ゲームの勝敗判定結果を表示するシステムメッセージ
+*displayGameOverAndWinnerCamp_villagers
+  ゲームが終了しました。[p]
+  村人の勝利！[p]
+[return]
+
+*displayGameOverAndWinnerCamp_werewolves
+  ゲームが終了しました。[p]
+  人狼の勝利！[p]
+[return]
