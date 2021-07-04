@@ -259,26 +259,12 @@
 [endmacro]
 
 
+; ※未使用メソッド
 ; 指定したキャラクターの最新の占い履歴をもとに、占いCO文を出力する。
 ; 占い師、占い騙り両対応。
 ; @param fortuneTellerId 取得したい占い師（騙り占い）のキャラクターID。必須
 [macro name=j_COfortuneTellingResultLastNight]
-
-  ; COする占い師名も格納する
-  ; 別マクロを呼び出す前に一時変数に格納すること！（理由は後述）
-  [eval exp="tf.fortuneTellerId = mp.fortuneTellerId"]
-
-  ; 占いカットイン発生
-  [j_cutin1]
-
-  ; 指定した占い師の最新の占い履歴オブジェクトをtf.fortuneTellingHistoryObjectに格納する
-  ; ※マクロ内で別マクロを呼び出すと、別マクロの終了時にmp変数が全て空にされてしまう。
-  ; そのため、元マクロ側の引数を元マクロ内で引き続き使いたい場合は、一時変数などに格納しておかないといけない。
-  [j_fortuneTellingHistoryObjectThatDay fortuneTellerId="&tf.fortuneTellerId"]
-
-  ; 一時変数を元に、サブルーチン内でCO文を出力する
-  [call storage="./fortuneTellingForPC.ks" target="*COfortuneTellingResult"]
-
+  j_COfortuneTellingResultLastNightマクロは削除済（念のためしばらく置いておく）[p]
 [endmacro]
 
 

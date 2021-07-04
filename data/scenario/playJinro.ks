@@ -146,8 +146,17 @@
       [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingCOMultipleDaysForPC"]
     [endif]
 
-    ; 最新の占い結果を元にCO文を表示する
-    [j_COfortuneTellingResultLastNight fortuneTellerId="&f.playerCharacterId"][p]
+    ; 占いカットイン発生
+    [j_cutin1]
+
+    ; 指定した占い師の最新の占い履歴オブジェクトをtf.fortuneTellingHistoryObjectに格納する
+    [j_fortuneTellingHistoryObjectThatDay fortuneTellerId="&f.playerCharacterId"]
+  
+    ; ホバー時用の画像を画面外からスライドインさせる TODO ボタンごとにキャラに合わせた画像を表示する
+    [image layer="1" x="1280" y="80" visible="true" storage="01_sad.png" name="01"]
+    [anim name="01" left=850 time=350]
+
+    [m_COFortuneTellingResult characterId="&f.playerCharacterId" result="&tf.fortuneTellingHistoryObject.result"]
 
     ; 占いカットイン解放
     [freeimage layer="1" time=400 wait="false"]

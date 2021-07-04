@@ -121,6 +121,7 @@
 [return]
 
 
+; 未使用サブルーチン
 ; 全キャラ分の占い結果CO文章を表示するサブルーチン
 ; サブルーチンの引数として、以下の変数を格納しておくこと。
 ; tf.fortuneTellingHistoryObject = COする占い師の占い履歴オブジェクト
@@ -128,77 +129,7 @@
 ; 関連マクロ：[j_fortuneTellingHistoryObjectThatDay]、[j_COfortuneTellingResultLastNight]
 ; TODO とりあえずここのファイルに置いておくが、全キャラの占いCOに使えるのでUtil的なファイルのほうが良いと思う。
 *COfortuneTellingResult
-
-; ホバー時用の画像を画面外からスライドインさせる TODO ボタンごとにキャラに合わせた画像を表示する
-[image layer="1" x="1280" y="80" visible="true" storage="01_sad.png" name="01"]
-[anim name="01" left=850 time=350]
-
-; アイ
-[if exp="tf.fortuneTellerId == CHARACTER_ID_AI"]
-
-  [if exp="tf.fortuneTellingHistoryObject.result"]
-    [eval exp="tf.fortuneTellingResultMessage = '人狼だった……。'"]
-  [else]
-    [eval exp="tf.fortuneTellingResultMessage = '人狼じゃなかった。'"]
-  [endif]
-
-  # &f.speaker['アイ']
-  昨夜は[emb exp="f.characterObjects[tf.fortuneTellingHistoryObject.characterId].name"]を占ったよ。[r]
-  結果は[emb exp="tf.fortuneTellingResultMessage"]
-
-; ヒヨリ
-[elsif exp="tf.fortuneTellerId == CHARACTER_ID_HIYORI"]
-
-  [if exp="tf.fortuneTellingHistoryObject.result"]
-    [eval exp="tf.fortuneTellingResultMessage = 'じ、人狼だったんです……！'"]
-  [else]
-    [eval exp="tf.fortuneTellingResultMessage = '人狼ではなかったです。'"]
-  [endif]
-
-  # &f.speaker['ヒヨリ']
-  わたし、[emb exp="f.characterObjects[tf.fortuneTellingHistoryObject.characterId].name"]さんを占いました。[r]
-  [emb exp="f.characterObjects[tf.fortuneTellingHistoryObject.characterId].name"]さんは、[emb exp="tf.fortuneTellingResultMessage"]
-
-; フタバ
-[elsif exp="tf.fortuneTellerId == CHARACTER_ID_FUTABA"]
-
-  [if exp="tf.fortuneTellingHistoryObject.result"]
-    [eval exp="tf.fortuneTellingResultMessage = '●（クロ）だよ！へへ、覚悟しなよ！'"]
-  [else]
-    [eval exp="tf.fortuneTellingResultMessage = '○（シロ）だったよ。'"]
-  [endif]
-
-  # &f.speaker['フタバ']
-  占いCO！[r]
-  [emb exp="f.characterObjects[tf.fortuneTellingHistoryObject.characterId].name"]は[emb exp="tf.fortuneTellingResultMessage"]
-
-; ミキ
-[elsif exp="tf.fortuneTellerId == CHARACTER_ID_MIKI"]
-
-  [if exp="tf.fortuneTellingHistoryObject.result"]
-    [eval exp="tf.fortuneTellingResultMessage = '人狼だったわ！　早く吊るのよ！'"]
-  [else]
-    [eval exp="tf.fortuneTellingResultMessage = '人狼じゃなかったわ。'"]
-  [endif]
-  # &f.speaker['ミキ']
-  [emb exp="f.characterObjects[tf.fortuneTellingHistoryObject.characterId].name"]は[emb exp="tf.fortuneTellingResultMessage"]
-
-; ダミー
-[elsif exp="tf.fortuneTellerId == CHARACTER_ID_DUMMY"]
-
-  [if exp="tf.fortuneTellingHistoryObject.result"]
-    [eval exp="tf.fortuneTellingResultMessage = '人狼やでー！'"]
-  [else]
-    [eval exp="tf.fortuneTellingResultMessage = '人狼やあらへんかったわ。'"]
-  [endif]
-
-  # &f.speaker['ダミー']
-  [emb exp="f.characterObjects[tf.fortuneTellingHistoryObject.characterId].name"]は[emb exp="tf.fortuneTellingResultMessage"]
-
-[else]
-  ちゃんと格納できてないのでは？[p]
-[endif]
-
+  COfortuneTellingResultサブルーチンは削除済（念のためしばらく置いておく）[p]
 [return]
 
 
