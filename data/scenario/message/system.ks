@@ -37,3 +37,25 @@
 *askFortuneTellingTarget_false
   今夜の占い結果の偽装をしてください。[p]
 [return]
+
+
+; シーン：騙り占いCO時、過去の占い履歴を決めていく際の日付を表示するシステムメッセージ
+*fortuneTelledDayMsg
+  [emb exp="tf.fortuneTelledDayMsg"]の占い先は……
+[return]
+
+
+; シーン：偽の占い対象を入力した後、それを表示しつつそのCO結果を決めることを促すシステムメッセージ
+*displayFakeFortuneTellingTarget
+  [emb exp="f.characterObjects[tf.targetCharacterId].name"]を……
+[return]
+
+
+; シーン：入力した偽の占いCO結果を表示するシステムメッセージ
+*displayFakeFortuneTellingResult_true
+  人狼だったと言うことにした。[p]
+[return]
+
+*displayFakeFortuneTellingResult_false
+  人狼ではなかったと言うことにした。[p]
+[return]

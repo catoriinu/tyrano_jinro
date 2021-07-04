@@ -91,3 +91,31 @@
   [eval exp="tf.messageTarget = '*askFortuneTellingTarget_' + mp.isFortuneTeller"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
 [endmacro]
+
+
+; シーン：偽の占い対象を入力した後、それを表示しつつそのCO結果を決めることを促すシステムメッセージ
+[macro name="m_fortuneTelledDayMsg"]
+  #
+  [eval exp="tf.messageStorage = './message/system.ks'"]
+  [eval exp="tf.messageTarget = '*fortuneTelledDayMsg'"]
+  [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+[endmacro]
+
+
+; シーン：偽の占い対象を入力した後、それを表示しつつそのCO結果を決めることを促すシステムメッセージ
+[macro name="m_displayFakeFortuneTellingTarget"]
+  #
+  [eval exp="tf.messageStorage = './message/system.ks'"]
+  [eval exp="tf.messageTarget = '*displayFakeFortuneTellingTarget'"]
+  [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+[endmacro]
+
+
+; シーン：入力した偽の占いCO結果を表示するシステムメッセージ
+; @param result 偽の占い結果（true:●/false:○）。必須
+[macro name="m_displayFakeFortuneTellingResult"]
+  #
+  [eval exp="tf.messageStorage = './message/system.ks'"]
+  [eval exp="tf.messageTarget = '*displayFakeFortuneTellingResult_' + mp.result"]
+  [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+[endmacro]

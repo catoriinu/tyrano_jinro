@@ -1,14 +1,14 @@
 ; PCの占いサブルーチン
 *fortuneTellingForPC
 
-; 占い候補のキャラオブジェクト配列を取得
-[eval exp="tf.candidateObjects = f.characterObjects[f.playerCharacterId].role.getCandidateObjects(f.playerCharacterId)"]
+  ; 占い候補のキャラオブジェクト配列を取得
+  [eval exp="tf.candidateObjects = f.characterObjects[f.playerCharacterId].role.getCandidateObjects(f.playerCharacterId)"]
 
-; 占い候補からボタンを生成。ボタン入力を受け付ける
-[call target="*glinkFromCandidateObjects"]
+  ; 占い候補からボタンを生成。ボタン入力を受け付ける
+  [call target="*glinkFromCandidateObjects"]
 
-; 占い実行。占い結果をtf.todayResultObjectに格納する
-[j_fortuneTelling fortuneTellerId="&f.playerCharacterId" characterId="&tf.targetCharacterId"]
+  ; 占い実行。占い結果をtf.todayResultObjectに格納する
+  [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" characterId="&tf.targetCharacterId"]
 
 [return]
 
@@ -19,40 +19,31 @@
 ; （上記サブルーチン内で、tf.fortuneTelledDayの格納を行っておく必要がある）
 *fakeFortuneTellingForPC
 
-; 夜時間の呼び出しであれば、占い指定日に当日を格納する
-[if exp="!f.isDaytime"]
-  [eval exp="tf.fortuneTelledDay = f.day"]
-[endif]
+  ; 夜時間の呼び出しであれば、占い指定日に当日を格納する
+  [if exp="!f.isDaytime"]
+    [eval exp="tf.fortuneTelledDay = f.day"]
+  [endif]
 
-; 騙り占い候補のキャラオブジェクト配列を取得。指定された日の夜時間開始時の生存者を参照する。
-[eval exp="tf.candidateObjects = f.characterObjects[f.playerCharacterId].fakeRole.getCandidateObjects(f.playerCharacterId, tf.fortuneTelledDay)"]
+  ; 騙り占い候補のキャラオブジェクト配列を取得。指定された日の夜時間開始時の生存者を参照する。
+  [eval exp="tf.candidateObjects = f.characterObjects[f.playerCharacterId].fakeRole.getCandidateObjects(f.playerCharacterId, tf.fortuneTelledDay)"]
 
-; 騙り占い候補からボタンを生成。ボタン入力を受け付ける
-[call target="*glinkFromCandidateObjects"]
+  ; 騙り占い候補からボタンを生成。ボタン入力を受け付ける
+  [call target="*glinkFromCandidateObjects"]
 
-; 騙り占い先のキャラクター名をメッセージに表示する
-#
-[emb exp="f.characterObjects[tf.targetCharacterId].name"]を……
+  ; 騙り占い先のキャラクター名をメッセージに表示する
+  [m_displayFakeFortuneTellingTarget]
 
-; 騙り結果入力を受け付ける
-[eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (0 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
-[glink  color="black" size="28"  x="360"  width="500"  y="&tf.y"  text="●（人狼だった）とCOする"  target="*fakeResultBlack"  ]
-[eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (1 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
-[glink  color="white" size="28"  x="360"  width="500"  y="&tf.y"  text="○（人狼ではなかった）とCOする"  target="*fakeResultWhite"  ]
-[s]
+  ; 騙り結果入力を受け付ける
+  [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (0 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
+  [glink color="black" size="28" x="360" width="500" y="&tf.y" text="●（人狼だった）とCOする" target="*doFakeFortuneTelling" exp="tf.declarationResult = true"]
+  [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (1 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
+  [glink color="white" size="28" x="360" width="500" y="&tf.y" text="○（人狼ではなかった）とCOする" target="*doFakeFortuneTelling" exp="tf.declarationResult = false"]
+  [s]
 
-; 騙り占い実行。占い結果をtf.todayResultObjectに格納する
-*fakeResultBlack
-  [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" characterId="&tf.targetCharacterId" result="true" day="&tf.fortuneTelledDay"]
-  人狼だったと言うことにした。[p]
-  [jump target="*fakeFortuneTellingForPC_end"]
-
-*fakeResultWhite
-  [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" characterId="&tf.targetCharacterId" result="false" day="&tf.fortuneTelledDay"]
-  人狼ではなかったと言うことにした。[p]
-  [jump target="*fakeFortuneTellingForPC_end"]
-
-*fakeFortuneTellingForPC_end
+  ; 騙り占い実行。占い結果をtf.todayResultObjectに格納する
+  *doFakeFortuneTelling
+  [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" day="&tf.fortuneTelledDay" characterId="&tf.targetCharacterId" result="&tf.declarationResult"]
+  [m_displayFakeFortuneTellingResult result="&tf.declarationResult"]
 
 [return]
 
@@ -221,8 +212,7 @@
   [eval exp="tf.fortuneTelledDayMsg = '初日の夜'"]
   *fakeFortuneTellingCOMultipleDays_loopstart
     
-    #
-    [emb exp="tf.fortuneTelledDayMsg"]の占い先は……
+    [m_fortuneTelledDayMsg]
     ; PCの騙り占いサブルーチンを、初日(day=0)から最新の日の日付までループ実行していく
     [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingForPC"]
 
