@@ -71,6 +71,7 @@ function FortuneTeller() {
     const todayResult = {
       characterId: targetCharacterId,
       result: result,
+      doneCO: false
     }
     this.fortuneTellingHistory[day] = todayResult;
     

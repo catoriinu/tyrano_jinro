@@ -41,6 +41,9 @@ function prepareGameMain() {
   // 噛み先履歴オブジェクトの初期化
   TYRANO_VAR_F.bitingHistory = {};
 
+  // 全占い結果履歴オブジェクトの初期化
+  TYRANO_VAR_F.allFortuneTellingHistoryObject = {};
+
   // 発話者の名前オブジェクト。ksファイル内で、# &f.speaker['名前'] の形式で使う。
   TYRANO_VAR_F.speaker = setSpeakersName(characterObjects);
 

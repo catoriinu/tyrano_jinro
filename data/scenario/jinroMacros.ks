@@ -97,7 +97,15 @@
     }
     
     ; 一時変数に占い結果格納
+    ; TODO:tf.todayResultObjectはtf.fortuneTellingHistoryObjectと役割がかぶっているのでどちらかに統一したい
     tf.todayResultObject = todayResult;
+
+    ; 全占い結果履歴オブジェクトに占い結果格納
+    if (typeof f.allFortuneTellingHistoryObject[mp.fortuneTellerId] !== 'object') {
+      ; 初期化直後は空のオブジェクトを作成
+      f.allFortuneTellingHistoryObject[mp.fortuneTellerId] = {};
+    }
+    f.allFortuneTellingHistoryObject[mp.fortuneTellerId][day] = todayResult;
 
     if (f.developmentMode) {
       let resultMassage = todayResult.result ? '人　狼' : '村　人';
@@ -460,6 +468,31 @@
         tf.canCOFortuneTellerStatus = 3;
       }
       ; 占い師以外の役職としてCO済みなら、占い師COは不可
+    }
+  [endscript]
+[endmacro]
+
+
+; 人狼メニュー画面に表示するための全占い師のCO状況テキストを生成する
+[macro name=j_getAllFortuneTellerCOText]
+  ; TODO:これを表示したあと、2日目にプレイヤーが占う時にバグる。
+  ; getCharacterObjectsFromCharacterIds()で、for (let k of Object.keys(characterObjects)) {の際にUncaught TypeError: Cannot convert undefined or null to object
+  ; おそらくcharacterObjectsがnullになっている。人狼メニュー画面から戻った時にcharacterObjectsが初期化されるor読み込めない状態になっている？
+  [iscript]
+    tf.allFortuneTellerCOText = '';
+    for (let cId of Object.keys(f.allFortuneTellingHistoryObject)) {
+      ; そのcIdが占い師CO済みなら表示する TODO:現在はテスト用に無効化
+      if (f.characterObjects[cId].CORoleId == ROLE_ID_FORTUNE_TELLER) {}
+      if (true) {
+        tf.allFortuneTellerCOText += cId + ' : ';
+        for (let day of Object.keys(f.allFortuneTellingHistoryObject[cId])) {
+          ; TODO:「その日にCO済みなら（doneCO）」の判定が必要。履歴表示時にfalseなら表示しないようにしないと、未COの履歴も表示されてしまう。
+          ; 「ただしプレイヤーの占い履歴は未COでも表示する」があるとよさそう。
+          let tmpResult = f.allFortuneTellingHistoryObject[cId][day].result ? '●' : '○';
+          tf.allFortuneTellerCOText += f.allFortuneTellingHistoryObject[cId][day].characterId + tmpResult;
+        }
+        tf.allFortuneTellerCOText += '<br>';
+      }
     }
   [endscript]
 [endmacro]

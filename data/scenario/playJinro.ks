@@ -38,6 +38,9 @@
 #
 人狼ゲームの幕開けです……！[p]
 
+; 人狼メニュー画面呼び出しボタン表示
+[button graphic="button/thinking.jpg" storage="menuJinro.ks" target="*menuJinroMain" x="1100" y="30" width="100" height="100" fix="true" role="sleepgame"]
+
 *day0_nightPhase
 
 ; 夜時間開始時に、夜時間中に参照するためのcharacterObjectを複製する。占い、噛みなどの記録は本物のf.characterObjectsに更新していく。
