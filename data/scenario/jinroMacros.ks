@@ -91,9 +91,9 @@
     ; 表の視点を更新する理由は、・CO済みであれば表の視点を使うから　・未COでも思考に占い結果を反映させたいから（仮）
     ; →問題発生。
     ; TODO : 破綻の場合どうする？
-    f.characterObjects[mp.fortuneTellerId].perspective = organizePerspective (f.characterObjects[mp.fortuneTellerId].perspective, todayResult.characterId, getRoleIdsForOrganizePerspective(todayResult.result));
+    f.characterObjects[mp.fortuneTellerId].perspective = organizePerspective(f.characterObjects[mp.fortuneTellerId].perspective, todayResult.characterId, getRoleIdsForOrganizePerspective(todayResult.result));
     if (f.characterObjects[mp.fortuneTellerId].role.roleId == ROLE_ID_FORTUNE_TELLER) {
-      f.characterObjects[mp.fortuneTellerId].role.rolePerspective = organizePerspective (f.characterObjects[mp.fortuneTellerId].role.rolePerspective, todayResult.characterId, getRoleIdsForOrganizePerspective(todayResult.result));
+      f.characterObjects[mp.fortuneTellerId].role.rolePerspective = organizePerspective(f.characterObjects[mp.fortuneTellerId].role.rolePerspective, todayResult.characterId, getRoleIdsForOrganizePerspective(todayResult.result));
     }
     
     ; 一時変数に占い結果格納
@@ -399,14 +399,14 @@
     ; 共通視点オブジェクトを更新する
     ; TODO こっちも破綻用のcatchや事前0確定チェックが必要かも
     console.log('【共通視点】');
-    f.commonPerspective = organizePerspective (f.commonPerspective, mp.characterId, mp.zeroRoleIds);
+    f.commonPerspective = organizePerspective(f.commonPerspective, mp.characterId, mp.zeroRoleIds);
 
     ; 各キャラの視点オブジェクトも更新する
     for (let cId of Object.keys(f.characterObjects)) {
       console.log('【' + cId + 'の視点】');
       console.log(f.characterObjects[cId].perspective);
-      f.characterObjects[cId].perspective = organizePerspective (f.characterObjects[cId].perspective, mp.characterId, mp.zeroRoleIds);
-      f.characterObjects[cId].role.rolePerspective = organizePerspective (f.characterObjects[cId].role.rolePerspective, mp.characterId, mp.zeroRoleIds);
+      f.characterObjects[cId].perspective = organizePerspective(f.characterObjects[cId].perspective, mp.characterId, mp.zeroRoleIds);
+      f.characterObjects[cId].role.rolePerspective = organizePerspective(f.characterObjects[cId].role.rolePerspective, mp.characterId, mp.zeroRoleIds);
       ; TODO ここで破綻することもある。破綻用のcatchを行うこと。
     }
   [endscript]
@@ -421,7 +421,7 @@
   [iscript]
     console.log('j_cloneRolePerspectiveForCO');
     if (f.characterObjects[mp.characterId].role.roleId == mp.CORoleId) {
-      f.characterObjects[mp.characterId].perspective = clone (f.characterObjects[mp.characterId].role.rolePerspective);
+      f.characterObjects[mp.characterId].perspective = clone(f.characterObjects[mp.characterId].role.rolePerspective);
     }
   [endscript]
 [endmacro]

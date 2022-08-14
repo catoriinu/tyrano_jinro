@@ -11,6 +11,7 @@
  * @prop {Boolean} isAlive 生存者か
  * @prop {Boolean} isPlayer プレイヤーか
  * @prop {Boolean} isDoneTodaysCO 今日の役職COが済んでいるか
+ * @prop {Boolean} isContradicted 自分のCO状況が破綻済みか
  * @prop {Object} perspective 現在CO中の視点オブジェクト（未COなら村人として振る舞う）
  */
 function Character(characterId, roleId) {
@@ -24,6 +25,7 @@ function Character(characterId, roleId) {
   this.isAlive = true;
   this.isPlayer = false;
   this.isDoneTodaysCO = false;
+  this.isContradicted = false;
   this.perspective = {};
   
   // /**

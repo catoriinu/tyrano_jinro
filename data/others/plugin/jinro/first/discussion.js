@@ -192,7 +192,14 @@ function organizePerspective(originalPerspective, characterId, originalZeroRoleI
   });
   
   // 指定のキャラの指定の役職の割合を0確定する。それによって別のキャラの役職の割合が0確定した場合、続けて0確定していく
-  [perspective, distributeCharacterIds] = zeronize(perspective, characterId, zeroRoleIds, distributeCharacterIds);
+  try {
+    [perspective, distributeCharacterIds] = zeronize(perspective, characterId, zeroRoleIds, distributeCharacterIds);
+  } catch (error) {
+    // 破綻した場合のルート
+    // TODO:一旦仮に単にcatchで無視するようにしたが、どんな副作用が起きているかは未検証。
+    console.log(error.name + ' : ' + error.message);
+    alert(error.name + ' : ' + error.message);
+  }
   
   // 役職未確定のキャラクターの役職ごとの割合を、そのキャラに可能性の残っている未確定役職数をもとに分配する
   for (let i = 0; i < distributeCharacterIds.length; i++) {
