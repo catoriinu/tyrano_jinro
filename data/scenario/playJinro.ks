@@ -76,6 +76,9 @@
 
 #
 ～COフェイズ～[p]
+; [button name="action" fix="true" graphic="button/action_leave.png" enterimg="button/action_enter.png" x=50 y=220 storage="action.ks" target="*start" auto_next="false"]
+; [button name="j_button" fix="true" hint="ほげ" x=300 y=220 storage="action.ks" target="*start" auto_next="false"]
+; ミニストップ[p]
 
 ; 1) PCからCOがあるか確認する。
 ;    CO確認する必要なし                  →選択肢表示せず、2)へ
@@ -255,6 +258,7 @@
 #
 ～議論フェイズは未作成～[p]
 
+～議論フェイズ終了するよ～[p]
 
 *votePhase
 #
@@ -415,5 +419,5 @@ NPCが行動しています……[p]
 [m_displayGameOverAndWinnerCamp winnerCamp="&tf.winnerCamp"]
 
 おわり。[p]
-[j_saveJson]
+; [j_saveJson]
 [s]
