@@ -192,20 +192,14 @@ function organizePerspective(originalPerspective, characterId, originalZeroRoleI
   });
   
   // 指定のキャラの指定の役職の割合を0確定する。それによって別のキャラの役職の割合が0確定した場合、続けて0確定していく
-  try {
-    [perspective, distributeCharacterIds] = zeronize(perspective, characterId, zeroRoleIds, distributeCharacterIds);
-  } catch (error) {
-    // 破綻した場合のルート
-    // TODO:一旦仮に単にcatchで無視するようにしたが、どんな副作用が起きているかは未検証。
-    console.log(error.name + ' : ' + error.message);
-    alert(error.name + ' : ' + error.message);
-  }
+  // ここで破綻した場合はErrorをthrowする
+  [perspective, distributeCharacterIds] = zeronize(perspective, characterId, zeroRoleIds, distributeCharacterIds);
   
   // 役職未確定のキャラクターの役職ごとの割合を、そのキャラに可能性の残っている未確定役職数をもとに分配する
   for (let i = 0; i < distributeCharacterIds.length; i++) {
     let sumUncertifiedValue = 0;
     for (let roleId of Object.keys(perspective.uncertified)) {
-      if (perspective[distributeCharacterIds[i]][roleId] > 0){
+      if (perspective[distributeCharacterIds[i]][roleId] > 0) {
         sumUncertifiedValue += perspective.uncertified[roleId];
       }
     }
@@ -271,4 +265,41 @@ function generateRegalAnnouncements(candidateIdList, perspective) {
  */
 function getRoleIdsForOrganizePerspective(color) {
   return color ? [ROLE_ID_VILLAGER, ROLE_ID_FORTUNE_TELLER, ROLE_ID_MADMAN] : [ROLE_ID_WEREWOLF];
+}
+
+
+function updateCommonPerspective(characterId, zeroRoleIds) {
+  console.log('j_updateCommonPerspective');
+  // 共通視点オブジェクトを更新する
+  console.log('【共通視点】');
+  try {
+    TYRANO_VAR_F.commonPerspective = organizePerspective(TYRANO_VAR_F.commonPerspective, characterId, zeroRoleIds);
+  } catch (error) {
+    console.log('共通視点オブジェクトが破綻しました美味しい水そうめん');
+    console.log(characterId);
+    console.log(zeroRoleIds);
+    console.log(TYRANO_VAR_F.commonPerspective);
+    alert('共通視点オブジェクトが破綻しました美味しい水そうめん');
+    return;
+  }
+
+  // 各キャラの視点オブジェクトも更新する
+  for (let cId of Object.keys(TYRANO_VAR_F.characterObjects)) {
+    console.log('【' + cId + 'の視点】');
+    console.log(TYRANO_VAR_F.characterObjects[cId].perspective);
+    
+    try {
+      TYRANO_VAR_F.characterObjects[cId].perspective = organizePerspective(TYRANO_VAR_F.characterObjects[cId].perspective, characterId, zeroRoleIds);
+      TYRANO_VAR_F.characterObjects[cId].role.rolePerspective = organizePerspective(TYRANO_VAR_F.characterObjects[cId].role.rolePerspective, characterId, zeroRoleIds);
+    } catch (error) {
+      alert(cId + 'の視点が破綻しました！');
+      // 破綻フラグを立てる
+      TYRANO_VAR_F.characterObjects[cId].isContradicted = true;
+      // ここで破綻したら、共通視点オブジェクトで上書きする&自分自身を嘘がつける役職（TODO:「嘘をつかない役職配列」をメソッドで取り出せるようにする）だったということで確定する。
+      // （試しに）updateCommonPerspectiveを再帰呼び出しして共通および全員の視点オブジェクトを更新する
+      TYRANO_VAR_F.characterObjects[cId].perspective = clone(TYRANO_VAR_F.commonPerspective);
+      TYRANO_VAR_F.characterObjects[cId].role.rolePerspective= clone(TYRANO_VAR_F.commonPerspective);
+      updateCommonPerspective(cId, [ROLE_ID_VILLAGER, ROLE_ID_FORTUNE_TELLER]);
+    }
+  }
 }

@@ -200,6 +200,10 @@
 
     let resultMassage = todayResult.result ? f.characterObjects[todayResult.characterId].name + 'は無残な姿で発見された。' : '平和な朝を迎えた。';
     alert(resultMassage);
+    if (todayResult.result) {
+      ; 噛まれたということは人狼ではないので、視点オブジェクトを更新する（TODO：人狼以外にも噛まれない役職が増えたら修正する）
+      updateCommonPerspective(todayResult.characterId, [ROLE_ID_WEREWOLF]);
+    }
   [endscript]
 [endmacro]
 
@@ -395,20 +399,7 @@
 ; @param zeroRoleIds 0確定する役職ID配列。必須。 
 [macro name=j_updateCommonPerspective]
   [iscript]
-    console.log('j_updateCommonPerspective');
-    ; 共通視点オブジェクトを更新する
-    ; TODO こっちも破綻用のcatchや事前0確定チェックが必要かも
-    console.log('【共通視点】');
-    f.commonPerspective = organizePerspective(f.commonPerspective, mp.characterId, mp.zeroRoleIds);
-
-    ; 各キャラの視点オブジェクトも更新する
-    for (let cId of Object.keys(f.characterObjects)) {
-      console.log('【' + cId + 'の視点】');
-      console.log(f.characterObjects[cId].perspective);
-      f.characterObjects[cId].perspective = organizePerspective(f.characterObjects[cId].perspective, mp.characterId, mp.zeroRoleIds);
-      f.characterObjects[cId].role.rolePerspective = organizePerspective(f.characterObjects[cId].role.rolePerspective, mp.characterId, mp.zeroRoleIds);
-      ; TODO ここで破綻することもある。破綻用のcatchを行うこと。
-    }
+    updateCommonPerspective(mp.characterId, mp.zeroRoleIds);
   [endscript]
 [endmacro]
 
