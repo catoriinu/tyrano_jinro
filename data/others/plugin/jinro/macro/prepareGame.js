@@ -34,6 +34,9 @@ function prepareGameMain() {
   // 共通の視点オブジェクトをティラノ変数に、各キャラの視点オブジェクトを各自のcharacterObject.perspectiveに格納する
   setDefaultPerspective(characterObjects, TYRANO_VAR_F.participantsIdList, TYRANO_VAR_F.villagersRoleIdList);
 
+  // 信頼度オブジェクトを各自のcharacterObject.reliabilityに格納する
+  setDefaultReliability(characterObjects, TYRANO_VAR_F.participantsIdList);
+
   // 以下のデータは、ティラノの変数にも格納しておく
   // キャラクターオブジェクト配列をティラノのキャラクターオブジェクト変数に格納する
   TYRANO_VAR_F.characterObjects = characterObjects;
@@ -137,6 +140,32 @@ function setDefaultPerspective(characterObjects, participantsIdList, villagersRo
     console.log(characterObjects[characterId].role.rolePerspective);
   }
 }
+
+/**
+ * 初期状態の、各キャラの信頼度オブジェクトを生成する
+ * @param {Array} characterObjects キャラクターオブジェクト配列。このメソッド内でreliabilityを更新する。
+ * @param {Array} participantsIdList 参加者のキャラクターID配列
+ */
+function setDefaultReliability(characterObjects, participantsIdList) {
+  for (let characterId of Object.keys(characterObjects)) {
+    let reliabilityObject = {};
+    for (let i = 0; i < participantsIdList.length; i++) {
+      reliabilityObject[participantsIdList[i]] = setReliability();
+    }
+    characterObjects[characterId].reliability = reliabilityObject;
+  }
+}
+
+/**
+ * 信頼度を取得する
+ * NOTE:仮に完全ランダムとする。何かの法則性を持たせたいならこのあたりに実装する。例）キャラAはキャラBに対してのみ信頼度が0.9以上で確定する
+ * @return {Number} 
+ */
+function setReliability() {
+  // 0以上1未満の浮動小数点数
+  return Math.round(Math.random()*100)/100;
+}
+
 
 
 // メイン関数実行

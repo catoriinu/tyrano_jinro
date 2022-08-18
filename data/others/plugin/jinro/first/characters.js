@@ -13,6 +13,8 @@
  * @prop {Boolean} isDoneTodaysCO 今日の役職COが済んでいるか
  * @prop {Boolean} isContradicted 自分のCO状況が破綻済みか
  * @prop {Object} perspective 現在CO中の視点オブジェクト（未COなら村人として振る舞う）
+ * @prop {Object} reliability 信頼度オブジェクト {characterId:0以上1以下かつ小数点第二位までの数値,...}
+
  */
 function Character(characterId, roleId) {
   const characterData = createCharacterData(characterId);
@@ -27,6 +29,7 @@ function Character(characterId, roleId) {
   this.isDoneTodaysCO = false;
   this.isContradicted = false;
   this.perspective = {};
+  this.reliability = {};
   
   // /**
   //  * キャラクターが自己紹介する
