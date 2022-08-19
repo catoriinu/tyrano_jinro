@@ -14,7 +14,7 @@
  * @prop {Boolean} isContradicted 自分のCO状況が破綻済みか
  * @prop {Object} perspective 現在CO中の視点オブジェクト（未COなら村人として振る舞う）
  * @prop {Object} reliability 信頼度オブジェクト {characterId:0以上1以下かつ小数点第二位までの数値,...}
-
+ * @prop {Object} voteHistory 投票履歴オブジェクト {day:characterId,...}
  */
 function Character(characterId, roleId) {
   const characterData = createCharacterData(characterId);
@@ -30,6 +30,7 @@ function Character(characterId, roleId) {
   this.isContradicted = false;
   this.perspective = {};
   this.reliability = {};
+  this.voteHistory = {};
   
   // /**
   //  * キャラクターが自己紹介する

@@ -303,3 +303,96 @@ function updateCommonPerspective(characterId, zeroRoleIds) {
     }
   }
 }
+
+
+/**
+ * 投票先を投票履歴オブジェクトに格納する
+ * @param {Array} characterObjects キャラクターオブジェクト配列。このメソッド内でvoteHistoryを更新する。
+ * @param {Number} day 投票実行日
+ */
+function decideVote(characterObjects, day) {
+  // 先に、投票時点での仲間度オブジェクトを生成する
+  for (let characterId of Object.keys(characterObjects)) {
+    characterObjects[characterId].sameFactionPossivility = calcSameFactionPossivility(
+      characterObjects[characterId],
+      characterObjects[characterId].role.rolePerspective
+    );
+  }
+
+  for (let characterId of Object.keys(characterObjects)) {
+    // TODO 各キャラは各役職ごとのロジックと、仲間度を元に投票先を決定していく
+    // 仮に仲間度のみをもとに投票先を決定する
+    let voteCandidates = [];
+    let voteSameFactionPossivility = 100; // 十分に大きい値を入れておき、1人でも投票候補配列に入るようにする
+    for (let cId of Object.keys(characterObjects[characterId].sameFactionPossivility)) {
+      // 自分自身は投票対象外
+      if (characterObjects[characterId].characterId == cId) continue;
+      // 死亡済みも投票対象外
+      if (!characterObjects[characterId].isAlive) continue;
+      // そのキャラの仲間度が現在最小の仲間度より高ければ投票対象外
+      if (characterObjects[characterId].sameFactionPossivility[cId] > voteSameFactionPossivility) continue;
+      // そのキャラの仲間度が現在最小の仲間度より低ければ投票候補配列を上書く
+      if (characterObjects[characterId].sameFactionPossivility[cId] < voteSameFactionPossivility) {
+        voteCandidates = [cId];
+        voteSameFactionPossivility = characterObjects[characterId].sameFactionPossivility[cId];
+      } else {
+        // 現在最小の仲間度と同値なら投票候補配列に追加する
+        voteCandidates.push(cId);
+      }
+    }
+
+    let voteTargetId = '';
+    if (voteCandidates.length == 1) {
+      // 投票候補者が1人ならそのまま確定
+      voteTargetId = voteCandidates[0];
+    } else if (voteCandidates.length == 0) {
+      alert('投票候補者がいません：' + characterObjects[characterId].characterId);
+    } else {
+      // 投票候補者が複数いるならランダムに選ぶ
+      voteTargetId = voteCandidates[Math.floor(Math.random() * voteCandidates.length)]
+    }
+    // 投票対象者を今日の投票履歴に格納する
+    characterObjects[characterId].voteHistory[day] = voteTargetId;
+    //console.log('【voteHistory】');
+    //console.log(characterId);
+    //console.log(characterObjects[characterId].voteHistory);
+  }
+}
+
+
+/**
+ * 仲間度オブジェクトを生成する
+ * @param {Object} characterObject キャラクターオブジェクト
+ * @param {Object} perspective 視点オブジェクト（perspectiveを使うか、rolePerspectiveを使うかは呼び元に任せる）
+ * @return {Object} sameFactionPossivility 仲間度オブジェクト {characterId:仲間度,...}
+ */
+function calcSameFactionPossivility(characterObject, perspective) {
+
+  let sameFactionPossivility = {};
+  for (let i = 0; i < TYRANO_VAR_F.participantsIdList.length; i++) {
+    let cId = TYRANO_VAR_F.participantsIdList[i];
+    // 自分自身は1で確定
+    if (characterObject.characterId == cId) {
+      sameFactionPossivility[cId] = 1;
+      continue;
+    }
+
+    let sameFactionCoefficient = 0;
+    // 重複のない村の役職ID配列をもとに全役職をループ
+    for (let j = 0; j < TYRANO_VAR_F.uniqueRoleIdList.length; j++) {
+      let rId = TYRANO_VAR_F.uniqueRoleIdList[j];
+      // 自分と同陣営の役職のperspectiveの割合値を合計する（仲間度を算出するための係数になる。自分視点で必ず同陣営なら1、必ず敵陣営なら0）
+      if (ROLE_ID_TO_FACTION[characterObject.role.roleId] == ROLE_ID_TO_FACTION[rId]) {
+        sameFactionCoefficient += perspective[cId][rId];
+      }
+    }
+    
+    // 対象キャラへの信頼度から自分の論理力を引いた値に1を足す
+    // 最後に前の処理で算出した係数を掛けた結果を、対象キャラへの「仲間度」とする
+    // →論理力が高いほど、信頼度の影響を受けずに係数そのものを「仲間度」にすることができる
+    //  論理力が低いほど、信頼度の影響で「仲間度」が係数から乖離しやすくなる
+    sameFactionPossivility[cId] = (characterObject.reliability[cId] - characterObject.personality.logical + 1) * sameFactionCoefficient;
+  }
+  return sameFactionPossivility;
+}
+

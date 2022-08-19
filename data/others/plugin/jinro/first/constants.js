@@ -37,6 +37,20 @@ const ROLE_ID_TO_NAME = {
 const CAMP_VILLAGERS  = 'villagers'; // 村人陣営
 const CAMP_WEREWOLVES = 'werewolves'; // 人狼陣営
 
+// 役職IDと役職陣営の対応オブジェクト
+// TODO:全体的にCAMP→FACTIONに置換する
+// TODO:role.campもこの定数を利用して入れるようにしたい
+const ROLE_ID_TO_FACTION = {
+    [ROLE_ID_VILLAGER]: CAMP_VILLAGERS,
+    [ROLE_ID_WEREWOLF]: CAMP_WEREWOLVES,
+    [ROLE_ID_FORTUNE_TELLER]: CAMP_VILLAGERS,
+    [ROLE_ID_MADMAN]: CAMP_WEREWOLVES,
+    [ROLE_ID_PHYCHIC]: CAMP_VILLAGERS,
+    [ROLE_ID_HUNTER]: CAMP_VILLAGERS,
+    [ROLE_ID_FOX]: 'TODO',
+}
+
+
 // 死因
 const DEATH_BY_EXECUTION = 'execution'; // 処刑。投票による吊り・追放
 const DEATH_BY_ATTACK    = 'attack'; // 襲撃。人狼による噛み。

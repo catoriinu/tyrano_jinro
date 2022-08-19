@@ -163,7 +163,11 @@ function setDefaultReliability(characterObjects, participantsIdList) {
  */
 function setReliability() {
   // 0以上1未満の浮動小数点数
-  return Math.round(Math.random()*100)/100;
+  //return Math.round(Math.random()*100)/100;
+  // min以上、max未満
+  let max = 0.8;
+  let min = 0.2;
+  return Math.random() * (max - min) + min;
 }
 
 

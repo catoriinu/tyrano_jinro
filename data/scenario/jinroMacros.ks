@@ -489,6 +489,14 @@
 [endmacro]
 
 
+; 投票先を決める
+; 同時に、各キャラの仲間度オブジェクトも更新する
+[macro name="j_decideVote"]
+  [iscript]
+    decideVote(f.characterObjects, f.day);
+  [endscript]
+[endmacro]
+
 ; jsonをローカルに保存する
 ; 参考　@link https://ameblo.jp/personwritep/entry-12495099049.html
 [macro name=j_saveJson]

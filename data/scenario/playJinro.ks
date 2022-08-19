@@ -260,7 +260,7 @@
 *discussionPhase
 #
 ～議論フェイズは未作成～[p]
-
+[j_decideVote]
 ～議論フェイズ終了するよ～[p]
 
 *votePhase
