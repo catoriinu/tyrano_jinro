@@ -260,7 +260,7 @@
 *discussionPhase
 #
 ～議論フェイズは未作成～[p]
-[j_decideVote]
+
 ～議論フェイズ終了するよ～[p]
 
 *votePhase
@@ -268,10 +268,22 @@
 ～投票フェイズ～[p]
 
 ; 投票フェイズ
-; TODO NPCも投票する（ようにするには、ヘイトを実装してからでないと厳しいか） 
+; TODO:前日の投票フェーズや、同日の再投票時に入ってしまった不要な変数を初期化する（多分ありそう）
 
+; NPCの投票先を決める
+[j_decideVote]
+
+[if exp="!f.characterObjects[f.playerCharacterId].isAlive"]
+  プレイヤーが死亡済みなので投票できません。[r]
+  [jump target="*skipPlayerVote" cond="!f.developmentMode"]
+  が、開発用モードなので投票できます。[p]
+[endif]
+
+; プレイヤーの投票先を決める
 # &f.speaker['アイ']
+[if exp="f.developmentMode"]
 テスト用に私に投票権が一任されてるよ。[r]
+[endif]
 さて、誰に投票しようか？[p]
 
 [iscript]
@@ -291,6 +303,29 @@
 
 ; キャラ画像解放
 [freeimage layer="1" time=400 wait="false"]
+
+; ボタンで選択した投票先キャラクターIDを、プレイヤーの投票履歴に入れる
+[iscript]
+  f.characterObjects[f.playerCharacterId].voteHistory[f.day] = pushElement(f.characterObjects[f.playerCharacterId].voteHistory[f.day], tf.targetCharacterId);
+[endscript]
+
+*skipPlayerVote
+
+; 票を集計する
+[j_countVote]
+
+; 票を公開する
+[j_openVote]
+
+[if exp="!f.developmentMode"]
+  [if exp="!f.doExecute"]
+    ; TODO:再投票上限回数を決める
+    再投票です。[p]
+    [jump target="*votePhase"]
+  [else]
+    [eval exp="tf.targetCharacterId = f.electedIdList[0]"]
+  [endif]
+[endif]
 
 ; 処刑セリフと処刑処理（TODO 今はこの順番だが、処刑ごとの演出がどうなるかによっては逆にしてもいい）
 [m_executed characterId="&tf.targetCharacterId"]

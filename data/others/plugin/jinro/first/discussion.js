@@ -292,7 +292,9 @@ function updateCommonPerspective(characterId, zeroRoleIds) {
       TYRANO_VAR_F.characterObjects[cId].perspective = organizePerspective(TYRANO_VAR_F.characterObjects[cId].perspective, characterId, zeroRoleIds);
       TYRANO_VAR_F.characterObjects[cId].role.rolePerspective = organizePerspective(TYRANO_VAR_F.characterObjects[cId].role.rolePerspective, characterId, zeroRoleIds);
     } catch (error) {
-      alert(cId + 'の視点が破綻しました！');
+      if (TYRANO_VAR_F.developmentMode) {
+        alert(cId + 'の視点が破綻しました！');
+      }
       // 破綻フラグを立てる
       TYRANO_VAR_F.characterObjects[cId].isContradicted = true;
       // ここで破綻したら、共通視点オブジェクトで上書きする&自分自身を嘘がつける役職（TODO:「嘘をつかない役職配列」をメソッドで取り出せるようにする）だったということで確定する。
@@ -313,6 +315,12 @@ function updateCommonPerspective(characterId, zeroRoleIds) {
 function decideVote(characterObjects, day) {
   // 先に、投票時点での仲間度オブジェクトを生成する
   for (let characterId of Object.keys(characterObjects)) {
+    // TODO:直後の処理と共通化できればする
+    // プレイヤーは別の処理で投票先を決める
+    if (characterObjects[characterId].isPlayer) continue;
+    // 死亡済みキャラは投票を行わない
+    if (!characterObjects[characterId].isAlive) continue;
+
     characterObjects[characterId].sameFactionPossivility = calcSameFactionPossivility(
       characterObjects[characterId],
       characterObjects[characterId].role.rolePerspective
@@ -320,6 +328,11 @@ function decideVote(characterObjects, day) {
   }
 
   for (let characterId of Object.keys(characterObjects)) {
+    // プレイヤーは別の処理で投票先を決める
+    if (characterObjects[characterId].isPlayer) continue;
+    // 死亡済みキャラは投票を行わない
+    if (!characterObjects[characterId].isAlive) continue;
+
     // TODO 各キャラは各役職ごとのロジックと、仲間度を元に投票先を決定していく
     // 仮に仲間度のみをもとに投票先を決定する
     let voteCandidates = [];
@@ -327,10 +340,11 @@ function decideVote(characterObjects, day) {
     for (let cId of Object.keys(characterObjects[characterId].sameFactionPossivility)) {
       // 自分自身は投票対象外
       if (characterObjects[characterId].characterId == cId) continue;
-      // 死亡済みも投票対象外
-      if (!characterObjects[characterId].isAlive) continue;
+      // 死亡済みキャラも投票対象外
+      if (!characterObjects[cId].isAlive) continue;
       // そのキャラの仲間度が現在最小の仲間度より高ければ投票対象外
       if (characterObjects[characterId].sameFactionPossivility[cId] > voteSameFactionPossivility) continue;
+
       // そのキャラの仲間度が現在最小の仲間度より低ければ投票候補配列を上書く
       if (characterObjects[characterId].sameFactionPossivility[cId] < voteSameFactionPossivility) {
         voteCandidates = [cId];
@@ -351,8 +365,10 @@ function decideVote(characterObjects, day) {
       // 投票候補者が複数いるならランダムに選ぶ
       voteTargetId = voteCandidates[Math.floor(Math.random() * voteCandidates.length)]
     }
-    // 投票対象者を今日の投票履歴に格納する
-    characterObjects[characterId].voteHistory[day] = voteTargetId;
+
+    // 投票対象者をその日の投票履歴に格納する
+    characterObjects[characterId].voteHistory[day] = pushElement(characterObjects[characterId].voteHistory[day], voteTargetId);
+    TYRANO_VAR_F.characterObjects = characterObjects;
     //console.log('【voteHistory】');
     //console.log(characterId);
     //console.log(characterObjects[characterId].voteHistory);
@@ -396,3 +412,96 @@ function calcSameFactionPossivility(characterObject, perspective) {
   return sameFactionPossivility;
 }
 
+
+/**
+ * キャラクターオブジェクト内の投票履歴オブジェクトを元に、その日の処刑先を決める
+ * @param {Array} characterObjects キャラクターオブジェクト配列
+ * @param {Number} day 投票実行日
+ */
+function countVote(characterObjects, day) {
+
+  // 投票結果オブジェクトを初期化（0票だったキャラはキー自体入らないままとなる）
+  TYRANO_VAR_F.voteResult = {};
+  for (let characterId of Object.keys(characterObjects)) {
+    // 投票履歴オブジェクトのその日の投票先配列を確認
+    // 配列でなければ、投票していないのでスルー
+    if (!Array.isArray(characterObjects[characterId].voteHistory[day])) continue;
+    // 末尾のキャラクターIDを取得（最新の再投票先は末尾に追加されているため）
+    let voteTargetId = characterObjects[characterId].voteHistory[day].slice(-1)[0];
+
+    // 1票追加
+    if (voteTargetId in TYRANO_VAR_F.voteResult) {
+      TYRANO_VAR_F.voteResult[voteTargetId]++;
+    } else {
+      TYRANO_VAR_F.voteResult[voteTargetId] = 1;
+    }
+  }
+
+  // 最多得票者のキャラクターIDを配列に格納
+  TYRANO_VAR_F.electedIdList = getMaxKeys(TYRANO_VAR_F.voteResult);
+  // 最多得票者が1人で確定すれば、処刑を実行する（同票なら要素が複数入っているので再投票）
+  TYRANO_VAR_F.doExecute = (TYRANO_VAR_F.electedIdList.length == 1) ? true : false;
+};
+
+  // TODO ここまでのロジックだけだと、再投票でも同じ結果になりうる。
+  // 再投票前に「自分に投票したキャラの信頼度をガクッと下げる」「仲間が投票したキャラの信頼度を下げる」「自分と同じ投票先に投票したキャラの信頼度を上げる」などはどうか。
+
+
+/**
+ * 票を公開するためのメッセージを作成する
+ * @param {Array} characterObjects キャラクターオブジェクト配列
+ * @param {Number} day 開票日
+ * @param {Object} voteResult 投票結果オブジェクト
+ * @param {Array} electedIdList 最多得票者配列
+ */
+function openVote(characterObjects, day, voteResult, electedIdList) {
+  TYRANO_VAR_F.voteResultMessage = '';
+
+  for (let i = 0; i < TYRANO_VAR_F.participantsIdList.length; i++) {
+    let characterId = TYRANO_VAR_F.participantsIdList[i];
+
+    let isElected = electedIdList.includes(characterId) ? '★' : '';
+    let numbers = displayIsElected(characterId, voteResult);
+    let name = characterObjects[characterId].name;
+    let voteTargetName = displayVoteTargetName(characterId, characterObjects, day);
+
+    TYRANO_VAR_F.voteResultMessage += (
+      isElected + '' + 
+      numbers + '　' + 
+      name + '→' + 
+      voteTargetName + ' / '
+    )
+  }
+   // TODO:改行できるようにする。無理やりJS内でやるのではなく、ksファイルに戻って出力させた方が楽かも
+   // あと、通常のメッセージ枠に出力ではなく、専用のレイヤーに出力するなどしないと、人数が多いと行数が足りない。
+}
+
+
+/**
+ * openVote()から呼び出す用
+ * @param {*} characterId 
+ * @param {*} voteResult 
+ * @returns テキスト
+ */
+function displayIsElected(characterId, voteResult) {
+  if (characterId in voteResult) {
+    return voteResult[characterId] + '票';
+  }
+  return '0票';
+}
+
+
+/**
+ * openVote()から呼び出す用
+ * @param {*} characterId 
+ * @param {*} characterObjects 
+ * @param {*} day 
+ * @returns テキスト
+ */
+function displayVoteTargetName(characterId, characterObjects, day) {
+  // 配列でなければ、投票していない
+  if (!Array.isArray(characterObjects[characterId].voteHistory[day])) return 'なし';
+  // 末尾のキャラクターIDを取得（最新の再投票先は末尾に追加されているため）
+  let voteTargetId = characterObjects[characterId].voteHistory[day].slice(-1)[0];
+  return characterObjects[voteTargetId].name;
+}

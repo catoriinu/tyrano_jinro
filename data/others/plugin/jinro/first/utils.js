@@ -33,9 +33,12 @@ function getVillagersRoleIdList() {
   ];
 
   // シャッフルしてから返却する
-  //return shuffleElements(villagersRoleIdList);
-  // TODO テスト用にそのまま返却
-  return villagersRoleIdList;
+  if (TYRANO_VAR_F.developmentMode) {
+    // TODO テスト用にそのまま返却
+    return villagersRoleIdList;
+  }
+  return shuffleElements(villagersRoleIdList);
+
 }
 
 
@@ -332,6 +335,36 @@ function getHaveTheRoleObjects(characterObjects, searchRoleIds, searchFlg = true
     }
   }
   return resultObjects;
+}
+
+
+/**
+ * オブジェクト内で、最大である値のキーを取得する
+ * @param {Object} object {String:Number, String:Number,...}形式のオブジェクト
+ * @returns {Array} Numberが最大だったキーの配列（Numberが同値なら複数）
+ */
+ function getMaxKeys(object) {
+  return Object.keys(object).filter(key => {
+    return object[key] == Math.max.apply(null, Object.values(object));
+  });
+}
+
+
+/**
+ * 渡された変数が配列なら末尾にelementをpushし、そうでなければ配列を作りつつelementを格納する
+ * @param {*} array 
+ * @param {*} element 
+ * @returns 要素を追加した配列
+ */
+function pushElement(array, element) {
+  if (Array.isArray(array)) {
+    array.push(element);
+  } else {
+    array = [element];
+  }
+  console.log('【pushElement】');
+  console.log(array);
+  return array;
 }
 
 

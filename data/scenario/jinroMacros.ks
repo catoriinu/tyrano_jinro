@@ -109,8 +109,8 @@
 
     if (f.developmentMode) {
       let resultMassage = todayResult.result ? '人　狼' : '村　人';
-      alert(f.characterObjects[mp.fortuneTellerId].name + 'は'
-      + f.characterObjects[todayResult.characterId].name + 'を占いました。\n結果　【' + resultMassage + '】');
+      //alert(f.characterObjects[mp.fortuneTellerId].name + 'は'
+      // + f.characterObjects[todayResult.characterId].name + 'を占いました。\n結果　【' + resultMassage + '】');
     }
   [endscript]
 [endmacro]
@@ -372,7 +372,7 @@
     }
     
     if (f.developmentMode) {
-      alert('CO判定結果 キャラクターID:' + tf.COCandidateId + ' maxProbability:' + maxProbability);
+      //alert('CO判定結果 キャラクターID:' + tf.COCandidateId + ' maxProbability:' + maxProbability);
     }
     
   [endscript]
@@ -472,15 +472,16 @@
   [iscript]
     tf.allFortuneTellerCOText = '';
     for (let cId of Object.keys(f.allFortuneTellingHistoryObject)) {
-      ; そのcIdが占い師CO済みなら表示する TODO:現在はテスト用に無効化
+      ; そのcIdが占い師CO済みなら表示する TODO:べきだが、現在はテスト用に無効化
       if (f.characterObjects[cId].CORoleId == ROLE_ID_FORTUNE_TELLER) {}
       if (true) {
-        tf.allFortuneTellerCOText += cId + ' : ';
+        tf.allFortuneTellerCOText += f.characterObjects[cId].name + ' : ';
         for (let day of Object.keys(f.allFortuneTellingHistoryObject[cId])) {
           ; TODO:「その日にCO済みなら（doneCO）」の判定が必要。履歴表示時にfalseなら表示しないようにしないと、未COの履歴も表示されてしまう。
           ; 「ただしプレイヤーの占い履歴は未COでも表示する」があるとよさそう。
           let tmpResult = f.allFortuneTellingHistoryObject[cId][day].result ? '●' : '○';
-          tf.allFortuneTellerCOText += f.allFortuneTellingHistoryObject[cId][day].characterId + tmpResult;
+          let tmpCharacterId = f.allFortuneTellingHistoryObject[cId][day].characterId;
+          tf.allFortuneTellerCOText += f.characterObjects[tmpCharacterId].name + tmpResult;
         }
         tf.allFortuneTellerCOText += '<br>';
       }
@@ -490,11 +491,29 @@
 
 
 ; 投票先を決める
-; 同時に、各キャラの仲間度オブジェクトも更新する
+; ※プレイヤーの投票先は決めない
 [macro name="j_decideVote"]
   [iscript]
     decideVote(f.characterObjects, f.day);
   [endscript]
+[endmacro]
+
+
+; 各キャラの投票先を集計し、その日の処刑先を決める
+; ※プレイヤーの投票先も集計対象
+[macro name="j_countVote"]
+  [iscript]
+    countVote(f.characterObjects, f.day);
+  [endscript]
+[endmacro]
+
+
+; 各キャラの投票先を集計し、メッセージに出力する
+[macro name="j_openVote"]
+  [iscript]
+    openVote(f.characterObjects, f.day, f.voteResult, f.electedIdList);
+  [endscript]
+  [emb exp="f.voteResultMessage"][p]
 [endmacro]
 
 ; jsonをローカルに保存する
