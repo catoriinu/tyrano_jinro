@@ -1,4 +1,5 @@
 # jinroプラグイン、マクロに関係しないファイルはignoreする
+.gitignore
 data/bgimage/
 data/bgm/
 data/fgimage/
@@ -19,3 +20,5 @@ tyrano/
 index.html
 readme.txt
 studio_config.json
+test.json
+workspace.code-workspace

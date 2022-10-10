@@ -48,13 +48,9 @@ function FortuneTeller() {
     
     // 占い先が未決定の場合、決める（NPC専用。プレイヤーなら占い先を先に決めているため）
     if (!targetCharacterId) {
-      
-      const isTrueFortuneTeller = TYRANO_VAR_F.characterObjects[fortuneTellerId].role.roleId == ROLE_ID_FORTUNE_TELLER ? true : false;
       [targetCharacterId, result] = this.determineFortuneTellingTargetId(
-        fortuneTellerId,
+        TYRANO_VAR_F.characterObjects[fortuneTellerId],
         day,
-        TYRANO_VAR_F.characterObjects[fortuneTellerId].perspective, // 真占い師、騙り占い師のどちらであってもキャラクターオブジェクト直下のperspectiveを元にしてよい
-        isTrueFortuneTeller
       );
     }
     
@@ -71,6 +67,7 @@ function FortuneTeller() {
     const todayResult = {
       characterId: targetCharacterId,
       result: result,
+      doneCO: false
     }
     this.fortuneTellingHistory[day] = todayResult;
     
@@ -80,25 +77,24 @@ function FortuneTeller() {
   /**
    * 占い先を決定する（NPC用）
    * TODO もし占い候補がいなければ（全員占い済みなら）、自分以外の生存者からランダムで選ぶ。
-   * @param {String} fortuneTellerId 実行者のキャラクターID（真占い師または騙りの占い師）
+   * @param {Object} fortuneTellerOjbect 占い実行者（真占い師または騙りの占い師）のキャラクターオブジェクト
    * @param {Number} day 占い実行日（過去の日付で占ったことにしたいときに指定）
-   * @param {Object} perspective 占い師自身の視点オブジェクト
-   * @param {Boolean} isTrueFortuneTeller 真占い師か(t:真/f:偽)。偽装占い結果を返却するかに関わる。
    * @return {Array} [占い先のキャラクターID, ※偽装占い結果] ※偽装占い結果は偽占い師の場合にboolean(t:●/f:○)で返却する。真占い師の場合null固定。
    */
-  roleObject.determineFortuneTellingTargetId = function (fortuneTellerId, day, perspective, isTrueFortuneTeller) {
+  roleObject.determineFortuneTellingTargetId = function (fortuneTellerObject, day) {
     
     // 占い候補になるキャラクターID配列を取得する。
     const candidateIdList = getValuesFromObjectArray(
-      this.getCandidateObjects(fortuneTellerId, day, this.fortuneTellingHistory),
+      this.getCandidateObjects(fortuneTellerObject.characterId, day),
       'characterId'
     );
     
     // 現在の視点からCO可能な、合法報告生成
-    const regalAnnouncements = generateRegalAnnouncements(candidateIdList, perspective);
+    // 真占い師、騙り占い師のどちらであってもキャラクターオブジェクト直下のperspectiveを元にしてよい
+    const regalAnnouncements = generateRegalAnnouncements(candidateIdList, fortuneTellerObject.perspective);
     
     // 合法報告の生成結果から、占い先を考慮し返却する
-    return this.considerFortuneTellingTarget(regalAnnouncements, isTrueFortuneTeller);
+    return this.considerFortuneTellingTarget(regalAnnouncements, fortuneTellerObject);
   }
   
   /**
@@ -107,19 +103,17 @@ function FortuneTeller() {
    * ・自分の占い履歴にない　・自分ではない　・生存している
    * @param {String} fortuneTellerId 占い師のキャラクターID（真偽併用）
    * @param {Number} day 占い実行日（過去の日付で占ったことにしたいときに指定）
-   * @param {Array} fortuneTellingHistory 占い履歴オブジェクトの配列
    * @returns {Array} 占い対象候補となったキャラクターオブジェクトの配列
    */
-  roleObject.getCandidateObjects = function (fortuneTellerId, day = TYRANO_VAR_F.day, fortuneTellingHistory = Object.values(this.fortuneTellingHistory)) {
+  roleObject.getCandidateObjects = function (fortuneTellerId, day = TYRANO_VAR_F.day) {
     
-    console.log(fortuneTellerId);
-    console.log(fortuneTellingHistory);
-    // 占い対象外として、占い履歴からcharacterId配列を抽出したものに、実行者のIDを追加する
-    const notTargetIds = getValuesFromObjectArray(fortuneTellingHistory, 'characterId');
+    // 占い対象外として、占い履歴（を配列化したもの。オブジェクトのままでは抽出できないため）からcharacterId配列を抽出した配列に、実行者のIDを追加する
+    const notTargetIds = getValuesFromObjectArray(Object.values(this.fortuneTellingHistory), 'characterId');
     notTargetIds.push(fortuneTellerId);
-    
+
     // 占い対象外ではない（＝占い候補の）キャラクターオブジェクトを取得し、その中から生存者のみを返却する
     // 占い対象は、指定された日の夜時間開始時の生存者から選ばれる（騙り占い師が過去の日付の占い履歴を作ることがあるためこうしている）
+    // NOTE：生存者の中から占い候補を探すのが正しい順番では？AND判定なので現状でも問題はなさそうだけど。
     return getSurvivorObjects(
       getCharacterObjectsFromCharacterIds(TYRANO_VAR_F.characterObjectsHistory[day], notTargetIds, false),
       true
@@ -128,17 +122,17 @@ function FortuneTeller() {
   
   /**
    * 合法報告の中から、今回の占い対象（騙り占い師の場合、占い結果も）を判断して返却する
-   * TODO ランダムではなく、一定の基準（どれを選んだほうが有利になるかを各キャラが判断する）で結果を決められるようにする
    * @param {Array} regalAnnouncements 合法報告オブジェクトの配列
-   * @param {Boolean} isTrueFortuneTeller 占い師の真偽 
-   * @returns {Array} 占い対象候補となったキャラクターオブジェクトの配列
+   * @param {Object} fortuneTellerObject 占い実行者（真占い師または騙りの占い師）のキャラクターオブジェクト
+   * @returns {Array} [占い先のキャラクターID, ※偽装占い結果] ※偽装占い結果は偽占い師の場合にboolean(t:●/f:○)で返却する。真占い師の場合null固定。
    */
-  roleObject.considerFortuneTellingTarget = function (regalAnnouncements, isTrueFortuneTeller) {
+  roleObject.considerFortuneTellingTarget = function (regalAnnouncements, fortuneTellerObject) {
     
     // TODO 合法報告が0の場合はCOなしとする
-    // TODO 一旦、候補の中からランダムで返却する
+    // TODO ランダムではなく、一定の基準（どれを選んだほうが有利になるかを各キャラが判断する）で結果を決められるようにする
+    // 一旦、候補の中からランダムで返却する
     const announcementObject = getRandomElement(regalAnnouncements);
-    if (isTrueFortuneTeller) {
+    if (fortuneTellerObject.role.roleId == ROLE_ID_FORTUNE_TELLER) {
       return [announcementObject.characterId, null];
     } else {
       return [announcementObject.characterId, announcementObject.result];

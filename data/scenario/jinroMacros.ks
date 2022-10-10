@@ -91,18 +91,26 @@
     ; 表の視点を更新する理由は、・CO済みであれば表の視点を使うから　・未COでも思考に占い結果を反映させたいから（仮）
     ; →問題発生。
     ; TODO : 破綻の場合どうする？
-    f.characterObjects[mp.fortuneTellerId].perspective = organizePerspective (f.characterObjects[mp.fortuneTellerId].perspective, todayResult.characterId, getRoleIdsForOrganizePerspective(todayResult.result));
+    f.characterObjects[mp.fortuneTellerId].perspective = organizePerspective(f.characterObjects[mp.fortuneTellerId].perspective, todayResult.characterId, getRoleIdsForOrganizePerspective(todayResult.result));
     if (f.characterObjects[mp.fortuneTellerId].role.roleId == ROLE_ID_FORTUNE_TELLER) {
-      f.characterObjects[mp.fortuneTellerId].role.rolePerspective = organizePerspective (f.characterObjects[mp.fortuneTellerId].role.rolePerspective, todayResult.characterId, getRoleIdsForOrganizePerspective(todayResult.result));
+      f.characterObjects[mp.fortuneTellerId].role.rolePerspective = organizePerspective(f.characterObjects[mp.fortuneTellerId].role.rolePerspective, todayResult.characterId, getRoleIdsForOrganizePerspective(todayResult.result));
     }
     
     ; 一時変数に占い結果格納
+    ; TODO:tf.todayResultObjectはtf.fortuneTellingHistoryObjectと役割がかぶっているのでどちらかに統一したい
     tf.todayResultObject = todayResult;
+
+    ; 全占い結果履歴オブジェクトに占い結果格納
+    if (typeof f.allFortuneTellingHistoryObject[mp.fortuneTellerId] !== 'object') {
+      ; 初期化直後は空のオブジェクトを作成
+      f.allFortuneTellingHistoryObject[mp.fortuneTellerId] = {};
+    }
+    f.allFortuneTellingHistoryObject[mp.fortuneTellerId][day] = todayResult;
 
     if (f.developmentMode) {
       let resultMassage = todayResult.result ? '人　狼' : '村　人';
-      alert(f.characterObjects[mp.fortuneTellerId].name + 'は'
-      + f.characterObjects[todayResult.characterId].name + 'を占いました。\n結果　【' + resultMassage + '】');
+      //alert(f.characterObjects[mp.fortuneTellerId].name + 'は'
+      // + f.characterObjects[todayResult.characterId].name + 'を占いました。\n結果　【' + resultMassage + '】');
     }
   [endscript]
 [endmacro]
@@ -192,6 +200,10 @@
 
     let resultMassage = todayResult.result ? f.characterObjects[todayResult.characterId].name + 'は無残な姿で発見された。' : '平和な朝を迎えた。';
     alert(resultMassage);
+    if (todayResult.result) {
+      ; 噛まれたということは人狼ではないので、視点オブジェクトを更新する（TODO：人狼以外にも噛まれない役職が増えたら修正する）
+      updateCommonPerspective(todayResult.characterId, [ROLE_ID_WEREWOLF]);
+    }
   [endscript]
 [endmacro]
 
@@ -360,7 +372,7 @@
     }
     
     if (f.developmentMode) {
-      alert('CO判定結果 キャラクターID:' + tf.COCandidateId + ' maxProbability:' + maxProbability);
+      //alert('CO判定結果 キャラクターID:' + tf.COCandidateId + ' maxProbability:' + maxProbability);
     }
     
   [endscript]
@@ -387,20 +399,7 @@
 ; @param zeroRoleIds 0確定する役職ID配列。必須。 
 [macro name=j_updateCommonPerspective]
   [iscript]
-    console.log('j_updateCommonPerspective');
-    ; 共通視点オブジェクトを更新する
-    ; TODO こっちも破綻用のcatchや事前0確定チェックが必要かも
-    console.log('【共通視点】');
-    f.commonPerspective = organizePerspective (f.commonPerspective, mp.characterId, mp.zeroRoleIds);
-
-    ; 各キャラの視点オブジェクトも更新する
-    for (let cId of Object.keys(f.characterObjects)) {
-      console.log('【' + cId + 'の視点】');
-      console.log(f.characterObjects[cId].perspective);
-      f.characterObjects[cId].perspective = organizePerspective (f.characterObjects[cId].perspective, mp.characterId, mp.zeroRoleIds);
-      f.characterObjects[cId].role.rolePerspective = organizePerspective (f.characterObjects[cId].role.rolePerspective, mp.characterId, mp.zeroRoleIds);
-      ; TODO ここで破綻することもある。破綻用のcatchを行うこと。
-    }
+    updateCommonPerspective(mp.characterId, mp.zeroRoleIds);
   [endscript]
 [endmacro]
 
@@ -413,7 +412,7 @@
   [iscript]
     console.log('j_cloneRolePerspectiveForCO');
     if (f.characterObjects[mp.characterId].role.roleId == mp.CORoleId) {
-      f.characterObjects[mp.characterId].perspective = clone (f.characterObjects[mp.characterId].role.rolePerspective);
+      f.characterObjects[mp.characterId].perspective = clone(f.characterObjects[mp.characterId].role.rolePerspective);
     }
   [endscript]
 [endmacro]
@@ -464,6 +463,58 @@
   [endscript]
 [endmacro]
 
+
+; 人狼メニュー画面に表示するための全占い師のCO状況テキストを生成する
+[macro name=j_getAllFortuneTellerCOText]
+  ; TODO:これを表示したあと、2日目にプレイヤーが占う時にバグる。
+  ; getCharacterObjectsFromCharacterIds()で、for (let k of Object.keys(characterObjects)) {の際にUncaught TypeError: Cannot convert undefined or null to object
+  ; おそらくcharacterObjectsがnullになっている。人狼メニュー画面から戻った時にcharacterObjectsが初期化されるor読み込めない状態になっている？
+  [iscript]
+    tf.allFortuneTellerCOText = '';
+    for (let cId of Object.keys(f.allFortuneTellingHistoryObject)) {
+      ; そのcIdが占い師CO済みなら表示する TODO:べきだが、現在はテスト用に無効化
+      if (f.characterObjects[cId].CORoleId == ROLE_ID_FORTUNE_TELLER) {}
+      if (true) {
+        tf.allFortuneTellerCOText += f.characterObjects[cId].name + ' : ';
+        for (let day of Object.keys(f.allFortuneTellingHistoryObject[cId])) {
+          ; TODO:「その日にCO済みなら（doneCO）」の判定が必要。履歴表示時にfalseなら表示しないようにしないと、未COの履歴も表示されてしまう。
+          ; 「ただしプレイヤーの占い履歴は未COでも表示する」があるとよさそう。
+          let tmpResult = f.allFortuneTellingHistoryObject[cId][day].result ? '●' : '○';
+          let tmpCharacterId = f.allFortuneTellingHistoryObject[cId][day].characterId;
+          tf.allFortuneTellerCOText += f.characterObjects[tmpCharacterId].name + tmpResult;
+        }
+        tf.allFortuneTellerCOText += '<br>';
+      }
+    }
+  [endscript]
+[endmacro]
+
+
+; 投票先を決める
+; ※プレイヤーの投票先は決めない
+[macro name="j_decideVote"]
+  [iscript]
+    decideVote(f.characterObjects, f.day);
+  [endscript]
+[endmacro]
+
+
+; 各キャラの投票先を集計し、その日の処刑先を決める
+; ※プレイヤーの投票先も集計対象
+[macro name="j_countVote"]
+  [iscript]
+    countVote(f.characterObjects, f.day);
+  [endscript]
+[endmacro]
+
+
+; 各キャラの投票先を集計し、メッセージに出力する
+[macro name="j_openVote"]
+  [iscript]
+    openVote(f.characterObjects, f.day, f.voteResult, f.electedIdList);
+  [endscript]
+  [emb exp="f.voteResultMessage"][p]
+[endmacro]
 
 ; jsonをローカルに保存する
 ; 参考　@link https://ameblo.jp/personwritep/entry-12495099049.html

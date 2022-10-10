@@ -38,6 +38,9 @@
 #
 人狼ゲームの幕開けです……！[p]
 
+; 人狼メニュー画面呼び出しボタン表示
+[button graphic="button/thinking.jpg" storage="menuJinro.ks" target="*menuJinroMain" x="1100" y="30" width="100" height="100" fix="true" role="sleepgame"]
+
 *day0_nightPhase
 
 ; 夜時間開始時に、夜時間中に参照するためのcharacterObjectを複製する。占い、噛みなどの記録は本物のf.characterObjectsに更新していく。
@@ -76,6 +79,9 @@
 
 #
 ～COフェイズ～[p]
+; [button name="action" fix="true" graphic="button/action_leave.png" enterimg="button/action_enter.png" x=50 y=220 storage="action.ks" target="*start" auto_next="false"]
+; [button name="j_button" fix="true" hint="ほげ" x=300 y=220 storage="action.ks" target="*start" auto_next="false"]
+; ミニストップ[p]
 
 ; 1) PCからCOがあるか確認する。
 ;    CO確認する必要なし                  →選択肢表示せず、2)へ
@@ -255,16 +261,29 @@
 #
 ～議論フェイズは未作成～[p]
 
+～議論フェイズ終了するよ～[p]
 
 *votePhase
 #
 ～投票フェイズ～[p]
 
 ; 投票フェイズ
-; TODO NPCも投票する（ようにするには、ヘイトを実装してからでないと厳しいか） 
+; TODO:前日の投票フェーズや、同日の再投票時に入ってしまった不要な変数を初期化する（多分ありそう）
 
+; NPCの投票先を決める
+[j_decideVote]
+
+[if exp="!f.characterObjects[f.playerCharacterId].isAlive"]
+  プレイヤーが死亡済みなので投票できません。[r]
+  [jump target="*skipPlayerVote" cond="!f.developmentMode"]
+  が、開発用モードなので投票できます。[p]
+[endif]
+
+; プレイヤーの投票先を決める
 # &f.speaker['アイ']
+[if exp="f.developmentMode"]
 テスト用に私に投票権が一任されてるよ。[r]
+[endif]
 さて、誰に投票しようか？[p]
 
 [iscript]
@@ -284,6 +303,29 @@
 
 ; キャラ画像解放
 [freeimage layer="1" time=400 wait="false"]
+
+; ボタンで選択した投票先キャラクターIDを、プレイヤーの投票履歴に入れる
+[iscript]
+  f.characterObjects[f.playerCharacterId].voteHistory[f.day] = pushElement(f.characterObjects[f.playerCharacterId].voteHistory[f.day], tf.targetCharacterId);
+[endscript]
+
+*skipPlayerVote
+
+; 票を集計する
+[j_countVote]
+
+; 票を公開する
+[j_openVote]
+
+[if exp="!f.developmentMode"]
+  [if exp="!f.doExecute"]
+    ; TODO:再投票上限回数を決める
+    再投票です。[p]
+    [jump target="*votePhase"]
+  [else]
+    [eval exp="tf.targetCharacterId = f.electedIdList[0]"]
+  [endif]
+[endif]
 
 ; 処刑セリフと処刑処理（TODO 今はこの順番だが、処刑ごとの演出がどうなるかによっては逆にしてもいい）
 [m_executed characterId="&tf.targetCharacterId"]
@@ -415,5 +457,5 @@ NPCが行動しています……[p]
 [m_displayGameOverAndWinnerCamp winnerCamp="&tf.winnerCamp"]
 
 おわり。[p]
-[j_saveJson]
+; [j_saveJson]
 [s]
