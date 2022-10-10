@@ -50,6 +50,14 @@
 [return]
 
 
+; chooseWhoToBite
+; シーン：人狼で、誰を噛むか選ぶときのセリフ
+*chooseWhoToBite
+  それじゃあ、今日の犠牲者を決めようか。[r]
+  今日、私に噛まれるのは……[p]
+[return]
+
+
 ; executed
 ; シーン：投票により処刑対象に決まったときの反応
 *executed

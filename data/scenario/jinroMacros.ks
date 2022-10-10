@@ -38,7 +38,7 @@
 ; ex: [j_judgeWinnerCampAndJump storage="playJinro.ks" target="*gameOver"]
 [macro name=j_judgeWinnerCampAndJump]
   #
-  勝敗判定中……
+  勝敗判定中……[r]
   [iscript]
     tf.winnerCamp = judgeWinnerCamp(f.characterObjects);
     if (f.developmentMode) {
@@ -422,7 +422,7 @@
 [macro name=j_cutin1]
 
     [image layer="1" x="0" y="150" width="1280" height="200" time="700" wait="false" storage="cutin.gif" name="cutin"]
-    [playse  storage="speedy.ogg" volume=60]
+    [playse storage="speedy.ogg" volume=50]
     [image layer="1" x="-1000" y="160" height="180" visible="true" reflect="true" storage="00_angry_eye.png" name="00"]
     [anim name="00" left=100 time=700]
     [wait time=700]

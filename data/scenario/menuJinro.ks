@@ -17,6 +17,6 @@
 
 *awake
 ; TODO:背景は元の画像に戻す。または人狼メニュー画面のbgはbgではなくレイヤー深めの画像を使うだけにするか。
-[bg storage="room.jpg" time="100" wait="true"]
+;[bg storage="living_day_nc238325.jpg" time="100" wait="true"]
 [awakegame]
 [s]

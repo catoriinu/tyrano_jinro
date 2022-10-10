@@ -7,39 +7,42 @@
 [start_keyconfig]
 
 
-[bg storage="black.png" time="300"]
+[bg storage="living_night_close_nc238328.jpg" time="300"]
 
-;メニューボタンの表示
-[showmenubutton]
-
-;メッセージウィンドウの設定
-[position layer="message0" left=160 top=500 width=1000 height=200 page=fore visible=true]
-
-;文字が表示される領域を調整
-[position layer=message0 page=fore margint="45" marginl="50" marginr="70" marginb="60"]
-
+;メッセージウィンドウの設定、文字が表示される領域を調整
+[position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="210" page="fore"]
 
 ;メッセージウィンドウの表示
-[layopt layer=message0 visible=true]
+[layopt layer="message0" visible="true"]
 
 ;キャラクターの名前が表示される文字領域
-[ptext name="chara_name_area" layer="message0" color="white" size=28 bold=true x=180 y=510]
+[ptext name="chara_name_area" layer="message0" face="にくまるフォント" color="0x28332a" size=36 x=175 y=505]
 
 ;上記で定義した領域がキャラクターの名前表示であることを宣言（これがないと#の部分でエラーになります）
 [chara_config ptext="chara_name_area"]
+; pos_mode:キャラの初期位置はキャラ宣言時に全指定するのでfalse
+[chara_config pos_mode="false" memory="true" time="200"]
 
-;このゲームで登場するキャラクターを宣言
-;キャラクターの表情登録
+;このゲームで登場するキャラクターを宣言、キャラクターの表情登録
+[call storage="./chara/zundamon.ks" target="*executeCharaNewAndCharaFace"]
+[call storage="./chara/metan.ks" target="*executeCharaNewAndCharaFace"]
+[call storage="./chara/tsumugi.ks" target="*executeCharaNewAndCharaFace"]
+[call storage="./chara/hau.ks" target="*executeCharaNewAndCharaFace"]
+[call storage="./chara/ritsu.ks" target="*executeCharaNewAndCharaFace"]
 
 
 ; ゲーム準備js読み込み
 [loadjs storage="plugin/jinro/macro/prepareGame.js"]
 
+; アクション、ステータス、メニューボタン表示
+; TODO 表示（＝プレイヤーに操作させてよい）タイミングは後々考える。それ以外は非表示にする。
+[button graphic="button/button_action_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="33" y="25" width="114" height="103" fix="true" role="sleepgame" enterimg="button/button_action_hover.png" clickimg="button/button_action_click.png"]
+[button graphic="button/button_menu_normal.png" x="1133" y="25" width="114" height="103" fix="true" role="menu" enterimg="button/button_menu_hover.png" clickimg="button/button_menu_click.png"]
+[button graphic="button/button_status_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="985" y="25" width="114" height="103" fix="true" role="sleepgame" enterimg="button/button_status_hover.png" clickimg="button/button_status_click.png"]
+
+[m_changeFrameWithId]
 #
 人狼ゲームの幕開けです……！[p]
-
-; 人狼メニュー画面呼び出しボタン表示
-[button graphic="button/thinking.jpg" storage="menuJinro.ks" target="*menuJinroMain" x="1100" y="30" width="100" height="100" fix="true" role="sleepgame"]
 
 *day0_nightPhase
 
@@ -48,6 +51,48 @@
 [eval exp="f.characterObjectsHistory = {}"]
 [eval exp="f.characterObjectsHistory[f.day] = clone(f.characterObjects)"]
 
+
+; キャラの登場と退場のテスト
+[m_changeCharacter characterId="zundamon" face="normal"]
+[m_changeFrameWithId characterId="zundamon"]
+# ずんだもん
+めたんー[p]
+
+[m_changeCharacter characterId="metan" face="normal"]
+[m_changeFrameWithId characterId="metan"]
+# 四国めたん
+何よ？[p]
+
+[m_changeCharacter characterId="zundamon" face="normal"]
+[m_changeFrameWithId characterId="zundamon"]
+# ずんだもん
+つむぎー[p]
+
+[m_changeCharacter characterId="tsumugi" face="normal"]
+[m_changeFrameWithId characterId="tsumugi"]
+# 春日部つむぎ
+はーい[p]
+
+[m_changeCharacter characterId="zundamon" face="normal"]
+[m_changeFrameWithId characterId="zundamon"]
+# ずんだもん
+はうー、りつー、そしてつむぎ！[p]
+
+[m_changeCharacter characterId="hau" face="normal"]
+[m_changeFrameWithId characterId="hau"]
+# 雨晴はう
+ニンニクマシマシ！[p]
+
+[m_changeCharacter characterId="ritsu" face="normal"]
+[m_changeFrameWithId characterId="hau"]
+# 波音リツ
+大きなイチモツ！[p]
+
+[m_changeCharacter characterId="tsumugi" face="normal"]
+[m_changeFrameWithId characterId="tsumugi"]
+# 春日部つむぎ
+めがまわるー[p]
+
 ; プレイヤーの役職確認セリフ出力
 [m_noticeRole characterId="&f.playerCharacterId" roleId="&f.characterObjects[f.playerCharacterId].role.roleId"]
 
@@ -55,7 +100,7 @@
 [if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_FORTUNE_TELLER"]
 
   ; 占いカットイン発生
-  [j_cutin1]
+  ;[j_cutin1]
 
   ; 占い実行
   [call storage="./fortuneTellingForPC.ks" target="*fortuneTellingForPC"]
@@ -64,7 +109,7 @@
   [m_announcedFortuneTellingResult characterId="&f.playerCharacterId" result="&tf.todayResultObject.result"]
 
   ; 占いカットイン解放
-  [freeimage layer="1" time=400 wait="false"]
+  ;[freeimage layer="1" time=400 wait="false"]
 
 [endif]
 
@@ -74,9 +119,10 @@
 *startDaytime
 #
 [eval exp="timePasses()"]
-[bg storage="room.jpg" time="500"]
+[bg storage="living_day_nc238325.jpg" time="500"]
 [m_timePasses isDaytime="&f.isDaytime"]
 
+[m_changeFrameWithId]
 #
 ～COフェイズ～[p]
 ; [button name="action" fix="true" graphic="button/action_leave.png" enterimg="button/action_enter.png" x=50 y=220 storage="action.ks" target="*start" auto_next="false"]
@@ -122,19 +168,19 @@
     [endif]
 
     ; 占いカットイン発生
-    [j_cutin1]
+    ;[j_cutin1]
 
     ; 指定した占い師の最新の占い履歴オブジェクトをtf.fortuneTellingHistoryObjectに格納する
     [j_fortuneTellingHistoryObjectThatDay fortuneTellerId="&f.playerCharacterId"]
   
     ; ホバー時用の画像を画面外からスライドインさせる TODO ボタンごとにキャラに合わせた画像を表示する
-    [image layer="1" x="1280" y="80" visible="true" storage="01_sad.png" name="01"]
-    [anim name="01" left=850 time=350]
+    ;[image layer="1" x="1280" y="80" visible="true" storage="01_sad.png" name="01"]
+    ;[anim name="01" left=850 time=350]
 
     [m_COFortuneTellingResult characterId="&f.playerCharacterId" result="&tf.fortuneTellingHistoryObject.result"]
 
     ; 占いカットイン解放
-    [freeimage layer="1" time=400 wait="false"]
+    ;[freeimage layer="1" time=400 wait="false"]
 
     [eval exp="f.characterObjects[f.playerCharacterId].isDoneTodaysCO = true"]
 
@@ -193,6 +239,7 @@
 [if exp="tf.COCandidateId == ''"]
   ; NPCのCO候補者がいないフラグをtrueにする
   [eval exp="f.notExistCOCandidateNPC = true"]
+  [m_changeFrameWithId]
   #
   ……沈黙が流れた。これ以上、COしたい者はいないようだ。[p]
 
@@ -217,14 +264,14 @@
   [endif]
 
   ; 占いカットイン発生
-  [j_cutin1]
+  ;[j_cutin1]
 
   ; 指定した占い師の最新の占い履歴オブジェクトをtf.fortuneTellingHistoryObjectに格納する
   [j_fortuneTellingHistoryObjectThatDay fortuneTellerId="&tf.COCandidateId"]
   
   ; ホバー時用の画像を画面外からスライドインさせる TODO ボタンごとにキャラに合わせた画像を表示する
-  [image layer="1" x="1280" y="80" visible="true" storage="01_sad.png" name="01"]
-  [anim name="01" left=850 time=350]
+  ;[image layer="1" x="1280" y="80" visible="true" storage="01_sad.png" name="01"]
+  ;[anim name="01" left=850 time=350]
 
   [m_COFortuneTellingResult characterId="&tf.COCandidateId" result="&tf.fortuneTellingHistoryObject.result"]
 
@@ -258,12 +305,12 @@
 
 
 *discussionPhase
+[m_changeFrameWithId]
 #
 ～議論フェイズは未作成～[p]
 
-～議論フェイズ終了するよ～[p]
-
 *votePhase
+[m_changeFrameWithId]
 #
 ～投票フェイズ～[p]
 
@@ -280,11 +327,12 @@
 [endif]
 
 ; プレイヤーの投票先を決める
-# &f.speaker['アイ']
+[m_changeFrameWithId]
+# 
 [if exp="f.developmentMode"]
-テスト用に私に投票権が一任されてるよ。[r]
+開発モードのため、プレイヤーの投票先を処刑します。[r]
 [endif]
-さて、誰に投票しようか？[p]
+投票するキャラクターを選択してください。[p]
 
 [iscript]
   ; 生存者である、かつプレイヤー以外のキャラクターオブジェクトを選択肢候補変数に格納する。
@@ -347,7 +395,7 @@
 *nightPhase
 
 [eval exp="timePasses()"]
-[bg storage="black.png" time="300"]
+[bg storage="living_night_close_nc238328.jpg" time="300"]
 [m_timePasses isDaytime="&f.isDaytime"]
 
 
@@ -358,6 +406,8 @@
 ; プレイヤーの行動（夜時間オブジェクトを参照）
 [if exp="f.characterObjectsHistory[f.day][f.playerCharacterId].isAlive"]
 
+[m_changeFrameWithId]
+#
 プレイヤーの行動です。[p]
 
   ; 村人
@@ -374,7 +424,7 @@
       [m_askFortuneTellingTarget isFortuneTeller="false"]
 
       ; 占いカットイン発生
-      [j_cutin1]
+      ;[j_cutin1]
 
       ; 騙り占い実行
       [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingForPC"]
@@ -384,7 +434,7 @@
       [m_askFortuneTellingTarget isFortuneTeller="true"]
 
       ; 占いカットイン発生
-      [j_cutin1]
+      ;[j_cutin1]
 
       ; 占い実行
       [call storage="./fortuneTellingForPC.ks" target="*fortuneTellingForPC"]
@@ -395,7 +445,7 @@
     [endif]
 
     ; 占いカットイン解放
-    [freeimage layer="1" time=400 wait="false"]
+    ;[freeimage layer="1" time=400 wait="false"]
 
   [endif]
 
@@ -404,11 +454,7 @@
 
     [if exp="f.isBiteEnd != true"]
 
-      [if exp="f.playerCharacterId == CHARACTER_ID_AI"]
-        # &f.speaker['アイ']
-        それじゃあ、今日の犠牲者を決めようか。[r]
-        今日、私に噛まれるのは……[p]
-      [endif]
+      [m_chooseWhoToBite characterId="&f.playerCharacterId"]
 
       [iscript]
         ; 夜時間開始時の生存者である、かつ人狼以外のキャラクターオブジェクトを選択肢候補変数に格納する。
@@ -423,6 +469,7 @@
 
       ; 噛み実行
       [j_biting biterId="&f.playerCharacterId" characterId="&tf.targetCharacterId"]
+      [m_exitCharacter characterId="&tf.targetCharacterId"]
 
       ; キャラ画像解放
       [freeimage layer="1" time=400 wait="false"]
@@ -434,7 +481,7 @@
 
 [endif]
 
-
+[m_changeFrameWithId]
 #
 NPCが行動しています……[p]
 
@@ -449,13 +496,19 @@ NPCが行動しています……[p]
 ; 勝敗判定
 [j_judgeWinnerCampAndJump storage="playJinro.ks" target="*gameOver"]
 
-[bg storage="room.jpg" time="100"]
+[bg storage="living_day_nc238325.jpg" time="100"]
 [jump target="*startDaytime"]
 
 
 *gameOver
 [m_displayGameOverAndWinnerCamp winnerCamp="&tf.winnerCamp"]
 
-おわり。[p]
+[m_changeFrameWithId]
+#
+おわり。[r]
+;タイトルに戻ります。[p]
 ; [j_saveJson]
+
+; TODO タイトル画面または戻る前に、キャラの退場、メッセージ枠の削除、ボタンの削除など必要。
+;[jump storage="title.ks"]
 [s]
