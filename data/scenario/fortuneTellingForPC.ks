@@ -83,15 +83,20 @@
       const enterCharacterId = classList.find(className => className.match(/^chara_(.*)$/)).match(/^chara_(.*)$/)[1];
       
       ; 表示中のキャラを画面外に出してから、ホバーされたキャラを登場させる
-      ; TODO プレイヤーキャラ（左側表示のキャラ）がボタンにあるとき、乗せるたびに右に移動して消えていってしまう
-      if (typeof f.rightSideCharacterId != 'undefined') exitCharacter(f.rightSideCharacterId);
-      enterCharacter(enterCharacterId, "normal");
+      changeCharacter(enterCharacterId, 'normal', f.defaultPosition[enterCharacterId].side);
       
       ; glinkのenterse属性だと細かい設定ができないため独自に設定（特にbufがデフォルトだと他で鳴っている効果音を打ち消してしまう）
       TYRANO.kag.ftag.startTag("playse",{storage:"botan_b34.ogg",volume:60,buf:1});
     },
     function(e) {
-      exitCharacter(f.rightSideCharacterId);
+      if (typeof f.rightSideCharacterId != 'undefined') {
+        exitCharacter(
+          f.rightSideCharacterId,
+          f.defaultPosition[f.rightSideCharacterId].side,
+          f.defaultPosition[f.rightSideCharacterId].left
+        );
+      }
+
     }
   );
 [endscript]
@@ -99,6 +104,7 @@
 
 ; 押下されたキャラクターのcharacterIdをtf.targetCharacterIdに格納する
 ; TODO キャラを増やすたびにラベルを増やさないで済むように修正したい
+; TODO tf.targetCharacterId = enterCharacterIdするだけで済みそう。そうしたらtf.glink_targetの定義も不要になりそう。後で直す。
 *target_ai
   [eval exp="tf.targetCharacterId = CHARACTER_ID_AI"]
   [jump target="*glinkFromCandidateObjects_end"]
@@ -140,6 +146,10 @@
   [jump target="*glinkFromCandidateObjects_end"]
 
 *glinkFromCandidateObjects_end
+; 選択した（＝最後のボタンホバー時に表示していた）キャラクターを退場させる
+; TODO TypeError: Cannot read property 'side' of undefinedになる。rightSideCharacterIdがnullと思われる。
+; ボタン押下直後にhoverが外れたときのルートに入り、exitCharacter()済みになっているのかも。だとするとなぜ退場していないのかが気になるが……。
+; [m_exitCharacter characterId="tf.targetCharacterId"]
 
 [return]
 

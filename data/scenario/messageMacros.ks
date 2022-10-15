@@ -196,7 +196,11 @@
 ; @param face 登場させたいキャラのface。（TODO：なければ現在のfaceのまま）
 [macro name="m_changeCharacter"]
   [iscript]
-    changeCharacter(mp.characterId, mp.face);
+    changeCharacter(
+      mp.characterId,
+      mp.face,
+      f.defaultPosition[mp.characterId].side
+    );
   [endscript]
 [endmacro]
 
@@ -207,7 +211,11 @@
 ; @param face 登場させたいキャラのface。必須。（TODO：なければ現在のfaceのままにしてもいいかも）
 [macro name="m_enterCharacter"]
   [iscript]
-    enterCharacter(mp.characterId, mp.face);
+    enterCharacter(
+      mp.characterId,
+      mp.face,
+      f.defaultPosition[mp.characterId].side
+    );
   [endscript]
 [endmacro]
 
@@ -218,7 +226,11 @@
 ; @param characterId 退場させたいキャラのキャラクターID。必須。
 [macro name="m_exitCharacter"]
   [iscript]
-    exitCharacter(mp.characterId);
+    exitCharacter(
+      mp.characterId,
+      f.defaultPosition[mp.characterId].side,
+      f.defaultPosition[mp.characterId].left
+    );
   [endscript]
 [endmacro]
 

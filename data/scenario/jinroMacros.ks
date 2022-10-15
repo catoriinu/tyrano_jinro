@@ -187,7 +187,7 @@
 ; 噛みマクロ
 ; @param biterId 噛み実行者のID。必須。ただし、猫又（噛んだ人狼が無残する）のように、誰が噛んだかを管理する必要が出るまではメッセージ表示用にしか利用しない。
 ; @param characterId 噛み対象のID。入っているなら、実行者はプレイヤーである。入っていないなら実行者はNPCのため、メソッド内部で対象を決める。
-[macro name=j_biting]
+[macro name="j_biting"]
   [iscript]
     let todayResult = {};
     ; ターゲットが決まっている（＝実行者がプレイヤー）なら
@@ -197,6 +197,8 @@
     } else {
       todayResult = f.characterObjects[mp.biterId].role.biting(mp.biterId);
     }
+    ; 噛まれたキャラクターの退場用にティラノの一時変数に入れておく
+    tf.targetCharacterId = todayResult.characterId;
 
     let resultMassage = todayResult.result ? f.characterObjects[todayResult.characterId].name + 'は無残な姿で発見された。' : '平和な朝を迎えた。';
     alert(resultMassage);

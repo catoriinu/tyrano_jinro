@@ -23,13 +23,8 @@
 ; pos_mode:キャラの初期位置はキャラ宣言時に全指定するのでfalse
 [chara_config pos_mode="false" memory="true" time="200"]
 
-;このゲームで登場するキャラクターを宣言、キャラクターの表情登録
-[call storage="./chara/zundamon.ks" target="*executeCharaNewAndCharaFace"]
-[call storage="./chara/metan.ks" target="*executeCharaNewAndCharaFace"]
-[call storage="./chara/tsumugi.ks" target="*executeCharaNewAndCharaFace"]
-[call storage="./chara/hau.ks" target="*executeCharaNewAndCharaFace"]
-[call storage="./chara/ritsu.ks" target="*executeCharaNewAndCharaFace"]
-
+;このゲームで登場する全キャラクターを宣言、表情登録
+[call storage="./chara/common.ks" target="*registerAllCharacters"]
 
 ; ゲーム準備js読み込み
 [loadjs storage="plugin/jinro/macro/prepareGame.js"]
@@ -491,6 +486,8 @@ NPCが行動しています……[p]
 ; 噛み未実行なら（＝PCが人狼ではないなら）噛み実行
 [if exp="!f.isBiteEnd"]
   [j_nightPhaseBitingForNPC]
+  ; 噛まれたキャラクターを退場させる（噛み実行マクロ内でtf.targetCharacterIdは格納済み）
+  [m_exitCharacter characterId="&tf.targetCharacterId"]
 [endif]
 
 ; 勝敗判定
