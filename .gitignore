@@ -5,6 +5,7 @@ data/bgm/
 data/fgimage/
 data/image/
 data/others/3d/
+data/others/fonts/
 data/others/*.js
 data/others/plugin/for/
 data/others/plugin/jinro/memo/*.drawio

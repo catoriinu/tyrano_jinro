@@ -6,12 +6,19 @@ function getParticipantsIdList () {
   // 呼び出し元が何も考えず呼び出せるよう、引数はとらない方針
   // この中で、ゲーム変数を読み込んだりロジックを書くなどして返却値を決めること
   let participantsIdList = [
-    CHARACTER_ID_AI,
-    CHARACTER_ID_HIYORI,
-    CHARACTER_ID_FUTABA,
-    CHARACTER_ID_MIKI,
-    CHARACTER_ID_DUMMY,
+    CHARACTER_ID_ZUNDAMON,
+    CHARACTER_ID_METAN,
+    CHARACTER_ID_TSUMUGI,
+    CHARACTER_ID_HAU,
+    CHARACTER_ID_RITSU,
   ];
+  // let participantsIdList = [
+  //   CHARACTER_ID_AI,
+  //   CHARACTER_ID_HIYORI,
+  //   CHARACTER_ID_FUTABA,
+  //   CHARACTER_ID_MIKI,
+  //   CHARACTER_ID_DUMMY,
+  // ];
   return participantsIdList;
 }
 
@@ -72,6 +79,16 @@ function createCharacterData(characterId) {
       return new FutabaData();
     case CHARACTER_ID_MIKI:
       return new MikiData();
+    case CHARACTER_ID_ZUNDAMON:
+      return new ZundamonData();
+    case CHARACTER_ID_METAN:
+      return new MetanData();
+    case CHARACTER_ID_TSUMUGI:
+      return new TsumugiData();
+    case CHARACTER_ID_HAU:
+      return new HauData();
+    case CHARACTER_ID_RITSU:
+      return new RitsuData();
     case CHARACTER_ID_YU:
     default:
       return new DummyData();

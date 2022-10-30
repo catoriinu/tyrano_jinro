@@ -12,6 +12,11 @@ const CHARACTER_ID_FUTABA = 'futaba'; // フタバ
 const CHARACTER_ID_MIKI   = 'miki'; // ミキ
 const CHARACTER_ID_YU     = 'yu'; // ユウ
 const CHARACTER_ID_DUMMY  = 'dummy'; // ダミー
+const CHARACTER_ID_ZUNDAMON = 'zundamon'; // ずんだもん
+const CHARACTER_ID_METAN    = 'metan'; // 四国めたん
+const CHARACTER_ID_TSUMUGI  = 'tsumugi'; // 春日部つむぎ
+const CHARACTER_ID_HAU      = 'hau'; // 雨晴はう
+const CHARACTER_ID_RITSU    = 'ritsu'; // 波音リツ
 
 // 役職ID
 const ROLE_ID_VILLAGER       = 'villager'; // 村人

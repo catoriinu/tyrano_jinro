@@ -91,6 +91,7 @@ function FortuneTeller() {
     
     // 現在の視点からCO可能な、合法報告生成
     // 真占い師、騙り占い師のどちらであってもキャラクターオブジェクト直下のperspectiveを元にしてよい
+    // FIXME:「昨夜襲撃されたキャラを●と報告する」が破綻扱いになっていない。ここというよりは呼び出し元でキャッチすべきことだけど。
     const regalAnnouncements = generateRegalAnnouncements(candidateIdList, fortuneTellerObject.perspective);
     
     // 合法報告の生成結果から、占い先を考慮し返却する

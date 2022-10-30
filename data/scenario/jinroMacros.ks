@@ -38,7 +38,7 @@
 ; ex: [j_judgeWinnerCampAndJump storage="playJinro.ks" target="*gameOver"]
 [macro name=j_judgeWinnerCampAndJump]
   #
-  勝敗判定中……
+  勝敗判定中……[r]
   [iscript]
     tf.winnerCamp = judgeWinnerCamp(f.characterObjects);
     if (f.developmentMode) {
@@ -187,7 +187,7 @@
 ; 噛みマクロ
 ; @param biterId 噛み実行者のID。必須。ただし、猫又（噛んだ人狼が無残する）のように、誰が噛んだかを管理する必要が出るまではメッセージ表示用にしか利用しない。
 ; @param characterId 噛み対象のID。入っているなら、実行者はプレイヤーである。入っていないなら実行者はNPCのため、メソッド内部で対象を決める。
-[macro name=j_biting]
+[macro name="j_biting"]
   [iscript]
     let todayResult = {};
     ; ターゲットが決まっている（＝実行者がプレイヤー）なら
@@ -197,6 +197,8 @@
     } else {
       todayResult = f.characterObjects[mp.biterId].role.biting(mp.biterId);
     }
+    ; 噛まれたキャラクターの退場用にティラノの一時変数に入れておく
+    tf.targetCharacterId = todayResult.characterId;
 
     let resultMassage = todayResult.result ? f.characterObjects[todayResult.characterId].name + 'は無残な姿で発見された。' : '平和な朝を迎えた。';
     alert(resultMassage);
@@ -422,7 +424,7 @@
 [macro name=j_cutin1]
 
     [image layer="1" x="0" y="150" width="1280" height="200" time="700" wait="false" storage="cutin.gif" name="cutin"]
-    [playse  storage="speedy.ogg" volume=60]
+    [playse storage="speedy.ogg" volume=50]
     [image layer="1" x="-1000" y="160" height="180" visible="true" reflect="true" storage="00_angry_eye.png" name="00"]
     [anim name="00" left=100 time=700]
     [wait time=700]

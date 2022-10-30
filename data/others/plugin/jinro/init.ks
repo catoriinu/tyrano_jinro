@@ -5,4 +5,6 @@
 [loadjs storage="plugin/jinro/first/characters.js"]
 [loadjs storage="plugin/jinro/first/personalities.js"]
 [loadjs storage="plugin/jinro/first/discussion.js"]
+; ゲーム内のマクロから呼び出す実体メソッドを実装したファイルも読み込む
+[loadjs storage="plugin/jinro/macro/impl.js"]
 [return ]

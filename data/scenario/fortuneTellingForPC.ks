@@ -60,10 +60,8 @@
   ; ボタン押下時のターゲット文字列は、事前に変数化して渡すこと。
   ; ※target内では変数は使えない。また、targetを固定にしてexpで押下したボタンを判定しようとすると、expは押下時に評価されるためcntと併用すると最後の要素番目しか取れないのでNG。
   [eval exp="tf.glink_target = '*target_' + tf.candidateObjects[tf.cnt].characterId"]
-  [glink  color="blue" size="28" width="300" y="&tf.y" name="glink_center,charahover" text="&f.speaker[tf.candidateObjects[tf.cnt].name]" target="&tf.glink_target" ]
-  
-  ; ホバー時用の画像を画面外に準備しておく TODO ボタンごとにキャラに合わせた画像を表示する
-  [image layer="1" x="1280" y="80" visible="true" storage="01_sad.png" name="01"]
+  [eval exp="tf.glink_name = 'glink_center,charahover,' + 'chara_' + tf.candidateObjects[tf.cnt].characterId"]
+  [glink color="blue" size="28" width="300" y="&tf.y" name="&tf.glink_name" text="&f.speaker[tf.candidateObjects[tf.cnt].name]" target="&tf.glink_target"]
   
   [iscript]
     ; ボタンの横軸を画面の中央に調整（ループ外で一括でやるとボタンが動く瞬間が見えてしまうため、ループ内で動かす）
@@ -77,25 +75,36 @@
 *loopend
 
 [iscript]
-  ; ボタンにカーソルが乗ったときにキャラ画像をスライドイン、離れたときに画面外へ移動。TODO ボタンごとにキャラに合わせた画像を表示する
+  ; ボタンにカーソルが乗ったときにキャラ画像をスライドイン、離れたときに画面外へ移動。
   $(".charahover").hover(
     function(e) {
-      console.log('enter');
-      TYRANO.kag.ftag.startTag("stopanim",{name:"01"});
-      TYRANO.kag.ftag.startTag("anim",{name:"01",left:850,time:350});
+      ; ホバーしたボタンのclass属性の中から、ボタン生成時に付与しておいたcharacterId部分を抽出する
+      const classList = $(this).attr("class").split(" ");
+      const enterCharacterId = classList.find(className => className.match(/^chara_(.*)$/)).match(/^chara_(.*)$/)[1];
+      
+      ; 表示中のキャラを画面外に出してから、ホバーされたキャラを登場させる
+      changeCharacter(enterCharacterId, 'normal', f.defaultPosition[enterCharacterId].side);
+      
       ; glinkのenterse属性だと細かい設定ができないため独自に設定（特にbufがデフォルトだと他で鳴っている効果音を打ち消してしまう）
       TYRANO.kag.ftag.startTag("playse",{storage:"botan_b34.ogg",volume:60,buf:1});
     },
     function(e) {
-      console.log('leave');
-      TYRANO.kag.ftag.startTag("stopanim",{name:"01"});
-      TYRANO.kag.ftag.startTag("anim",{name:"01",left:1280,time:0});
+      if (typeof f.rightSideCharacterId != 'undefined') {
+        exitCharacter(
+          f.rightSideCharacterId,
+          f.defaultPosition[f.rightSideCharacterId].side,
+          f.defaultPosition[f.rightSideCharacterId].left
+        );
+      }
+
     }
   );
 [endscript]
 [s]
 
 ; 押下されたキャラクターのcharacterIdをtf.targetCharacterIdに格納する
+; TODO キャラを増やすたびにラベルを増やさないで済むように修正したい
+; TODO tf.targetCharacterId = enterCharacterIdするだけで済みそう。そうしたらtf.glink_targetの定義も不要になりそう。後で直す。
 *target_ai
   [eval exp="tf.targetCharacterId = CHARACTER_ID_AI"]
   [jump target="*glinkFromCandidateObjects_end"]
@@ -116,7 +125,31 @@
   [eval exp="tf.targetCharacterId = CHARACTER_ID_DUMMY"]
   [jump target="*glinkFromCandidateObjects_end"]
 
+*target_zundamon
+  [eval exp="tf.targetCharacterId = CHARACTER_ID_ZUNDAMON"]
+  [jump target="*glinkFromCandidateObjects_end"]
+
+*target_metan
+  [eval exp="tf.targetCharacterId = CHARACTER_ID_METAN"]
+  [jump target="*glinkFromCandidateObjects_end"]
+
+*target_tsumugi
+  [eval exp="tf.targetCharacterId = CHARACTER_ID_TSUMUGI"]
+  [jump target="*glinkFromCandidateObjects_end"]
+
+*target_hau
+  [eval exp="tf.targetCharacterId = CHARACTER_ID_HAU"]
+  [jump target="*glinkFromCandidateObjects_end"]
+
+*target_ritsu
+  [eval exp="tf.targetCharacterId = CHARACTER_ID_RITSU"]
+  [jump target="*glinkFromCandidateObjects_end"]
+
 *glinkFromCandidateObjects_end
+; 選択した（＝最後のボタンホバー時に表示していた）キャラクターを退場させる
+; TODO TypeError: Cannot read property 'side' of undefinedになる。rightSideCharacterIdがnullと思われる。
+; ボタン押下直後にhoverが外れたときのルートに入り、exitCharacter()済みになっているのかも。だとするとなぜ退場していないのかが気になるが……。
+; [m_exitCharacter characterId="tf.targetCharacterId"]
 
 [return]
 

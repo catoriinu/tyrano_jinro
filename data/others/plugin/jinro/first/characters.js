@@ -107,3 +107,63 @@ function DummyData() {
   this.myName = 'ダミー';
   this.myPersonality = new Tester();
 }
+
+/**
+ * @classdec ずんだもんクラス（個別のキャラクターデータを定義する）
+ * @prop {String} characterId キャラクターID
+ * @prop {String} myName キャラクターの名前
+ * @prop {*} myPersonality 性格 TODO 現在は性格の文字列。性格オブジェクトを入れるようにする
+ */
+ function ZundamonData() {
+  this.characterId = CHARACTER_ID_ZUNDAMON;
+  this.myName = 'ずんだもん';
+  this.myPersonality = new Tester();
+}
+
+/**
+ * @classdec 四国めたんクラス（個別のキャラクターデータを定義する）
+ * @prop {String} characterId キャラクターID
+ * @prop {String} myName キャラクターの名前
+ * @prop {*} myPersonality 性格 TODO 現在は性格の文字列。性格オブジェクトを入れるようにする
+ */
+function MetanData() {
+  this.characterId = CHARACTER_ID_METAN;
+  this.myName = '四国めたん';
+  this.myPersonality = new Tester();
+}
+
+/**
+ * @classdec 春日部つむぎクラス（個別のキャラクターデータを定義する）
+ * @prop {String} characterId キャラクターID
+ * @prop {String} myName キャラクターの名前
+ * @prop {*} myPersonality 性格 TODO 現在は性格の文字列。性格オブジェクトを入れるようにする
+ */
+function TsumugiData() {
+  this.characterId = CHARACTER_ID_TSUMUGI;
+  this.myName = '春日部つむぎ';
+  this.myPersonality = new Tester();
+}
+
+/**
+ * @classdec 雨晴はうクラス（個別のキャラクターデータを定義する）
+ * @prop {String} characterId キャラクターID
+ * @prop {String} myName キャラクターの名前
+ * @prop {*} myPersonality 性格 TODO 現在は性格の文字列。性格オブジェクトを入れるようにする
+ */
+function HauData() {
+  this.characterId = CHARACTER_ID_HAU;
+  this.myName = '雨晴はう';
+  this.myPersonality = new Tester();
+}
+
+/**
+ * @classdec 波音リツクラス（個別のキャラクターデータを定義する）
+ * @prop {String} characterId キャラクターID
+ * @prop {String} myName キャラクターの名前
+ * @prop {*} myPersonality 性格 性格オブジェクトを入れるようにする
+ */
+function RitsuData() {
+  this.characterId = CHARACTER_ID_RITSU;
+  this.myName = '波音リツ';
+  this.myPersonality = new Tester();
+}
