@@ -71,3 +71,8 @@
   ゲームが終了しました。[p]
   人狼の勝利！[p]
 [return]
+
+*displayGameOverAndWinnerCamp_drawByRevote
+  ゲームが終了しました。[p]
+  引き分けです。[p]
+[return]

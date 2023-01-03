@@ -299,6 +299,9 @@ function daytimeInitialize() {
   // 生存しているNPCのcharacterId配列を取得済みかのフラグをfalseにする
   TYRANO_VAR_F.gottenSurviveNpcCharacterIds = false;
 
+  // 再投票カウントを初期化する
+  TYRANO_VAR_F.revoteCount = 0;
+
   // ゲーム変数のキャラクターオブジェクトに対する初期化
   for (let k of Object.keys(TYRANO_VAR_F.characterObjects)) {
     // 今日のCO済みフラグをfalseに戻す

@@ -41,6 +41,7 @@ const ROLE_ID_TO_NAME = {
 // 陣営
 const CAMP_VILLAGERS  = 'villagers'; // 村人陣営
 const CAMP_WEREWOLVES = 'werewolves'; // 人狼陣営
+const CAMP_DRAW_BY_REVOTE = 'drawByRevote'; // 再投票による引き分け
 
 // 役職IDと役職陣営の対応オブジェクト
 // TODO:全体的にCAMP→FACTIONに置換する
@@ -59,6 +60,9 @@ const ROLE_ID_TO_FACTION = {
 // 死因
 const DEATH_BY_EXECUTION = 'execution'; // 処刑。投票による吊り・追放
 const DEATH_BY_ATTACK    = 'attack'; // 襲撃。人狼による噛み。
+
+// 再投票上限回数（これが初回を含めた最大投票回数となる）
+const MAX_REVOTE_COUNT = 4;
 
 
 // 設定値

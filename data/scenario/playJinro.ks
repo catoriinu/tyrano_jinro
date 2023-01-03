@@ -48,45 +48,45 @@
 
 
 ; キャラの登場と退場のテスト
-[m_changeCharacter characterId="zundamon" face="normal"]
-[m_changeFrameWithId characterId="zundamon"]
-# ずんだもん
-めたんー[p]
-
-[m_changeCharacter characterId="metan" face="normal"]
-[m_changeFrameWithId characterId="metan"]
-# 四国めたん
-何よ？[p]
-
-[m_changeCharacter characterId="zundamon" face="normal"]
-[m_changeFrameWithId characterId="zundamon"]
-# ずんだもん
-つむぎー[p]
-
-[m_changeCharacter characterId="tsumugi" face="normal"]
-[m_changeFrameWithId characterId="tsumugi"]
-# 春日部つむぎ
-はーい[p]
-
-[m_changeCharacter characterId="zundamon" face="normal"]
-[m_changeFrameWithId characterId="zundamon"]
-# ずんだもん
-はうー、りつー、そしてつむぎ！[p]
-
-[m_changeCharacter characterId="hau" face="normal"]
-[m_changeFrameWithId characterId="hau"]
-# 雨晴はう
-ニンニクマシマシ！[p]
-
-[m_changeCharacter characterId="ritsu" face="normal"]
-[m_changeFrameWithId characterId="hau"]
-# 波音リツ
-大きなイチモツ！[p]
-
-[m_changeCharacter characterId="tsumugi" face="normal"]
-[m_changeFrameWithId characterId="tsumugi"]
-# 春日部つむぎ
-めがまわるー[p]
+;[m_changeCharacter characterId="zundamon" face="normal"]
+;[m_changeFrameWithId characterId="zundamon"]
+;# ずんだもん
+;めたんー[p]
+;
+;[m_changeCharacter characterId="metan" face="normal"]
+;[m_changeFrameWithId characterId="metan"]
+;# 四国めたん
+;何よ？[p]
+;
+;[m_changeCharacter characterId="zundamon" face="normal"]
+;[m_changeFrameWithId characterId="zundamon"]
+;# ずんだもん
+;つむぎー[p]
+;
+;[m_changeCharacter characterId="tsumugi" face="normal"]
+;[m_changeFrameWithId characterId="tsumugi"]
+;# 春日部つむぎ
+;はーい[p]
+;
+;[m_changeCharacter characterId="zundamon" face="normal"]
+;[m_changeFrameWithId characterId="zundamon"]
+;# ずんだもん
+;はうー、りつー、そしてつむぎ！[p]
+;
+;[m_changeCharacter characterId="hau" face="normal"]
+;[m_changeFrameWithId characterId="hau"]
+;# 雨晴はう
+;ニンニクマシマシ！[p]
+;
+;[m_changeCharacter characterId="ritsu" face="normal"]
+;[m_changeFrameWithId characterId="hau"]
+;# 波音リツ
+;大きなイチモツ！[p]
+;
+;[m_changeCharacter characterId="tsumugi" face="normal"]
+;[m_changeFrameWithId characterId="tsumugi"]
+;# 春日部つむぎ
+;めがまわるー[p]
 
 ; プレイヤーの役職確認セリフ出力
 [m_noticeRole characterId="&f.playerCharacterId" roleId="&f.characterObjects[f.playerCharacterId].role.roleId"]
@@ -95,7 +95,7 @@
 [if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_FORTUNE_TELLER"]
 
   ; 占いカットイン発生
-  ;[j_cutin1]
+  [j_cutin1]
 
   ; 占い実行
   [call storage="./fortuneTellingForPC.ks" target="*fortuneTellingForPC"]
@@ -163,7 +163,7 @@
     [endif]
 
     ; 占いカットイン発生
-    ;[j_cutin1]
+    [j_cutin1]
 
     ; 指定した占い師の最新の占い履歴オブジェクトをtf.fortuneTellingHistoryObjectに格納する
     [j_fortuneTellingHistoryObjectThatDay fortuneTellerId="&f.playerCharacterId"]
@@ -259,7 +259,7 @@
   [endif]
 
   ; 占いカットイン発生
-  ;[j_cutin1]
+  [j_cutin1]
 
   ; 指定した占い師の最新の占い履歴オブジェクトをtf.fortuneTellingHistoryObjectに格納する
   [j_fortuneTellingHistoryObjectThatDay fortuneTellerId="&tf.COCandidateId"]
@@ -362,9 +362,18 @@
 
 [if exp="!f.developmentMode"]
   [if exp="!f.doExecute"]
-    ; TODO:再投票上限回数を決める
-    再投票です。[p]
-    [jump target="*votePhase"]
+    [eval exp="f.revoteCount += 1"]
+    ; 再投票上限回数未満であれば再投票する
+    [if exp="f.revoteCount < MAX_REVOTE_COUNT"]
+      再投票です。[r]
+      あと[emb exp="MAX_REVOTE_COUNT-f.revoteCount"]回で決着しない場合は引き分けです。[p]
+      [jump target="*votePhase"]
+    [else]
+      ; 再投票上限を越えた場合は引き分け処理
+      投票で決着がつきませんでした。[p]
+      [eval exp="tf.winnerCamp = CAMP_DRAW_BY_REVOTE"]
+      [jump target="*gameOver"]
+    [endif]
   [else]
     [eval exp="tf.targetCharacterId = f.electedIdList[0]"]
   [endif]
@@ -419,7 +428,7 @@
       [m_askFortuneTellingTarget isFortuneTeller="false"]
 
       ; 占いカットイン発生
-      ;[j_cutin1]
+      [j_cutin1]
 
       ; 騙り占い実行
       [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingForPC"]
@@ -429,7 +438,7 @@
       [m_askFortuneTellingTarget isFortuneTeller="true"]
 
       ; 占いカットイン発生
-      ;[j_cutin1]
+      [j_cutin1]
 
       ; 占い実行
       [call storage="./fortuneTellingForPC.ks" target="*fortuneTellingForPC"]
