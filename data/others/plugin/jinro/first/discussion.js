@@ -393,21 +393,22 @@ function calcSameFactionPossivility(characterObject, perspective) {
       continue;
     }
 
-    let sameFactionCoefficient = 0;
+    let sumSameFactionPerspective = 0;
     // 重複のない村の役職ID配列をもとに全役職をループ
     for (let j = 0; j < TYRANO_VAR_F.uniqueRoleIdList.length; j++) {
       let rId = TYRANO_VAR_F.uniqueRoleIdList[j];
-      // 自分と同陣営の役職のperspectiveの割合値を合計する（仲間度を算出するための係数になる。自分視点で必ず同陣営なら1、必ず敵陣営なら0）
+      // 自分と同陣営の役職のperspectiveの割合値を合計する（自分視点で必ず同陣営なら1、必ず敵陣営なら0）
       if (ROLE_ID_TO_FACTION[characterObject.role.roleId] == ROLE_ID_TO_FACTION[rId]) {
-        sameFactionCoefficient += perspective[cId][rId];
+        sumSameFactionPerspective += perspective[cId][rId];
       }
     }
     
-    // 対象キャラへの信頼度から自分の論理力を引いた値に1を足す
-    // 最後に前の処理で算出した係数を掛けた結果を、対象キャラへの「仲間度」とする
-    // →論理力が高いほど、信頼度の影響を受けずに係数そのものを「仲間度」にすることができる
-    //  論理力が低いほど、信頼度の影響で「仲間度」が係数から乖離しやすくなる
-    sameFactionPossivility[cId] = (characterObject.reliability[cId] - characterObject.personality.logical + 1) * sameFactionCoefficient;
+    // 対象キャラへの仲間度を算出する
+    // その際、自分の論理力の高さによって、対象キャラへの信頼度と同陣営割合値の合計のどちらに重きを置くかを決める
+    // →論理力が低いほど、対象キャラへの信頼度が「仲間度」になる（＝感情的な判断）
+    //  論理力が高いほど、同陣営割合値の合計が「仲間度」になる（＝論理的な判断）
+    sameFactionPossivility[cId] = (1 - characterObject.personality.logical) * characterObject.reliability[cId] +
+                                  characterObject.personality.logical       * sumSameFactionPerspective
   }
   return sameFactionPossivility;
 }

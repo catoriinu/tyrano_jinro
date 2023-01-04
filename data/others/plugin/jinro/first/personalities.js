@@ -29,9 +29,9 @@ function Personality(name, active, hungry, egoistic, logical, roleCOProbability)
 function Tester() {
   return new Personality (
     'テスト用の性格', // name
-    70, // active
-    10, // hungry
-    10, // egoistic
+    0.7, // active
+    0.1, // hungry
+    0.1, // egoistic
     1, // logical
     {
       [ROLE_ID_FORTUNE_TELLER]: {
