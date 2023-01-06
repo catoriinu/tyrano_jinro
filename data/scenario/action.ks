@@ -18,6 +18,7 @@
 
 *end
 
+[awakegame]
 [return]
 
 
@@ -34,12 +35,12 @@ f.firstLayerButtons = [
 ];
 
 ; TODO テストのため必ず表示 潜伏役職が残っているなら「COを促す」を表示
-if (true) {
+if (false) {
   f.firstLayerButtons.push({id: "prompt", text: "COを促す", target: "*roleLayer"});
 }
 
 ; TODO テストのため必ず表示 プレイヤーがCO可能な場合「COする」を表示
-if (true) {
+if (false) {
   f.firstLayerButtons.push({id: "CO", text: "COする", target: "*roleLayer"});
 }
 
@@ -47,11 +48,6 @@ if (true) {
 f.firstLayerButtons.push({id: "cancel", text: "キャンセル", target: "*end"});
 
 [endscript]
-
-; 第一階層用背景を出力
-[html]
-	<div class="action_first_layer"></div>
-[endhtml]
 
 ; ボタンのy軸を計算しつつ選択肢ボタン表示ループ
 [eval exp="tf.buttonCount = f.firstLayerButtons.length"]
@@ -62,15 +58,25 @@ f.firstLayerButtons.push({id: "cancel", text: "キャンセル", target: "*end"}
 
   [glink  color="blue" size="28" width="200" x="300" y="&tf.y" text="&f.firstLayerButtons[tf.cnt].text" target="&f.firstLayerButtons[tf.cnt].target"]
   
-  [iscript]
-    ; ボタンの横軸を画面の左寄りに調整（ループ外で一括でやるとボタンが動く瞬間が見えてしまうため、ループ内で動かす）
-
-  [endscript]
-
   [jump target="*firstLayerLoopEnd" cond="tf.cnt == (tf.buttonCount - 1)"]
   [eval exp="tf.cnt++"]
   [jump target="*firstLayerLoopStart"]
 *firstLayerLoopEnd
+
+; 第一階層用背景を出力
+; top要素は、一番上のボタンから-20px分の余白をとった位置とする
+[eval exp="tf.top = BUTTON_RANGE_Y_LOWER / (tf.buttonCount + 1) + BUTTON_RANGE_Y_UPPER - 20"]
+[html left="282" top="&tf.top" name="first_action_window"]
+[endhtml]
+
+[iscript]
+; TODO height要素の計算方法を再考する。ボタン数によって余白がまちまちになる。heightはtopからの相対距離なのを意識すること。
+tf.height = (tf.y + 10) + 'px';
+$('.first_action_window').css({
+  'width': '340px',
+  'height': tf.height,
+})
+[endscript]
 
 [return]
 
@@ -100,10 +106,6 @@ f.secondLayerButtons = [
 
 
 *secondLayerLoop
-; 第二階層用背景を出力
-[html]
-	<div class="action_second_layer"></div>
-[endhtml]
 
 ; ボタンのy軸を計算しつつ選択肢ボタン表示ループ
 [eval exp="tf.buttonCount = f.secondLayerButtons.length"]
@@ -113,14 +115,25 @@ f.secondLayerButtons = [
   [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (tf.cnt + 1)) / (tf.buttonCount + 1) + BUTTON_RANGE_Y_UPPER"]
 
   [glink  color="blue" size="28" width="200" x="670" y="&tf.y" text="&f.secondLayerButtons[tf.cnt].text" target="&f.secondLayerButtons[tf.cnt].target"]
-  
-  [iscript]
-    ; ボタンの横軸を画面の右寄りに調整（ループ外で一括でやるとボタンが動く瞬間が見えてしまうため、ループ内で動かす）
-  [endscript]
 
   [jump target="*secondLayerLoopEnd" cond="tf.cnt == (tf.buttonCount - 1)"]
   [eval exp="tf.cnt++"]
   [jump target="*secondLayerLoopStart"]
 *secondLayerLoopEnd
+
+; 第一階層用背景を出力
+; top要素は、一番上のボタンから-20px分の余白をとった位置とする
+[eval exp="tf.top = BUTTON_RANGE_Y_LOWER / (tf.buttonCount + 1) + BUTTON_RANGE_Y_UPPER - 20"]
+[html left="650" top="&tf.top" name="second_action_window"]
+[endhtml]
+
+[iscript]
+; TODO height要素の計算方法を再考する。ボタン数によって余白がまちまちになる。heightはtopからの相対距離なのを意識すること。
+tf.height =  (tf.y + 10) + 'px';
+$('.second_action_window').css({
+  'width': '340px',
+  'height': tf.height,
+})
+[endscript]
 
 [return]

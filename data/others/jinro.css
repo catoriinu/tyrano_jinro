@@ -1,0 +1,13 @@
+.first_action_window {
+    background-color: rgba(255,255,255,0.82);
+    border:solid 4px rgba(0,0,0,0.82);
+    padding: 0.2rem 0.2rem 0.2rem 0.2rem;
+    border-radius: 25px 25px 25px 25px / 25px 25px 25px 25px;
+}
+
+.second_action_window {
+    background-color: rgba(255,255,255,0.82);
+    border:solid 4px rgba(0,0,0,0.82);
+    padding: 0.2rem 0.2rem 0.2rem 0.2rem;
+    border-radius: 25px 25px 25px 25px / 25px 25px 25px 25px;
+}

@@ -13,6 +13,7 @@
 [plugin name="jinro"] 
 [call storage="jinroMacros.ks"]
 [call storage="messageMacros.ks"]
+[loadcss file="./data/others/jinro.css"]
 
 ; 開発モードか？ TODO:公開前にはOFFにすること！
 [eval exp="f.developmentMode = false"]

@@ -31,7 +31,7 @@
 
 ; アクション、ステータス、メニューボタン表示
 ; TODO 表示（＝プレイヤーに操作させてよい）タイミングは後々考える。それ以外は非表示にする。
-[button graphic="button/button_action_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="33" y="25" width="114" height="103" fix="true" role="sleepgame" enterimg="button/button_action_hover.png" clickimg="button/button_action_click.png"]
+[button graphic="button/button_action_normal.png" storage="action.ks" target="*start" x="33" y="25" width="114" height="103" fix="true" role="sleepgame" enterimg="button/button_action_hover.png" clickimg="button/button_action_click.png"]
 [button graphic="button/button_menu_normal.png" x="1133" y="25" width="114" height="103" fix="true" role="menu" enterimg="button/button_menu_hover.png" clickimg="button/button_menu_click.png"]
 [button graphic="button/button_status_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="985" y="25" width="114" height="103" fix="true" role="sleepgame" enterimg="button/button_status_hover.png" clickimg="button/button_status_click.png"]
 
