@@ -342,7 +342,7 @@
 [endscript]
 
 ; 選択肢ボタン表示と入力受付
-[call storage="./fortuneTellingForPC.ks" target="*glinkFromCandidateObjects"]
+[call storage="./jinroSubroutines.ks" target="*glinkFromCandidateObjects"]
 
 ; キャラ画像解放
 [freeimage layer="1" time=400 wait="false"]
@@ -469,7 +469,7 @@
       [endscript]
 
       ; 選択肢ボタン表示と入力受付
-      [call storage="./fortuneTellingForPC.ks" target="*glinkFromCandidateObjects"]
+      [call storage="./jinroSubroutines.ks" target="*glinkFromCandidateObjects"]
 
       ; 噛み実行
       [j_biting biterId="&f.playerCharacterId" characterId="&tf.targetCharacterId"]
