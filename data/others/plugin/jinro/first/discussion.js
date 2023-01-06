@@ -427,15 +427,22 @@ function countVote(characterObjects, day) {
     // 投票履歴オブジェクトのその日の投票先配列を確認
     // 配列でなければ、投票していないのでスルー
     if (!Array.isArray(characterObjects[characterId].voteHistory[day])) continue;
+
     // 末尾のキャラクターIDを取得（最新の再投票先は末尾に追加されているため）
     let voteTargetId = characterObjects[characterId].voteHistory[day].slice(-1)[0];
-
     // 1票追加
     if (voteTargetId in TYRANO_VAR_F.voteResult) {
       TYRANO_VAR_F.voteResult[voteTargetId]++;
     } else {
       TYRANO_VAR_F.voteResult[voteTargetId] = 1;
     }
+
+    // 投票されたキャラクターの、投票したキャラクターへの信頼度を下げる
+    characterObjects[voteTargetId].reliability[characterId] = calcUpdatedReliability(
+      characterObjects[voteTargetId],
+      characterId,
+      REASON_WAS_VOTED
+    );
   }
 
   // 最多得票者のキャラクターIDを配列に格納
@@ -505,4 +512,50 @@ function displayVoteTargetName(characterId, characterObjects, day) {
   // 末尾のキャラクターIDを取得（最新の再投票先は末尾に追加されているため）
   let voteTargetId = characterObjects[characterId].voteHistory[day].slice(-1)[0];
   return characterObjects[voteTargetId].name;
+}
+
+
+/**
+ * 更新後の信頼度を計算、返却する
+ * @param {Object} characterObject キャラクターオブジェクト
+ * @param {String} targetCharacterId 信頼度を更新する相手
+ * @param {String} reason どのような理由で信頼度を更新するのか
+ * @returns {Number} updateTargetReliability 更新後の、相手の信頼度の値
+ */
+function calcUpdatedReliability(characterObject, targetCharacterId, reason) {
+
+  // 更新前の、相手の信頼度の値
+  let originalTargetReliability = characterObject.reliability[targetCharacterId];
+  // 更新後の、相手の信頼度の値
+  let updateTargetReliability = 0;
+  // 信頼度に影響を与える理由リストのうち、今回計算に用いる理由とその値のオブジェクト
+  let impressiveReasonObject = null;
+  // MEMO:本当はnull合体演算子を使いたいが、ティラノのJSのバージョンが古くて未対応だった
+  if (Object.keys(characterObject.personality.impressiveReasonList[reason]).length !== 0) {
+    impressiveReasonObject = characterObject.personality.impressiveReasonList[reason];
+  }
+
+  // 信頼度に影響を与える理由をもとに、信頼度の更新差分を算出する
+  if (impressiveReasonObject !== null) {
+    if (impressiveReasonObject.arithmetic == ARITHMETIC_ADDITION) {
+      // 加算
+      updateTargetReliability = originalTargetReliability + impressiveReasonObject.value;
+    } else if (impressiveReasonObject.arithmetic == ARITHMETIC_MULTIPLICATION) {
+      // 乗算
+      updateTargetReliability = originalTargetReliability * impressiveReasonObject.value;
+    }
+  } else {
+    alert(characterObject.name  + 'のimpressiveReasonListに' + reason + 'が未定義です');
+  }
+
+  console.log(characterObject.name + 'の' + targetCharacterId + 'への信頼度を' + reason + 'のため、' +
+    originalTargetReliability + 'から' + updateTargetReliability + 'に更新する');
+
+  // 更新後の値が1より大きくなる場合は1に、0より小さくなる場合は0にする。信頼度が取りうる値は0～1のため
+  if (updateTargetReliability > 1) {
+    updateTargetReliability = 1;
+  } else if (updateTargetReliability < 0) {
+    updateTargetReliability = 0;
+  }
+  return updateTargetReliability;
 }

@@ -64,6 +64,12 @@ const DEATH_BY_ATTACK    = 'attack'; // 襲撃。人狼による噛み。
 // 再投票上限回数（これが初回を含めた最大投票回数となる）
 const MAX_REVOTE_COUNT = 4;
 
+// 信頼度を更新する理由
+const REASON_WAS_VOTED = 'wasVoted'; // 相手に投票されたとき
+const REASON_TEST = 'test' // テスト用
+// 計算方法（信頼度更新用）
+const ARITHMETIC_ADDITION = 'addition'; // 現在の値に加算する（減算したい場合は負の値を足す）
+const ARITHMETIC_MULTIPLICATION = 'multiplication'; // 現在の値に乗算する（除算したい場合は1未満の値を掛ける）
 
 // 設定値
 // ボタン配置範囲
