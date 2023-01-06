@@ -407,6 +407,7 @@ function calcSameFactionPossivility(characterObject, perspective) {
     // その際、自分の論理力の高さによって、対象キャラへの信頼度と同陣営割合値の合計のどちらに重きを置くかを決める
     // →論理力が低いほど、対象キャラへの信頼度が「仲間度」になる（＝感情的な判断）
     //  論理力が高いほど、同陣営割合値の合計が「仲間度」になる（＝論理的な判断）
+    // MEMO:信頼度と同陣営割合値は、本来は単純に足せばよい値ではない。役職や陣営が増えたり、ゲーム上で信頼度が増減するようになったあと、計算方法を再検討すること
     sameFactionPossivility[cId] = (1 - characterObject.personality.logical) * characterObject.reliability[cId] +
                                   characterObject.personality.logical       * sumSameFactionPerspective
   }
