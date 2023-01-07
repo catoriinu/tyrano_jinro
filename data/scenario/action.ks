@@ -56,7 +56,7 @@ f.firstLayerButtons.push({id: "cancel", text: "キャンセル", target: "*end"}
   ; y座標計算。範囲を(ボタン数+1)等分し、上限点と下限点を除く点に順番に配置することで、常に間隔が均等になる。式 = (範囲下限 * (tf.cnt + 1)) / (tf.buttonCount + 1) + (範囲上限)
   [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (tf.cnt + 1)) / (tf.buttonCount + 1) + BUTTON_RANGE_Y_UPPER"]
 
-  [glink  color="blue" size="28" width="200" x="300" y="&tf.y" text="&f.firstLayerButtons[tf.cnt].text" target="&f.firstLayerButtons[tf.cnt].target"]
+  [glink color="btn_voivo" size="26" width="300" x="300" y="&tf.y" text="&f.firstLayerButtons[tf.cnt].text" target="&f.firstLayerButtons[tf.cnt].target"]
   
   [jump target="*firstLayerLoopEnd" cond="tf.cnt == (tf.buttonCount - 1)"]
   [eval exp="tf.cnt++"]
@@ -66,13 +66,13 @@ f.firstLayerButtons.push({id: "cancel", text: "キャンセル", target: "*end"}
 ; 第一階層用背景を出力
 ; top要素は、一番上のボタンから-20px分の余白をとった位置とする
 [eval exp="tf.top = BUTTON_RANGE_Y_LOWER / (tf.buttonCount + 1) + BUTTON_RANGE_Y_UPPER - 20"]
-[html left="282" top="&tf.top" name="first_action_window"]
+[html left="282" top="&tf.top" name="left_button_window"]
 [endhtml]
 
 [iscript]
 ; TODO height要素の計算方法を再考する。ボタン数によって余白がまちまちになる。heightはtopからの相対距離なのを意識すること。
 tf.height = (tf.y + 10) + 'px';
-$('.first_action_window').css({
+$('.left_button_window').css({
   'width': '340px',
   'height': tf.height,
 })
@@ -84,9 +84,12 @@ $('.first_action_window').css({
 *displaySecondLayerButtons
 [iscript]
 f.secondLayerButtons = [
-  {id: "hiyori", text: "ヒヨリ", target: "*end"},
+  {id: "hiyori", text: "ずんだもん", target: "*end"},
   {id: "futaba", text: "フタバ", target: "*end"},
-  {id: "miki", text: "ミキ", target: "*end"}
+  {id: "miki", text: "あいうえおか", target: "*end"},
+  {id: "futaba", text: "あいうえおかきくけこ", target: "*end"},
+  {id: "futaba", text: "ナースロボ_タイプT", target: "*end"},
+  {id: "futaba", text: "フタバ", target: "*end"},
 ];
 [endscript]
 [call target="*secondLayerLoop"]
@@ -114,7 +117,7 @@ f.secondLayerButtons = [
   ; y座標計算。範囲を(ボタン数+1)等分し、上限点と下限点を除く点に順番に配置することで、常に間隔が均等になる。式 = (範囲下限 * (tf.cnt + 1)) / (tf.buttonCount + 1) + (範囲上限)
   [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (tf.cnt + 1)) / (tf.buttonCount + 1) + BUTTON_RANGE_Y_UPPER"]
 
-  [glink  color="blue" size="28" width="200" x="670" y="&tf.y" text="&f.secondLayerButtons[tf.cnt].text" target="&f.secondLayerButtons[tf.cnt].target"]
+  [glink color="btn_voivo" size="26" width="300" x="670" y="&tf.y" text="&f.secondLayerButtons[tf.cnt].text" target="&f.secondLayerButtons[tf.cnt].target"]
 
   [jump target="*secondLayerLoopEnd" cond="tf.cnt == (tf.buttonCount - 1)"]
   [eval exp="tf.cnt++"]
@@ -124,13 +127,13 @@ f.secondLayerButtons = [
 ; 第一階層用背景を出力
 ; top要素は、一番上のボタンから-20px分の余白をとった位置とする
 [eval exp="tf.top = BUTTON_RANGE_Y_LOWER / (tf.buttonCount + 1) + BUTTON_RANGE_Y_UPPER - 20"]
-[html left="650" top="&tf.top" name="second_action_window"]
+[html left="650" top="&tf.top" name="right_button_window"]
 [endhtml]
 
 [iscript]
 ; TODO height要素の計算方法を再考する。ボタン数によって余白がまちまちになる。heightはtopからの相対距離なのを意識すること。
 tf.height =  (tf.y + 10) + 'px';
-$('.second_action_window').css({
+$('.right_button_window').css({
   'width': '340px',
   'height': tf.height,
 })

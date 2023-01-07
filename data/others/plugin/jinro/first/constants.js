@@ -74,4 +74,5 @@ const ARITHMETIC_MULTIPLICATION = 'multiplication'; // 現在の値に乗算す�
 // 設定値
 // ボタン配置範囲
 const BUTTON_RANGE_Y_UPPER = -25 // 上限
-const BUTTON_RANGE_Y_LOWER = 505 // 下限
+const BUTTON_RANGE_Y_LOWER = 515 // 下限
+const BUTTON_MARGIN_HEIGHT = 25 // ボタンの上下の余白
