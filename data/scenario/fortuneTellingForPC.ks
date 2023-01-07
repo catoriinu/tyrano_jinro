@@ -2,10 +2,10 @@
 *fortuneTellingForPC
 
   ; 占い候補のキャラオブジェクト配列を取得
-  [eval exp="tf.candidateObjects = f.characterObjects[f.playerCharacterId].role.getCandidateObjects(f.playerCharacterId)"]
+  [eval exp="tf.candidateCharacterObjects = f.characterObjects[f.playerCharacterId].role.getCandidateCharacterObjects(f.playerCharacterId)"]
 
   ; 占い候補からボタンを生成。ボタン入力を受け付ける
-  [call storage="./jinroSubroutines.ks" target="*glinkFromCandidateObjects"]
+  [call storage="./jinroSubroutines.ks" target="*glinkFromCandidateCharacterObjects"]
 
   ; 占い実行。占い結果をtf.todayResultObjectに格納する
   [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" characterId="&tf.targetCharacterId"]
@@ -25,10 +25,10 @@
   [endif]
 
   ; 騙り占い候補のキャラオブジェクト配列を取得。指定された日の夜時間開始時の生存者を参照する。
-  [eval exp="tf.candidateObjects = f.characterObjects[f.playerCharacterId].fakeRole.getCandidateObjects(f.playerCharacterId, tf.fortuneTelledDay)"]
+  [eval exp="tf.candidateCharacterObjects = f.characterObjects[f.playerCharacterId].fakeRole.getCandidateCharacterObjects(f.playerCharacterId, tf.fortuneTelledDay)"]
 
   ; 騙り占い候補からボタンを生成。ボタン入力を受け付ける
-  [call storage="./jinroSubroutines.ks" target="*glinkFromCandidateObjects"]
+  [call storage="./jinroSubroutines.ks" target="*glinkFromCandidateCharacterObjects"]
 
   ; 騙り占い先のキャラクター名をメッセージに表示する
   [m_displayFakeFortuneTellingTarget]

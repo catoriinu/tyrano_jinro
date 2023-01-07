@@ -331,18 +331,18 @@
 
 [iscript]
   ; 生存者である、かつプレイヤー以外のキャラクターオブジェクトを選択肢候補変数に格納する。
-  tf.candidateObjects = getCharacterObjectsFromCharacterIds(
+  tf.candidateCharacterObjects = getCharacterObjectsFromCharacterIds(
     getSurvivorObjects(f.characterObjects),
     [f.playerCharacterId],
     false
   );
 
   ; TODO ……のが正しいが、テスト用に生存者全員を投票対象にしておく。
-  tf.candidateObjects = getSurvivorObjects(f.characterObjects);
+  tf.candidateCharacterObjects = getSurvivorObjects(f.characterObjects);
 [endscript]
 
 ; 選択肢ボタン表示と入力受付
-[call storage="./jinroSubroutines.ks" target="*glinkFromCandidateObjects"]
+[call storage="./jinroSubroutines.ks" target="*glinkFromCandidateCharacterObjects"]
 
 ; キャラ画像解放
 [freeimage layer="1" time=400 wait="false"]
@@ -462,14 +462,14 @@
 
       [iscript]
         ; 夜時間開始時の生存者である、かつ人狼以外のキャラクターオブジェクトを選択肢候補変数に格納する。
-        tf.candidateObjects = getIsWerewolvesObjects(
+        tf.candidateCharacterObjects = getIsWerewolvesObjects(
           getSurvivorObjects(f.characterObjectsHistory[f.day]),
           false
         );
       [endscript]
 
       ; 選択肢ボタン表示と入力受付
-      [call storage="./jinroSubroutines.ks" target="*glinkFromCandidateObjects"]
+      [call storage="./jinroSubroutines.ks" target="*glinkFromCandidateCharacterObjects"]
 
       ; 噛み実行
       [j_biting biterId="&f.playerCharacterId" characterId="&tf.targetCharacterId"]
