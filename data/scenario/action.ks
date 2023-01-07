@@ -1,34 +1,50 @@
+; アクションボタンサブルーチン
 *start
+; 一時変数の初期化
+[eval exp="tf.noNeedStop = false"]
+[eval exp="f.selectedActionId = ''"]
+[eval exp="f.selectedCharacterId = ''"]
 
 *firstLayer
+; 第1階層のボタンを表示
 [call target="*displayFirstLayerButtons"]
+
+; 第1階層のボタン押下結果によって次の第2階層のボタンを出し分ける
+[jump target="*targetLayer" cond="f.selectedActionId == 'suspect'"]
+[jump target="*targetLayer" cond="f.selectedActionId == 'trust'"]
+[jump target="*targetLayer" cond="f.selectedActionId == 'ask'"]
+; 当てはまるラベルがない（＝キャンセル）場合はアクション終了
+[jump target="*end"]
 [s]
 
 *targetLayer
-; 第２階層を表示するときにも第１階層を表示する。別の第一階層ボタンも押せるように。
+; 第2階層を表示するときにも第1階層を表示する。別の第1階層ボタンも押せるように。
+[eval exp="tf.noNeedStop = true"]
 [call target="*displayFirstLayerButtons"]
 [call target="*displaySecondLayerButtons"]
-[s]
 
-*roleLayer
-; 第２階層を表示するときにも第１階層を表示する。別の第一階層ボタンも押せるように。
-[call target="*displayFirstLayerButtons"]
-[call target="*displayRoleLayerButtons"]
+; 第2階層のボタンを押下した場合（＝キャラクターIDが格納済みの場合）、アクション終了
+[jump target="*end" cond="f.selectedCharacterId != ''"]
+; 第1階層のボタン押下結果によって次の第2階層のボタンを出し分ける
+[jump target="*targetLayer" cond="f.selectedActionId == 'suspect'"]
+[jump target="*targetLayer" cond="f.selectedActionId == 'trust'"]
+[jump target="*targetLayer" cond="f.selectedActionId == 'ask'"]
+; 当てはまるラベルがない（＝キャンセル）場合はアクション終了
+[jump target="*end"]
 [s]
 
 *end
-
 [awakegame]
 [return]
 
 
 
-
+; 第1階層（左側。行動を選択する）のボタン表示サブルーチン
 *displayFirstLayerButtons
 [iscript]
 
 ; 「疑う」「信じる」「聞き出す」は基本セットとしておく
-f.firstLayerButtons = [
+tf.candidateObjects = [
   {id: "suspect", text: "疑う", target: "*targetLayer"},
   {id: "trust", text: "信じる", target: "*targetLayer"},
   {id: "ask", text: "聞き出す", target: "*targetLayer"}
@@ -36,60 +52,38 @@ f.firstLayerButtons = [
 
 ; TODO テストのため必ず表示 潜伏役職が残っているなら「COを促す」を表示
 if (false) {
-  f.firstLayerButtons.push({id: "prompt", text: "COを促す", target: "*roleLayer"});
+  tf.candidateObjects.push({id: "prompt", text: "COを促す", target: "*roleLayer"});
 }
 
 ; TODO テストのため必ず表示 プレイヤーがCO可能な場合「COする」を表示
 if (false) {
-  f.firstLayerButtons.push({id: "CO", text: "COする", target: "*roleLayer"});
+  tf.candidateObjects.push({id: "CO", text: "COする", target: "*roleLayer"});
 }
 
 ; TODO テストのため必ず表示 「キャンセル」を表示
-f.firstLayerButtons.push({id: "cancel", text: "キャンセル", target: "*end"});
+tf.candidateObjects.push({id: "cancel", text: "キャンセル", target: "*end"});
 
 [endscript]
 
-; ボタンのy軸を計算しつつ選択肢ボタン表示ループ
-[eval exp="tf.buttonCount = f.firstLayerButtons.length"]
-[eval exp="tf.cnt = 0"]
-*firstLayerLoopStart
-  ; y座標計算。範囲を(ボタン数+1)等分し、上限点と下限点を除く点に順番に配置することで、常に間隔が均等になる。式 = (範囲下限 * (tf.cnt + 1)) / (tf.buttonCount + 1) + (範囲上限)
-  [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (tf.cnt + 1)) / (tf.buttonCount + 1) + BUTTON_RANGE_Y_UPPER"]
+[eval exp="tf.side = 'left'"]
+[call storage="./jinroSubroutines.ks" target="*glinkFromCandidateObjects"]
 
-  [glink color="btn_voivo" size="26" width="300" x="300" y="&tf.y" text="&f.firstLayerButtons[tf.cnt].text" target="&f.firstLayerButtons[tf.cnt].target"]
-  
-  [jump target="*firstLayerLoopEnd" cond="tf.cnt == (tf.buttonCount - 1)"]
-  [eval exp="tf.cnt++"]
-  [jump target="*firstLayerLoopStart"]
-*firstLayerLoopEnd
-
-; 第一階層用背景を出力
-; top要素は、一番上のボタンから-20px分の余白をとった位置とする
-[eval exp="tf.top = BUTTON_RANGE_Y_LOWER / (tf.buttonCount + 1) + BUTTON_RANGE_Y_UPPER - 20"]
-[html left="282" top="&tf.top" name="left_button_window"]
-[endhtml]
-
-[iscript]
-; TODO height要素の計算方法を再考する。ボタン数によって余白がまちまちになる。heightはtopからの相対距離なのを意識すること。
-tf.height = (tf.y + 10) + 'px';
-$('.left_button_window').css({
-  'width': '340px',
-  'height': tf.height,
-})
-[endscript]
-
+; ボタン押下後の処理
+; 第1階層のボタンを押した場合、selectedActionIdに格納する
+[eval exp="f.selectedActionId = tf.targetButtonId"]
 [return]
 
 
+; 第2階層（右側。対象のキャラクターを選択する）のボタン表示サブルーチン
 *displaySecondLayerButtons
 [iscript]
-f.secondLayerButtons = [
-  {id: "hiyori", text: "ずんだもん", target: "*end"},
-  {id: "futaba", text: "フタバ", target: "*end"},
-  {id: "miki", text: "あいうえおか", target: "*end"},
-  {id: "futaba", text: "あいうえおかきくけこ", target: "*end"},
-  {id: "futaba", text: "ナースロボ_タイプT", target: "*end"},
-  {id: "futaba", text: "フタバ", target: "*end"},
+tf.candidateObjects = [
+  {id: "zundamon", text: "ずんだもん", target: "*end"},
+  {id: "metan", text: "四国めたん", target: "*end"},
+  {id: "tsumugi", text: "春日部つむぎ", target: "*end"},
+  {id: "hau", text: "あいうえおかきくけこ", target: "*end"},
+  {id: "ritsu", text: "波音リツ", target: "*end"},
+  {id: "typet", text: "ナースロボ_タイプT", target: "*end"},
 ];
 [endscript]
 [call target="*secondLayerLoop"]
@@ -99,7 +93,7 @@ f.secondLayerButtons = [
 
 *displayRoleLayerButtons
 [iscript]
-f.secondLayerButtons = [
+tf.candidateObjects = [
   {id: "fortuneTeller", text: "占い師", target: "*end"},
   {id: "hoge", text: "霊能者", target: "*end"},
 ]
@@ -108,35 +102,19 @@ f.secondLayerButtons = [
 [return]
 
 
+
 *secondLayerLoop
+[eval exp="tf.side = 'right'"]
+[call storage="./jinroSubroutines.ks" target="*glinkFromCandidateObjects"]
 
-; ボタンのy軸を計算しつつ選択肢ボタン表示ループ
-[eval exp="tf.buttonCount = f.secondLayerButtons.length"]
-[eval exp="tf.cnt = 0"]
-*secondLayerLoopStart
-  ; y座標計算。範囲を(ボタン数+1)等分し、上限点と下限点を除く点に順番に配置することで、常に間隔が均等になる。式 = (範囲下限 * (tf.cnt + 1)) / (tf.buttonCount + 1) + (範囲上限)
-  [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (tf.cnt + 1)) / (tf.buttonCount + 1) + BUTTON_RANGE_Y_UPPER"]
-
-  [glink color="btn_voivo" size="26" width="300" x="670" y="&tf.y" text="&f.secondLayerButtons[tf.cnt].text" target="&f.secondLayerButtons[tf.cnt].target"]
-
-  [jump target="*secondLayerLoopEnd" cond="tf.cnt == (tf.buttonCount - 1)"]
-  [eval exp="tf.cnt++"]
-  [jump target="*secondLayerLoopStart"]
-*secondLayerLoopEnd
-
-; 第一階層用背景を出力
-; top要素は、一番上のボタンから-20px分の余白をとった位置とする
-[eval exp="tf.top = BUTTON_RANGE_Y_LOWER / (tf.buttonCount + 1) + BUTTON_RANGE_Y_UPPER - 20"]
-[html left="650" top="&tf.top" name="right_button_window"]
-[endhtml]
-
-[iscript]
-; TODO height要素の計算方法を再考する。ボタン数によって余白がまちまちになる。heightはtopからの相対距離なのを意識すること。
-tf.height =  (tf.y + 10) + 'px';
-$('.right_button_window').css({
-  'width': '340px',
-  'height': tf.height,
-})
-[endscript]
-
+; ボタン押下後の処理
+; 第2階層表示中には第1階層のボタンも押下できる状態のため、第1第2どちらを押下されても対応できるように判定する
+[if exp="tf.targetSide == 'right'"]
+  ; 第1階層のボタンを押した場合、selectedCharacterIdに格納する
+  [eval exp="f.selectedCharacterId = tf.targetButtonId"]
+[elsif exp="tf.targetSide == 'left'"]
+  ; 第1階層のボタンを押した場合、selectedActionIdに格納する。selectedCharacterIdは空にして改めて第2階層までボタンを表示する
+  [eval exp="f.selectedActionId = tf.targetButtonId"]
+  [eval exp="f.selectedCharacterId = ''"]
+[endif]
 [return]
