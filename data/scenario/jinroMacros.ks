@@ -466,8 +466,22 @@
 [endmacro]
 
 
+; 議論フェーズ中、アクションボタンで指定された行動を実行する
+; @param characterId アクション実行するキャラクターID。必須
+; @param targetCharacterId アクション対象のキャラクターID。必須
+; @param actionId 実行するアクションID。必須
+[macro name="j_doAction"]
+
+  [m_doAction characterId="&mp.characterId" targetCharacterId="&mp.targetCharacterId" actionId="&mp.actionId"]
+  [m_doAction_reaction characterId="&mp.targetCharacterId" actionId="&mp.actionId"]
+
+; 信頼度増減
+
+[endmacro]
+
+
 ; 人狼メニュー画面に表示するための全占い師のCO状況テキストを生成する
-[macro name=j_getAllFortuneTellerCOText]
+[macro name="j_getAllFortuneTellerCOText"]
   ; TODO:これを表示したあと、2日目にプレイヤーが占う時にバグる。
   ; getCharacterObjectsFromCharacterIds()で、for (let k of Object.keys(characterObjects)) {の際にUncaught TypeError: Cannot convert undefined or null to object
   ; おそらくcharacterObjectsがnullになっている。人狼メニュー画面から戻った時にcharacterObjectsが初期化されるor読み込めない状態になっている？

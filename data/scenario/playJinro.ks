@@ -117,6 +117,33 @@
 [bg storage="living_day_nc238325.jpg" time="500"]
 [m_timePasses isDaytime="&f.isDaytime"]
 
+
+～試験用議論フェイズ～[r]
+～次までにアクション選択済みなら行動します～[p]
+
+; アクション選択済みかを判定する
+[iscript]
+  tf.needToDoAction = (function(cId, aId) {
+    if (
+      typeof cId == 'undefined' || cId == '' ||
+      typeof aId == 'undefined' || aId == '' || aId == 'cancel'
+    ) {
+      return false;
+    }
+    return true;
+  })(f.selectedCharacterId, f.selectedActionId)
+[endscript]
+[if exp="tf.needToDoAction"]
+  [j_doAction characterId="&f.playerCharacterId" targetCharacterId="&f.selectedCharacterId" actionId="&f.selectedActionId"]
+
+
+[endif]
+; NPCのアクション選択
+;[j_actionForNPC]
+; 誰が誰に何のアクションを起こすか
+; 規定回数ループさせる
+
+
 [m_changeFrameWithId]
 #
 ～COフェイズ～[p]

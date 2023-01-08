@@ -72,11 +72,52 @@
 [return]
 
 
+; doAction_{actionId}
+; NOTE：事前にtf.selectedCharacterIへの格納（PCならアクションボタンの実行、NPCならTODO）が必要。
+; シーン：「疑う」アクション実行時
+*doAction_suspect
+  [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+  もしかして[call target="changeIdToCallName"]が人狼なのだ……？[r]
+  そんな気がするのだ。[p]
+[return]
+
+; シーン：「信じる」アクション実行時
+*doAction_trust
+  [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+  僕は[call target="changeIdToCallName"]を信じてるのだ。[r]
+  きっと人狼じゃないのだ！[p]
+[return]
+
+; シーン：「聞き出す」アクション実行時
+*doAction_ask
+  [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+  [call target="changeIdToCallName"]にちょっと質問なのだ。[r]
+  今の状況をどう思うのだ？[p]
+[return]
+
+
+; doAction_reaction_{actionId}
+; シーン：「疑う」アクションの実行対象になった時
+*doAction_reaction_suspect
+  ぼ、僕は人狼じゃないのだっ！[p]
+[return]
+
+; シーン：「信じる」アクションの実行対象になった時
+*doAction_reaction_trust
+  信じてくれてありがとうなのだ！[p]
+[return]
+
+; シーン：「聞き出す」アクションの実行対象になった時
+*doAction_reaction_ask
+  もうなんにも分からないのだ……！[p]
+[return]
+
+
 ; chooseWhoToBite
 ; シーン：人狼で、誰を噛むか選ぶときのセリフ
 *chooseWhoToBite
   くくく、今夜は誰を食べてやろうか……[r]
-  いただきますなのだ！[p]
+  いただきまーすなのだ！[p]
 [return]
 
 
