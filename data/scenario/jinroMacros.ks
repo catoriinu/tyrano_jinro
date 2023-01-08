@@ -57,7 +57,7 @@
 ; @param day 占った日付。指定がない場合のデフォルトは当日。占い騙りのように前日の夜に占ったことを偽装する必要がある場合は指定すること。
 ; @param characterId 占う対象のID。入っているなら、実行者はプレイヤーである。入っていないなら実行者はNPCのため、メソッド内部で対象を決める。
 ; @param result プレイヤーかつ騙りの占い師の場合のみ必要。宣言する占い結果をbooleanまたはstringで渡す。
-[macro name=j_fortuneTelling]
+[macro name="j_fortuneTelling"]
   [iscript]
     ; jsに渡す引数の準備。マクロへの指定がなければデフォルト値を入れる
     const day = (typeof mp.day == 'undefined') ? f.day : parseInt(mp.day);
@@ -197,8 +197,8 @@
     } else {
       todayResult = f.characterObjects[mp.biterId].role.biting(mp.biterId);
     }
-    ; 噛まれたキャラクターの退場用にティラノの一時変数に入れておく
-    tf.targetCharacterId = todayResult.characterId;
+    ; 噛まれたキャラクターの退場用にティラノの変数に入れておく
+    f.targetCharacterId = todayResult.characterId;
 
     let resultMassage = todayResult.result ? f.characterObjects[todayResult.characterId].name + 'は無残な姿で発見された。' : '平和な朝を迎えた。';
     alert(resultMassage);
@@ -345,16 +345,16 @@
 [endmacro]
 
 
-; CO候補となるキャラクターID配列からCO候補者を一人決定し、tf.COCandidateIdに格納する。
+; CO候補となるキャラクターID配列からCO候補者を一人決定し、f.COCandidateIdに格納する。
 ; @param characterIds CO候補となるキャラクターID配列（NPCかつ生存者を想定）。必須
-[macro name=j_decideCOCandidateId]
+[macro name="j_decideCOCandidateId"]
   [iscript]
     ; TODO:直前（PC、NPCどちらも）のCOの内容によって、各キャラ内のCOしたい度が変動するようにする
 
     ; キャラクターID配列を回してCOできる役職かつisDoneTodaysCOがfalseであれば、isCOMyRoll()を噛ませる。
     let maxProbability = 0;
     let COCandidateIdArray = [];
-    tf.COCandidateId = '';
+    f.COCandidateId = '';
     for (let i = 0; i < mp.characterIds.length; i++) {
       if (f.characterObjects[mp.characterIds[i]].role.allowCO && !f.characterObjects[mp.characterIds[i]].isDoneTodaysCO) {
         console.log('キャラクターID: ' + mp.characterIds[i]);
@@ -368,13 +368,13 @@
     }
     ; CO候補配列に候補が1人ならその対象を、複数ならランダムで、COするキャラクターIDに決定する。0人の場合は空文字を返す。
     if (COCandidateIdArray.length == 1) {
-      tf.COCandidateId = COCandidateIdArray[0];
+      f.COCandidateId = COCandidateIdArray[0];
     } else if (COCandidateIdArray.length >= 2) {
-      tf.COCandidateId = getRandomElement(COCandidateIdArray);
+      f.COCandidateId = getRandomElement(COCandidateIdArray);
     }
     
     if (f.developmentMode) {
-      //alert('CO判定結果 キャラクターID:' + tf.COCandidateId + ' maxProbability:' + maxProbability);
+      //alert('CO判定結果 キャラクターID:' + f.COCandidateId + ' maxProbability:' + maxProbability);
     }
     
   [endscript]
@@ -424,7 +424,7 @@
 [macro name="j_cutin1"]
 
     ;[image layer="1" x="0" y="150" width="1280" height="200" time="700" wait="false" storage="cutin.gif" name="cutin"]
-    [playse storage="speedy.ogg" volume="40"]
+    [playse storage="シャキーン1.ogg" volume="40"]
     ;[image layer="1" x="-1000" y="160" height="180" visible="true" reflect="true" storage="00_angry_eye.png" name="00"]
     ;[anim name="00" left=100 time=700]
     ;[wait time=700]

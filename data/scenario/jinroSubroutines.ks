@@ -1,4 +1,4 @@
-; tf.candidateCharacterObjectsに入っているキャラクター名をボタン化し、押したcharacterIdをtf.targetCharacterIdに格納するサブルーチン
+; tf.candidateCharacterObjectsに入っているキャラクター名をボタン化し、押したcharacterIdをf.targetCharacterIdに格納するサブルーチン
 *glinkFromCandidateCharacterObjects
 
 ; 選択肢ボタン表示ループ
@@ -30,7 +30,7 @@
       const enterCharacterId = classList.find(className => className.match(/^chara_(.*)$/)).match(/^chara_(.*)$/)[1];
 
       ; 最後にホバーしていたキャラ=ボタンを押下したキャラになるため、ここで選択したキャラクターIDを格納しておく
-      tf.targetCharacterId = enterCharacterId;
+      f.targetCharacterId = enterCharacterId;
 
       ; 表示中のキャラを画面外に出してから、ホバーされたキャラを登場させる
       changeCharacter(enterCharacterId, 'normal', f.defaultPosition[enterCharacterId].side);
@@ -60,6 +60,7 @@ $('.center_button_window').css('height', tf.height);
 ; 選択した（＝最後のボタンホバー時に表示していた）キャラクターを退場させる
 ; TODO TypeError: Cannot read property 'side' of undefinedになる。rightSideCharacterIdがnullと思われる。
 ; ボタン押下直後にhoverが外れたときのルートに入り、exitCharacter()済みになっているのかも。だとするとなぜ退場していないのかが気になるが……。
+; MEMO:tfを参照していたせいで、サブルーチンから戻ると消えてしまっていたのかもしれない。
 ; [m_exitCharacter characterId="tf.targetCharacterId"]
 
 [return]
@@ -121,8 +122,8 @@ $('.center_button_window').css('height', tf.height);
       ; 最後にホバーしていたボタン=押下したボタンになる。どのサイドのボタンかと、押下したボタンのIDを格納しておく
       const classNameReg = new RegExp('^(.*)_buttonclass_(.*)$');
       const regResult = classList.find(className => className.match(classNameReg)).match(classNameReg);
-      tf.targetSide = regResult[1];
-      tf.targetButtonId = regResult[2];
+      f.targetSide = regResult[1];
+      f.targetButtonId = regResult[2];
       
       ; glinkのenterse属性だと細かい設定ができないため独自に設定（特にbufがデフォルトだと他で鳴っている効果音を打ち消してしまう）
       TYRANO.kag.ftag.startTag("playse",{storage:"botan_b34.ogg",volume:60,buf:1});

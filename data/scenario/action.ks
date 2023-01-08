@@ -70,7 +70,7 @@ tf.candidateObjects.push({id: "cancel", text: "キャンセル", target: "*end"}
 
 ; ボタン押下後の処理
 ; 第1階層のボタンを押した場合、selectedActionIdに格納する
-[eval exp="f.selectedActionId = tf.targetButtonId"]
+[eval exp="f.selectedActionId = f.targetButtonId"]
 [return]
 
 
@@ -81,9 +81,9 @@ tf.candidateObjects = [
   {id: "zundamon", text: "ずんだもん", target: "*end"},
   {id: "metan", text: "四国めたん", target: "*end"},
   {id: "tsumugi", text: "春日部つむぎ", target: "*end"},
-  {id: "hau", text: "あいうえおかきくけこ", target: "*end"},
+  {id: "hau", text: "雨晴はう", target: "*end"},
   {id: "ritsu", text: "波音リツ", target: "*end"},
-  {id: "typet", text: "ナースロボ_タイプT", target: "*end"},
+  {id: "typet", text: "六人表示が限界みたい", target: "*end"},
 ];
 [endscript]
 [call target="*secondLayerLoop"]
@@ -109,12 +109,12 @@ tf.candidateObjects = [
 
 ; ボタン押下後の処理
 ; 第2階層表示中には第1階層のボタンも押下できる状態のため、第1第2どちらを押下されても対応できるように判定する
-[if exp="tf.targetSide == 'right'"]
+[if exp="f.targetSide == 'right'"]
   ; 第1階層のボタンを押した場合、selectedCharacterIdに格納する
-  [eval exp="f.selectedCharacterId = tf.targetButtonId"]
-[elsif exp="tf.targetSide == 'left'"]
+  [eval exp="f.selectedCharacterId = f.targetButtonId"]
+[elsif exp="f.targetSide == 'left'"]
   ; 第1階層のボタンを押した場合、selectedActionIdに格納する。selectedCharacterIdは空にして改めて第2階層までボタンを表示する
-  [eval exp="f.selectedActionId = tf.targetButtonId"]
+  [eval exp="f.selectedActionId = f.targetButtonId"]
   [eval exp="f.selectedCharacterId = ''"]
 [endif]
 [return]

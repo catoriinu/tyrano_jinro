@@ -8,7 +8,7 @@
   [call storage="./jinroSubroutines.ks" target="*glinkFromCandidateCharacterObjects"]
 
   ; 占い実行。占い結果をtf.todayResultObjectに格納する
-  [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" characterId="&tf.targetCharacterId"]
+  [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" characterId="&f.targetCharacterId"]
 
 [return]
 
@@ -42,7 +42,7 @@
 
   ; 騙り占い実行。占い結果をtf.todayResultObjectに格納する
   *doFakeFortuneTelling
-  [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" day="&tf.fortuneTelledDay" characterId="&tf.targetCharacterId" result="&tf.declarationResult"]
+  [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" day="&tf.fortuneTelledDay" characterId="&f.targetCharacterId" result="&tf.declarationResult"]
   [m_displayFakeFortuneTellingResult result="&tf.declarationResult"]
 
 [return]

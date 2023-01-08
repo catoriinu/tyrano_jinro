@@ -227,11 +227,11 @@
   [eval exp="f.gottenSurviveNpcCharacterIds = true"]
 [endif]
 
-; CO候補者を決定し、tf.COCandidateIdに格納する
-[j_decideCOCandidateId characterIds=&f.surviveNpcCharacterIds]
+; CO候補者を決定し、f.COCandidateIdに格納する
+[j_decideCOCandidateId characterIds="&f.surviveNpcCharacterIds"]
 
-; tf.COCandidateIdが空（＝CO候補者がいない）なら、
-[if exp="tf.COCandidateId == ''"]
+; f.COCandidateIdが空（＝CO候補者がいない）なら、
+[if exp="f.COCandidateId == ''"]
   ; NPCのCO候補者がいないフラグをtrueにする
   [eval exp="f.notExistCOCandidateNPC = true"]
   [m_changeFrameWithId]
@@ -252,23 +252,23 @@
   [eval exp="f.notExistCOCandidateNPC = false"]
 
   ; 占い騙りがまだなら、騙り役職オブジェクトを取得し、昨夜までの分を占ってからCOする
-  [j_setCanCOFortuneTellerStatus characterId="&tf.COCandidateId"]
+  [j_setCanCOFortuneTellerStatus characterId="&f.COCandidateId"]
   [if exp="tf.canCOFortuneTellerStatus == 3"]
-    [j_assignmentFakeRole characterId="&tf.COCandidateId" roleId="fortuneTeller"]
-    [j_fakeFortuneTellingCOMultipleDays fortuneTellerId="&tf.COCandidateId"]
+    [j_assignmentFakeRole characterId="&f.COCandidateId" roleId="fortuneTeller"]
+    [j_fakeFortuneTellingCOMultipleDays fortuneTellerId="&f.COCandidateId"]
   [endif]
 
   ; 占いカットイン発生
   [j_cutin1]
 
   ; 指定した占い師の最新の占い履歴オブジェクトをtf.fortuneTellingHistoryObjectに格納する
-  [j_fortuneTellingHistoryObjectThatDay fortuneTellerId="&tf.COCandidateId"]
+  [j_fortuneTellingHistoryObjectThatDay fortuneTellerId="&f.COCandidateId"]
   
   ; ホバー時用の画像を画面外からスライドインさせる TODO ボタンごとにキャラに合わせた画像を表示する
   ;[image layer="1" x="1280" y="80" visible="true" storage="01_sad.png" name="01"]
   ;[anim name="01" left=850 time=350]
 
-  [m_COFortuneTellingResult characterId="&tf.COCandidateId" result="&tf.fortuneTellingHistoryObject.result"]
+  [m_COFortuneTellingResult characterId="&f.COCandidateId" result="&tf.fortuneTellingHistoryObject.result"]
 
   ; 占いカットイン解放
   [freeimage layer="1" time=400 wait="false"]
@@ -276,17 +276,17 @@
   ; TODO: どのように、前のCO内容を次のCOの確率に影響させるか？　今日のCO内容をどこかの配列に保存しておく必要がありそう？
 
   ; 今日のCOが終わったキャラはisDoneTodaysCOをtrueにする
-  [eval exp="f.characterObjects[tf.COCandidateId].isDoneTodaysCO = true"]
+  [eval exp="f.characterObjects[f.COCandidateId].isDoneTodaysCO = true"]
 
   ; 初回CO時のみの処理
   [if exp="tf.canCOFortuneTellerStatus == 1 || tf.canCOFortuneTellerStatus == 3"]
     ; キャラクターオブジェクトにCOした役職IDを格納する
-    [eval exp="f.characterObjects[tf.COCandidateId].CORoleId = ROLE_ID_FORTUNE_TELLER"]
+    [eval exp="f.characterObjects[f.COCandidateId].CORoleId = ROLE_ID_FORTUNE_TELLER"]
 
     ; 共通および各キャラの視点オブジェクトを更新する
-    [j_cloneRolePerspectiveForCO characterId="&tf.COCandidateId" CORoleId="fortuneTeller"]
+    [j_cloneRolePerspectiveForCO characterId="&f.COCandidateId" CORoleId="fortuneTeller"]
     [eval exp="tf.tmpZeroRoleIds = [ROLE_ID_VILLAGER]"]
-    [j_updateCommonPerspective characterId="&tf.COCandidateId" zeroRoleIds="&tf.tmpZeroRoleIds"]
+    [j_updateCommonPerspective characterId="&f.COCandidateId" zeroRoleIds="&tf.tmpZeroRoleIds"]
   [endif]
 ; TODO 占い結果を聞いて、各キャラのrolePerspectiveで真偽をつける
 
@@ -349,7 +349,7 @@
 
 ; ボタンで選択した投票先キャラクターIDを、プレイヤーの投票履歴に入れる
 [iscript]
-  f.characterObjects[f.playerCharacterId].voteHistory[f.day] = pushElement(f.characterObjects[f.playerCharacterId].voteHistory[f.day], tf.targetCharacterId);
+  f.characterObjects[f.playerCharacterId].voteHistory[f.day] = pushElement(f.characterObjects[f.playerCharacterId].voteHistory[f.day], f.targetCharacterId);
 [endscript]
 
 *skipPlayerVote
@@ -375,13 +375,13 @@
       [jump target="*gameOver"]
     [endif]
   [else]
-    [eval exp="tf.targetCharacterId = f.electedIdList[0]"]
+    [eval exp="f.targetCharacterId = f.electedIdList[0]"]
   [endif]
 [endif]
 
 ; 処刑セリフと処刑処理（TODO 今はこの順番だが、処刑ごとの演出がどうなるかによっては逆にしてもいい）
-[m_executed characterId="&tf.targetCharacterId"]
-[j_execution characterId="&tf.targetCharacterId"]
+[m_executed characterId="&f.targetCharacterId"]
+[j_execution characterId="&f.targetCharacterId"]
 
 ; 処刑後の反応（TODO 誰が発言するかを決定するマクロ等が必要）
 [if exp="f.characterObjects.ai.isAlive"]
@@ -472,8 +472,8 @@
       [call storage="./jinroSubroutines.ks" target="*glinkFromCandidateCharacterObjects"]
 
       ; 噛み実行
-      [j_biting biterId="&f.playerCharacterId" characterId="&tf.targetCharacterId"]
-      [m_exitCharacter characterId="&tf.targetCharacterId"]
+      [j_biting biterId="&f.playerCharacterId" characterId="&f.targetCharacterId"]
+      [m_exitCharacter characterId="&f.targetCharacterId"]
 
       ; キャラ画像解放
       [freeimage layer="1" time=400 wait="false"]
@@ -495,8 +495,8 @@ NPCが行動しています……[p]
 ; 噛み未実行なら（＝PCが人狼ではないなら）噛み実行
 [if exp="!f.isBiteEnd"]
   [j_nightPhaseBitingForNPC]
-  ; 噛まれたキャラクターを退場させる（噛み実行マクロ内でtf.targetCharacterIdは格納済み）
-  [m_exitCharacter characterId="&tf.targetCharacterId"]
+  ; 噛まれたキャラクターを退場させる（噛み実行マクロ内でf.targetCharacterIdは格納済み）
+  [m_exitCharacter characterId="&f.targetCharacterId"]
 [endif]
 
 ; 勝敗判定
