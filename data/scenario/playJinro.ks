@@ -39,6 +39,66 @@
 #
 人狼ゲームの幕開けです……！[p]
 
+オブジェクト書き込みテストを行います。[p]
+
+[iscript]
+  f.hogehoge = new Character('dummy', 'villager');
+  ; tyrano.plugin.kag.stat.f.hogehoge = new Character('dummy', 'villager');
+  ; TYRANO.kag.stat.f.hogehoge = new Character('dummy', 'villager');
+  ;TYRANO_VAR_F.hogehoge = new Character('dummy', 'villager');
+[endscript]
+[iscript]
+  console.log('tyrano.plugin.kag.stat.f');
+  console.log(tyrano.plugin.kag.stat.f);
+  console.log('TYRANO.kag.stat.f');
+  console.log(TYRANO.kag.stat.f);
+[endscript]
+
+f.hogehogeにキャラクターオブジェクトを格納しました。[r]
+それではembで表示してみましょう。[p]
+
+f.hogehoge.role.testPropは「[emb exp="f.hogehoge.role.testProp"]」です[r]
+tyrano.plugin.kag.stat.f.hogehoge.role.testPropは「[emb exp="tyrano.plugin.kag.stat.f.hogehoge.role.testProp"]」です[r]
+TYRANO.kag.stat.f.hogehoge.role.testPropは「[emb exp="TYRANO.kag.stat.f.hogehoge.role.testProp"]」です[p]
+
+evalでtestFunc()を実行してみます。[p]
+
+f.hogehoge.role.testFuncで実行しました[eval exp="f.hogehoge.role.testFunc()"][r]
+tyrano.plugin.kag.stat.f.hogehoge.role.testFuncで実行しました[eval exp="tyrano.plugin.kag.stat.f.hogehoge.role.testFunc()"][r]
+TYRANO.kag.stat.f.hogehoge.role.testFuncで実行しました[eval exp="TYRANO.kag.stat.f.hogehoge.role.testFunc()"][p]
+
+
+ゲーム変数書き込みテストを行います。[p]
+
+; iscriptで実行するのと同じだった
+; [eval exp="f.hogehoge = 'ほげ'"]
+; [eval exp="TYRANO_VAR_F.hogehoge = 'ほげ'"]
+[iscript]
+  f.hogehoge = 'ほげ'
+  ; tyrano.plugin.kag.stat.f.hogehoge = 'ほげ'
+  ; TYRANO.kag.stat.f.hogehoge = 'ほげ'
+
+  ; NG fixボタンの中でglinkボタンを押して戻ってきた後、この書き方だとTYRANO.kag.stat.fの方に格納されなくなる。fで参照するのはTYRANO.kag.stat.fなので、undefinedになる
+  ; これでもNG
+  ; const TYRANO_VAR_F = tyrano.plugin.kag.stat.f
+  ; これでもNG なぜかtyrano.plugin.kag.stat.fと同じ結果に変わった
+  ; const TYRANO_VAR_F = TYRANO.kag.stat.f
+  ; TYRANO_VAR_F.hogehoge = 'ほげ'
+[endscript]
+
+[iscript]
+  console.log('tyrano.plugin.kag.stat.f');
+  console.log(tyrano.plugin.kag.stat.f);
+  console.log('TYRANO.kag.stat.f');
+  console.log(TYRANO.kag.stat.f);
+[endscript]
+f.hogehogeに「ほげ」と書き込みました。[r]
+それではembで表示してみましょう。[p]
+
+f.hogehogeは「[emb exp="f.hogehoge"]」です[r]
+tyrano.plugin.kag.stat.f.hogehogeは「[emb exp="tyrano.plugin.kag.stat.f.hogehoge"]」です[r]
+TYRANO.kag.stat.f.hogehogeは「[emb exp="TYRANO.kag.stat.f.hogehoge"]」です[p]
+
 *day0_nightPhase
 
 ; 夜時間開始時に、夜時間中に参照するためのcharacterObjectを複製する。占い、噛みなどの記録は本物のf.characterObjectsに更新していく。
