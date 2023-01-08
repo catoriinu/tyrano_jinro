@@ -145,7 +145,7 @@ $('.' + tf.class).css('height', tf.height);
 [endif]
 
 *glinkFromCandidateObjects_end
-[eval exp="console.log('button clicked id=' + tf.targetButtonId)"]
+[eval exp="console.log('button clicked id=' + f.targetButtonId)"]
 
 ; 一時変数の初期化
 [eval exp="tf.side = ''"]
