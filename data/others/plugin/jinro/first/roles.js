@@ -21,7 +21,12 @@ function Role(roleId, roleName, camp, isWerewolves, allowCO) {
  * @classdec 村人クラス（個別の役職クラス）
  */
 function Villager() {
-  return new Role (ROLE_ID_VILLAGER, '村人', 0, false, false);
+  const roleObject = new Role (ROLE_ID_VILLAGER, '村人', 0, false, false);
+  roleObject.testProp = 'テスト';
+  roleObject.testFunc = function () {
+    console.log('★do testFunc★');
+  }
+  return roleObject;
 }
 
 
