@@ -247,7 +247,7 @@
     f.characterObjects[mp.characterId].perspective = organizePerspective (
       f.commonPerspective,
       mp.characterId,
-      TYRANO_VAR_F.uniqueRoleIdList.filter(rId => (rId != mp.roleId))
+      f.uniqueRoleIdList.filter(rId => (rId != mp.roleId))
     );
   [endscript]
 [endmacro]

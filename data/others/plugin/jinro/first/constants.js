@@ -1,10 +1,5 @@
 // 定数定義
 
-// ティラノ変数オブジェクト
-const TYRANO_VAR_F  = tyrano.plugin.kag.stat.f; // ゲーム変数
-const TYRANO_VAR_SF = tyrano.plugin.kag.variable.sf; // システム変数
-const TYRANO_VAR_TF = tyrano.plugin.kag.variable.tf; // 一時変数
-
 // キャラクターID
 const CHARACTER_ID_AI     = 'ai'; // アイ
 const CHARACTER_ID_HIYORI = 'hiyori'; // ヒヨリ
@@ -73,6 +68,6 @@ const ARITHMETIC_MULTIPLICATION = 'multiplication'; // 現在の値に乗算す�
 
 // 設定値
 // ボタン配置範囲
-const BUTTON_RANGE_Y_UPPER = -25 // 上限
+const BUTTON_RANGE_Y_UPPER = -20 // 上限
 const BUTTON_RANGE_Y_LOWER = 515 // 下限
-const BUTTON_MARGIN_HEIGHT = 25 // ボタンの上下の余白
+const BUTTON_MARGIN_HEIGHT = 30 // ボタンの上下の余白

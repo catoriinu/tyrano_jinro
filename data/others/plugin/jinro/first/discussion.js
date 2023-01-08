@@ -6,7 +6,7 @@
  */
 function isCOMyRoll(characterId) {
   // キャラクターオブジェクトを取得する
-  const characterObject = TYRANO_VAR_F.characterObjects[characterId];
+  const characterObject = TYRANO.kag.stat.f.characterObjects[characterId];
 
   // COする可能性がある役職についているか
   if (characterObject.role.roleId in characterObject.personality.roleCOProbability) {
@@ -273,34 +273,34 @@ function updateCommonPerspective(characterId, zeroRoleIds) {
   // 共通視点オブジェクトを更新する
   console.log('【共通視点】');
   try {
-    TYRANO_VAR_F.commonPerspective = organizePerspective(TYRANO_VAR_F.commonPerspective, characterId, zeroRoleIds);
+    TYRANO.kag.stat.f.commonPerspective = organizePerspective(TYRANO.kag.stat.f.commonPerspective, characterId, zeroRoleIds);
   } catch (error) {
     console.log('共通視点オブジェクトが破綻しました美味しい水そうめん');
     console.log(characterId);
     console.log(zeroRoleIds);
-    console.log(TYRANO_VAR_F.commonPerspective);
+    console.log(TYRANO.kag.stat.f.commonPerspective);
     alert('共通視点オブジェクトが破綻しました美味しい水そうめん');
     return;
   }
 
   // 各キャラの視点オブジェクトも更新する
-  for (let cId of Object.keys(TYRANO_VAR_F.characterObjects)) {
+  for (let cId of Object.keys(TYRANO.kag.stat.f.characterObjects)) {
     console.log('【' + cId + 'の視点】');
-    console.log(TYRANO_VAR_F.characterObjects[cId].perspective);
+    console.log(TYRANO.kag.stat.f.characterObjects[cId].perspective);
     
     try {
-      TYRANO_VAR_F.characterObjects[cId].perspective = organizePerspective(TYRANO_VAR_F.characterObjects[cId].perspective, characterId, zeroRoleIds);
-      TYRANO_VAR_F.characterObjects[cId].role.rolePerspective = organizePerspective(TYRANO_VAR_F.characterObjects[cId].role.rolePerspective, characterId, zeroRoleIds);
+      TYRANO.kag.stat.f.characterObjects[cId].perspective = organizePerspective(TYRANO.kag.stat.f.characterObjects[cId].perspective, characterId, zeroRoleIds);
+      TYRANO.kag.stat.f.characterObjects[cId].role.rolePerspective = organizePerspective(TYRANO.kag.stat.f.characterObjects[cId].role.rolePerspective, characterId, zeroRoleIds);
     } catch (error) {
-      if (TYRANO_VAR_F.developmentMode) {
+      if (TYRANO.kag.stat.f.developmentMode) {
         alert(cId + 'の視点が破綻しました！');
       }
       // 破綻フラグを立てる
-      TYRANO_VAR_F.characterObjects[cId].isContradicted = true;
+      TYRANO.kag.stat.f.characterObjects[cId].isContradicted = true;
       // ここで破綻したら、共通視点オブジェクトで上書きする&自分自身を嘘がつける役職（TODO:「嘘をつかない役職配列」をメソッドで取り出せるようにする）だったということで確定する。
       // （試しに）updateCommonPerspectiveを再帰呼び出しして共通および全員の視点オブジェクトを更新する
-      TYRANO_VAR_F.characterObjects[cId].perspective = clone(TYRANO_VAR_F.commonPerspective);
-      TYRANO_VAR_F.characterObjects[cId].role.rolePerspective= clone(TYRANO_VAR_F.commonPerspective);
+      TYRANO.kag.stat.f.characterObjects[cId].perspective = clone(TYRANO.kag.stat.f.commonPerspective);
+      TYRANO.kag.stat.f.characterObjects[cId].role.rolePerspective= clone(TYRANO.kag.stat.f.commonPerspective);
       updateCommonPerspective(cId, [ROLE_ID_VILLAGER, ROLE_ID_FORTUNE_TELLER]);
     }
   }
@@ -368,7 +368,7 @@ function decideVote(characterObjects, day) {
 
     // 投票対象者をその日の投票履歴に格納する
     characterObjects[characterId].voteHistory[day] = pushElement(characterObjects[characterId].voteHistory[day], voteTargetId);
-    TYRANO_VAR_F.characterObjects = characterObjects;
+    TYRANO.kag.stat.f.characterObjects = characterObjects;
     //console.log('【voteHistory】');
     //console.log(characterId);
     //console.log(characterObjects[characterId].voteHistory);
@@ -385,8 +385,8 @@ function decideVote(characterObjects, day) {
 function calcSameFactionPossivility(characterObject, perspective) {
 
   let sameFactionPossivility = {};
-  for (let i = 0; i < TYRANO_VAR_F.participantsIdList.length; i++) {
-    let cId = TYRANO_VAR_F.participantsIdList[i];
+  for (let i = 0; i < TYRANO.kag.stat.f.participantsIdList.length; i++) {
+    let cId = TYRANO.kag.stat.f.participantsIdList[i];
     // 自分自身は1で確定
     if (characterObject.characterId == cId) {
       sameFactionPossivility[cId] = 1;
@@ -395,8 +395,8 @@ function calcSameFactionPossivility(characterObject, perspective) {
 
     let sumSameFactionPerspective = 0;
     // 重複のない村の役職ID配列をもとに全役職をループ
-    for (let j = 0; j < TYRANO_VAR_F.uniqueRoleIdList.length; j++) {
-      let rId = TYRANO_VAR_F.uniqueRoleIdList[j];
+    for (let j = 0; j < TYRANO.kag.stat.f.uniqueRoleIdList.length; j++) {
+      let rId = TYRANO.kag.stat.f.uniqueRoleIdList[j];
       // 自分と同陣営の役職のperspectiveの割合値を合計する（自分視点で必ず同陣営なら1、必ず敵陣営なら0）
       if (ROLE_ID_TO_FACTION[characterObject.role.roleId] == ROLE_ID_TO_FACTION[rId]) {
         sumSameFactionPerspective += perspective[cId][rId];
@@ -423,7 +423,7 @@ function calcSameFactionPossivility(characterObject, perspective) {
 function countVote(characterObjects, day) {
 
   // 投票結果オブジェクトを初期化（0票だったキャラはキー自体入らないままとなる）
-  TYRANO_VAR_F.voteResult = {};
+  TYRANO.kag.stat.f.voteResult = {};
   for (let characterId of Object.keys(characterObjects)) {
     // 投票履歴オブジェクトのその日の投票先配列を確認
     // 配列でなければ、投票していないのでスルー
@@ -432,10 +432,10 @@ function countVote(characterObjects, day) {
     // 末尾のキャラクターIDを取得（最新の再投票先は末尾に追加されているため）
     let voteTargetId = characterObjects[characterId].voteHistory[day].slice(-1)[0];
     // 1票追加
-    if (voteTargetId in TYRANO_VAR_F.voteResult) {
-      TYRANO_VAR_F.voteResult[voteTargetId]++;
+    if (voteTargetId in TYRANO.kag.stat.f.voteResult) {
+      TYRANO.kag.stat.f.voteResult[voteTargetId]++;
     } else {
-      TYRANO_VAR_F.voteResult[voteTargetId] = 1;
+      TYRANO.kag.stat.f.voteResult[voteTargetId] = 1;
     }
 
     // 投票されたキャラクターの、投票したキャラクターへの信頼度を下げる
@@ -447,9 +447,9 @@ function countVote(characterObjects, day) {
   }
 
   // 最多得票者のキャラクターIDを配列に格納
-  TYRANO_VAR_F.electedIdList = getMaxKeys(TYRANO_VAR_F.voteResult);
+  TYRANO.kag.stat.f.electedIdList = getMaxKeys(TYRANO.kag.stat.f.voteResult);
   // 最多得票者が1人で確定すれば、処刑を実行する（同票なら要素が複数入っているので再投票）
-  TYRANO_VAR_F.doExecute = (TYRANO_VAR_F.electedIdList.length == 1) ? true : false;
+  TYRANO.kag.stat.f.doExecute = (TYRANO.kag.stat.f.electedIdList.length == 1) ? true : false;
 };
 
   // TODO ここまでのロジックだけだと、再投票でも同じ結果になりうる。
@@ -464,17 +464,17 @@ function countVote(characterObjects, day) {
  * @param {Array} electedIdList 最多得票者配列
  */
 function openVote(characterObjects, day, voteResult, electedIdList) {
-  TYRANO_VAR_F.voteResultMessage = '';
+  TYRANO.kag.stat.f.voteResultMessage = '';
 
-  for (let i = 0; i < TYRANO_VAR_F.participantsIdList.length; i++) {
-    let characterId = TYRANO_VAR_F.participantsIdList[i];
+  for (let i = 0; i < TYRANO.kag.stat.f.participantsIdList.length; i++) {
+    let characterId = TYRANO.kag.stat.f.participantsIdList[i];
 
     let isElected = electedIdList.includes(characterId) ? '★' : '';
     let numbers = displayIsElected(characterId, voteResult);
     let name = characterObjects[characterId].name;
     let voteTargetName = displayVoteTargetName(characterId, characterObjects, day);
 
-    TYRANO_VAR_F.voteResultMessage += (
+    TYRANO.kag.stat.f.voteResultMessage += (
       isElected + '' + 
       numbers + '　' + 
       name + '→' + 

@@ -12,15 +12,15 @@ function changeCharacter(characterId, face, side) {
   if (side == 'right') {
     // 右側のキャラクター
     // すでに右側にキャラが登場しており、それが登場させたいキャラと違うなら、右側のキャラを退場させる
-    if (typeof TYRANO_VAR_F.rightSideCharacterId != 'undefined' && TYRANO_VAR_F.rightSideCharacterId != characterId) {
+    if (typeof TYRANO.kag.stat.f.rightSideCharacterId != 'undefined' && TYRANO.kag.stat.f.rightSideCharacterId != characterId) {
       exitCharacter(
-        TYRANO_VAR_F.rightSideCharacterId,
-        TYRANO_VAR_F.defaultPosition[TYRANO_VAR_F.rightSideCharacterId].side,
-        TYRANO_VAR_F.defaultPosition[TYRANO_VAR_F.rightSideCharacterId].left
+        TYRANO.kag.stat.f.rightSideCharacterId,
+        TYRANO.kag.stat.f.defaultPosition[TYRANO.kag.stat.f.rightSideCharacterId].side,
+        TYRANO.kag.stat.f.defaultPosition[TYRANO.kag.stat.f.rightSideCharacterId].left
       );
     }
 
-    if (TYRANO_VAR_F.rightSideCharacterId == characterId) {
+    if (TYRANO.kag.stat.f.rightSideCharacterId == characterId) {
       // 登場させたいキャラがすでに登場しているなら、表情変更のみ
       // TODO：同じ表情の場合どうなる？
       // [chara_mod name="&mp.characterId" face="&mp.face" time="500" wait="false"]
@@ -33,7 +33,7 @@ function changeCharacter(characterId, face, side) {
   } else if (side == 'left') {
     // 左側のキャラクター
     // 左側にはPCしか登場しないため退場処理はなし（NOTE：左側にも別のキャラが登場するようにするなら、右側と同じように退場処理を入れる）
-    if (TYRANO_VAR_F.leftSideCharacterId == characterId) {
+    if (TYRANO.kag.stat.f.leftSideCharacterId == characterId) {
       // 登場させたいキャラがすでに登場しているなら、表情変更のみ
       // TODO：同じ表情の場合どうなる？
       // [chara_mod name="&mp.characterId" face="&mp.face" time="500" wait="false"]
@@ -60,10 +60,10 @@ function enterCharacter(characterId, face, side) {
   let moveLeft = '';
   if (side == 'right') {
     moveLeft = '-=1000';
-    TYRANO_VAR_F.rightSideCharacterId = characterId;
+    TYRANO.kag.stat.f.rightSideCharacterId = characterId;
   } else if (side == 'left') {
     moveLeft = '+=1000';
-    TYRANO_VAR_F.leftSideCharacterId = characterId;
+    TYRANO.kag.stat.f.leftSideCharacterId = characterId;
   }
 
   // sideがrightなら画面右から右側に、leftなら画面左から左側にスライドインしてくる
@@ -92,9 +92,9 @@ function exitCharacter(characterId, side, left) {
 
   // 退場させるキャラクターのsideの変数を初期化する
   if (side == 'right') {
-    TYRANO_VAR_F.rightSideCharacterId = undefined;
+    TYRANO.kag.stat.f.rightSideCharacterId = undefined;
   } else if (side == 'left') {
-    TYRANO_VAR_F.leftSideCharacterId = undefined;
+    TYRANO.kag.stat.f.leftSideCharacterId = undefined;
   }
 
   TYRANO.kag.ftag.startTag("chara_move",{

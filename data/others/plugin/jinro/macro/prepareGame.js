@@ -6,58 +6,58 @@ function prepareGameMain() {
 
   // 今回の参加者のキャラクターIDと、配役される役職IDを取得する
   // TODO selectStage.ksを経由して事前に取得するように完全移行できたら、この判定は不要になる
-  if (typeof TYRANO_VAR_F.participantsIdList == 'undefined') {
+  if (typeof TYRANO.kag.stat.f.participantsIdList == 'undefined') {
     // 参加者のキャラクターID配列
-    TYRANO_VAR_F.participantsIdList = getParticipantsIdList();
+    TYRANO.kag.stat.f.participantsIdList = getParticipantsIdList();
     // 参加している役職ID配列
-    TYRANO_VAR_F.villagersRoleIdList = getVillagersRoleIdList();
+    TYRANO.kag.stat.f.villagersRoleIdList = getVillagersRoleIdList();
   }
   
   // 参加者数と役職数が等しいことをチェックしてから先に進む
   // TODO 配列が入っていることの確認もしたほうがいいかも
-  if (TYRANO_VAR_F.participantsIdList.length != TYRANO_VAR_F.villagersRoleIdList.length) {
-    alert('参加者数(' + participantsIdList.length + ')と役職数(' + TYRANO_VAR_F.villagersRoleIdList.length + ')が合っていません！');
+  if (TYRANO.kag.stat.f.participantsIdList.length != TYRANO.kag.stat.f.villagersRoleIdList.length) {
+    alert('参加者数(' + participantsIdList.length + ')と役職数(' + TYRANO.kag.stat.f.villagersRoleIdList.length + ')が合っていません！');
   }
 
   // キャラクターに役職を割り当てた状態の、キャラクターオブジェクト配列を取得する
   const characterObjects = {};
-  for (let i = 0; i < TYRANO_VAR_F.participantsIdList.length; i++) {
-    const characterId = TYRANO_VAR_F.participantsIdList[i];
-    characterObjects[characterId] = new Character(characterId, TYRANO_VAR_F.villagersRoleIdList[i]);
+  for (let i = 0; i < TYRANO.kag.stat.f.participantsIdList.length; i++) {
+    const characterId = TYRANO.kag.stat.f.participantsIdList[i];
+    characterObjects[characterId] = new Character(characterId, TYRANO.kag.stat.f.villagersRoleIdList[i]);
 
     // 配列先頭のキャラは、プレイヤーキャラとする
     if (i == 0) {
       characterObjects[characterId].isPlayer = true;
-      TYRANO_VAR_F.playerCharacterId = characterId
+      TYRANO.kag.stat.f.playerCharacterId = characterId
     }
   }
   // 共通の視点オブジェクトをティラノ変数に、各キャラの視点オブジェクトを各自のcharacterObject.perspectiveに格納する
-  setDefaultPerspective(characterObjects, TYRANO_VAR_F.participantsIdList, TYRANO_VAR_F.villagersRoleIdList);
+  setDefaultPerspective(characterObjects, TYRANO.kag.stat.f.participantsIdList, TYRANO.kag.stat.f.villagersRoleIdList);
 
   // 信頼度オブジェクトを各自のcharacterObject.reliabilityに格納する
-  setDefaultReliability(characterObjects, TYRANO_VAR_F.participantsIdList);
+  setDefaultReliability(characterObjects, TYRANO.kag.stat.f.participantsIdList);
 
   // 以下のデータは、ティラノの変数にも格納しておく
   // キャラクターオブジェクト配列をティラノのキャラクターオブジェクト変数に格納する
-  TYRANO_VAR_F.characterObjects = characterObjects;
+  TYRANO.kag.stat.f.characterObjects = characterObjects;
 
   // 噛み先履歴オブジェクトの初期化
-  TYRANO_VAR_F.bitingHistory = {};
+  TYRANO.kag.stat.f.bitingHistory = {};
 
   // 全占い結果履歴オブジェクトの初期化
-  TYRANO_VAR_F.allFortuneTellingHistoryObject = {};
+  TYRANO.kag.stat.f.allFortuneTellingHistoryObject = {};
 
   // 発話者の名前オブジェクト。ksファイル内で、# &f.speaker['名前'] の形式で使う。
-  TYRANO_VAR_F.speaker = setSpeakersName(characterObjects);
+  TYRANO.kag.stat.f.speaker = setSpeakersName(characterObjects);
 
   // 日時の初期化（初日の夜から始める）
   // ※いわゆる初日占いや初日襲撃ありにする場合は、夜から始めるようにした上でシナリオを修正すること）
-  TYRANO_VAR_F.day = 0;
-  TYRANO_VAR_F.isDaytime = false;
+  TYRANO.kag.stat.f.day = 0;
+  TYRANO.kag.stat.f.isDaytime = false;
 
   // 変数テスト用
-  TYRANO_VAR_F.hogeObject = new TestObj();
-  TYRANO_VAR_F.piyoArray = ['pika', 'chu'];
+  TYRANO.kag.stat.f.hogeObject = new TestObj();
+  TYRANO.kag.stat.f.piyoArray = ['pika', 'chu'];
 }
 
 
@@ -80,7 +80,7 @@ function setSpeakersName(characterObjects) {
   for (let k of Object.keys(characterObjects)) {
     let tmpName = characterObjects[k].name;
     console.log(tmpName);
-    if (TYRANO_VAR_F.developmentMode || TYRANO_VAR_F.hintMode) {
+    if (TYRANO.kag.stat.f.developmentMode || TYRANO.kag.stat.f.hintMode) {
       tmpName += '（' + ROLE_ID_TO_NAME[characterObjects[k].role.roleId] + '）';
     }
     speaker[characterObjects[k].name] = tmpName;
@@ -103,7 +103,7 @@ function setDefaultPerspective(characterObjects, participantsIdList, villagersRo
     roleCountObject[key] = roleCountObject[key] ? roleCountObject[key] + 1 : 1;
   }
   // 重複のない、村の役職ID配列をティラノ変数に入れておく
-  TYRANO_VAR_F.uniqueRoleIdList = Object.keys(roleCountObject);
+  TYRANO.kag.stat.f.uniqueRoleIdList = Object.keys(roleCountObject);
 
   // 役職の割合をオブジェクトに入れる
   let roleRatioObject = {};
@@ -119,7 +119,7 @@ function setDefaultPerspective(characterObjects, participantsIdList, villagersRo
   }
   commonPerspective.uncertified = clone(roleCountObject);
   // 共通視点オブジェクトはティラノ変数に格納する
-  TYRANO_VAR_F.commonPerspective = commonPerspective;
+  TYRANO.kag.stat.f.commonPerspective = commonPerspective;
 
   // 各キャラクターの自分視点オブジェクトを生成し、更新する
   for (let characterId of Object.keys(characterObjects)) {
@@ -128,13 +128,13 @@ function setDefaultPerspective(characterObjects, participantsIdList, villagersRo
     characterObjects[characterId].perspective = organizePerspective(
       commonPerspective,
       characterId,
-      TYRANO_VAR_F.uniqueRoleIdList.filter(rId => (rId != ROLE_ID_VILLAGER)) // TODO：COなしなら村人を入れておくが、それで破綻する可能性もあるかもしれない。その場合共通視点を入れるようにしたほうがいいかも
+      TYRANO.kag.stat.f.uniqueRoleIdList.filter(rId => (rId != ROLE_ID_VILLAGER)) // TODO：COなしなら村人を入れておくが、それで破綻する可能性もあるかもしれない。その場合共通視点を入れるようにしたほうがいいかも
     );
 
     characterObjects[characterId].role.rolePerspective = organizePerspective(
       commonPerspective,
       characterId,
-      TYRANO_VAR_F.uniqueRoleIdList.filter(rId => (rId != characterObjects[characterId].role.roleId)) // roleCountObjectのキーはroleIdで一意なので利用する。そこから自身のroleId以外を0確定させる。
+      TYRANO.kag.stat.f.uniqueRoleIdList.filter(rId => (rId != characterObjects[characterId].role.roleId)) // roleCountObjectのキーはroleIdで一意なので利用する。そこから自身のroleId以外を0確定させる。
     );
 
     console.log(characterObjects[characterId].role.rolePerspective);
