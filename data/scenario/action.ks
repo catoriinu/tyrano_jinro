@@ -1,5 +1,12 @@
 ; アクションボタンサブルーチン
 *start
+; TODO
+さてさて[p]
+ボタンから戻ります[p]
+; awakegameを挟むと問題がおこるっぽい。variable_over="true"を指定してもダメ。
+[awakegame variable_over="true"]
+[return]
+
 ; 一時変数の初期化
 [eval exp="tf.noNeedStop = false"]
 [eval exp="f.selectedActionId = ''"]
