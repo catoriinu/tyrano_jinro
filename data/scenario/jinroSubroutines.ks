@@ -72,11 +72,10 @@ $('.center_button_window').css('height', tf.height);
 
 ; tf.candidateObjectsに入っている要素をボタン化し、押したボタンのIDをtf.targetButtonIdに格納するサブルーチン
 ; 事前準備
-; tf.candidateObjects = [{id:ボタンのID, text:ボタンに表示するテキスト},...]
-; tf.side = 'left','right'のいずれか（省略した場合center。サブルーチン内で初期化するので毎回指定すること）
-; tf.noNeedStop = true（boolean型。省略した場合サブルーチン内の[s]タグで止まる。サブルーチン内で初期化するので毎回指定すること）
+; tf.candidateObjects = [{id:ボタンのID, text:ボタンに表示するテキスト},...]（必須。サブルーチン内で初期化するので毎回指定すること）
+; tf.side = 'left','right'のいずれか（省略した場合center。サブルーチン内で初期化するので必要なら毎回指定すること）
+; tf.noNeedStop = true（boolean型。省略した場合サブルーチン内の[s]タグで止まる。サブルーチン内で初期化するので必要なら毎回指定すること）
 *glinkFromCandidateObjects
-
 ; 選択肢ボタン表示ループ
 [eval exp="tf.buttonCount = tf.candidateObjects.length"]
 
@@ -148,6 +147,7 @@ $('.' + tf.class).css('height', tf.height);
 [eval exp="console.log('button clicked id=' + f.targetButtonId)"]
 
 ; 一時変数の初期化
+[eval exp="tf.candidateObjects = []"]
 [eval exp="tf.side = ''"]
 [eval exp="tf.noNeedStop = false"]
 [return]

@@ -2,7 +2,7 @@
 ; TODO 表示処理が重くて時間がかかるので、どうにか軽量化できないか？
 ; TODO 一度第2階層のアクションのボタンまで押した後、再度同じキャラ、アクションを選択を繰り返すと、アクションボタンが閉じなくなったり、第2階層のボタンが増殖したりするバグあり
 *start
-; 一時変数の初期化
+; アクションボタン用変数の初期化
 [eval exp="tf.noNeedStop = false"]
 [eval exp="f.selectedActionId = ''"]
 [eval exp="f.selectedCharacterId = ''"]
@@ -15,8 +15,8 @@
 [jump target="*targetLayer" cond="f.selectedActionId == 'suspect'"]
 [jump target="*targetLayer" cond="f.selectedActionId == 'trust'"]
 [jump target="*targetLayer" cond="f.selectedActionId == 'ask'"]
-; 当てはまるラベルがない（＝キャンセル）場合はアクション終了
-[jump target="*end"]
+; 当てはまるラベルがない（＝発言しない）場合はアクション中断
+[jump target="*cancel"]
 [s]
 
 *targetLayer
@@ -25,15 +25,28 @@
 [call target="*displayFirstLayerButtons"]
 [call target="*displaySecondLayerButtons"]
 
-; 第2階層のボタンを押下した場合（＝キャラクターIDが格納済みの場合）、アクション終了
-[jump target="*end" cond="f.selectedCharacterId != ''"]
+; 第2階層のボタンを押下した場合（＝キャラクターIDが格納済みの場合）、アクションは正常終了
+[jump target="*input" cond="f.selectedCharacterId != ''"]
 ; 第1階層のボタン押下結果によって次の第2階層のボタンを出し分ける
 [jump target="*targetLayer" cond="f.selectedActionId == 'suspect'"]
 [jump target="*targetLayer" cond="f.selectedActionId == 'trust'"]
 [jump target="*targetLayer" cond="f.selectedActionId == 'ask'"]
-; 当てはまるラベルがない（＝キャンセル）場合はアクション終了
-[jump target="*end"]
+; 当てはまるラベルがない（＝発言しない）場合はアクション終了
+[jump target="*cancel"]
 [s]
+
+*cancel
+[eval exp="f.pcActionObject = {}"]
+[jump target="*end"]
+
+*input
+[iscript]
+  f.pcActionObject = {
+    characterId: f.playerCharacterId,
+    targetCharacterId: f.selectedCharacterId,
+    actionId: f.selectedActionId
+  }
+[endscript]
 
 *end
 [awakegame]
@@ -52,18 +65,18 @@ tf.candidateObjects = [
   {id: "ask", text: "聞き出す", target: "*targetLayer"}
 ];
 
-; TODO テストのため必ず表示 潜伏役職が残っているなら「COを促す」を表示
+; TODO テストのため必ず非表示 潜伏役職が残っているなら「COを促す」を表示
 if (false) {
   tf.candidateObjects.push({id: "prompt", text: "COを促す", target: "*roleLayer"});
 }
 
-; TODO テストのため必ず表示 プレイヤーがCO可能な場合「COする」を表示
+; TODO テストのため必ず非表示 プレイヤーがCO可能な場合「COする」を表示
 if (false) {
   tf.candidateObjects.push({id: "CO", text: "COする", target: "*roleLayer"});
 }
 
-; TODO テストのため必ず表示 「キャンセル」を表示
-tf.candidateObjects.push({id: "cancel", text: "キャンセル", target: "*end"});
+; 「発言しない」を表示
+tf.candidateObjects.push({id: "cancel", text: "発言しない", target: "*end"});
 
 [endscript]
 

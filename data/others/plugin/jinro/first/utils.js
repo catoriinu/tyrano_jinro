@@ -299,13 +299,24 @@ function daytimeInitialize() {
   // 生存しているNPCのcharacterId配列を取得済みかのフラグをfalseにする
   TYRANO.kag.stat.f.gottenSurviveNpcCharacterIds = false;
 
+  // アクション実行オブジェクトを初期化する
+  TYRANO.kag.stat.f.pcActionObject = {};
+  TYRANO.kag.stat.f.npcActionObject = {};
+  TYRANO.kag.stat.f.doActionObject = {};
+
+  // アクション実行回数を初期化する
+  TYRANO.kag.stat.f.doActionCount = 0;
+
   // 再投票カウントを初期化する
   TYRANO.kag.stat.f.revoteCount = 0;
 
   // ゲーム変数のキャラクターオブジェクトに対する初期化
-  for (let k of Object.keys(TYRANO.kag.stat.f.characterObjects)) {
+  for (let cId of Object.keys(TYRANO.kag.stat.f.characterObjects)) {
     // 今日のCO済みフラグをfalseに戻す
-    TYRANO.kag.stat.f.characterObjects[k].isDoneTodaysCO = false;
+    TYRANO.kag.stat.f.characterObjects[cId].isDoneTodaysCO = false;
+
+    // 主張力のcurrentをoriginalと同値に戻す
+    TYRANO.kag.stat.f.characterObjects[cId].personality.assertiveness.current = TYRANO.kag.stat.f.characterObjects[cId].personality.assertiveness.original;
   }
 }
 

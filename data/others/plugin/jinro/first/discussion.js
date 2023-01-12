@@ -1,5 +1,5 @@
 /**
- * そのキャラクターが、役職COを実行刷る可能性があるかを返す
+ * そのキャラクターが、役職COを実行する可能性があるかを返す
  * NOTE:視点オブジェクトを利用した仕組みに変えるべきなため、廃止したい。
  * @param {String} characterId キャラクターID
  * @returns {Array} [{Number}最終確率, {Boolean}判定結果]
@@ -21,33 +21,34 @@ function isCOMyRoll(characterId) {
 
 /**
  * 与えられた確率や範囲を元に、trueを返却するか判断する
- * @param {Number} probability 元のtrueになる確率(%)
- * @param {Number} min 確率の最低保証(%)
- * @param {Number} max 確率の最高保証(%)
- * @param {Number} randomRange ランダム補正値(%)
+ * @param {Number} originalProbability 元のtrueになる確率(0～1)
+ * @param {Number} randomRange ランダム補正値（TODO）
  * @returns {Array} [{Number}最終確率, {Boolean}判定結果]
  */
-function randomDecide(probability, min = 0, max = 100, randomRange = 0) {
+function randomDecide(originalProbability, randomRange = 0) {
   
+  let probability = originalProbability;
+
   // randomRangeの範囲でprobabilityをランダムに変動させる
-  let resultProbability = probability;
+  // TODO probabilityが0～100だったときの実装のまま。利用箇所ができたときに修正する
   if (randomRange != 0) {
-    const RandomMin = probability - (randomRange / 2);
-    const RandomMax = probability + (randomRange / 2);
-    resultProbability = Math.floor( Math.random() * (RandomMax + 1 - RandomMin) ) + RandomMin;
+    const RandomMin = originalProbability - (randomRange / 2);
+    const RandomMax = originalProbability + (randomRange / 2);
+    probability = Math.floor( Math.random() * (RandomMax + 1 - RandomMin) ) + RandomMin;
   }
   
-  // resultProbabilityを指定された保証値の範囲に収める
-  if (resultProbability > max) {
-    resultProbability = max;
-  } else if (resultProbability < min) {
-    resultProbability = min;
+  // probabilityを0～1の範囲に収める
+  if (probability > 1) {
+    probability = 1;
+  } else if (probability < 0) {
+    probability = 0;
   }
   
-  // resultProbability(%)の確率でtrueを返す。resultProbability自体も判定用に返す。
-  const result = Math.random() < resultProbability / 100;
-  console.log('確率:' + resultProbability + ' 判定結果:' + result);
-  return [resultProbability, result];
+  // probabilityの確率でtrueを返す。判定時の乱数も呼び元で優先度を判定するために返す。
+  const randomValue = Math.random();
+  const result = randomValue < probability;
+  console.log('判定結果:' + result + ' 元の確率:' + probability + ' 判定時の乱数:' + randomValue);
+  return [randomValue, result];
 }
 
 
@@ -321,6 +322,7 @@ function decideVote(characterObjects, day) {
     // 死亡済みキャラは投票を行わない
     if (!characterObjects[characterId].isAlive) continue;
 
+    // rolePerspectiveをもとに仲間度を決める（役職騙り中の人狼や狂人も自分の役職の視点オブジェクトで判定する。投票は嘘をつかないということ）
     characterObjects[characterId].sameFactionPossivility = calcSameFactionPossivility(
       characterObjects[characterId],
       characterObjects[characterId].role.rolePerspective
@@ -394,11 +396,10 @@ function calcSameFactionPossivility(characterObject, perspective) {
     }
 
     let sumSameFactionPerspective = 0;
-    // 重複のない村の役職ID配列をもとに全役職をループ
-    for (let j = 0; j < TYRANO.kag.stat.f.uniqueRoleIdList.length; j++) {
-      let rId = TYRANO.kag.stat.f.uniqueRoleIdList[j];
-      // 自分と同陣営の役職のperspectiveの割合値を合計する（自分視点で必ず同陣営なら1、必ず敵陣営なら0）
-      if (ROLE_ID_TO_FACTION[characterObject.role.roleId] == ROLE_ID_TO_FACTION[rId]) {
+    // 全役職をループ
+    for (let rId of Object.keys(perspective[cId])) {
+      // 自分と同陣営の役職のperspectiveの割合値を合計する（自分視点で必ず同陣営なら1、必ず敵陣営なら0になる）
+      if (ROLE_ID_TO_FACTION[rId] == ROLE_ID_TO_FACTION[characterObject.role.roleId]) {
         sumSameFactionPerspective += perspective[cId][rId];
       }
     }
@@ -559,4 +560,62 @@ function calcUpdatedReliability(characterObject, targetCharacterId, reason) {
     updateTargetReliability = 0;
   }
   return updateTargetReliability;
+}
+
+
+/**
+ * 自分自身の視点オブジェクトを確認し、最も同陣営割合が高い（低い）キャラクターIDを返却する
+ * @param {Object} characterObject キャラクターオブジェクト
+ * @param {Object} perspective 視点オブジェクト（perspectiveを使うか、rolePerspectiveを使うかは呼び元に任せる）
+ * @param {Boolean} needsMax true:最大値のキャラクターIDを取得したい / false:最小値のキャラクターIDを取得したい
+ * @returns {String} targetCharacterId 対象のキャラクターID
+ */
+function getCharacterIdBySameFactionPerspective(characterObject, perspective, needsMax) {
+
+  let targetCharacterIdList = [];
+  // 比較用の値の初期値を格納。最大値が必要なら0、最小値が必要なら1
+  let maxOrMinValue = needsMax ? 0 : 1;
+
+  for (let cId of Object.keys(perspective)) {
+    // 未確定役職の割合は判定に使わないため除外
+    if (cId == 'uncertified') continue;
+    // 自分自身と死亡済みのキャラは除外
+    // MEMO そうしたくないときが来たら引数で処理し分けるようにする
+    if (cId == characterObject.characterId) continue;
+    if (!TYRANO.kag.stat.f.characterObjects[cId].isAlive) continue;
+
+    let sumSameFactionPerspective = 0;
+    // 全役職をループ
+    for (let rId of Object.keys(perspective[cId])) {
+      // 自分と同陣営の役職のperspectiveの割合値を合計する（自分視点で必ず同陣営なら1、必ず敵陣営なら0になる）
+      if (ROLE_ID_TO_FACTION[rId] == ROLE_ID_TO_FACTION[characterObject.role.roleId]) {
+        sumSameFactionPerspective += perspective[cId][rId];
+      }
+    }
+
+    // 同陣営割合の合計の値を確認し、キャラクターIDを格納するか判定する
+    if (sumSameFactionPerspective == maxOrMinValue) {
+      // 値が、現在の比較用の値と同値なら候補配列に追加する（取得したいのが最大値でも最小値でも、ここの処理は共通でよい）
+      targetCharacterIdList.push(cId);
+    } else if (
+      (needsMax && sumSameFactionPerspective > maxOrMinValue) ||
+      (!needsMax && sumSameFactionPerspective < maxOrMinValue)
+    ) {
+      // 値が現在の比較用の値超過または未満（取得したいのが最大値か最小値かで判定し分ける）ならば、候補配列に格納する
+      targetCharacterIdList = [cId];
+      maxOrMinValue = sumSameFactionPerspective;
+    }
+  }
+
+  // 候補配列に候補が1人ならその対象を、複数ならランダムで、候補者に決定する。0人の場合は空文字を返す。
+  // MEMO 同値のキャラが複数いた場合にその全員分の配列が欲しいときが来たら引数で処理し分けるようにすること
+  let targetCharacterId = '';
+  if (targetCharacterIdList.length == 1) {
+    targetCharacterId = targetCharacterIdList[0];
+  } else if (targetCharacterIdList.length >= 2) {
+    targetCharacterId = getRandomElement(targetCharacterIdList);
+  }
+  console.log('getCharacterIdBySameFactionPerspective targetCharacterId:' + targetCharacterId);
+
+  return targetCharacterId;
 }

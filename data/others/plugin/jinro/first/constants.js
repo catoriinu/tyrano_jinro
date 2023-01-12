@@ -51,6 +51,8 @@ const ROLE_ID_TO_FACTION = {
     [ROLE_ID_FOX]: 'TODO',
 }
 
+// アクション実行上限回数
+const MAX_DO_ACTION_COUNT = 3;
 
 // 死因
 const DEATH_BY_EXECUTION = 'execution'; // 処刑。投票による吊り・追放
@@ -60,14 +62,50 @@ const DEATH_BY_ATTACK    = 'attack'; // 襲撃。人狼による噛み。
 const MAX_REVOTE_COUNT = 4;
 
 // 信頼度を更新する理由
+// TODO アクションIDと理由を紐づける別のオブジェクトがほしい。こっちの中身は受動態にしたい
 const REASON_WAS_VOTED = 'wasVoted'; // 相手に投票されたとき
+const REASON_WAS_SUSPECTED = 'suspect'; // 相手に「疑う」されたとき
+const REASON_WAS_TRUSTED = 'trust'; // 相手に「信じる」されたとき
+const REASON_WAS_ASKED = 'ask'; // 相手に「聞き出す」されたとき
 const REASON_TEST = 'test' // テスト用
 // 計算方法（信頼度更新用）
 const ARITHMETIC_ADDITION = 'addition'; // 現在の値に加算する（減算したい場合は負の値を足す）
 const ARITHMETIC_MULTIPLICATION = 'multiplication'; // 現在の値に乗算する（除算したい場合は1未満の値を掛ける）
 
+
+// アクションIDオブジェクト定数（TODO　未使用）
+/*
+アクションID: {
+    name: ボタン表示用アクション名
+    target: 第二階層ボタンに表示する内容の識別用
+    needsMax: NPCがアクション対象を選択する際、比較用の値（仲間度など）が最大値(true)or最小値(false)のキャラクターIDを取得する MEMO:仕組み自体微妙な気がする
+    updateReliabilityReason: その行動を受けたキャラクターの信頼度を更新する理由の識別用
+}
+*/
+const ACTION_ID = {
+    suspect: {
+        name: '疑う',
+        target: 'surviveNpc',
+        needsMax: false,
+        updateReliabilityReason: REASON_WAS_SUSPECTED,
+    },
+    trust: {
+        name: '信じる',
+        target: 'surviveNpc',
+        needsMax: true,
+        updateReliabilityReason: REASON_WAS_TRUSTED,
+    },
+    ask: {
+        name: '聞き出す',
+        target: 'surviveNpc',
+        needsMax: true,
+        updateReliabilityReason: REASON_WAS_ASKED,
+    },
+}
+
+
 // 設定値
 // ボタン配置範囲
-const BUTTON_RANGE_Y_UPPER = -20 // 上限
-const BUTTON_RANGE_Y_LOWER = 515 // 下限
+const BUTTON_RANGE_Y_UPPER = -25 // 上限
+const BUTTON_RANGE_Y_LOWER = 510 // 下限
 const BUTTON_MARGIN_HEIGHT = 30 // ボタンの上下の余白

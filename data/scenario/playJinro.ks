@@ -118,30 +118,31 @@
 [m_timePasses isDaytime="&f.isDaytime"]
 
 
-～試験用議論フェイズ～[r]
-～次までにアクション選択済みなら行動します～[p]
+～試験用議論フェイズ～[p]
+; 試験用ラベル
+*startTestDiscussionPhase
+[eval exp="f.doActionCount++"]
 
-; アクション選択済みかを判定する
-[iscript]
-  tf.needToDoAction = (function(cId, aId) {
-    if (
-      typeof cId == 'undefined' || cId == '' ||
-      typeof aId == 'undefined' || aId == '' || aId == 'cancel'
-    ) {
-      return false;
-    }
-    return true;
-  })(f.selectedCharacterId, f.selectedActionId)
-[endscript]
-[if exp="tf.needToDoAction"]
-  [j_doAction characterId="&f.playerCharacterId" targetCharacterId="&f.selectedCharacterId" actionId="&f.selectedActionId"]
-
-
+[m_changeFrameWithId]
+#
+; TODO 画面上のどこかに常に、あるいはメニュー画面内に表示しておけるとベスト
+～ラウンド[emb exp="f.doActionCount"]/[emb exp="MAX_DO_ACTION_COUNT"]～[r]
+; NPCのアクション実行者がいるか、いるならアクションとその対象を格納する
+[j_decideDoActionByNPC]
+[if exp="f.doActionCandidateId != ''"]
+～[emb exp="f.characterObjects[f.doActionCandidateId].name"]が話そうとしています～[p]
+[else]
+～誰も話そうとしていないようです～[p]
 [endif]
-; NPCのアクション選択
-;[j_actionForNPC]
-; 誰が誰に何のアクションを起こすか
-; 規定回数ループさせる
+
+; アクション実行
+[j_setDoActionObject]
+[if exp="Object.keys(f.doActionObject).length > 0"]
+  [j_doAction characterId="&f.doActionObject.characterId" targetCharacterId="&f.doActionObject.targetCharacterId" actionId="&f.doActionObject.actionId"]
+[endif]
+
+; アクション実行上限回数未満の場合は議論フェイズを繰り返す
+[jump target="*startTestDiscussionPhase" cond="f.doActionCount < MAX_DO_ACTION_COUNT"]
 
 
 [m_changeFrameWithId]
@@ -239,6 +240,8 @@
 
 ; 初回だけ取得する
 ; NOTE:f.surviveNpcCharacterIdsはCO結果を受けてのパラメータ変動時などに使う想定でいるが、なるべくcharacterObjectsだけで運用できるよう心がけていく。
+; f.surviveNpcCharacterIdsは議論フェイズにも使える。というか、ただ判定に使うだけなので、j_decideCOCandidateIdの中で判定するだけにしておいた方がよさそう。
+; どうせ「パラメータ変動時」と言っても、変動させるのはcharacterObjectsの方なので。
 [if exp="!f.gottenSurviveNpcCharacterIds"]
   [iscript]
     ; 生存者である、かつプレイヤー以外のキャラクターID配列を抽出する。
