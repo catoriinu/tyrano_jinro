@@ -118,33 +118,6 @@
 [m_timePasses isDaytime="&f.isDaytime"]
 
 
-～試験用議論フェイズ～[p]
-; 試験用ラベル
-*startTestDiscussionPhase
-[eval exp="f.doActionCount++"]
-
-[m_changeFrameWithId]
-#
-; TODO 画面上のどこかに常に、あるいはメニュー画面内に表示しておけるとベスト
-～ラウンド[emb exp="f.doActionCount"]/[emb exp="MAX_DO_ACTION_COUNT"]～[r]
-; NPCのアクション実行者がいるか、いるならアクションとその対象を格納する
-[j_decideDoActionByNPC]
-[if exp="f.doActionCandidateId != ''"]
-～[emb exp="f.characterObjects[f.doActionCandidateId].name"]が話そうとしています～[p]
-[else]
-～誰も話そうとしていないようです～[p]
-[endif]
-
-; アクション実行
-[j_setDoActionObject]
-[if exp="Object.keys(f.doActionObject).length > 0"]
-  [j_doAction characterId="&f.doActionObject.characterId" targetCharacterId="&f.doActionObject.targetCharacterId" actionId="&f.doActionObject.actionId"]
-[endif]
-
-; アクション実行上限回数未満の場合は議論フェイズを繰り返す
-[jump target="*startTestDiscussionPhase" cond="f.doActionCount < MAX_DO_ACTION_COUNT"]
-
-
 [m_changeFrameWithId]
 #
 ～COフェイズ～[p]
@@ -328,11 +301,34 @@
 [endif]
 
 
-
 *discussionPhase
 [m_changeFrameWithId]
 #
-～議論フェイズは未作成～[p]
+～議論フェイズ～[p]
+*startDiscussionLoop
+[eval exp="f.doActionCount++"]
+
+[m_changeFrameWithId]
+#
+; TODO 画面上のどこかに常に、あるいはメニュー画面内に表示しておけるとベスト
+～ラウンド[emb exp="f.doActionCount"]/[emb exp="MAX_DO_ACTION_COUNT"]～[r]
+; NPCのアクション実行者がいるか、いるならアクションとその対象を格納する
+[j_decideDoActionByNPC]
+[if exp="f.doActionCandidateId != ''"]
+～[emb exp="f.characterObjects[f.doActionCandidateId].name"]が話そうとしています～[p]
+[else]
+～誰も話そうとしていないようです～[p]
+[endif]
+
+; アクション実行
+[j_setDoActionObject]
+[if exp="Object.keys(f.doActionObject).length > 0"]
+  [j_doAction actionObject="&f.doActionObject""]
+[endif]
+
+; アクション実行上限回数未満の場合は議論フェイズを繰り返す
+[jump target="*startDiscussionLoop" cond="f.doActionCount < MAX_DO_ACTION_COUNT"]
+
 
 *votePhase
 [m_changeFrameWithId]

@@ -569,11 +569,7 @@
     console.log('actionId:' + actionId);
 
     // ここまでに決定した情報を、NPCのアクションオブジェクトに格納する
-    f.npcActionObject = {
-      characterId: f.doActionCandidateId,
-      targetCharacterId: targetCharacterId,
-      actionId: actionId
-    }
+    f.npcActionObject = new Action(f.doActionCandidateId, actionId, targetCharacterId);
   [endscript]
 
   *end_j_decideDoActionByNPC
@@ -587,23 +583,17 @@
 ; @param actionId 実行するアクションID。必須
 [macro name="j_doAction"]
   ; セリフ表示
-  [m_doAction characterId="&mp.characterId" targetCharacterId="&mp.targetCharacterId" actionId="&mp.actionId"]
+  [m_doAction characterId="&mp.actionObject.characterId" targetCharacterId="&mp.actionObject.targetId" actionId="&mp.actionObject.actionId"]
 
-  ; アクション対象のキャラクターの、信頼度増減
-  ; TODO 現在は単純にアクション実行者への信頼度のみ更新している。他のキャラクターの信頼度も更新したい場合はもう1メソッド噛ませること。
-  ; MEMO actionIdを一度定数で変換したい
+  ; 全員の信頼度増減
   [iscript]
-    f.characterObjects[mp.targetCharacterId].reliability[mp.characterId] = calcUpdatedReliability(
-      f.characterObjects[mp.targetCharacterId],
-      mp.characterId,
-      mp.actionId
-    );
+    updateReliabirityForAction(f.characterObjects, mp.actionObject);
   [endscript]
 
   ; TODO アクション実行者の主張力を下げて、同日中は再発言しにくくする
 
   ; リアクションのセリフ表示
-  [m_doAction_reaction characterId="&mp.targetCharacterId" actionId="&mp.actionId"]
+  [m_doAction_reaction characterId="&mp.actionObject.targetId" actionId="&mp.actionObject.actionId"]
 
   ; アクションボタン用変数の初期化
   [eval exp="f.selectedActionId = ''"]

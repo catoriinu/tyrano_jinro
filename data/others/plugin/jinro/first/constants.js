@@ -72,6 +72,17 @@ const REASON_TEST = 'test' // テスト用
 const ARITHMETIC_ADDITION = 'addition'; // 現在の値に加算する（減算したい場合は負の値を足す）
 const ARITHMETIC_MULTIPLICATION = 'multiplication'; // 現在の値に乗算する（除算したい場合は1未満の値を掛ける）
 
+// 感情
+const FEELING_HATE = 'hate';
+const FEELING_NORMAL = 'normal';
+const FEELING_LOVE = 'love';
+
+// アクション名
+const ACTION_SUSPECT = 'suspect'; // 疑う（アクションボタン）
+const ACTION_TRUST = 'trust'; // 信じる（アクションボタン）
+const ACTION_ASK = 'ask'; // 聞き出す（アクションボタン　未使用）
+const ACTION_FORTUNE_TELLING = 'fortuneTelling'; // 占う（未使用）
+const ACTION_VOTE = 'vote'; // 投票（未使用）
 
 // アクションIDオブジェクト定数（TODO　未使用）
 /*
@@ -82,20 +93,20 @@ const ARITHMETIC_MULTIPLICATION = 'multiplication'; // 現在の値に乗算す�
     updateReliabilityReason: その行動を受けたキャラクターの信頼度を更新する理由の識別用
 }
 */
-const ACTION_ID = {
-    suspect: {
+const ACTION_BUTTON = {
+    [ACTION_SUSPECT]: {
         name: '疑う',
         target: 'surviveNpc',
         needsMax: false,
         updateReliabilityReason: REASON_WAS_SUSPECTED,
     },
-    trust: {
+    [ACTION_TRUST]: {
         name: '信じる',
         target: 'surviveNpc',
         needsMax: true,
         updateReliabilityReason: REASON_WAS_TRUSTED,
     },
-    ask: {
+    [ACTION_ASK]: {
         name: '聞き出す',
         target: 'surviveNpc',
         needsMax: true,

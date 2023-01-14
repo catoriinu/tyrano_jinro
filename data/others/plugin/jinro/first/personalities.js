@@ -55,21 +55,21 @@ function Tester() {
         [ROLE_ID_FORTUNE_TELLER]: 1
       }
     },
-    // impressiveReasonList {信頼度に影響を与える理由: {value: 値, arithmetic: 現在の信頼度とvalueとの計算方法}
+    // impressiveReasonList {信頼度に影響を与える理由: {value: 値（絶対値とする）, arithmetic: 現在の信頼度とvalueとの計算方法}
     {
       [REASON_WAS_VOTED]: { // 相手に投票されたとき
-        value: -0.1,
+        value: 0.1,
         arithmetic: ARITHMETIC_ADDITION
       },
-      [REASON_WAS_SUSPECTED]: { // 相手に疑われたとき
-        value: -0.5,
+      [ACTION_SUSPECT]: { // 相手に疑われたとき
+        value: 0.2,
         arithmetic: ARITHMETIC_ADDITION
       },
-      [REASON_WAS_TRUSTED]: { // 相手に信じられたとき
-        value: 0.5,
+      [ACTION_TRUST]: { // 相手に信じられたとき
+        value: 0.2,
         arithmetic: ARITHMETIC_ADDITION
       },
-      [REASON_WAS_ASKED]: { // 相手に聞き出されたとき MEMO:試験用に信頼度を最大にできるようにする
+      [ACTION_ASK]: { // 相手に聞き出されたとき MEMO:試験用に信頼度を最大にできるようにする
         value: 1,
         arithmetic: ARITHMETIC_ADDITION
       },

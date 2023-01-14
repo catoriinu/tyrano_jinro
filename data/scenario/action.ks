@@ -12,9 +12,9 @@
 [call target="*displayFirstLayerButtons"]
 
 ; 第1階層のボタン押下結果によって次の第2階層のボタンを出し分ける
-[jump target="*targetLayer" cond="f.selectedActionId == 'suspect'"]
-[jump target="*targetLayer" cond="f.selectedActionId == 'trust'"]
-[jump target="*targetLayer" cond="f.selectedActionId == 'ask'"]
+[jump target="*targetLayer" cond="f.selectedActionId == ACTION_SUSPECT"]
+[jump target="*targetLayer" cond="f.selectedActionId == ACTION_TRUST"]
+[jump target="*targetLayer" cond="f.selectedActionId == ACTION_ASK"]
 ; 当てはまるラベルがない（＝発言しない）場合はアクション中断
 [jump target="*cancel"]
 [s]
@@ -28,9 +28,9 @@
 ; 第2階層のボタンを押下した場合（＝キャラクターIDが格納済みの場合）、アクションは正常終了
 [jump target="*input" cond="f.selectedCharacterId != ''"]
 ; 第1階層のボタン押下結果によって次の第2階層のボタンを出し分ける
-[jump target="*targetLayer" cond="f.selectedActionId == 'suspect'"]
-[jump target="*targetLayer" cond="f.selectedActionId == 'trust'"]
-[jump target="*targetLayer" cond="f.selectedActionId == 'ask'"]
+[jump target="*targetLayer" cond="f.selectedActionId == ACTION_SUSPECT"]
+[jump target="*targetLayer" cond="f.selectedActionId == ACTION_TRUST"]
+[jump target="*targetLayer" cond="f.selectedActionId == ACTION_ASK"]
 ; 当てはまるラベルがない（＝発言しない）場合はアクション終了
 [jump target="*cancel"]
 [s]
@@ -41,11 +41,7 @@
 
 *input
 [iscript]
-  f.pcActionObject = {
-    characterId: f.playerCharacterId,
-    targetCharacterId: f.selectedCharacterId,
-    actionId: f.selectedActionId
-  }
+  f.pcActionObject = new Action(f.playerCharacterId, f.selectedActionId, f.selectedCharacterId);
 [endscript]
 
 *end
@@ -60,9 +56,9 @@
 
 ; 「疑う」「信じる」「聞き出す」は基本セットとしておく
 tf.candidateObjects = [
-  {id: "suspect", text: "疑う", target: "*targetLayer"},
-  {id: "trust", text: "信じる", target: "*targetLayer"},
-  {id: "ask", text: "聞き出す", target: "*targetLayer"}
+  {id: ACTION_SUSPECT, text: "疑う", target: "*targetLayer"},
+  {id: ACTION_TRUST, text: "信じる", target: "*targetLayer"},
+  {id: ACTION_ASK, text: "聞き出す", target: "*targetLayer"}
 ];
 
 ; TODO テストのため必ず非表示 潜伏役職が残っているなら「COを促す」を表示
