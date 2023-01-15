@@ -565,6 +565,26 @@ function calcUpdatedReliability(characterObject, targetCharacterId, reason) {
 
 
 /**
+ * ボタンオブジェクトクラス
+ * TODO 別のファイルに移動すること
+ * @param {*} id ボタンのID（ボタン要素のclass名に利用）
+ * @param {*} text ボタンに表示するテキスト
+ * @param {*} side ボタンの表示位置 'left','right'のいずれか（省略した場合center）
+ * @param {*} color ボタンの色（TODO 未利用）
+ * @param {*} target ボタン押下時にジャンプするラベル名
+ * @param {*} storage ボタン押下時にジャンプするファイル名
+ */
+function Button (id, text, side = 'center', color = '', target = '', storage = '') {
+  this.id = id;
+  this.text = text;
+  this.side = side;
+  this.color = color;
+  //this.target = target;
+  //this.storage = storage;
+}
+
+
+/**
  * アクションオブジェクトクラス
  * @param {String} characterId アクション実行者のキャラクターID
  * @param {String} actionId 実行したアクションID

@@ -50,6 +50,25 @@ function prepareGameMain() {
   // 発話者の名前オブジェクト。ksファイル内で、# &f.speaker['名前'] の形式で使う。
   TYRANO.kag.stat.f.speaker = setSpeakersName(characterObjects);
 
+  // ボタンオブジェクト配列の初期化
+  TYRANO.kag.stat.f.buttonObjects = [];
+
+  // アクションボタン用アクションリストの初期化（全アクションを追加しておく）
+  TYRANO.kag.stat.f.actionButtonList = {
+    [ACTION_SUSPECT]: new Button(
+        ACTION_SUSPECT,
+        '疑う'
+    ),
+    [ACTION_TRUST]: new Button(
+        ACTION_TRUST,
+        '信じる',
+    ),
+    [ACTION_ASK]: new Button(
+        ACTION_ASK,
+        '聞き出す',
+    ),
+  }
+
   // 日時の初期化（初日の夜から始める）
   // ※いわゆる初日占いや初日襲撃ありにする場合は、夜から始めるようにした上でシナリオを修正すること）
   TYRANO.kag.stat.f.day = 0;

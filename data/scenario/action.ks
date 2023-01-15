@@ -52,15 +52,13 @@
 
 ; 第1階層（左側。行動を選択する）のボタン表示サブルーチン
 *displayFirstLayerButtons
+; 「疑う」「信じる」「聞き出す」は基本セットとしておく
+[eval exp="f.actionIdList = [ACTION_SUSPECT, ACTION_TRUST, ACTION_ASK]"]
+[j_setActionToButtonObjects actionIdList="&f.actionIdList"]
+
 [iscript]
 
-; 「疑う」「信じる」「聞き出す」は基本セットとしておく
-tf.candidateObjects = [
-  {id: ACTION_SUSPECT, text: "疑う", target: "*targetLayer"},
-  {id: ACTION_TRUST, text: "信じる", target: "*targetLayer"},
-  {id: ACTION_ASK, text: "聞き出す", target: "*targetLayer"}
-];
-
+/*
 ; TODO テストのため必ず非表示 潜伏役職が残っているなら「COを促す」を表示
 if (false) {
   tf.candidateObjects.push({id: "prompt", text: "COを促す", target: "*roleLayer"});
@@ -70,33 +68,25 @@ if (false) {
 if (false) {
   tf.candidateObjects.push({id: "CO", text: "COする", target: "*roleLayer"});
 }
+*/
 
 ; 「発言しない」を表示
-tf.candidateObjects.push({id: "cancel", text: "発言しない", target: "*end"});
+f.buttonObjects.push(new Button("cancel", "発言しない"));
 
 [endscript]
 
 [eval exp="tf.side = 'left'"]
-[call storage="./jinroSubroutines.ks" target="*glinkFromCandidateObjects"]
+[call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 
 ; ボタン押下後の処理
 ; 第1階層のボタンを押した場合、selectedActionIdに格納する
-[eval exp="f.selectedActionId = f.targetButtonId"]
+[eval exp="f.selectedActionId = f.selectedButtonId"]
 [return]
 
 
 ; 第2階層（右側。対象のキャラクターを選択する）のボタン表示サブルーチン
 *displaySecondLayerButtons
-[iscript]
-tf.candidateObjects = [
-  {id: "zundamon", text: "ずんだもん", target: "*end"},
-  {id: "metan", text: "四国めたん", target: "*end"},
-  {id: "tsumugi", text: "春日部つむぎ", target: "*end"},
-  {id: "hau", text: "雨晴はう", target: "*end"},
-  {id: "ritsu", text: "波音リツ", target: "*end"},
-  {id: "typet", text: "六人表示が限界みたい", target: "*end"},
-];
-[endscript]
+[j_setCharacterToButtonObjects onlySurvivor="true"]
 [call target="*secondLayerLoop"]
 [return]
 
@@ -116,16 +106,16 @@ tf.candidateObjects = [
 
 *secondLayerLoop
 [eval exp="tf.side = 'right'"]
-[call storage="./jinroSubroutines.ks" target="*glinkFromCandidateObjects"]
+[call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 
 ; ボタン押下後の処理
 ; 第2階層表示中には第1階層のボタンも押下できる状態のため、第1第2どちらを押下されても対応できるように判定する
-[if exp="f.targetSide == 'right'"]
+[if exp="f.selectedSide == 'right'"]
   ; 第1階層のボタンを押した場合、selectedCharacterIdに格納する
-  [eval exp="f.selectedCharacterId = f.targetButtonId"]
-[elsif exp="f.targetSide == 'left'"]
+  [eval exp="f.selectedCharacterId = f.selectedButtonId"]
+[elsif exp="f.selectedSide == 'left'"]
   ; 第1階層のボタンを押した場合、selectedActionIdに格納する。selectedCharacterIdは空にして改めて第2階層までボタンを表示する
-  [eval exp="f.selectedActionId = f.targetButtonId"]
+  [eval exp="f.selectedActionId = f.selectedButtonId"]
   [eval exp="f.selectedCharacterId = ''"]
 [endif]
 [return]

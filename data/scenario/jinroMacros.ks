@@ -467,6 +467,45 @@
 [endmacro]
 
 
+; ボタンオブジェクトf.buttonObjectsに、アクションボタン用オブジェクトを詰める
+; メモ：tf.candidateCharacterObjects, tf.candidateObjectsからの代替
+; @param actionIdList f.actionButtonList定数に定義されている中で、表示したいアクションIDのリスト
+[macro name="j_setActionToButtonObjects"]
+  [iscript]
+    f.buttonObjects = [];
+
+    for (let i = 0; i < mp.actionIdList.length; i++) {
+      f.buttonObjects.push(f.actionButtonList[mp.actionIdList[i]]);
+    }
+  [endscript]
+[endmacro]
+
+
+; ボタンオブジェクトf.buttonObjectsに、キャラクターオブジェクトを詰める
+; メモ：tf.candidateCharacterObjects, tf.candidateObjectsからの代替
+; @param needPC PCを含めるか。省略した場合含めない。
+; @param onlySurvivor 生存しているキャラのみか。省略した場合全員。（needsPC=trueでない限りPCは含めない）
+[macro name="j_setCharacterToButtonObjects"]
+  [iscript]
+    f.buttonObjects = [];
+
+    for (let characterId of Object.keys(f.characterObjects)) {
+      // PCを含めない場合は、PCはスキップ
+      if (!mp.needPC && f.characterObjects[characterId].isPlayer) continue;
+      // 生存しているキャラのみの場合は、死亡済みキャラはスキップ
+      if (mp.onlySurvivor && !f.characterObjects[characterId].isAlive) continue;
+      // MEMO 今のところ「死亡済みのキャラのみ返す」はできないので、必要になったら修正すること
+
+      // TODO f.actionButtonListのように事前にnewしておくほうがいいかも
+      f.buttonObjects.push(new Button(
+        characterId,
+        f.characterObjects[characterId].name,
+      ));
+    }
+  [endscript]
+[endmacro]
+
+
 ; 議論フェーズのアクションを誰が実行するかを判定し、実行するアクションオブジェクトをf.doActionObjectに入れる
 [macro name="j_setDoActionObject"]
   [iscript]

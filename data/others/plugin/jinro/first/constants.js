@@ -84,36 +84,6 @@ const ACTION_ASK = 'ask'; // 聞き出す（アクションボタン　未使用
 const ACTION_FORTUNE_TELLING = 'fortuneTelling'; // 占う（未使用）
 const ACTION_VOTE = 'vote'; // 投票（未使用）
 
-// アクションIDオブジェクト定数（TODO　未使用）
-/*
-アクションID: {
-    name: ボタン表示用アクション名
-    target: 第二階層ボタンに表示する内容の識別用
-    needsMax: NPCがアクション対象を選択する際、比較用の値（仲間度など）が最大値(true)or最小値(false)のキャラクターIDを取得する MEMO:仕組み自体微妙な気がする
-    updateReliabilityReason: その行動を受けたキャラクターの信頼度を更新する理由の識別用
-}
-*/
-const ACTION_BUTTON = {
-    [ACTION_SUSPECT]: {
-        name: '疑う',
-        target: 'surviveNpc',
-        needsMax: false,
-        updateReliabilityReason: REASON_WAS_SUSPECTED,
-    },
-    [ACTION_TRUST]: {
-        name: '信じる',
-        target: 'surviveNpc',
-        needsMax: true,
-        updateReliabilityReason: REASON_WAS_TRUSTED,
-    },
-    [ACTION_ASK]: {
-        name: '聞き出す',
-        target: 'surviveNpc',
-        needsMax: true,
-        updateReliabilityReason: REASON_WAS_ASKED,
-    },
-}
-
 
 // 設定値
 // ボタン配置範囲
