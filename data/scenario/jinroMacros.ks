@@ -57,7 +57,7 @@
 ; @param day 占った日付。指定がない場合のデフォルトは当日。占い騙りのように前日の夜に占ったことを偽装する必要がある場合は指定すること。
 ; @param characterId 占う対象のID。入っているなら、実行者はプレイヤーである。入っていないなら実行者はNPCのため、メソッド内部で対象を決める。
 ; @param result プレイヤーかつ騙りの占い師の場合のみ必要。宣言する占い結果をbooleanまたはstringで渡す。
-[macro name=j_fortuneTelling]
+[macro name="j_fortuneTelling"]
   [iscript]
     ; jsに渡す引数の準備。マクロへの指定がなければデフォルト値を入れる
     const day = (typeof mp.day == 'undefined') ? f.day : parseInt(mp.day);
@@ -197,8 +197,8 @@
     } else {
       todayResult = f.characterObjects[mp.biterId].role.biting(mp.biterId);
     }
-    ; 噛まれたキャラクターの退場用にティラノの一時変数に入れておく
-    tf.targetCharacterId = todayResult.characterId;
+    ; 噛まれたキャラクターの退場用にティラノの変数に入れておく
+    f.targetCharacterId = todayResult.characterId;
 
     let resultMassage = todayResult.result ? f.characterObjects[todayResult.characterId].name + 'は無残な姿で発見された。' : '平和な朝を迎えた。';
     alert(resultMassage);
@@ -247,7 +247,7 @@
     f.characterObjects[mp.characterId].perspective = organizePerspective (
       f.commonPerspective,
       mp.characterId,
-      TYRANO_VAR_F.uniqueRoleIdList.filter(rId => (rId != mp.roleId))
+      f.uniqueRoleIdList.filter(rId => (rId != mp.roleId))
     );
   [endscript]
 [endmacro]
@@ -345,21 +345,22 @@
 [endmacro]
 
 
-; CO候補となるキャラクターID配列からCO候補者を一人決定し、tf.COCandidateIdに格納する。
+; CO候補となるキャラクターID配列からCO候補者を一人決定し、f.COCandidateIdに格納する。
 ; @param characterIds CO候補となるキャラクターID配列（NPCかつ生存者を想定）。必須
-[macro name=j_decideCOCandidateId]
+[macro name="j_decideCOCandidateId"]
   [iscript]
     ; TODO:直前（PC、NPCどちらも）のCOの内容によって、各キャラ内のCOしたい度が変動するようにする
 
     ; キャラクターID配列を回してCOできる役職かつisDoneTodaysCOがfalseであれば、isCOMyRoll()を噛ませる。
     let maxProbability = 0;
     let COCandidateIdArray = [];
-    tf.COCandidateId = '';
+    f.COCandidateId = '';
     for (let i = 0; i < mp.characterIds.length; i++) {
       if (f.characterObjects[mp.characterIds[i]].role.allowCO && !f.characterObjects[mp.characterIds[i]].isDoneTodaysCO) {
         console.log('キャラクターID: ' + mp.characterIds[i]);
         let [probability, isCO] = isCOMyRoll(mp.characterIds[i]);
         ; COしたい、かつCO確率が現在保存中の最大の確率以上であれば、キャラクターIDをCO候補配列に格納する
+        ; TODO 怪しい。「CO確率が現在保存中の最大の確率以上」をするなら、「格納」ではなく「上書き」では？そうしないのであれば、isCOだけ見ればよくないか？
         if (isCO && probability >= maxProbability) {
           COCandidateIdArray.push(mp.characterIds[i]);
           maxProbability = probability;
@@ -368,13 +369,13 @@
     }
     ; CO候補配列に候補が1人ならその対象を、複数ならランダムで、COするキャラクターIDに決定する。0人の場合は空文字を返す。
     if (COCandidateIdArray.length == 1) {
-      tf.COCandidateId = COCandidateIdArray[0];
+      f.COCandidateId = COCandidateIdArray[0];
     } else if (COCandidateIdArray.length >= 2) {
-      tf.COCandidateId = getRandomElement(COCandidateIdArray);
+      f.COCandidateId = getRandomElement(COCandidateIdArray);
     }
     
     if (f.developmentMode) {
-      //alert('CO判定結果 キャラクターID:' + tf.COCandidateId + ' maxProbability:' + maxProbability);
+      //alert('CO判定結果 キャラクターID:' + f.COCandidateId + ' maxProbability:' + maxProbability);
     }
     
   [endscript]
@@ -421,13 +422,13 @@
 
 
 ; テスト用カットイン表示マクロ
-[macro name=j_cutin1]
+[macro name="j_cutin1"]
 
-    [image layer="1" x="0" y="150" width="1280" height="200" time="700" wait="false" storage="cutin.gif" name="cutin"]
-    [playse storage="speedy.ogg" volume=50]
-    [image layer="1" x="-1000" y="160" height="180" visible="true" reflect="true" storage="00_angry_eye.png" name="00"]
-    [anim name="00" left=100 time=700]
-    [wait time=700]
+    ;[image layer="1" x="0" y="150" width="1280" height="200" time="700" wait="false" storage="cutin.gif" name="cutin"]
+    [playse storage="シャキーン1.ogg" volume="40"]
+    ;[image layer="1" x="-1000" y="160" height="180" visible="true" reflect="true" storage="00_angry_eye.png" name="00"]
+    ;[anim name="00" left=100 time=700]
+    ;[wait time=700]
     [fadeoutse time="1800"]
 
 [endmacro]
@@ -466,8 +467,184 @@
 [endmacro]
 
 
+; ボタンオブジェクトf.buttonObjectsに、アクションボタン用オブジェクトを詰める
+; メモ：tf.candidateCharacterObjects, tf.candidateObjectsからの代替
+; @param actionIdList f.actionButtonList定数に定義されている中で、表示したいアクションIDのリスト
+[macro name="j_setActionToButtonObjects"]
+  [iscript]
+    f.buttonObjects = [];
+
+    for (let i = 0; i < mp.actionIdList.length; i++) {
+      f.buttonObjects.push(f.actionButtonList[mp.actionIdList[i]]);
+    }
+  [endscript]
+[endmacro]
+
+
+; ボタンオブジェクトf.buttonObjectsに、キャラクターオブジェクトを詰める
+; メモ：tf.candidateCharacterObjects, tf.candidateObjectsからの代替
+; @param needPC PCを含めるか。省略した場合含めない。
+; @param onlySurvivor 生存しているキャラのみか。省略した場合全員。（needsPC=trueでない限りPCは含めない）
+[macro name="j_setCharacterToButtonObjects"]
+  [iscript]
+    f.buttonObjects = [];
+
+    for (let characterId of Object.keys(f.characterObjects)) {
+      // PCを含めない場合は、PCはスキップ
+      if (!mp.needPC && f.characterObjects[characterId].isPlayer) continue;
+      // 生存しているキャラのみの場合は、死亡済みキャラはスキップ
+      if (mp.onlySurvivor && !f.characterObjects[characterId].isAlive) continue;
+      // MEMO 今のところ「死亡済みのキャラのみ返す」はできないので、必要になったら修正すること
+
+      // TODO f.actionButtonListのように事前にnewしておくほうがいいかも
+      f.buttonObjects.push(new Button(
+        characterId,
+        f.characterObjects[characterId].name,
+      ));
+    }
+  [endscript]
+[endmacro]
+
+
+; 議論フェーズのアクションを誰が実行するかを判定し、実行するアクションオブジェクトをf.doActionObjectに入れる
+[macro name="j_setDoActionObject"]
+  [iscript]
+    // PCがアクションボタンでアクション指定済みならPC
+    if (Object.keys(f.pcActionObject).length > 0) {
+      f.doActionObject = f.pcActionObject;
+    } else if (Object.keys(f.npcActionObject).length > 0) {
+      // PCがアクション未指定で、NPCでアクション実行者がいればそのNPC
+      f.doActionObject = f.npcActionObject;
+    } else {
+      // どちらでもなければ実行なし
+      f.doActionObject = {};
+    }
+  [endscript]
+[endmacro]
+
+
+; NPCの中からアクション実行候補者、実行するアクション、アクションの対象キャラクターを決定し、
+; f.doActionCandidateIdとf.npcActionObjectに格納する。
+[macro name="j_decideDoActionByNPC"]
+  [iscript]
+    // 変数の初期化
+    f.npcActionObject = {};
+    f.doActionCandidateId = '';
+    let doActionCandidateIdArray = [];
+    let maxProbability = 0;
+
+    for (let cId of Object.keys(f.characterObjects)) {
+      // プレイヤー、死亡済みのキャラクターは除外
+      if (f.characterObjects[cId].isPlayer) continue;
+      if (!f.characterObjects[cId].isAlive) continue;
+
+      // 現在の主張力をもとに、アクション実行確率とアクション実行したいかを取得する
+      console.log('キャラクター: ' + f.characterObjects[cId].name);
+      const [probability, doesAction] = randomDecide(f.characterObjects[cId].personality.assertiveness.current);
+
+      // アクション実行したくない判定なら除外
+      if (!doesAction) continue;
+
+      // アクション実行確率の値が現在保存中の最大の確率を超過していれば、キャラクターIDをアクション実行候補配列に格納する
+      if (probability > maxProbability) {
+        doActionCandidateIdArray = [cId];
+        maxProbability = probability;
+      } else if (probability == maxProbability) {
+        // アクション実行確率の値が現在の比較用の値と同値なら、キャラクターIDを候補配列に追加する
+        doActionCandidateIdArray.push(cId);
+      }
+    }
+    console.log('doActionCandidateIdArray:');
+    console.log(doActionCandidateIdArray);
+
+    // アクション実行候補配列に候補が1人ならその対象を、複数ならランダムで、アクション実行候補者に決定する
+    if (doActionCandidateIdArray.length == 1) {
+      f.doActionCandidateId = doActionCandidateIdArray[0];
+    } else if (doActionCandidateIdArray.length >= 2) {
+      f.doActionCandidateId = getRandomElement(doActionCandidateIdArray);
+    }
+  [endscript]
+  
+  ; アクション実行候補者がいなければマクロ終了
+  [jump target="*end_j_decideDoActionByNPC" cond="f.doActionCandidateId == ''"]
+
+  ; 実行するアクションとその対象を決定する
+  [iscript]
+    // 論理的な判断をするか感情的な判断をするか、論理力をもとに判定する
+    // MEMO ここで仲間度を用いないのは、仲間度のみに限定すると中途半端な対象しか選択されないため。
+    // 論理力の低いキャラでも論理的な判断（＝そのキャラ視点における人狼ゲーム的な正解）で発言するチャンスを設けることで、プレイヤーを悩ませられると思う。
+    const [probability, isLogicalDecision] = [1, true];
+    // TODO randomDecide(f.characterObjects[f.doActionCandidateId].personality.logical);
+
+    // 実行するアクションを決める
+    // TODO アクションID定数に置換する
+    // MEMO 選ばれるアクションは一旦ランダムとする。何らかの基準で比重を変えたい場合はここを修正する。
+    const actionId = getRandomElement(['suspect', 'trust']);
+
+    // アクションの対象を決める
+    // TODO アクションID定数の中にmax,minを持っていてもいいかも
+    let needsMax = true;
+    if (actionId == 'suspect') {
+      needsMax = false;
+    } else if (actionId == 'trust') {
+      needsMax = true;
+    } else {
+      alert('未定義のactionIdです');
+    }
+
+    let targetCharacterId = '';
+    if (isLogicalDecision) {
+      // 論理的な判断
+      // perspectiveをもとに仲間度を決める（役職騙り中の人狼や狂人は騙り役職としての視点オブジェクトで判定する。発言は嘘をつくため）
+      targetCharacterId = getCharacterIdBySameFactionPerspective(
+        f.characterObjects[f.doActionCandidateId],
+        f.characterObjects[f.doActionCandidateId].perspective,
+        needsMax
+      );
+    } else {
+      // 感情的な判断
+      // TODO targetCharacterId = getCharacterIdByReliability(f.doActionCandidateId, needsMax);
+    }
+    console.log('actionId:' + actionId);
+
+    // ここまでに決定した情報を、NPCのアクションオブジェクトに格納する
+    f.npcActionObject = new Action(f.doActionCandidateId, actionId, targetCharacterId);
+  [endscript]
+
+  *end_j_decideDoActionByNPC
+[endmacro]
+
+
+; 引数で受け取った、doActionObjectのアクションを実行する
+; 事前に[j_setDoActionObject]の実行が必要
+; @param characterId アクション実行するキャラクターID。必須
+; @param targetCharacterId アクション対象のキャラクターID。必須
+; @param actionId 実行するアクションID。必須
+[macro name="j_doAction"]
+  ; セリフ表示
+  [m_doAction characterId="&mp.actionObject.characterId" targetCharacterId="&mp.actionObject.targetId" actionId="&mp.actionObject.actionId"]
+
+  ; 全員の信頼度増減
+  [iscript]
+    updateReliabirityForAction(f.characterObjects, mp.actionObject);
+  [endscript]
+
+  ; TODO アクション実行者の主張力を下げて、同日中は再発言しにくくする
+
+  ; アクションボタン用変数の初期化（PCからのボタン先行入力を受け付けられるように消す。リアクションにはマクロ変数を渡すのでこのタイミングで消して問題ない）
+  [eval exp="f.selectedActionId = ''"]
+  [eval exp="f.selectedCharacterId = ''"]
+  [eval exp="f.doActionObject = {}"]
+  [eval exp="f.pcActionObject = {}"]
+  [eval exp="f.npcActionObject = {}"]
+
+  ; リアクションのセリフ表示
+  [m_doAction_reaction characterId="&mp.actionObject.targetId" actionId="&mp.actionObject.actionId"]
+[endmacro]
+
+
 ; 人狼メニュー画面に表示するための全占い師のCO状況テキストを生成する
-[macro name=j_getAllFortuneTellerCOText]
+[macro name="j_getAllFortuneTellerCOText"]
   ; TODO:これを表示したあと、2日目にプレイヤーが占う時にバグる。
   ; getCharacterObjectsFromCharacterIds()で、for (let k of Object.keys(characterObjects)) {の際にUncaught TypeError: Cannot convert undefined or null to object
   ; おそらくcharacterObjectsがnullになっている。人狼メニュー画面から戻った時にcharacterObjectsが初期化されるor読み込めない状態になっている？

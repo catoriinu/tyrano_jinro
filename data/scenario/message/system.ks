@@ -47,7 +47,7 @@
 
 ; シーン：偽の占い対象を入力した後、それを表示しつつそのCO結果を決めることを促すシステムメッセージ
 *displayFakeFortuneTellingTarget
-  [emb exp="f.characterObjects[tf.targetCharacterId].name"]を……
+  [emb exp="f.characterObjects[f.targetCharacterId].name"]を……
 [return]
 
 
@@ -70,4 +70,9 @@
 *displayGameOverAndWinnerCamp_werewolves
   ゲームが終了しました。[p]
   人狼の勝利！[p]
+[return]
+
+*displayGameOverAndWinnerCamp_drawByRevote
+  ゲームが終了しました。[p]
+  引き分けです。[p]
 [return]

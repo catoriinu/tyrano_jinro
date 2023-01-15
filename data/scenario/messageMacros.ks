@@ -65,6 +65,41 @@
 [endmacro]
 
 
+; シーン：アクション実行時のセリフ
+; @param characterId 発言者のキャラクターID。必須
+; @param face 発言者の表情。（TODO）
+; @param targetCharacterId アクション対象のキャラクターID。必須
+; @param actionId 実行するアクションID。必須。
+[macro name="m_doAction"]
+  [m_changeFrameWithId characterId="&mp.characterId"]
+  [m_changeCharacter characterId="&mp.characterId" face="normal"]
+  # &f.speaker[f.characterObjects[mp.characterId].name]
+  [eval exp="tf.selectedCharacterId = mp.targetCharacterId"]
+  [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
+  [eval exp="tf.messageTarget = '*doAction_' + mp.actionId"]
+  [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+[endmacro]
+
+
+; シーン：アクション実行対象になった時のセリフ
+; @param characterId 発言者（＝アクション実行対象）のキャラクターID。必須
+; @param face 発言者の表情。（TODO）
+; @param targetCharacterId 返答相手（＝元々のアクション実行者）のキャラクターID。（TODO）
+; @param actionId 実行されたアクションID。必須。
+[macro name="m_doAction_reaction"]
+  ; TODO like:信頼度がとても高いとき dislike:信頼度がとても低いとき newtral:それ以外 の三段階のリアクションができると嬉しい
+  ;　(「とても」としているのは、よほど極端な状況でない限り、人狼で露骨な反応はしないはずのため。ただ、顔に出やすい性格のキャラは条件をゆるくすると面白いかも）
+  ; （上記の判定を信頼度でやるべきか、仲間度でやるべきかは要考慮）
+  [m_changeFrameWithId characterId="&mp.characterId"]
+  [m_changeCharacter characterId="&mp.characterId" face="normal"]
+  # &f.speaker[f.characterObjects[mp.characterId].name]
+  ; [eval exp="tf.targetCharacterId = mp.targetCharacterId"]
+  [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
+  [eval exp="tf.messageTarget = '*doAction_reaction_' + mp.actionId"]
+  [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+[endmacro]
+
+
 ; シーン：人狼で、誰を噛むか選ぶときのセリフ
 ; @param characterId 発言者のキャラクターID。必須
 ; @param face 発言者の表情。（TODO）
@@ -106,7 +141,7 @@
 
 
 ; シーン：時間が経過したときのシステムメッセージ
-; @param isDaytime （true:昼/faklse:夜）になったか。必須。関連メソッド：timePasses()
+; @param isDaytime （true:昼/false:夜）になったか。必須。関連メソッド：timePasses()
 [macro name="m_timePasses"]
   [m_changeFrameWithId]
   #

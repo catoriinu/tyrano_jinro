@@ -44,19 +44,19 @@ function FortuneTeller() {
    * @param {Object} result PCの騙り占い師による結果騙り入力(t:●/f:○) デフォルト（PCの真占い師、またはNPCの場合）はnull
    * @returns {Object} 占いCOする結果オブジェクト{characterId, result(t:●/f:○)}
    */
-  roleObject.fortuneTelling = function (fortuneTellerId, day = TYRANO_VAR_F.day, targetCharacterId = '', result = null) {
+  roleObject.fortuneTelling = function (fortuneTellerId, day = TYRANO.kag.stat.f.day, targetCharacterId = '', result = null) {
     
     // 占い先が未決定の場合、決める（NPC専用。プレイヤーなら占い先を先に決めているため）
     if (!targetCharacterId) {
       [targetCharacterId, result] = this.determineFortuneTellingTargetId(
-        TYRANO_VAR_F.characterObjects[fortuneTellerId],
+        TYRANO.kag.stat.f.characterObjects[fortuneTellerId],
         day,
       );
     }
     
     // 占い結果が未決定の場合、占い先のisWerewolvesプロパティを格納する（真占い師専用）
     if (typeof result != "boolean") {
-      result = TYRANO_VAR_F.characterObjects[targetCharacterId].role.isWerewolves;
+      result = TYRANO.kag.stat.f.characterObjects[targetCharacterId].role.isWerewolves;
       // NOTE:真占い師かつターゲットが妖狐の場合、妖狐を呪殺する
     }
     
@@ -85,7 +85,7 @@ function FortuneTeller() {
     
     // 占い候補になるキャラクターID配列を取得する。
     const candidateIdList = getValuesFromObjectArray(
-      this.getCandidateObjects(fortuneTellerObject.characterId, day),
+      this.getCandidateCharacterObjects(fortuneTellerObject.characterId, day),
       'characterId'
     );
     
@@ -106,7 +106,7 @@ function FortuneTeller() {
    * @param {Number} day 占い実行日（過去の日付で占ったことにしたいときに指定）
    * @returns {Array} 占い対象候補となったキャラクターオブジェクトの配列
    */
-  roleObject.getCandidateObjects = function (fortuneTellerId, day = TYRANO_VAR_F.day) {
+  roleObject.getCandidateCharacterObjects = function (fortuneTellerId, day = TYRANO.kag.stat.f.day) {
     
     // 占い対象外として、占い履歴（を配列化したもの。オブジェクトのままでは抽出できないため）からcharacterId配列を抽出した配列に、実行者のIDを追加する
     const notTargetIds = getValuesFromObjectArray(Object.values(this.fortuneTellingHistory), 'characterId');
@@ -116,7 +116,7 @@ function FortuneTeller() {
     // 占い対象は、指定された日の夜時間開始時の生存者から選ばれる（騙り占い師が過去の日付の占い履歴を作ることがあるためこうしている）
     // NOTE：生存者の中から占い候補を探すのが正しい順番では？AND判定なので現状でも問題はなさそうだけど。
     return getSurvivorObjects(
-      getCharacterObjectsFromCharacterIds(TYRANO_VAR_F.characterObjectsHistory[day], notTargetIds, false),
+      getCharacterObjectsFromCharacterIds(TYRANO.kag.stat.f.characterObjectsHistory[day], notTargetIds, false),
       true
     );
   }
@@ -138,6 +138,20 @@ function FortuneTeller() {
     } else {
       return [announcementObject.characterId, announcementObject.result];
     }
+    /*
+    メモ：占い先の選び方検討（生存人数が少ない場合）
+    ・占い師（論理的な判断）：候補の中で、自分視点で仲間度が最も低いキャラを占う（●狙い）
+    ・占い師（感情的な判断）：候補の中で、自分視点で仲間度が最も高いキャラを占う（○狙い）
+    ・狂人（論理的な判断）　：候補の中で、騙り占い師視点で仲間度が最も低いキャラを占う
+    　　　　　　　　　　　　　ただしそれが自分視点で必ず人狼の場合、必ず○として報告する
+    　　　　　　　　　　　　　ただしそれが現在までに襲撃死済みの場合、必ず○として報告する
+    　　　　　　　　　　　　　ただし自分が既に●を人狼数分以上報告している場合、必ず○として報告する
+    ・人狼（論理的な判断）　：候補の中で、騙り占い師視点で仲間度が最も低いキャラを占う
+    　　　　　　　　　　　　　ただしそれが自分視点で必ず人狼の場合、必ず○として報告する
+    　　　　　　　　　　　　　ただしそれが現在までに襲撃死済みの場合、必ず○として報告する
+    　　　　　　　　　　　　　ただし自分が既に●を人狼数分以上報告している場合、必ず○として報告する
+    論理的と感情的のどちらで判断するかは、論理力(%)で毎回判定する？
+    */ 
   }
    
   return roleObject;
@@ -167,14 +181,14 @@ function Werewolf() {
 
     // 襲撃する。（fixme:狩人や妖狐による襲撃失敗に気をつける。
     // 妖狐実装後のように、死亡原因が重なるようになったときには処理順に依らないよう、夜の前に判定用キャラクターオブジェクトをコピーしておく）
-    let result = causeDeathToCharacter(TYRANO_VAR_F.characterObjects[targetCharacterId], DEATH_BY_ATTACK);
+    let result = causeDeathToCharacter(TYRANO.kag.stat.f.characterObjects[targetCharacterId], DEATH_BY_ATTACK);
 
     // （キャラクターオブジェクトで管理する必要がないので）ゲーム変数にその日の噛み結果を保存する
     const todayResult = {
       characterId: targetCharacterId,
       result: result,
     }
-    TYRANO_VAR_F.bitingHistory[TYRANO_VAR_F.day] = todayResult;
+    TYRANO.kag.stat.f.bitingHistory[TYRANO.kag.stat.f.day] = todayResult;
     return todayResult;
   }
 
@@ -184,13 +198,13 @@ function Werewolf() {
    */
   roleObject.determineBitingTargetId = function () {
     // 人狼ではない、かつ生存者のキャラクターオブジェクトを抽出する
-    const candidateObjects = getSurvivorObjects(
-      getIsWerewolvesObjects(TYRANO_VAR_F.characterObjects, false),
+    const candidateCharacterObjects = getSurvivorObjects(
+      getIsWerewolvesObjects(TYRANO.kag.stat.f.characterObjects, false),
       true
     );
     
     // とりあえずランダムで返す。TODO ランダムではなく、一定の基準で噛み先を決められるようにする
-    const resultObject = getRandomElement(candidateObjects);
+    const resultObject = getRandomElement(candidateCharacterObjects);
     return resultObject.characterId;
   } 
 

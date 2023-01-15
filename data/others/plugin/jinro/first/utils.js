@@ -40,7 +40,7 @@ function getVillagersRoleIdList() {
   ];
 
   // シャッフルしてから返却する
-  if (TYRANO_VAR_F.developmentMode) {
+  if (TYRANO.kag.stat.f.developmentMode) {
     // TODO テスト用にそのまま返却
     return villagersRoleIdList;
   }
@@ -185,7 +185,7 @@ function isWinWerewolves(survivorObjects) {
   // 人狼が、生存者数の半数以上であれば、人狼陣営の勝利
   const survivorsCount = survivorObjects.length;
   const werewolvesCount = getIsWerewolvesObjects(survivorObjects).length;
-  if (TYRANO_VAR_F.developmentMode) {
+  if (TYRANO.kag.stat.f.developmentMode) {
     console.log('生存者数:' + survivorsCount + '名 うち人狼の数:' + werewolvesCount + '名');
     alert('生存者数:' + survivorsCount + '名 うち人狼の数:' + werewolvesCount + '名');
   }
@@ -294,15 +294,29 @@ function getValuesFromObjectArray(objectArray, key) {
 function daytimeInitialize() {
   
   // NPCのCO候補者がいないフラグをfalseにする（昼の最初はいると考えてfalseで初期化。いないときにtrueにする）
-  TYRANO_VAR_F.notExistCOCandidateNPC = false;
+  TYRANO.kag.stat.f.notExistCOCandidateNPC = false;
 
   // 生存しているNPCのcharacterId配列を取得済みかのフラグをfalseにする
-  TYRANO_VAR_F.gottenSurviveNpcCharacterIds = false;
+  TYRANO.kag.stat.f.gottenSurviveNpcCharacterIds = false;
+
+  // アクション実行オブジェクトを初期化する
+  TYRANO.kag.stat.f.pcActionObject = {};
+  TYRANO.kag.stat.f.npcActionObject = {};
+  TYRANO.kag.stat.f.doActionObject = {};
+
+  // アクション実行回数を初期化する
+  TYRANO.kag.stat.f.doActionCount = 0;
+
+  // 再投票カウントを初期化する
+  TYRANO.kag.stat.f.revoteCount = 0;
 
   // ゲーム変数のキャラクターオブジェクトに対する初期化
-  for (let k of Object.keys(TYRANO_VAR_F.characterObjects)) {
+  for (let cId of Object.keys(TYRANO.kag.stat.f.characterObjects)) {
     // 今日のCO済みフラグをfalseに戻す
-    TYRANO_VAR_F.characterObjects[k].isDoneTodaysCO = false;
+    TYRANO.kag.stat.f.characterObjects[cId].isDoneTodaysCO = false;
+
+    // 主張力のcurrentをoriginalと同値に戻す
+    TYRANO.kag.stat.f.characterObjects[cId].personality.assertiveness.current = TYRANO.kag.stat.f.characterObjects[cId].personality.assertiveness.original;
   }
 }
 
@@ -312,7 +326,7 @@ function daytimeInitialize() {
  */
 function nightInitialize() {
   // 噛み実行済みフラグを最初に初期化しておく。噛んだ後、立てること。人狼が2人以上いたときに、噛み実行済みならスキップするため。
-  TYRANO_VAR_F.isBiteEnd = false;
+  TYRANO.kag.stat.f.isBiteEnd = false;
 }
 
 
@@ -321,13 +335,13 @@ function nightInitialize() {
  */
 function timePasses() {
   // 昼に呼ばれたら夜に+する
-  if (TYRANO_VAR_F.isDaytime) {
-    TYRANO_VAR_F.isDaytime = false;
+  if (TYRANO.kag.stat.f.isDaytime) {
+    TYRANO.kag.stat.f.isDaytime = false;
     nightInitialize(); // 夜時間開始時用の初期化を行う
   } else {
     // 夜に呼ばれたら翌日の昼にする
-    TYRANO_VAR_F.day++;
-    TYRANO_VAR_F.isDaytime = true;
+    TYRANO.kag.stat.f.day++;
+    TYRANO.kag.stat.f.isDaytime = true;
     daytimeInitialize(); // 昼時間開始時用の初期化を行う
   }
 }

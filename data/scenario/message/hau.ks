@@ -38,6 +38,47 @@
 [return]
 
 
+; doAction_{actionId}
+; NOTE：事前にtf.selectedCharacterIへの格納（PCならアクションボタンの実行、NPCならTODO）が必要。
+; シーン：「疑う」アクション実行時
+*doAction_suspect
+  [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+  僕は[call target="changeIdToCallName"]が怪しいと思います。[r]
+  か、勘違いだったらすみません……！[p]
+[return]
+
+; シーン：「信じる」アクション実行時
+*doAction_trust
+  [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+  [call target="changeIdToCallName"]はきっと大丈夫な人です。[r]
+  僕はそう信じてます。[p]
+[return]
+
+; シーン：「聞き出す」アクション実行時
+*doAction_ask
+  [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+  えっと、[call target="changeIdToCallName"]はどう思いますか？[p]
+[return]
+
+
+; doAction_reaction_{actionId}
+; シーン：「疑う」アクションの実行対象になった時
+*doAction_reaction_suspect
+  どうせ僕なんて、疑われても仕方ないですよね……。[p]
+[return]
+
+; シーン：「信じる」アクションの実行対象になった時
+*doAction_reaction_trust
+  ありがとうございます。[r]
+  僕も精一杯サポートしますね！[p]
+[return]
+
+; シーン：「聞き出す」アクションの実行対象になった時
+*doAction_reaction_ask
+  ぼ、僕ではお役に立てなさそうです。ごめんなさい。[p]
+[return]
+
+
 ; executed
 ; シーン：投票により処刑対象に決まったときの反応
 *executed

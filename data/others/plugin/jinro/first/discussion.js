@@ -1,12 +1,12 @@
 /**
- * そのキャラクターが、役職COを実行刷る可能性があるかを返す
+ * そのキャラクターが、役職COを実行する可能性があるかを返す
  * NOTE:視点オブジェクトを利用した仕組みに変えるべきなため、廃止したい。
  * @param {String} characterId キャラクターID
  * @returns {Array} [{Number}最終確率, {Boolean}判定結果]
  */
 function isCOMyRoll(characterId) {
   // キャラクターオブジェクトを取得する
-  const characterObject = TYRANO_VAR_F.characterObjects[characterId];
+  const characterObject = TYRANO.kag.stat.f.characterObjects[characterId];
 
   // COする可能性がある役職についているか
   if (characterObject.role.roleId in characterObject.personality.roleCOProbability) {
@@ -21,33 +21,34 @@ function isCOMyRoll(characterId) {
 
 /**
  * 与えられた確率や範囲を元に、trueを返却するか判断する
- * @param {Number} probability 元のtrueになる確率(%)
- * @param {Number} min 確率の最低保証(%)
- * @param {Number} max 確率の最高保証(%)
- * @param {Number} randomRange ランダム補正値(%)
+ * @param {Number} originalProbability 元のtrueになる確率(0～1)
+ * @param {Number} randomRange ランダム補正値（TODO）
  * @returns {Array} [{Number}最終確率, {Boolean}判定結果]
  */
-function randomDecide(probability, min = 0, max = 100, randomRange = 0) {
+function randomDecide(originalProbability, randomRange = 0) {
   
+  let probability = originalProbability;
+
   // randomRangeの範囲でprobabilityをランダムに変動させる
-  let resultProbability = probability;
+  // TODO probabilityが0～100だったときの実装のまま。利用箇所ができたときに修正する
   if (randomRange != 0) {
-    const RandomMin = probability - (randomRange / 2);
-    const RandomMax = probability + (randomRange / 2);
-    resultProbability = Math.floor( Math.random() * (RandomMax + 1 - RandomMin) ) + RandomMin;
+    const RandomMin = originalProbability - (randomRange / 2);
+    const RandomMax = originalProbability + (randomRange / 2);
+    probability = Math.floor( Math.random() * (RandomMax + 1 - RandomMin) ) + RandomMin;
   }
   
-  // resultProbabilityを指定された保証値の範囲に収める
-  if (resultProbability > max) {
-    resultProbability = max;
-  } else if (resultProbability < min) {
-    resultProbability = min;
+  // probabilityを0～1の範囲に収める
+  if (probability > 1) {
+    probability = 1;
+  } else if (probability < 0) {
+    probability = 0;
   }
   
-  // resultProbability(%)の確率でtrueを返す。resultProbability自体も判定用に返す。
-  const result = Math.random() < resultProbability / 100;
-  console.log('確率:' + resultProbability + ' 判定結果:' + result);
-  return [resultProbability, result];
+  // probabilityの確率でtrueを返す。判定時の乱数も呼び元で優先度を判定するために返す。
+  const randomValue = Math.random();
+  const result = randomValue < probability;
+  console.log('判定結果:' + result + ' 元の確率:' + probability + ' 判定時の乱数:' + randomValue);
+  return [randomValue, result];
 }
 
 
@@ -273,34 +274,34 @@ function updateCommonPerspective(characterId, zeroRoleIds) {
   // 共通視点オブジェクトを更新する
   console.log('【共通視点】');
   try {
-    TYRANO_VAR_F.commonPerspective = organizePerspective(TYRANO_VAR_F.commonPerspective, characterId, zeroRoleIds);
+    TYRANO.kag.stat.f.commonPerspective = organizePerspective(TYRANO.kag.stat.f.commonPerspective, characterId, zeroRoleIds);
   } catch (error) {
     console.log('共通視点オブジェクトが破綻しました美味しい水そうめん');
     console.log(characterId);
     console.log(zeroRoleIds);
-    console.log(TYRANO_VAR_F.commonPerspective);
+    console.log(TYRANO.kag.stat.f.commonPerspective);
     alert('共通視点オブジェクトが破綻しました美味しい水そうめん');
     return;
   }
 
   // 各キャラの視点オブジェクトも更新する
-  for (let cId of Object.keys(TYRANO_VAR_F.characterObjects)) {
+  for (let cId of Object.keys(TYRANO.kag.stat.f.characterObjects)) {
     console.log('【' + cId + 'の視点】');
-    console.log(TYRANO_VAR_F.characterObjects[cId].perspective);
+    console.log(TYRANO.kag.stat.f.characterObjects[cId].perspective);
     
     try {
-      TYRANO_VAR_F.characterObjects[cId].perspective = organizePerspective(TYRANO_VAR_F.characterObjects[cId].perspective, characterId, zeroRoleIds);
-      TYRANO_VAR_F.characterObjects[cId].role.rolePerspective = organizePerspective(TYRANO_VAR_F.characterObjects[cId].role.rolePerspective, characterId, zeroRoleIds);
+      TYRANO.kag.stat.f.characterObjects[cId].perspective = organizePerspective(TYRANO.kag.stat.f.characterObjects[cId].perspective, characterId, zeroRoleIds);
+      TYRANO.kag.stat.f.characterObjects[cId].role.rolePerspective = organizePerspective(TYRANO.kag.stat.f.characterObjects[cId].role.rolePerspective, characterId, zeroRoleIds);
     } catch (error) {
-      if (TYRANO_VAR_F.developmentMode) {
+      if (TYRANO.kag.stat.f.developmentMode) {
         alert(cId + 'の視点が破綻しました！');
       }
       // 破綻フラグを立てる
-      TYRANO_VAR_F.characterObjects[cId].isContradicted = true;
+      TYRANO.kag.stat.f.characterObjects[cId].isContradicted = true;
       // ここで破綻したら、共通視点オブジェクトで上書きする&自分自身を嘘がつける役職（TODO:「嘘をつかない役職配列」をメソッドで取り出せるようにする）だったということで確定する。
       // （試しに）updateCommonPerspectiveを再帰呼び出しして共通および全員の視点オブジェクトを更新する
-      TYRANO_VAR_F.characterObjects[cId].perspective = clone(TYRANO_VAR_F.commonPerspective);
-      TYRANO_VAR_F.characterObjects[cId].role.rolePerspective= clone(TYRANO_VAR_F.commonPerspective);
+      TYRANO.kag.stat.f.characterObjects[cId].perspective = clone(TYRANO.kag.stat.f.commonPerspective);
+      TYRANO.kag.stat.f.characterObjects[cId].role.rolePerspective= clone(TYRANO.kag.stat.f.commonPerspective);
       updateCommonPerspective(cId, [ROLE_ID_VILLAGER, ROLE_ID_FORTUNE_TELLER]);
     }
   }
@@ -321,6 +322,7 @@ function decideVote(characterObjects, day) {
     // 死亡済みキャラは投票を行わない
     if (!characterObjects[characterId].isAlive) continue;
 
+    // rolePerspectiveをもとに仲間度を決める（役職騙り中の人狼や狂人も自分の役職の視点オブジェクトで判定する。投票は嘘をつかないということ）
     characterObjects[characterId].sameFactionPossivility = calcSameFactionPossivility(
       characterObjects[characterId],
       characterObjects[characterId].role.rolePerspective
@@ -368,7 +370,7 @@ function decideVote(characterObjects, day) {
 
     // 投票対象者をその日の投票履歴に格納する
     characterObjects[characterId].voteHistory[day] = pushElement(characterObjects[characterId].voteHistory[day], voteTargetId);
-    TYRANO_VAR_F.characterObjects = characterObjects;
+    TYRANO.kag.stat.f.characterObjects = characterObjects;
     //console.log('【voteHistory】');
     //console.log(characterId);
     //console.log(characterObjects[characterId].voteHistory);
@@ -380,34 +382,36 @@ function decideVote(characterObjects, day) {
  * 仲間度オブジェクトを生成する
  * @param {Object} characterObject キャラクターオブジェクト
  * @param {Object} perspective 視点オブジェクト（perspectiveを使うか、rolePerspectiveを使うかは呼び元に任せる）
+ * @param {Array} characterIdList 仲間度を取得したいキャラクターIDリスト。省略した場合全員分取得する。
  * @return {Object} sameFactionPossivility 仲間度オブジェクト {characterId:仲間度,...}
  */
-function calcSameFactionPossivility(characterObject, perspective) {
+function calcSameFactionPossivility(characterObject, perspective, characterIdList = TYRANO.kag.stat.f.participantsIdList) {
 
   let sameFactionPossivility = {};
-  for (let i = 0; i < TYRANO_VAR_F.participantsIdList.length; i++) {
-    let cId = TYRANO_VAR_F.participantsIdList[i];
+  for (let i = 0; i < characterIdList.length; i++) {
+    let cId = characterIdList[i];
     // 自分自身は1で確定
     if (characterObject.characterId == cId) {
       sameFactionPossivility[cId] = 1;
       continue;
     }
 
-    let sameFactionCoefficient = 0;
-    // 重複のない村の役職ID配列をもとに全役職をループ
-    for (let j = 0; j < TYRANO_VAR_F.uniqueRoleIdList.length; j++) {
-      let rId = TYRANO_VAR_F.uniqueRoleIdList[j];
-      // 自分と同陣営の役職のperspectiveの割合値を合計する（仲間度を算出するための係数になる。自分視点で必ず同陣営なら1、必ず敵陣営なら0）
-      if (ROLE_ID_TO_FACTION[characterObject.role.roleId] == ROLE_ID_TO_FACTION[rId]) {
-        sameFactionCoefficient += perspective[cId][rId];
+    let sumSameFactionPerspective = 0;
+    // 全役職をループ
+    for (let rId of Object.keys(perspective[cId])) {
+      // 自分と同陣営の役職のperspectiveの割合値を合計する（自分視点で必ず同陣営なら1、必ず敵陣営なら0になる）
+      if (ROLE_ID_TO_FACTION[rId] == ROLE_ID_TO_FACTION[characterObject.role.roleId]) {
+        sumSameFactionPerspective += perspective[cId][rId];
       }
     }
     
-    // 対象キャラへの信頼度から自分の論理力を引いた値に1を足す
-    // 最後に前の処理で算出した係数を掛けた結果を、対象キャラへの「仲間度」とする
-    // →論理力が高いほど、信頼度の影響を受けずに係数そのものを「仲間度」にすることができる
-    //  論理力が低いほど、信頼度の影響で「仲間度」が係数から乖離しやすくなる
-    sameFactionPossivility[cId] = (characterObject.reliability[cId] - characterObject.personality.logical + 1) * sameFactionCoefficient;
+    // 対象キャラへの仲間度を算出する
+    // その際、自分の論理力の高さによって、対象キャラへの信頼度と同陣営割合値の合計のどちらに重きを置くかを決める
+    // →論理力が低いほど、対象キャラへの信頼度が「仲間度」になる（＝感情的な判断）
+    //  論理力が高いほど、同陣営割合値の合計が「仲間度」になる（＝論理的な判断）
+    // MEMO:信頼度と同陣営割合値は、本来は単純に足せばよい値ではない。役職や陣営が増えたり、ゲーム上で信頼度が増減するようになったあと、計算方法を再検討すること
+    sameFactionPossivility[cId] = (1 - characterObject.personality.logical) * characterObject.reliability[cId] +
+                                  characterObject.personality.logical       * sumSameFactionPerspective;
   }
   return sameFactionPossivility;
 }
@@ -421,26 +425,33 @@ function calcSameFactionPossivility(characterObject, perspective) {
 function countVote(characterObjects, day) {
 
   // 投票結果オブジェクトを初期化（0票だったキャラはキー自体入らないままとなる）
-  TYRANO_VAR_F.voteResult = {};
+  TYRANO.kag.stat.f.voteResult = {};
   for (let characterId of Object.keys(characterObjects)) {
     // 投票履歴オブジェクトのその日の投票先配列を確認
     // 配列でなければ、投票していないのでスルー
     if (!Array.isArray(characterObjects[characterId].voteHistory[day])) continue;
+
     // 末尾のキャラクターIDを取得（最新の再投票先は末尾に追加されているため）
     let voteTargetId = characterObjects[characterId].voteHistory[day].slice(-1)[0];
-
     // 1票追加
-    if (voteTargetId in TYRANO_VAR_F.voteResult) {
-      TYRANO_VAR_F.voteResult[voteTargetId]++;
+    if (voteTargetId in TYRANO.kag.stat.f.voteResult) {
+      TYRANO.kag.stat.f.voteResult[voteTargetId]++;
     } else {
-      TYRANO_VAR_F.voteResult[voteTargetId] = 1;
+      TYRANO.kag.stat.f.voteResult[voteTargetId] = 1;
     }
+
+    // 投票されたキャラクターの、投票したキャラクターへの信頼度を下げる
+    characterObjects[voteTargetId].reliability[characterId] = calcUpdatedReliability(
+      characterObjects[voteTargetId],
+      characterId,
+      REASON_WAS_VOTED
+    );
   }
 
   // 最多得票者のキャラクターIDを配列に格納
-  TYRANO_VAR_F.electedIdList = getMaxKeys(TYRANO_VAR_F.voteResult);
+  TYRANO.kag.stat.f.electedIdList = getMaxKeys(TYRANO.kag.stat.f.voteResult);
   // 最多得票者が1人で確定すれば、処刑を実行する（同票なら要素が複数入っているので再投票）
-  TYRANO_VAR_F.doExecute = (TYRANO_VAR_F.electedIdList.length == 1) ? true : false;
+  TYRANO.kag.stat.f.doExecute = (TYRANO.kag.stat.f.electedIdList.length == 1) ? true : false;
 };
 
   // TODO ここまでのロジックだけだと、再投票でも同じ結果になりうる。
@@ -455,17 +466,17 @@ function countVote(characterObjects, day) {
  * @param {Array} electedIdList 最多得票者配列
  */
 function openVote(characterObjects, day, voteResult, electedIdList) {
-  TYRANO_VAR_F.voteResultMessage = '';
+  TYRANO.kag.stat.f.voteResultMessage = '';
 
-  for (let i = 0; i < TYRANO_VAR_F.participantsIdList.length; i++) {
-    let characterId = TYRANO_VAR_F.participantsIdList[i];
+  for (let i = 0; i < TYRANO.kag.stat.f.participantsIdList.length; i++) {
+    let characterId = TYRANO.kag.stat.f.participantsIdList[i];
 
     let isElected = electedIdList.includes(characterId) ? '★' : '';
     let numbers = displayIsElected(characterId, voteResult);
     let name = characterObjects[characterId].name;
     let voteTargetName = displayVoteTargetName(characterId, characterObjects, day);
 
-    TYRANO_VAR_F.voteResultMessage += (
+    TYRANO.kag.stat.f.voteResultMessage += (
       isElected + '' + 
       numbers + '　' + 
       name + '→' + 
@@ -504,4 +515,443 @@ function displayVoteTargetName(characterId, characterObjects, day) {
   // 末尾のキャラクターIDを取得（最新の再投票先は末尾に追加されているため）
   let voteTargetId = characterObjects[characterId].voteHistory[day].slice(-1)[0];
   return characterObjects[voteTargetId].name;
+}
+
+
+/**
+ * 更新後の信頼度を計算、返却する
+ * @param {Object} characterObject キャラクターオブジェクト
+ * @param {String} targetCharacterId 信頼度を更新する相手
+ * @param {String} reason どのような理由で信頼度を更新するのか
+ * @returns {Number} updateTargetReliability 更新後の、相手の信頼度の値
+ */
+function calcUpdatedReliability(characterObject, targetCharacterId, reason) {
+
+  // 更新前の、相手の信頼度の値
+  let originalTargetReliability = characterObject.reliability[targetCharacterId];
+  // 更新後の、相手の信頼度の値
+  let updateTargetReliability = 0;
+  // 信頼度に影響を与える理由リストのうち、今回計算に用いる理由とその値のオブジェクト
+  let impressiveReasonObject = null;
+  // MEMO:本当はnull合体演算子を使いたいが、ティラノのJSのバージョンが古くて未対応だった
+  if (Object.keys(characterObject.personality.impressiveReasonList[reason]).length !== 0) {
+    impressiveReasonObject = characterObject.personality.impressiveReasonList[reason];
+  }
+
+  // 信頼度に影響を与える理由をもとに、信頼度の更新差分を算出する
+  if (impressiveReasonObject !== null) {
+    if (impressiveReasonObject.arithmetic == ARITHMETIC_ADDITION) {
+      // 加算
+      updateTargetReliability = originalTargetReliability + impressiveReasonObject.value;
+    } else if (impressiveReasonObject.arithmetic == ARITHMETIC_MULTIPLICATION) {
+      // 乗算
+      updateTargetReliability = originalTargetReliability * impressiveReasonObject.value;
+    }
+  } else {
+    alert(characterObject.name  + 'のimpressiveReasonListに' + reason + 'が未定義です');
+  }
+
+  console.log(characterObject.name + 'の' + targetCharacterId + 'への信頼度を' + reason + 'のため、' +
+    originalTargetReliability + 'から' + updateTargetReliability + 'に更新する');
+
+  // 更新後の値が1より大きくなる場合は1に、0より小さくなる場合は0にする。信頼度が取りうる値は0～1のため
+  if (updateTargetReliability > 1) {
+    updateTargetReliability = 1;
+  } else if (updateTargetReliability < 0) {
+    updateTargetReliability = 0;
+  }
+  return updateTargetReliability;
+}
+
+
+/**
+ * ボタンオブジェクトクラス
+ * TODO 別のファイルに移動すること
+ * @param {*} id ボタンのID（ボタン要素のclass名に利用）
+ * @param {*} text ボタンに表示するテキスト
+ * @param {*} side ボタンの表示位置 'left','right'のいずれか（省略した場合center）
+ * @param {*} color ボタンの色（TODO 未利用）
+ * @param {*} target ボタン押下時にジャンプするラベル名
+ * @param {*} storage ボタン押下時にジャンプするファイル名
+ */
+function Button (id, text, side = 'center', color = '', target = '', storage = '') {
+  this.id = id;
+  this.text = text;
+  this.side = side;
+  this.color = color;
+  //this.target = target;
+  //this.storage = storage;
+}
+
+
+/**
+ * アクションオブジェクトクラス
+ * @param {String} characterId アクション実行者のキャラクターID
+ * @param {String} actionId 実行したアクションID
+ * @param {String} targetId アクションの対象者のキャラクターID（対象をとらないアクションなら不要）
+ * @param {Boolean} result TODO 占い等実行時の結果
+ */
+function Action (characterId, actionId, targetId = '', result = null) {
+  this.characterId = characterId;
+  this.actionId = actionId;
+  this.targetId = targetId;
+  this.result = result;
+}
+
+
+
+/**
+ * アクション実行による、NPC全員の信頼度の更新を行う
+ * @param {Array} characterObjects キャラクターオブジェクト配列（メソッド内で更新する）
+ * @param {Object} actionObject アクションオブジェクト
+ */
+function updateReliabirityForAction(characterObjects, actionObject) {
+
+  console.log('execute testUpdateReliabirity actionObject:');
+  console.log(actionObject);
+  for (let cId of Object.keys(characterObjects)) {
+
+    // 死亡済みキャラクターはスキップ（プレイヤーはスキップしない。リアクションのために信頼度更新が必要なので）
+    if (!characterObjects[cId].isAlive) continue;
+
+    console.log('character:' + characterObjects[cId].name);
+
+    if (actionObject.actionId == ACTION_SUSPECT) {
+      updateReliabirityForSucpect(characterObjects, cId, actionObject);
+    } else if (actionObject.actionId == ACTION_TRUST) {
+      updateReliabirityForTrust(characterObjects, cId, actionObject);
+    } else if (actionObject.actionId == ACTION_ASK) {
+      // TODO
+    }
+    // TODO ここで占い、投票、破綻などの場合の信頼度更新も集約したい。
+    // そのためには、占いや投票もアクションオブジェクトを流用する必要がありそう。
+
+  }
+}
+
+
+/**
+ * 「疑う」による信頼度更新を行う
+ * @param {Array} characterObjects キャラクターオブジェクト配列（メソッド内で更新する）
+ * @param {String} cId 信頼度更新を行うキャラクターID
+ * @param {Object} actionObject 実行されたアクションオブジェクト
+ */
+function updateReliabirityForSucpect(characterObjects, cId, actionObject) {
+
+  // キャラクター自身がそのアクションで受ける影響の情報
+  const impressiveReason = characterObjects[cId].personality.impressiveReasonList[actionObject.actionId];
+
+  if (cId == actionObject.characterId) {
+    console.log('疑ったキャラである場合' + actionObject.targetId + 'への信頼度を下げる');
+    // 疑ったキャラである場合
+    // 疑われたキャラへの信頼度を下げる
+    characterObjects[cId].reliability[actionObject.targetId] = testCalcUpdatedReliability(
+      characterObjects[cId].reliability[actionObject.targetId],
+      impressiveReason,
+      false,
+      0.3
+    );
+
+  } else if (cId == actionObject.targetId) {
+    console.log('疑われたキャラである場合' + actionObject.characterId + 'への信頼度を下げる');
+    // 疑われたキャラである場合
+    // 疑ったキャラへの信頼度を下げる
+    characterObjects[cId].reliability[actionObject.characterId] = testCalcUpdatedReliability(
+      characterObjects[cId].reliability[actionObject.characterId],
+      impressiveReason,
+      false,
+      1
+    );
+
+  } else {
+    console.log('第三者である場合');
+    // 第三者である場合
+    // 疑ったキャラと疑われたキャラへの仲間度と感情を取得
+    const sameFactionPossivility = calcSameFactionPossivility(
+      characterObjects[cId],
+      characterObjects[cId].perspective,
+      [actionObject.characterId, actionObject.targetId]
+    );
+    const feelingForCharacter = getFeeling(characterObjects[cId], sameFactionPossivility[actionObject.characterId]);
+    const feelingForTarget = getFeeling(characterObjects[cId], sameFactionPossivility[actionObject.targetId]);
+
+    if (feelingForCharacter == FEELING_HATE && feelingForTarget != FEELING_HATE) {
+      console.log(actionObject.characterId + 'への感情がhateである、かつ' + actionObject.targetId + 'への感情がhateではないなら、' + actionObject.characterId + 'への信頼度を上げる');
+      // 疑ったキャラへの感情がhateである、かつ疑われたキャラへの感情がhateではないなら
+      // 疑われたキャラへの信頼度を上げる
+      characterObjects[cId].reliability[actionObject.targetId] = testCalcUpdatedReliability(
+        characterObjects[cId].reliability[actionObject.targetId],
+        impressiveReason,
+        true,
+        0.5
+      );
+
+    } else if (feelingForCharacter == FEELING_LOVE && feelingForTarget != FEELING_LOVE) {
+      console.log(actionObject.characterId + 'への感情がloveである、かつ' + actionObject.targetId + 'への感情がloveではないなら、' + actionObject.targetId + 'への信頼度を下げる');
+      // 疑ったキャラへの感情がloveである、かつ疑われたキャラへの感情がloveではないなら
+      // 疑われたキャラへの信頼度を下げる
+      characterObjects[cId].reliability[actionObject.targetId] = testCalcUpdatedReliability(
+        characterObjects[cId].reliability[actionObject.targetId],
+        impressiveReason,
+        false,
+        0.5
+      );
+
+    } else if (feelingForCharacter != FEELING_LOVE && feelingForTarget == FEELING_LOVE) {
+      console.log(actionObject.characterId + 'への感情がloveではない、かつ' + actionObject.targetId + 'への感情がloveであるなら、' + actionObject.characterId + 'への信頼度を下げる');
+      // 疑ったキャラへの感情がloveではない、かつ疑われたキャラへの感情がloveであるなら
+      // 疑ったキャラへの信頼度を下げる
+      characterObjects[cId].reliability[actionObject.characterId] = testCalcUpdatedReliability(
+        characterObjects[cId].reliability[actionObject.characterId],
+        impressiveReason,
+        false,
+        0.5
+      );
+
+    } else {
+
+      if (sameFactionPossivility[actionObject.characterId] > sameFactionPossivility[actionObject.targetId]) {
+        console.log(actionObject.characterId + 'の仲間度の方が高いなら、' + actionObject.characterId + 'への信頼度を上げ、' + actionObject.targetId + 'への信頼度を下げる');
+        // 疑ったキャラの仲間度の方が高いなら
+        // 疑ったキャラへの信頼度を上げる
+        characterObjects[cId].reliability[actionObject.characterId] = testCalcUpdatedReliability(
+          characterObjects[cId].reliability[actionObject.characterId],
+          impressiveReason,
+          true,
+          0.3
+        );
+        // 疑われたキャラへの信頼度を下げる
+        characterObjects[cId].reliability[actionObject.targetId] = testCalcUpdatedReliability(
+          characterObjects[cId].reliability[actionObject.targetId],
+          impressiveReason,
+          false,
+          0.3
+        );
+
+      } else {
+        console.log(actionObject.targetId + 'の仲間度の方が高いなら、' + actionObject.characterId + 'への信頼度を下げ、' + actionObject.targetId + 'への信頼度を上げる');
+        // 疑われたキャラの仲間度の方が高いなら
+        // 疑ったキャラへの信頼度を下げる
+        characterObjects[cId].reliability[actionObject.characterId] = testCalcUpdatedReliability(
+          characterObjects[cId].reliability[actionObject.characterId],
+          impressiveReason,
+          false,
+          0.3
+        );
+        // 疑われたキャラへの信頼度を上げる
+        characterObjects[cId].reliability[actionObject.targetId] = testCalcUpdatedReliability(
+          characterObjects[cId].reliability[actionObject.targetId],
+          impressiveReason,
+          true,
+          0.3
+        );
+      }
+    }
+  }
+}
+
+
+/**
+ * 「信じる」による信頼度更新を行う
+ * @param {Array} characterObjects キャラクターオブジェクト配列（メソッド内で更新する）
+ * @param {String} cId 信頼度更新を行うキャラクターID
+ * @param {Object} actionObject 実行されたアクションオブジェクト
+ */
+function updateReliabirityForTrust(characterObjects, cId, actionObject) {
+
+  // キャラクター自身がそのアクションで受ける影響の情報
+  const impressiveReason = characterObjects[cId].personality.impressiveReasonList[actionObject.actionId];
+
+  if (cId == actionObject.characterId) {
+    console.log('信じたキャラである場合' + actionObject.targetId + 'への信頼度を上げる');
+    // 信じたキャラである場合
+    // 信じられたキャラへの信頼度を上げる
+    characterObjects[cId].reliability[actionObject.targetId] = testCalcUpdatedReliability(
+      characterObjects[cId].reliability[actionObject.targetId],
+      impressiveReason,
+      true,
+      0.3
+    );
+
+  } else if (cId == actionObject.targetId) {
+    console.log('信じられキャラである場合' + actionObject.characterId + 'への信頼度を上げる');
+    // 信じられたキャラである場合
+    // 信じたキャラへの信頼度を上げる
+    characterObjects[cId].reliability[actionObject.characterId] = testCalcUpdatedReliability(
+      characterObjects[cId].reliability[actionObject.characterId],
+      impressiveReason,
+      true,
+      1
+    );
+
+  } else {
+    console.log('第三者である場合');
+    // 第三者である場合
+    // 信じたキャラと信じられたキャラへの仲間度と感情を取得
+    const sameFactionPossivility = calcSameFactionPossivility(
+      characterObjects[cId],
+      characterObjects[cId].perspective,
+      [actionObject.characterId, actionObject.targetId]
+    );
+    const feelingForCharacter = getFeeling(characterObjects[cId], sameFactionPossivility[actionObject.characterId]);
+    const feelingForTarget = getFeeling(characterObjects[cId], sameFactionPossivility[actionObject.targetId]);
+
+    if (feelingForCharacter == FEELING_HATE && feelingForTarget == FEELING_HATE) {
+      console.log(actionObject.characterId + 'への感情がhateである、かつ' + actionObject.targetId + 'への感情がhateであるなら、何もしない');
+      // 信じたキャラへの感情がhateである、かつ信じられたキャラへの感情がhateであるなら
+      // 何もしない
+
+    } else if (feelingForCharacter == FEELING_LOVE && feelingForTarget != FEELING_LOVE) {
+      console.log(actionObject.characterId + 'への感情がloveである、かつ' + actionObject.targetId + 'への感情がloveではないなら、' + actionObject.targetId + 'への信頼度を上げる');
+      // 信じたキャラへの感情がloveである、かつ信じられたキャラへの感情がloveではないなら
+      // 信じられたキャラへの信頼度を上げる
+      characterObjects[cId].reliability[actionObject.targetId] = testCalcUpdatedReliability(
+        characterObjects[cId].reliability[actionObject.targetId],
+        impressiveReason,
+        true,
+        0.5
+      );
+
+    } else if (feelingForCharacter != FEELING_LOVE && feelingForTarget == FEELING_LOVE) {
+      console.log(actionObject.characterId + 'への感情がloveではない、かつ' + actionObject.targetId + 'への感情がloveであるなら、' + actionObject.characterId + 'への信頼度を上げる');
+      // 信じたキャラへの感情がloveではない、かつ信じられたキャラへの感情がloveであるなら
+      // 信じたキャラへの信頼度をあげる
+      characterObjects[cId].reliability[actionObject.characterId] = testCalcUpdatedReliability(
+        characterObjects[cId].reliability[actionObject.characterId],
+        impressiveReason,
+        true,
+        0.5
+      );
+
+    } else {
+      console.log(actionObject.characterId + 'への信頼度を上げ、' + actionObject.targetId + 'への信頼度を上げる');
+      // 上記以外
+      // 信じたキャラへの信頼度を上げる
+      characterObjects[cId].reliability[actionObject.characterId] = testCalcUpdatedReliability(
+        characterObjects[cId].reliability[actionObject.characterId],
+        impressiveReason,
+        true,
+        0.3
+      );
+      // 信じられたキャラへの信頼度を上げる
+      characterObjects[cId].reliability[actionObject.targetId] = testCalcUpdatedReliability(
+        characterObjects[cId].reliability[actionObject.targetId],
+        impressiveReason,
+        true,
+        0.3
+      );
+    }
+  }
+}
+
+
+/**
+ * 更新後の信頼度を算出する
+ * @param {Number} reliability 
+ * @param {Object} impressiveReason 信頼度に影響を与える理由オブジェクト
+ * @param {Boolean} isIncrease 信頼度を増加させるか。true:増加 / false:減少（デフォルト）
+ * @param {Number} coeficient impressiveReason.valueを補正する係数（デフォルトは補正しない）
+ * @returns updatedReliability 更新後の、相手の信頼度の値
+ */
+function testCalcUpdatedReliability(reliability, impressiveReason, isIncrease = false, coeficient = 1) {
+
+  // 更新後の、相手の信頼度の値
+  let updatedReliability = 0;
+  // 信頼度を更新する計算に使う値（信頼度に影響を与える理由の値に係数を掛ける。減少させる場合は負の値にする）
+  const value = isIncrease ? (impressiveReason.value * coeficient) : (-1 * impressiveReason.value * coeficient);
+
+  // 信頼度に影響を与える理由をもとに、信頼度の更新差分を算出する
+  if (impressiveReason.arithmetic == ARITHMETIC_ADDITION) {
+    // 加算
+    updatedReliability = reliability + value;
+  } else if (impressiveReason.arithmetic == ARITHMETIC_MULTIPLICATION) {
+    // 乗算
+    updatedReliability = reliability * value;
+  }
+
+  console.log('before:' + reliability + ' after:' + updatedReliability);
+
+  // 更新後の値が1より大きくなる場合は1に、0より小さくなる場合は0にする。信頼度が取りうる値は0～1のため
+  if (updatedReliability > 1) {
+    updatedReliability = 1;
+  } else if (updatedReliability < 0) {
+    updatedReliability = 0;
+  }
+  return updatedReliability;
+}
+
+
+/**
+ * 自分の相手への感情を取得する
+ * @param {Object} characterObject 自分自身のキャラクターオブジェクト
+ * @param {Number} sameFactionPossivility 感情を確認したい相手のキャラクターの仲間度の数値（0～1）
+ * @returns {String} 感情定数
+ */
+function getFeeling(characterObject, sameFactionPossivility) {
+
+  if (sameFactionPossivility < characterObject.personality.feelingBorder.hate) {
+    return FEELING_HATE;
+  } else if (sameFactionPossivility > characterObject.personality.feelingBorder.love) {
+    return FEELING_LOVE;
+  } else {
+    return FEELING_NORMAL;
+  }
+}
+
+
+/**
+ * 自分自身の視点オブジェクトを確認し、最も同陣営割合が高い（低い）キャラクターIDを返却する
+ * @param {Object} characterObject キャラクターオブジェクト
+ * @param {Object} perspective 視点オブジェクト（perspectiveを使うか、rolePerspectiveを使うかは呼び元に任せる）
+ * @param {Boolean} needsMax true:最大値のキャラクターIDを取得したい / false:最小値のキャラクターIDを取得したい
+ * @returns {String} targetCharacterId 対象のキャラクターID
+ */
+function getCharacterIdBySameFactionPerspective(characterObject, perspective, needsMax) {
+
+  let targetCharacterIdList = [];
+  // 比較用の値の初期値を格納。最大値が必要なら0、最小値が必要なら1
+  let maxOrMinValue = needsMax ? 0 : 1;
+
+  for (let cId of Object.keys(perspective)) {
+    // 未確定役職の割合は判定に使わないため除外
+    if (cId == 'uncertified') continue;
+    // 自分自身と死亡済みのキャラは除外
+    // MEMO そうしたくないときが来たら引数で処理し分けるようにする
+    if (cId == characterObject.characterId) continue;
+    if (!TYRANO.kag.stat.f.characterObjects[cId].isAlive) continue;
+
+    let sumSameFactionPerspective = 0;
+    // 全役職をループ
+    for (let rId of Object.keys(perspective[cId])) {
+      // 自分と同陣営の役職のperspectiveの割合値を合計する（自分視点で必ず同陣営なら1、必ず敵陣営なら0になる）
+      if (ROLE_ID_TO_FACTION[rId] == ROLE_ID_TO_FACTION[characterObject.role.roleId]) {
+        sumSameFactionPerspective += perspective[cId][rId];
+      }
+    }
+
+    // 同陣営割合の合計の値を確認し、キャラクターIDを格納するか判定する
+    if (sumSameFactionPerspective == maxOrMinValue) {
+      // 値が、現在の比較用の値と同値なら候補配列に追加する（取得したいのが最大値でも最小値でも、ここの処理は共通でよい）
+      targetCharacterIdList.push(cId);
+    } else if (
+      (needsMax && sumSameFactionPerspective > maxOrMinValue) ||
+      (!needsMax && sumSameFactionPerspective < maxOrMinValue)
+    ) {
+      // 値が現在の比較用の値超過または未満（取得したいのが最大値か最小値かで判定し分ける）ならば、候補配列に格納する
+      targetCharacterIdList = [cId];
+      maxOrMinValue = sumSameFactionPerspective;
+    }
+  }
+
+  // 候補配列に候補が1人ならその対象を、複数ならランダムで、候補者に決定する。0人の場合は空文字を返す。
+  // MEMO 同値のキャラが複数いた場合にその全員分の配列が欲しいときが来たら引数で処理し分けるようにすること
+  let targetCharacterId = '';
+  if (targetCharacterIdList.length == 1) {
+    targetCharacterId = targetCharacterIdList[0];
+  } else if (targetCharacterIdList.length >= 2) {
+    targetCharacterId = getRandomElement(targetCharacterIdList);
+  }
+  console.log('getCharacterIdBySameFactionPerspective targetCharacterId:' + targetCharacterId);
+
+  return targetCharacterId;
 }
