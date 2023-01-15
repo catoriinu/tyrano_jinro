@@ -592,15 +592,15 @@
 
   ; TODO アクション実行者の主張力を下げて、同日中は再発言しにくくする
 
-  ; リアクションのセリフ表示
-  [m_doAction_reaction characterId="&mp.actionObject.targetId" actionId="&mp.actionObject.actionId"]
-
-  ; アクションボタン用変数の初期化
+  ; アクションボタン用変数の初期化（PCからのボタン先行入力を受け付けられるように消す。リアクションにはマクロ変数を渡すのでこのタイミングで消して問題ない）
   [eval exp="f.selectedActionId = ''"]
   [eval exp="f.selectedCharacterId = ''"]
   [eval exp="f.doActionObject = {}"]
   [eval exp="f.pcActionObject = {}"]
   [eval exp="f.npcActionObject = {}"]
+
+  ; リアクションのセリフ表示
+  [m_doAction_reaction characterId="&mp.actionObject.targetId" actionId="&mp.actionObject.actionId"]
 [endmacro]
 
 

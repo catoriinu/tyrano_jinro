@@ -117,6 +117,6 @@ const ACTION_BUTTON = {
 
 // 設定値
 // ボタン配置範囲
-const BUTTON_RANGE_Y_UPPER = -25 // 上限
-const BUTTON_RANGE_Y_LOWER = 510 // 下限
+const BUTTON_RANGE_Y_UPPER = -30 // 上限
+const BUTTON_RANGE_Y_LOWER = 505 // 下限
 const BUTTON_MARGIN_HEIGHT = 30 // ボタンの上下の余白

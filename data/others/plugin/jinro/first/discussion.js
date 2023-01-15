@@ -869,12 +869,9 @@ function testCalcUpdatedReliability(reliability, impressiveReason, isIncrease = 
  */
 function getFeeling(characterObject, sameFactionPossivility) {
 
-  // TODO 性格ごとに持つ
-  const feelingBorderValue = 0.1;
-
-  if (sameFactionPossivility < feelingBorderValue) {
+  if (sameFactionPossivility < characterObject.personality.feelingBorder.hate) {
     return FEELING_HATE;
-  } else if (sameFactionPossivility > (1 - feelingBorderValue)) {
+  } else if (sameFactionPossivility > characterObject.personality.feelingBorder.love) {
     return FEELING_LOVE;
   } else {
     return FEELING_NORMAL;

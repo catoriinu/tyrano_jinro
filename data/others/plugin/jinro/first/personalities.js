@@ -8,16 +8,9 @@
  * @param {Number} assertiveness 主張力
  * @param {Object} roleCOProbability 役職ごとのCO確率オブジェクト
  * @param {Object} impressiveActionList 信頼度に影響を与える行動リスト
- * @prop {String} name 性格の日本語名
- * @prop {Number} active 活発度
- * @prop {Number} hungry 貪欲度
- * @prop {Number} egoistic 保身度
- * @prop {Number} logical 論理力
- * @prop {Object} assertiveness 主張力
- * @prop {Object} roleCOProbability 役職ごとのCO確率オブジェクト
- * @prop {Object} impressiveReasonList 信頼度に影響を与える理由リスト
+ * @param {Object} feelingBorder 感情の境界値オブジェクト
  */
-function Personality(name, active, hungry, egoistic, logical, assertiveness, roleCOProbability, impressiveReasonList) {
+function Personality(name, active, hungry, egoistic, logical, assertiveness, roleCOProbability, impressiveReasonList, feelingBorder) {
   this.name = name;
   this.active = active;
   this.hungry = hungry;
@@ -26,6 +19,7 @@ function Personality(name, active, hungry, egoistic, logical, assertiveness, rol
   this.assertiveness = assertiveness;
   this.roleCOProbability = roleCOProbability;
   this.impressiveReasonList = impressiveReasonList;
+  this.feelingBorder = feelingBorder;
 }
 
 
@@ -81,5 +75,9 @@ function Tester() {
       // TODO:占われて○だったとき＝信頼度を少し上げる。ただし必ず敵陣営の場合は上げない
       // TODO:占われて●だったとき＝信頼度をガクッと下げる。ただし必ず味方陣営の場合は少ししか下げない
     },
+    { // feelingBorder {hate:仲間度がこれ未満ならhate状態, love:仲間度がこれ超過ならlove状態}
+      hate: 0.2,
+      love: 0.8
+    }
   );
 }

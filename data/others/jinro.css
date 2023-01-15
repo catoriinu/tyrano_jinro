@@ -1,27 +1,10 @@
-.left_button_window {
+.left_button_window,.right_button_window,.center_button_window {
     background-color: rgba(255,255,255,0.82);
     border:solid 3px rgba(0,0,0,0.82);
     width:340px;
     padding: 0.2rem 0.2rem 0.2rem 0.2rem;
     border-radius: 20px 20px 20px 20px / 20px 20px 20px 20px;
 }
-
-.right_button_window {
-    background-color: rgba(255,255,255,0.82);
-    border:solid 3px rgba(0,0,0,0.82);
-    width:340px;
-    padding: 0.2rem 0.2rem 0.2rem 0.2rem;
-    border-radius: 20px 20px 20px 20px / 20px 20px 20px 20px;
-}
-
-.center_button_window {
-    background-color: rgba(255,255,255,0.82);
-    border:solid 3px rgba(0,0,0,0.82);
-    width:340px;
-    padding: 0.2rem 0.2rem 0.2rem 0.2rem;
-    border-radius: 20px 20px 20px 20px / 20px 20px 20px 20px;
-}
-
 
 .btn_voivo {
     position: relative;
@@ -45,7 +28,7 @@
     bottom: -5px;
     left: -5px;
     border-radius: 1.5em;
-    border: 2.5px solid #87AD8E;
+    border: 3px solid #87AD8E;
     transition: .15s ease-out;
 }
 
