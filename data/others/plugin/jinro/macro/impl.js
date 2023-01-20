@@ -24,7 +24,7 @@ function changeCharacter(characterId, face, side) {
       // 登場させたいキャラがすでに登場しているなら、表情変更のみ
       // TODO：同じ表情の場合どうなる？
       // [chara_mod name="&mp.characterId" face="&mp.face" time="500" wait="false"]
-      TYRANO.kag.ftag.startTag("chara_mod",{name:characterId, face:face, time:500, wait:false});
+      TYRANO.kag.ftag.startTag("chara_mod",{name:characterId, face:face, time:200, wait:false});
     } else {
       // 登場させたいキャラがまだ登場していないなら、登場させる
       enterCharacter(characterId, face, side);
@@ -37,7 +37,7 @@ function changeCharacter(characterId, face, side) {
       // 登場させたいキャラがすでに登場しているなら、表情変更のみ
       // TODO：同じ表情の場合どうなる？
       // [chara_mod name="&mp.characterId" face="&mp.face" time="500" wait="false"]
-      TYRANO.kag.ftag.startTag("chara_mod",{name:characterId, face:face, time:500, wait:false});
+      TYRANO.kag.ftag.startTag("chara_mod",{name:characterId, face:face, time:50, wait:false});
     } else {
       // 登場させたいキャラがまだ登場していないなら、登場させる
       enterCharacter(characterId, face, side);

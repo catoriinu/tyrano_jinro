@@ -32,10 +32,10 @@ function Tester() {
     0.7, // active
     0.1, // hungry
     0.1, // egoistic
-    0, // logical 論理力(0～1)
+    0.7, // logical 論理力(0～1)
     { // assertiveness 主張力（originalとcurrentは同値にすること）
-      original: 1, // 元々の値（毎日currentをoriginalで初期化する）
-      current: 1 // 現在の値（判定処理にはcurrentを用いる）
+      original: 0.5, // 元々の値（毎日currentをoriginalで初期化する）
+      current: 0.5 // 現在の値（判定処理にはcurrentを用いる）
     },
     // COProbability {自身のRoleId : その役職としてCOする可能性}
     {

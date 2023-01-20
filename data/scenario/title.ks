@@ -11,8 +11,8 @@
 [button x=175 y=480 graphic="title/button_start.png" enterimg="title/button_start2.png"  target="gamestart"]
 [button x=175 y=570 graphic="title/button_load.png" enterimg="title/button_load2.png" role="load" ]
 [button x=740 y=480 graphic="title/button_config.png" enterimg="title/button_config2.png" role="sleepgame" storage="config.ks" ]
-[button x=740 y=570 graphic="title/button_start3.png" enterimg="title/button_start2.png" target="selectStage"]
-
+;[button x=740 y=570 graphic="title/button_start3.png" enterimg="title/button_start2.png" target="selectStage"]
+[button x=740 y=570 graphic="title/button_start3.png" enterimg="title/button_start2.png" target="teststart"]
 [s]
 
 *gamestart
@@ -25,3 +25,6 @@
 [jump storage="selectStage.ks"]
 
 
+*teststart
+;テストファイルへジャンプする
+[jump storage="test.ks"]

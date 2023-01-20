@@ -7,7 +7,7 @@
 [start_keyconfig]
 
 
-[bg storage="living_night_close_nc238328.jpg" time="300"]
+[bg storage="living_day_nc238325.jpg" time="500"]
 
 ;メッセージウィンドウの設定、文字が表示される領域を調整
 [position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="210" page="fore"]
@@ -29,11 +29,110 @@
 ; ゲーム準備js読み込み
 [loadjs storage="plugin/jinro/macro/prepareGame.js"]
 
-; アクション、ステータス、メニューボタン表示
-; TODO 表示（＝プレイヤーに操作させてよい）タイミングは後々考える。それ以外は非表示にする。
-[button graphic="button/button_action_normal.png" storage="action.ks" target="*start" x="23" y="25" width="114" height="103" fix="true" role="sleepgame" enterimg="button/button_action_hover.png" clickimg="button/button_action_click.png"]
-[button graphic="button/button_menu_normal.png" x="1143" y="25" width="114" height="103" fix="true" role="menu" enterimg="button/button_menu_hover.png" clickimg="button/button_menu_click.png"]
-[button graphic="button/button_status_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="1005" y="25" width="114" height="103" fix="true" role="sleepgame" enterimg="button/button_status_hover.png" clickimg="button/button_status_click.png"]
+[playbgm storage="honwakapuppu.ogg" volume="15" sprite_time="50-75000"]
+[m_changeFrameWithId][p]
+
+[m_changeCharacter characterId="miko" face="normal"]
+[m_changeFrameWithId characterId="miko"]
+[playse storage="chara/miko/001_櫻歌ミコ（ノーマル）_ただいまー　.ogg" loop="false" sprite_time="50-20000"]
+# 櫻歌ミコ
+ただいまー[p]
+
+
+[m_changeCharacter characterId="mochiko" face="normal"]
+[m_changeFrameWithId characterId="mochiko"]
+[playse storage="chara/mochiko/002_もち子さん（ノーマル）_おかえりなさい、ミ….ogg" loop="false" sprite_time="50-20000"]
+# もち子さん
+おかえりなさい、ミコさん[p]
+
+[m_changeCharacter characterId="miko" face="normal"]
+[m_changeFrameWithId characterId="miko"]
+[playse storage="chara/miko/003_櫻歌ミコ（ノーマル）_あぁ、もち子ちゃん….ogg" loop="false" sprite_time="50-20000"]
+# 櫻歌ミコ
+あ、もち子ちゃん。[r]
+あっちでりっちゃんたちが集まってたけど、何やってるの？[p]
+
+[m_changeCharacter characterId="mochiko" face="normal"]
+[m_changeFrameWithId characterId="mochiko"]
+[playse storage="chara/mochiko/004_もち子さん（ノーマル）_一期生と二期生のみ….ogg" loop="false" sprite_time="50-20000"]
+# もち子さん
+1期生と2期生のみなさんで、人狼ゲームをしてるんですよ。[p]
+
+[m_changeCharacter characterId="miko" face="excite"]
+[m_changeFrameWithId characterId="miko"]
+[playse storage="chara/miko/005_櫻歌ミコ（ノーマル）_人狼！？ミコもやり….ogg" loop="false" sprite_time="50-20000"]
+# 櫻歌ミコ
+人狼！？ミコもやりたい！[p]
+
+[m_changeCharacter characterId="mochiko" face="smile"]
+[m_changeFrameWithId characterId="mochiko"]
+[playse storage="chara/mochiko/006_もち子さん（ノーマル）_ふふっ。これからゲ….ogg" loop="false" sprite_time="50-20000"]
+# もち子さん
+ふふっ。[r]
+これからゲームが始まるところですからまずは観戦してみましょう。[p]
+
+[playse storage="シーン切り替え1.ogg" loop="false"]
+[mask time="1000" effect="rotateIn" graphic="voivojinrou_green.png" folder="bgimage"]
+#
+[m_changeCharacter characterId="mochiko" face="normal"]
+;[m_changeCharacter characterId="miko" face="normal"]
+[m_changeFrameWithId characterId="miko"]
+; SE
+[mask_off]
+
+;;[m_changeCharacter characterId="miko" face="normal"]
+[chara_mod name="miko" face="normal" time="50" wait="false"]
+
+[playse storage="chara/miko/007_櫻歌ミコ（ノーマル）_面白かったー！.ogg" loop="false" sprite_time="20-20000"]
+# 櫻歌ミコ
+面白かったー！[p][p]
+
+[playse storage="chara/miko/008_櫻歌ミコ（ノーマル）_せっかく人狼を見つ….ogg" loop="false" sprite_time="50-20000"]
+# 櫻歌ミコ
+せっかく人狼を見つけたのに襲われちゃった、[r]
+占い師のめたんちゃんがかわいそうだったね。[p]
+
+[m_changeCharacter characterId="mochiko" face="normal"]
+[m_changeFrameWithId characterId="mochiko"]
+[playse storage="chara/mochiko/009_もち子さん（ノーマル）_再投票になり、リッ….ogg" loop="false" sprite_time="50-20000"]
+# もち子さん
+再投票になり、リッちゃん先輩を吊れないと分かった瞬間に、[r]
+つむぎさんに票を変えたずんだもんちゃんはお見事でした。[p]
+
+[playse storage="chara/mochiko/010_もち子さん（ノーマル）_そして最終日に、ず….ogg" loop="false" sprite_time="50-20000"]
+# もち子さん
+そして最終日に、[r]
+ずんだもんちゃんとはうちゃんが共闘するところも胸熱でしたね。[p]
+
+[m_changeCharacter characterId="miko" face="normal"]
+[m_changeFrameWithId characterId="miko"]
+[playse storage="chara/miko/011_櫻歌ミコ（ノーマル）_でも、観戦してたら….ogg" loop="false" sprite_time="50-20000"]
+# 櫻歌ミコ
+でも、観戦してたらもっとやりたくなっちゃった。[r]
+まだ一緒に遊べないの？[p]
+
+[m_changeCharacter characterId="mochiko" face="normal"]
+[m_changeFrameWithId characterId="mochiko"]
+[playse storage="chara/mochiko/012_もち子さん（ノーマル）_まずは5人で遊べる….ogg" loop="false" sprite_time="50-20000"]
+# もち子さん
+まずは5人で遊べるようにするのが優先だそうですが、[r]
+そのあとは他の人達も参加できるようにしたいそうですよ。[p]
+
+[m_changeCharacter characterId="mochiko" face="smile"]
+[playse storage="chara/mochiko/013_もち子さん（ノーマル）_ミコちゃんはいい子….ogg" loop="false" sprite_time="50-20000"]
+# もち子さん
+ミコちゃんはいい子だから、もうちょっと待っていましょうね。[p]
+
+[m_changeCharacter characterId="miko" face="gao"]
+[m_changeFrameWithId characterId="miko"]
+[playse storage="chara/miko/014_櫻歌ミコ（ノーマル）_うー、早く遊ばせて….ogg" loop="false" sprite_time="50-20000"]
+# 櫻歌ミコ
+うー、早く遊ばせてくれないと食べちゃうぞ！[r]
+がおー！[p]
+
+[mask time="1000" effect="rotateIn" graphic="voivojinrou_title.png" folder="bgimage"]
+[p]
+[mask_off]
 
 [m_changeFrameWithId]
 #
