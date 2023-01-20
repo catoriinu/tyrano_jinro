@@ -695,6 +695,17 @@
   [emb exp="f.voteResultMessage"][p]
 [endmacro]
 
+[macro name="j_displayRoles"]
+
+役職公開[r]
+ずんだもん：[emb exp="f.characterObjects.zundamon.role.roleName"]、
+四国めたん：[emb exp="f.characterObjects.metan.role.roleName"]、
+春日部つむぎ：[emb exp="f.characterObjects.tsumugi.role.roleName"]、
+雨晴はう：[emb exp="f.characterObjects.hau.role.roleName"]、
+波音リツ：[emb exp="f.characterObjects.ritsu.role.roleName"][p]
+
+[endmacro]
+
 ; jsonをローカルに保存する
 ; 参考　@link https://ameblo.jp/personwritep/entry-12495099049.html
 [macro name=j_saveJson]
