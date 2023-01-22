@@ -689,10 +689,18 @@
 
 ; 各キャラの投票先を集計し、投票結果画面として出力する
 [macro name="j_openVote"]
+  ; ボタン類とメッセージウィンドウを消去
+  [clearfix name="button_fix"]
+  [layopt layer="message0" visible="false"]
+
   [call storage="jinroSubroutines.ks" target="*openVote"]
   [p]
   ; 投票結果を表示していたレイヤーを解放
   [freeimage layer="1" time="400" wait="false"]
+
+  ; ボタン類とメッセージウィンドウを表示
+  [j_displayFixButton]
+  [layopt layer="message0" visible="true"]
 [endmacro]
 
 
@@ -704,6 +712,16 @@
 雨晴はう：[emb exp="f.characterObjects.hau.role.roleName"]、
 波音リツ：[emb exp="f.characterObjects.ritsu.role.roleName"][p]
 [endmacro]
+
+
+; メニュー系のボタンを全て表示する
+; MEMO 消去するときは[clearfix name="button_fix"]
+[macro name="j_displayFixButton"]
+  [button graphic="button/button_action_normal.png" storage="action.ks" target="*start" x="23" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_fix" enterimg="button/button_action_hover.png" clickimg="button/button_action_click.png"]
+  [button graphic="button/button_menu_normal.png" x="1143" y="23" width="114" height="103" fix="true" role="menu" name="button_fix" enterimg="button/button_menu_hover.png" clickimg="button/button_menu_click.png"]
+  [button graphic="button/button_status_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="1005" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_fix" enterimg="button/button_status_hover.png" clickimg="button/button_status_click.png"]
+[endmacro]
+
 
 ; jsonをローカルに保存する
 ; 参考　@link https://ameblo.jp/personwritep/entry-12495099049.html

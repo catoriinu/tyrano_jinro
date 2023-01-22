@@ -426,7 +426,7 @@ function countVote(characterObjects, day) {
 
   // 得票数オブジェクトを初期化（0票だったキャラはキー自体入らないままとなる）（投票結果テキスト表示用。↓とは別にあった方が計算量が少なく済む）
   TYRANO.kag.stat.f.votedCountObject = {};
-  // 投票結果オブジェクト（アクションオブジェクトの配列）を初期化（開票画面表示用）
+  // 投票結果オブジェクト（アクションオブジェクトの配列）を初期化（投票結果画面表示用）
   TYRANO.kag.stat.f.voteResultObjects = [];
 
   for (let characterId of Object.keys(characterObjects)) {

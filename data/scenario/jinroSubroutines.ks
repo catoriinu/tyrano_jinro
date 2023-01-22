@@ -239,10 +239,20 @@ $('.' + tf.class).css('height', tf.height);
 
 
 
+; 投票結果表示サブルーチン
 *openVote
-; 開票結果を表示するレイヤーを可視化する
+; 投票結果を表示するレイヤーを可視化する
 [layopt layer="1" page="fore" visible="true"]
 [iscript]
+/*
+  TYRANO.kag.stat.f.voteResultObjects.push(new Action(CHARACTER_ID_ZUNDAMON, 'vote', CHARACTER_ID_METAN));
+  TYRANO.kag.stat.f.voteResultObjects.push(new Action(CHARACTER_ID_METAN, 'vote', CHARACTER_ID_TSUMUGI));
+  TYRANO.kag.stat.f.voteResultObjects.push(new Action(CHARACTER_ID_TSUMUGI, 'vote', CHARACTER_ID_HAU));
+  TYRANO.kag.stat.f.voteResultObjects.push(new Action(CHARACTER_ID_HAU, 'vote', CHARACTER_ID_RITSU));
+  TYRANO.kag.stat.f.voteResultObjects.push(new Action(CHARACTER_ID_RITSU, 'vote', CHARACTER_ID_ZUNDAMON));
+  TYRANO.kag.stat.f.voteResultObjects.push(new Action(CHARACTER_ID_ZUNDAMON, 'vote', CHARACTER_ID_ZUNDAMON));
+*/
+
   // レイヤーに、FlexboxのCSSが適用されるdiv要素を追加する
   $('.1_fore').append('<div class="vote_container">');
   // 表示するキャラクター数
