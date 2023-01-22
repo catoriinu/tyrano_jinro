@@ -6,11 +6,24 @@
 ; chara_newタグとchara_faceタグをまとめて実行
 ; widthとhaightはここで設定しておくこと。
 *executeCharaNewAndCharaFace
+  [eval exp="tf.characterId = CHARACTER_ID_METAN"]
+
   ; キャラ画像のデフォルト座標をゲーム変数に格納する
   ; 画面内への登場時の定位置はleft="711" top="105"
-  [eval exp="f.defaultPosition.metan = {side:'right', left:1711, top:105}"]
+  [iscript]
+    f.defaultPosition[tf.characterId] = {
+      side: 'right', // デフォルト待機位置
+      left: 1711, // デフォルト座標（left）
+      top: 105, // デフォルト座標（top）
+      width: 800, // 画像の幅（画面幅1280pxの中での幅）
+      haight: 800, // 画像の高さ（画面高さ720pxの中での高さ）
+      widthCenter: 373, // 画像の幅の中央(反転しない状態で)
+    }
+  [endscript]
 
-  [chara_new name="metan" storage="chara/metan/normal.png" width="800" haight="800" jname="四国めたん"]
-  [chara_face name="metan" face="normal" storage="chara/metan/normal.png"]
-  [chara_show name="metan" face="normal" time="0" wait="true" left="&f.defaultPosition.metan.left" top="&f.defaultPosition.metan.top"]
+  ; キャラクターの登録
+  ; だいたいtf.characterIdを参照してくれるが、storageとjnameには正確な文字列を入れること
+  [chara_new name="&tf.characterId" storage="chara/metan/normal.png" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" jname="四国めたん"]
+  [chara_face name="&tf.characterId" face="normal" storage="chara/metan/normal.png"]
+  [chara_show name="&tf.characterId" face="normal" time="0" wait="true" left="&f.defaultPosition[tf.characterId].left" top="&f.defaultPosition[tf.characterId].top"]
 [return]

@@ -46,50 +46,13 @@
 [eval exp="f.characterObjectsHistory = {}"]
 [eval exp="f.characterObjectsHistory[f.day] = clone(f.characterObjects)"]
 
-
-; キャラの登場と退場のテスト
-;[m_changeCharacter characterId="zundamon" face="normal"]
-;[m_changeFrameWithId characterId="zundamon"]
-;# ずんだもん
-;めたんー[p]
-;
-;[m_changeCharacter characterId="metan" face="normal"]
-;[m_changeFrameWithId characterId="metan"]
-;# 四国めたん
-;何よ？[p]
-;
-;[m_changeCharacter characterId="zundamon" face="normal"]
-;[m_changeFrameWithId characterId="zundamon"]
-;# ずんだもん
-;つむぎー[p]
-;
-;[m_changeCharacter characterId="tsumugi" face="normal"]
-;[m_changeFrameWithId characterId="tsumugi"]
-;# 春日部つむぎ
-;はーい[p]
-;
-;[m_changeCharacter characterId="zundamon" face="normal"]
-;[m_changeFrameWithId characterId="zundamon"]
-;# ずんだもん
-;はうー、りつー、そしてつむぎ！[p]
-;
-;[m_changeCharacter characterId="hau" face="normal"]
-;[m_changeFrameWithId characterId="hau"]
-;# 雨晴はう
-;ニンニクマシマシ！[p]
-;
-;[m_changeCharacter characterId="ritsu" face="normal"]
-;[m_changeFrameWithId characterId="hau"]
-;# 波音リツ
-;大きなイチモツ！[p]
-;
-;[m_changeCharacter characterId="tsumugi" face="normal"]
-;[m_changeFrameWithId characterId="tsumugi"]
-;# 春日部つむぎ
-;めがまわるー[p]
-
 ; プレイヤーの役職確認セリフ出力
 [m_noticeRole characterId="&f.playerCharacterId" roleId="&f.characterObjects[f.playerCharacterId].role.roleId"]
+
+
+; TODO
+[call storage="effects.ks" target="*openVoteTest"]
+
 
 ; 占い師なら初日占い実行
 [if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_FORTUNE_TELLER"]

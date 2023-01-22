@@ -518,6 +518,18 @@ function displayVoteTargetName(characterId, characterObjects, day) {
 }
 
 
+function setVoteResultObjects() {
+  // TODO 投票するときに入れておけばいい話
+  TYRANO.kag.stat.f.voteResultObjects = [
+      new Action(CHARACTER_ID_ZUNDAMON, 'vote', CHARACTER_ID_METAN),
+      new Action(CHARACTER_ID_METAN, 'vote', CHARACTER_ID_TSUMUGI),
+      new Action(CHARACTER_ID_TSUMUGI, 'vote', CHARACTER_ID_HAU),
+      new Action(CHARACTER_ID_HAU, 'vote', CHARACTER_ID_RITSU),
+      new Action(CHARACTER_ID_RITSU, 'vote', CHARACTER_ID_ZUNDAMON),
+  ];
+}
+
+
 /**
  * 更新後の信頼度を計算、返却する
  * @param {Object} characterObject キャラクターオブジェクト

@@ -43,3 +43,33 @@
 .btn_voivo:active {
     transform: scale(.96);
 }
+
+.vote_container {
+    display: flex;
+    flex-direction: row;
+}
+
+.vote_box {
+    /* width: 256px; */
+    height: 720px;
+}
+
+.vote_target_zundamon {
+    background-color: chartreuse;
+}
+
+.vote_target_metan {
+    background-color:orchid;
+}
+
+.vote_target_tsumugi {
+    background-color:yellow;
+}
+
+.vote_target_hau {
+    background-color:aqua;
+}
+
+.vote_target_ritsu {
+    background-color:tomato;
+}
