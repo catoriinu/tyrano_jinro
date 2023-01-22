@@ -689,11 +689,8 @@
 
 ; 各キャラの投票先を集計し、メッセージに出力する
 [macro name="j_openVote"]
-  [iscript]
-    openVote(f.characterObjects, f.day, f.voteResult, f.electedIdList);
-  [endscript]
   [call storage="effects.ks" target="*openVoteTest"]
-  [emb exp="f.voteResultMessage"][p]
+  [p]
 [endmacro]
 
 [macro name="j_displayRoles"]

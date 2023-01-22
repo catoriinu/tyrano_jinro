@@ -424,8 +424,8 @@ function calcSameFactionPossivility(characterObject, perspective, characterIdLis
  */
 function countVote(characterObjects, day) {
 
-  // 投票結果オブジェクトを初期化（0票だったキャラはキー自体入らないままとなる）（投票結果テキスト表示用。TODO 不要になったら↓に統合したい）
-  TYRANO.kag.stat.f.voteResult = {};
+  // 得票数オブジェクトを初期化（0票だったキャラはキー自体入らないままとなる）（投票結果テキスト表示用。↓とは別にあった方が計算量が少なく済む）
+  TYRANO.kag.stat.f.votedCountObject = {};
   // 投票結果オブジェクト（アクションオブジェクトの配列）を初期化（開票画面表示用）
   TYRANO.kag.stat.f.voteResultObjects = [];
 
@@ -434,31 +434,73 @@ function countVote(characterObjects, day) {
     // 配列でなければ、投票していないのでスルー
     if (!Array.isArray(characterObjects[characterId].voteHistory[day])) continue;
 
-    // 末尾のキャラクターIDを取得（最新の再投票先は末尾に追加されているため）
-    let voteTargetId = characterObjects[characterId].voteHistory[day].slice(-1)[0];
+    // 投票先のキャラクターID（＝その日のvoteHistoryの末尾のID。最新の再投票先は末尾に追加されているため）を取得
+    let votedId = characterObjects[characterId].voteHistory[day].slice(-1)[0];
     // 1票追加
-    if (voteTargetId in TYRANO.kag.stat.f.voteResult) {
-      TYRANO.kag.stat.f.voteResult[voteTargetId]++;
+    if (votedId in TYRANO.kag.stat.f.votedCountObject) {
+      TYRANO.kag.stat.f.votedCountObject[votedId]++;
     } else {
-      TYRANO.kag.stat.f.voteResult[voteTargetId] = 1;
+      TYRANO.kag.stat.f.votedCountObject[votedId] = 1;
     }
-
     // 投票結果オブジェクトに投票のアクションオブジェクトとして追加
-    TYRANO.kag.stat.f.voteResultObjects.push(new Action(characterId, ACTION_VOTE, voteTargetId));
+    TYRANO.kag.stat.f.voteResultObjects.push(new Action(characterId, ACTION_VOTE, votedId));
 
     // 投票されたキャラクターの、投票したキャラクターへの信頼度を下げる
-    characterObjects[voteTargetId].reliability[characterId] = calcUpdatedReliability(
-      characterObjects[voteTargetId],
+    characterObjects[votedId].reliability[characterId] = calcUpdatedReliability(
+      characterObjects[votedId],
       characterId,
       REASON_WAS_VOTED
     );
   }
 
   // 最多得票者のキャラクターIDを配列に格納
-  TYRANO.kag.stat.f.electedIdList = getMaxKeys(TYRANO.kag.stat.f.voteResult);
+  TYRANO.kag.stat.f.electedIdList = getMaxKeys(TYRANO.kag.stat.f.votedCountObject);
   // 最多得票者が1人で確定すれば、処刑を実行する（同票なら要素が複数入っているので再投票）
   TYRANO.kag.stat.f.doExecute = (TYRANO.kag.stat.f.electedIdList.length == 1) ? true : false;
 };
+
+
+/**
+ * 未使用メソッド
+ * 渡されたアクションオブジェクトの配列の中で、targetIdに指定されている回数が最多のtargetIdを返却する（複数個の場合もあるため配列形式）
+ * 最多得票者の取得などに利用
+ * @param {Array} actionObjects アクションオブジェクトの配列
+ * @returns {Array} targetIdの配列
+ */
+function getMaxTargetedIds(actionObjects) {
+
+  let targetIdObject = {};
+  for (let i = 0; i < actionObjects.length; i++) {
+    let targetId = actionObjects[i].targetId;
+    if (targetId in targetIdObject) {
+      targetIdObject[targetId]++;
+    } else {
+      targetIdObject[targetId] = 1;
+    }
+  }
+  let maxTrgetedIds = getMaxKeys(targetIdObject);
+  return maxTrgetedIds;
+}
+
+
+/**
+ * 未使用メソッド
+ * 渡されたアクションオブジェクトの配列の中で、countIdがtargetIdに指定されている回数を返却する
+ * 得票数の取得などに利用
+ * @param {Array} actionObjects アクションオブジェクトの配列
+ * @returns {Number} countIdがtargetIdに指定されている回数
+ */
+function countTargetedId(actionObjects, countId) {
+
+  let count = 0;
+  for (let i = 0; i < actionObjects.length; i++) {
+    if (actionObjects[i].targetId == countId) {
+      count++;
+    }
+  }
+  return count;
+}
+
 
   // TODO ここまでのロジックだけだと、再投票でも同じ結果になりうる。
   // 再投票前に「自分に投票したキャラの信頼度をガクッと下げる」「仲間が投票したキャラの信頼度を下げる」「自分と同じ投票先に投票したキャラの信頼度を上げる」などはどうか。
@@ -521,18 +563,6 @@ function displayVoteTargetName(characterId, characterObjects, day) {
   // 末尾のキャラクターIDを取得（最新の再投票先は末尾に追加されているため）
   let voteTargetId = characterObjects[characterId].voteHistory[day].slice(-1)[0];
   return characterObjects[voteTargetId].name;
-}
-
-
-function setVoteResultObjects() {
-  // TODO 投票するときに入れておけばいい話
-  TYRANO.kag.stat.f.voteResultObjects = [
-      new Action(CHARACTER_ID_ZUNDAMON, 'vote', CHARACTER_ID_METAN),
-      new Action(CHARACTER_ID_METAN, 'vote', CHARACTER_ID_TSUMUGI),
-      new Action(CHARACTER_ID_TSUMUGI, 'vote', CHARACTER_ID_HAU),
-      new Action(CHARACTER_ID_HAU, 'vote', CHARACTER_ID_RITSU),
-      new Action(CHARACTER_ID_RITSU, 'vote', CHARACTER_ID_ZUNDAMON),
-  ];
 }
 
 
