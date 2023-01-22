@@ -687,21 +687,22 @@
 [endmacro]
 
 
-; 各キャラの投票先を集計し、メッセージに出力する
+; 各キャラの投票先を集計し、投票結果画面として出力する
 [macro name="j_openVote"]
-  [call storage="effects.ks" target="*openVoteTest"]
+  [call storage="jinroSubroutines.ks" target="*openVote"]
   [p]
+  ; 投票結果を表示していたレイヤーを解放
+  [freeimage layer="1" time="400" wait="false"]
 [endmacro]
 
-[macro name="j_displayRoles"]
 
+[macro name="j_displayRoles"]
 役職公開[r]
 ずんだもん：[emb exp="f.characterObjects.zundamon.role.roleName"]、
 四国めたん：[emb exp="f.characterObjects.metan.role.roleName"]、
 春日部つむぎ：[emb exp="f.characterObjects.tsumugi.role.roleName"]、
 雨晴はう：[emb exp="f.characterObjects.hau.role.roleName"]、
 波音リツ：[emb exp="f.characterObjects.ritsu.role.roleName"][p]
-
 [endmacro]
 
 ; jsonをローカルに保存する

@@ -49,7 +49,6 @@
 ; プレイヤーの役職確認セリフ出力
 [m_noticeRole characterId="&f.playerCharacterId" roleId="&f.characterObjects[f.playerCharacterId].role.roleId"]
 
-
 ; 占い師なら初日占い実行
 [if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_FORTUNE_TELLER"]
 
@@ -344,9 +343,6 @@
 
 ; 票を公開する
 [j_openVote]
-
-; キャラ画像解放
-[freeimage layer="1" time=400 wait="false"]
 
 [if exp="!f.developmentMode"]
   [if exp="!f.doExecute"]

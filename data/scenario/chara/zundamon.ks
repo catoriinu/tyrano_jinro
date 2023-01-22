@@ -11,7 +11,7 @@
   ; キャラ画像のデフォルト座標をゲーム変数に格納する
   ; 画面内への登場時の定位置はleft="-124" top="122"
   [iscript]
-    f.defaultPosition.zundamon = {
+    f.defaultPosition[tf.characterId] = {
       side: 'left', // デフォルト待機位置
       left: -1118, // デフォルト座標（left）
       top: 135, // デフォルト座標（top）
