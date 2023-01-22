@@ -1,7 +1,7 @@
 *openVoteTest
 [layopt layer="1" page="fore" visible="true"]
 [iscript]
-  setVoteResultObjects();
+  //setVoteResultObjects();
   $('.1_fore').append('<div class="vote_container">');
   tf.characterCount = f.voteResultObjects.length;
   tf.widthBox = 1280 / tf.characterCount;

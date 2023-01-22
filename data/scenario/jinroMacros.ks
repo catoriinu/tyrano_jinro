@@ -692,6 +692,7 @@
   [iscript]
     openVote(f.characterObjects, f.day, f.voteResult, f.electedIdList);
   [endscript]
+  [call storage="effects.ks" target="*openVoteTest"]
   [emb exp="f.voteResultMessage"][p]
 [endmacro]
 

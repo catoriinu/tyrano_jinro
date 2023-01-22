@@ -424,8 +424,11 @@ function calcSameFactionPossivility(characterObject, perspective, characterIdLis
  */
 function countVote(characterObjects, day) {
 
-  // 投票結果オブジェクトを初期化（0票だったキャラはキー自体入らないままとなる）
+  // 投票結果オブジェクトを初期化（0票だったキャラはキー自体入らないままとなる）（投票結果テキスト表示用。TODO 不要になったら↓に統合したい）
   TYRANO.kag.stat.f.voteResult = {};
+  // 投票結果オブジェクト（アクションオブジェクトの配列）を初期化（開票画面表示用）
+  TYRANO.kag.stat.f.voteResultObjects = [];
+
   for (let characterId of Object.keys(characterObjects)) {
     // 投票履歴オブジェクトのその日の投票先配列を確認
     // 配列でなければ、投票していないのでスルー
@@ -439,6 +442,9 @@ function countVote(characterObjects, day) {
     } else {
       TYRANO.kag.stat.f.voteResult[voteTargetId] = 1;
     }
+
+    // 投票結果オブジェクトに投票のアクションオブジェクトとして追加
+    TYRANO.kag.stat.f.voteResultObjects.push(new Action(characterId, ACTION_VOTE, voteTargetId));
 
     // 投票されたキャラクターの、投票したキャラクターへの信頼度を下げる
     characterObjects[voteTargetId].reliability[characterId] = calcUpdatedReliability(

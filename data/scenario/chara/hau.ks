@@ -13,11 +13,11 @@
   [iscript]
     f.defaultPosition[tf.characterId] = {
       side: 'right', // デフォルト待機位置
-      left: 1796, // デフォルト座標（left）
-      top: 143, // デフォルト座標（top）
-      width: 567, // 画像の幅（画面幅1280pxの中での幅）
-      haight: 958, // 画像の高さ（画面高さ720pxの中での高さ）
-      widthCenter: 280, // 画像の幅の中央(反転しない状態で)
+      left: 1807, // デフォルト座標（left）
+      top: 159, // デフォルト座標（top）
+      width: 556, // 画像の幅（画面幅1280pxの中での幅）
+      haight: 940, // 画像の高さ（画面高さ720pxの中での高さ）
+      widthCenter: 285, // 画像の幅の中央(反転しない状態で)
     }
   [endscript]
 

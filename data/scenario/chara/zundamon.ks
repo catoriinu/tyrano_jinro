@@ -13,11 +13,11 @@
   [iscript]
     f.defaultPosition.zundamon = {
       side: 'left', // デフォルト待機位置
-      left: -1124, // デフォルト座標（left）
-      top: 122, // デフォルト座標（top）
-      width: 567, // 画像の幅（画面幅1280pxの中での幅）
-      haight: 756, // 画像の高さ（画面高さ720pxの中での高さ）
-      widthCenter: 273, // 画像の幅の中央(反転しない状態で)
+      left: -1114, // デフォルト座標（left）
+      top: 132, // デフォルト座標（top）
+      width: 550, // 画像の幅（画面幅1280pxの中での幅）
+      haight: 733, // 画像の高さ（画面高さ720pxの中での高さ）
+      widthCenter: 258, // 画像の幅の中央(反転しない状態で)
     }
   [endscript]
 
