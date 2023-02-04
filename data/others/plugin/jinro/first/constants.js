@@ -52,7 +52,7 @@ const ROLE_ID_TO_FACTION = {
 }
 
 // アクション実行上限回数
-const MAX_DO_ACTION_COUNT = 3;
+const MAX_DO_ACTION_COUNT = 1;
 
 // 死因
 const DEATH_BY_EXECUTION = 'execution'; // 処刑。投票による吊り・追放
@@ -61,13 +61,6 @@ const DEATH_BY_ATTACK    = 'attack'; // 襲撃。人狼による噛み。
 // 再投票上限回数（これが初回を含めた最大投票回数となる）
 const MAX_REVOTE_COUNT = 4;
 
-// 信頼度を更新する理由
-// TODO アクションIDと理由を紐づける別のオブジェクトがほしい。こっちの中身は受動態にしたい
-const REASON_WAS_VOTED = 'wasVoted'; // 相手に投票されたとき
-const REASON_WAS_SUSPECTED = 'suspect'; // 相手に「疑う」されたとき
-const REASON_WAS_TRUSTED = 'trust'; // 相手に「信じる」されたとき
-const REASON_WAS_ASKED = 'ask'; // 相手に「聞き出す」されたとき
-const REASON_TEST = 'test' // テスト用
 // 計算方法（信頼度更新用）
 const ARITHMETIC_ADDITION = 'addition'; // 現在の値に加算する（減算したい場合は負の値を足す）
 const ARITHMETIC_MULTIPLICATION = 'multiplication'; // 現在の値に乗算する（除算したい場合は1未満の値を掛ける）
@@ -82,7 +75,7 @@ const ACTION_SUSPECT = 'suspect'; // 疑う（アクションボタン）
 const ACTION_TRUST = 'trust'; // 信じる（アクションボタン）
 const ACTION_ASK = 'ask'; // 聞き出す（アクションボタン　未使用）
 const ACTION_FORTUNE_TELLING = 'fortuneTelling'; // 占う（未使用）
-const ACTION_VOTE = 'vote'; // 投票（未使用）
+const ACTION_VOTE = 'vote'; // 投票
 
 
 // 設定値

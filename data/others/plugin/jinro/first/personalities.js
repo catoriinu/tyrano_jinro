@@ -51,25 +51,21 @@ function Tester() {
     },
     // impressiveReasonList {信頼度に影響を与える理由: {value: 値（絶対値とする）, arithmetic: 現在の信頼度とvalueとの計算方法}
     {
-      [REASON_WAS_VOTED]: { // 相手に投票されたとき
+      [ACTION_SUSPECT]: { // 疑う
+        value: 0.2,
+        arithmetic: ARITHMETIC_ADDITION
+      },
+      [ACTION_TRUST]: { // 信じる
+        value: 0.2,
+        arithmetic: ARITHMETIC_ADDITION
+      },
+      [ACTION_ASK]: { // 聞き出す MEMO:試験用に信頼度を最大にできるようにする
+        value: 1,
+        arithmetic: ARITHMETIC_ADDITION
+      },
+      [ACTION_VOTE]: { // 投票
         value: 0.1,
         arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_SUSPECT]: { // 相手に疑われたとき
-        value: 0.2,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_TRUST]: { // 相手に信じられたとき
-        value: 0.2,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_ASK]: { // 相手に聞き出されたとき MEMO:試験用に信頼度を最大にできるようにする
-        value: 1,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [REASON_TEST]: { // テスト
-        value: 1,
-        arithmetic: ARITHMETIC_MULTIPLICATION
       },
       // 以下のようなメソッドをここに格納できれば嬉しい
       // TODO:占われて○だったとき＝信頼度を少し上げる。ただし必ず敵陣営の場合は上げない
