@@ -617,19 +617,17 @@
 
 ; 引数で受け取った、doActionObjectのアクションを実行する
 ; 事前に[j_setDoActionObject]の実行が必要
-; @param characterId アクション実行するキャラクターID。必須
-; @param targetCharacterId アクション対象のキャラクターID。必須
-; @param actionId 実行するアクションID。必須
+; @param actionObject アクションオブジェクト {characterId:アクション実行するキャラクターID, actionId:実行するアクションID, targetId:アクション対象のキャラクターID} 必須
 [macro name="j_doAction"]
   ; セリフ表示
   [m_doAction characterId="&mp.actionObject.characterId" targetCharacterId="&mp.actionObject.targetId" actionId="&mp.actionObject.actionId"]
 
-  ; 全員の信頼度増減
   [iscript]
+    // 全員の信頼度増減
     updateReliabirityForAction(f.characterObjects, mp.actionObject);
+    // アクション実行者の主張力を下げて、同日中は再発言しにくくする
+    f.characterObjects[mp.actionObject.characterId].personality.assertiveness.current -= f.characterObjects[mp.actionObject.characterId].personality.assertiveness.decrease;
   [endscript]
-
-  ; TODO アクション実行者の主張力を下げて、同日中は再発言しにくくする
 
   ; アクションボタン用変数の初期化（PCからのボタン先行入力を受け付けられるように消す。リアクションにはマクロ変数を渡すのでこのタイミングで消して問題ない）
   [eval exp="f.selectedActionId = ''"]
