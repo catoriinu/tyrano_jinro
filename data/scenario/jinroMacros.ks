@@ -91,24 +91,33 @@
     ; 表の視点を更新する理由は、・CO済みであれば表の視点を使うから　・未COでも思考に占い結果を反映させたいから（仮）
     ; →問題発生。
     ; TODO : 破綻の場合どうする？
-    f.characterObjects[mp.fortuneTellerId].perspective = organizePerspective(f.characterObjects[mp.fortuneTellerId].perspective, todayResult.characterId, getRoleIdsForOrganizePerspective(todayResult.result));
+    f.characterObjects[mp.fortuneTellerId].perspective = organizePerspective(
+      f.characterObjects[mp.fortuneTellerId].perspective,
+      todayResult.action.targetId,
+      getRoleIdsForOrganizePerspective(todayResult.action.result)
+    );
     if (f.characterObjects[mp.fortuneTellerId].role.roleId == ROLE_ID_FORTUNE_TELLER) {
-      f.characterObjects[mp.fortuneTellerId].role.rolePerspective = organizePerspective(f.characterObjects[mp.fortuneTellerId].role.rolePerspective, todayResult.characterId, getRoleIdsForOrganizePerspective(todayResult.result));
+      f.characterObjects[mp.fortuneTellerId].role.rolePerspective = organizePerspective(
+        f.characterObjects[mp.fortuneTellerId].role.rolePerspective,
+        todayResult.action.targetId,
+        getRoleIdsForOrganizePerspective(todayResult.action.result)
+      );
     }
     
-    ; 一時変数に占い結果格納
-    ; TODO:tf.todayResultObjectはtf.fortuneTellingHistoryObjectと役割がかぶっているのでどちらかに統一したい
-    tf.todayResultObject = todayResult;
+    ; メッセージ出力用に占いのアクションオブジェクトを格納
+    f.actionObject = todayResult.action;
 
     ; 全占い結果履歴オブジェクトに占い結果格納
+    // TODO メニュー画面用。メニュー画面を後回しにしているうちは一旦コメントアウト
+    /*
     if (typeof f.allFortuneTellingHistoryObject[mp.fortuneTellerId] !== 'object') {
       ; 初期化直後は空のオブジェクトを作成
       f.allFortuneTellingHistoryObject[mp.fortuneTellerId] = {};
     }
     f.allFortuneTellingHistoryObject[mp.fortuneTellerId][day] = todayResult;
-
+    */
     if (f.developmentMode) {
-      let resultMassage = todayResult.result ? '人　狼' : '村　人';
+      let resultMassage = todayResult.action.result ? '人　狼' : '村　人';
       //alert(f.characterObjects[mp.fortuneTellerId].name + 'は'
       // + f.characterObjects[todayResult.characterId].name + 'を占いました。\n結果　【' + resultMassage + '】');
     }
@@ -314,14 +323,24 @@
 [endmacro]
 
 
+; 未使用メソッド
 ; 指定したキャラクターの占い履歴から、指定した日の履歴オブジェクトをtf.fortuneTellingHistoryObjectに格納する
 ; 占い師、占い騙り両対応。
 ; @param fortuneTellerId 取得したい占い師（騙り占い）のキャラクターID。必須
 ; @param [day] 取得したい占い日。指定しない場合、その占い師の最新の履歴を取得する。引数の渡し方（型）は0でも"0"でも可。
 [macro name=j_fortuneTellingHistoryObjectThatDay]
+  未使用マクロ[p]
+[endmacro]
+
+
+; 指定したキャラクターの、指定した日の占い履歴アクションオブジェクトをもとに、COを実行する。
+; 占い師、占い騙り両対応。
+; @param fortuneTellerId 取得したい占い師（騙り占い）のキャラクターID。必須
+; @param [day] 取得したい占い日。指定しない場合、その占い師の最新の履歴を取得する。引数の渡し方（型）は0でも"0"でも可。
+[macro name="j_COFortuneTelling"]
+
   [iscript]
-    ; 占い履歴を変数に格納する
-    ; なぜか、if文の中でconstで宣言するとif文の外で未定義になったため、事前に宣言しておく。
+    // if文の中でconstで宣言するとif文の外で未定義になるので、事前に宣言しておく。
     let tmpFortuneTellingHistory = {}
     if (f.characterObjects[mp.fortuneTellerId].role.roleId == ROLE_ID_FORTUNE_TELLER) {
       tmpFortuneTellingHistory = f.characterObjects[mp.fortuneTellerId].role.fortuneTellingHistory;
@@ -329,19 +348,22 @@
       tmpFortuneTellingHistory = f.characterObjects[mp.fortuneTellerId].fakeRole.fortuneTellingHistory;
     }
 
-    ; 取得する日を決定する。引数があればその日の、なければ最新の日の履歴を取得する。
+    // 取得する日を決定する。引数があればその日の、なければ最新の日の履歴を取得する。
     const day = mp.day ? mp.day : Object.keys(tmpFortuneTellingHistory).length - 1;
-    tf.fortuneTellingHistoryObject = tmpFortuneTellingHistory[day];
+    // その占い履歴をCO済みにする
+    tmpFortuneTellingHistory[day].doneCO = true;
+    // 信頼度増減とメッセージ出力用にアクションオブジェクトを格納
+    f.actionObject = tmpFortuneTellingHistory[day].action;
+    // 占いCOによる信頼度増減を行う
+    updateReliabirityForAction(f.characterObjects, f.actionObject);
   [endscript]
-[endmacro]
 
+  ; メッセージ出力
+  [m_COFortuneTelling]
 
-; ※未使用メソッド
-; 指定したキャラクターの最新の占い履歴をもとに、占いCO文を出力する。
-; 占い師、占い騙り両対応。
-; @param fortuneTellerId 取得したい占い師（騙り占い）のキャラクターID。必須
-[macro name=j_COfortuneTellingResultLastNight]
-  j_COfortuneTellingResultLastNightマクロは削除済（念のためしばらく置いておく）[p]
+  ; 今日のCOが終わったキャラはisDoneTodaysCOをtrueにする
+  [eval exp="f.characterObjects[mp.fortuneTellerId].isDoneTodaysCO = true"]
+
 [endmacro]
 
 
@@ -642,6 +664,7 @@
 
 
 ; 人狼メニュー画面に表示するための全占い師のCO状況テキストを生成する
+; TODO 作り直す
 [macro name="j_getAllFortuneTellerCOText"]
   ; TODO:これを表示したあと、2日目にプレイヤーが占う時にバグる。
   ; getCharacterObjectsFromCharacterIds()で、for (let k of Object.keys(characterObjects)) {の際にUncaught TypeError: Cannot convert undefined or null to object

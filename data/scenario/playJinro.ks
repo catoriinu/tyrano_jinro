@@ -57,7 +57,7 @@
   [call storage="./fortuneTellingForPC.ks" target="*fortuneTellingForPC"]
 
   ; 占い結果に合わせてセリフ出力
-  [m_announcedFortuneTellingResult characterId="&f.playerCharacterId" result="&tf.todayResultObject.result"]
+  [m_announcedFortuneTellingResult]
 
   ; 占いカットイン解放
   ;[freeimage layer="1" time=400 wait="false"]
@@ -122,19 +122,8 @@
     ; 占いカットイン発生
     [j_cutin1]
 
-    ; 指定した占い師の最新の占い履歴オブジェクトをtf.fortuneTellingHistoryObjectに格納する
-    [j_fortuneTellingHistoryObjectThatDay fortuneTellerId="&f.playerCharacterId"]
-  
-    ; ホバー時用の画像を画面外からスライドインさせる TODO ボタンごとにキャラに合わせた画像を表示する
-    ;[image layer="1" x="1280" y="80" visible="true" storage="01_sad.png" name="01"]
-    ;[anim name="01" left=850 time=350]
-
-    [m_COFortuneTellingResult characterId="&f.playerCharacterId" result="&tf.fortuneTellingHistoryObject.result"]
-
-    ; 占いカットイン解放
-    ;[freeimage layer="1" time=400 wait="false"]
-
-    [eval exp="f.characterObjects[f.playerCharacterId].isDoneTodaysCO = true"]
+    ; 指定した占い師のCOを実行する
+    [j_COFortuneTelling fortuneTellerId="&f.playerCharacterId"]
 
     ; 初回CO時のみの処理
     [if exp="tf.canCOFortuneTellerStatus == 1 || tf.canCOFortuneTellerStatus == 3"]
@@ -220,22 +209,8 @@
   ; 占いカットイン発生
   [j_cutin1]
 
-  ; 指定した占い師の最新の占い履歴オブジェクトをtf.fortuneTellingHistoryObjectに格納する
-  [j_fortuneTellingHistoryObjectThatDay fortuneTellerId="&f.COCandidateId"]
-  
-  ; ホバー時用の画像を画面外からスライドインさせる TODO ボタンごとにキャラに合わせた画像を表示する
-  ;[image layer="1" x="1280" y="80" visible="true" storage="01_sad.png" name="01"]
-  ;[anim name="01" left=850 time=350]
-
-  [m_COFortuneTellingResult characterId="&f.COCandidateId" result="&tf.fortuneTellingHistoryObject.result"]
-
-  ; 占いカットイン解放
-  [freeimage layer="1" time=400 wait="false"]
-
-  ; TODO: どのように、前のCO内容を次のCOの確率に影響させるか？　今日のCO内容をどこかの配列に保存しておく必要がありそう？
-
-  ; 今日のCOが終わったキャラはisDoneTodaysCOをtrueにする
-  [eval exp="f.characterObjects[f.COCandidateId].isDoneTodaysCO = true"]
+  ; 指定した占い師のCOを実行する
+  [j_COFortuneTelling fortuneTellerId="&f.COCandidateId"]
 
   ; 初回CO時のみの処理
   [if exp="tf.canCOFortuneTellerStatus == 1 || tf.canCOFortuneTellerStatus == 3"]
@@ -426,12 +401,9 @@
       [call storage="./fortuneTellingForPC.ks" target="*fortuneTellingForPC"]
 
       ; 占い結果に合わせてセリフ出力
-      [m_announcedFortuneTellingResult characterId="&f.playerCharacterId" result="&tf.todayResultObject.result"]
+      [m_announcedFortuneTellingResult]
 
     [endif]
-
-    ; 占いカットイン解放
-    ;[freeimage layer="1" time=400 wait="false"]
 
   [endif]
 

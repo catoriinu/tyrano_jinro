@@ -44,29 +44,30 @@
 
 ; announcedFortuneTellingResult_{result}
 ; シーン：真占い師で、占い実行結果を知ったときの反応
+; NOTE:事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 ; 備考：PCのみ想定
 *announcedFortuneTellingResult_true
-  [eval exp="tf.characterIdToCall = tf.todayResultObject.characterId"]
+  [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
   発見なのだ！[call target="changeIdToCallName"]が人狼だったのだ！[p]
 [return]
 
 *announcedFortuneTellingResult_false
-  [eval exp="tf.characterIdToCall = tf.todayResultObject.characterId"]
+  [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
   [call target="changeIdToCallName"]は人狼じゃなかったのだ。[p]
 [return]
 
 
-; COFortuneTellingResult_{result}
+; COFortuneTelling_{result}
 ; シーン：前日の占い結果をCOするときのセリフ
-; NOTE：事前に[j_fortuneTellingHistoryObjectThatDay]の実行が必要。
-*COFortuneTellingResult_true
-  [eval exp="tf.characterIdToCall = tf.fortuneTellingHistoryObject.characterId"]
+; NOTE:事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
+*COFortuneTelling_true
+  [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
   昨日は[call target="changeIdToCallName"]を占ったのだ。[r]
   結果は人狼だったのだ！[p]
 [return]
 
-*COFortuneTellingResult_false
-  [eval exp="tf.characterIdToCall = tf.fortuneTellingHistoryObject.characterId"]
+*COFortuneTelling_false
+  [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
   昨日は[call target="changeIdToCallName"]を占ったのだ。[r]
   結果は人狼じゃなかったのだ。[p]
 [return]

@@ -25,16 +25,13 @@
 
 
 ; シーン：真占い師で、占い実行結果を知ったときの反応
-; @param characterId 発言者のキャラクターID。必須
-; @param face 発言者の表情。（TODO）
-; @param result 占い結果（true:●/false:○）。必須
-; boolean型で渡されても問題ない（文字列と結合する際にString型にキャストされるため）
+; 事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 [macro name="m_announcedFortuneTellingResult"]
-  [m_changeFrameWithId characterId="&mp.characterId"]
-  [m_changeCharacter characterId="&mp.characterId" face="normal"]
-  # &f.speaker[f.characterObjects[mp.characterId].name]
-  [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
-  [eval exp="tf.messageTarget = '*announcedFortuneTellingResult_' + mp.result"]
+  [m_changeFrameWithId characterId="&f.actionObject.characterId"]
+  [m_changeCharacter characterId="&f.actionObject.characterId" face="normal"]
+  # &f.speaker[f.characterObjects[f.actionObject.characterId].name]
+  [eval exp="tf.messageStorage = './message/' + f.actionObject.characterId + '.ks'"]
+  [eval exp="tf.messageTarget = '*announcedFortuneTellingResult_' + f.actionObject.result"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
 [endmacro]
 
@@ -51,16 +48,13 @@
 
 
 ; シーン：前日の占い結果をCOするときのセリフ
-; @param characterId 発言者のキャラクターID。必須
-; @param face 発言者の表情。（TODO）
-; @param result 占い結果（true:●/false:○）。必須
-; boolean型で渡されても問題ない（文字列と結合する際にString型にキャストされるため）
-[macro name="m_COFortuneTellingResult"]
-  [m_changeFrameWithId characterId="&mp.characterId"]
-  [m_changeCharacter characterId="&mp.characterId" face="normal"]
-  # &f.speaker[f.characterObjects[mp.characterId].name]
-  [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
-  [eval exp="tf.messageTarget = '*COFortuneTellingResult_' + mp.result"]
+; 事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
+[macro name="m_COFortuneTelling"]
+  [m_changeFrameWithId characterId="&f.actionObject.characterId"]
+  [m_changeCharacter characterId="&f.actionObject.characterId" face="normal"]
+  # &f.speaker[f.characterObjects[f.actionObject.characterId].name]
+  [eval exp="tf.messageStorage = './message/' + f.actionObject.characterId + '.ks'"]
+  [eval exp="tf.messageTarget = '*COFortuneTelling_' + f.actionObject.result"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
 [endmacro]
 

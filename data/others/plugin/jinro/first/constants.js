@@ -52,7 +52,7 @@ const ROLE_ID_TO_FACTION = {
 }
 
 // アクション実行上限回数
-const MAX_DO_ACTION_COUNT = 1;
+const MAX_DO_ACTION_COUNT = 2;
 
 // 死因
 const DEATH_BY_EXECUTION = 'execution'; // 処刑。投票による吊り・追放
@@ -74,7 +74,7 @@ const FEELING_LOVE = 'love';
 const ACTION_SUSPECT = 'suspect'; // 疑う（アクションボタン）
 const ACTION_TRUST = 'trust'; // 信じる（アクションボタン）
 const ACTION_ASK = 'ask'; // 聞き出す（アクションボタン　未使用）
-const ACTION_FORTUNE_TELLING = 'fortuneTelling'; // 占う（未使用）
+const ACTION_FORTUNE_TELLING = 'fortuneTelling'; // 占う
 const ACTION_VOTE = 'vote'; // 投票
 
 

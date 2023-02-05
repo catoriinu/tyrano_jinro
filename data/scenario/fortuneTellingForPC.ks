@@ -7,7 +7,7 @@
   ; 占い候補からボタンを生成。ボタン入力を受け付ける
   [call storage="./jinroSubroutines.ks" target="*glinkFromCandidateCharacterObjects"]
 
-  ; 占い実行。占い結果をtf.todayResultObjectに格納する
+  ; 占い実行。占い結果をf.actionObjectに格納する
   [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" characterId="&f.targetCharacterId"]
 
 [return]
@@ -40,23 +40,11 @@
   [glink color="white" size="28" x="360" width="500" y="&tf.y" text="○（人狼ではなかった）とCOする" target="*doFakeFortuneTelling" exp="tf.declarationResult = false"]
   [s]
 
-  ; 騙り占い実行。占い結果をtf.todayResultObjectに格納する
+  ; 騙り占い実行。占い結果をf.actionObjectに格納する
   *doFakeFortuneTelling
   [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" day="&tf.fortuneTelledDay" characterId="&f.targetCharacterId" result="&tf.declarationResult"]
   [m_displayFakeFortuneTellingResult result="&tf.declarationResult"]
 
-[return]
-
-
-; 未使用サブルーチン
-; 全キャラ分の占い結果CO文章を表示するサブルーチン
-; サブルーチンの引数として、以下の変数を格納しておくこと。
-; tf.fortuneTellingHistoryObject = COする占い師の占い履歴オブジェクト
-; tf.fortuneTellerId = COする占い師のcharacterId
-; 関連マクロ：[j_fortuneTellingHistoryObjectThatDay]、[j_COfortuneTellingResultLastNight]
-; TODO とりあえずここのファイルに置いておくが、全キャラの占いCOに使えるのでUtil的なファイルのほうが良いと思う。
-*COfortuneTellingResult
-  COfortuneTellingResultサブルーチンは削除済（念のためしばらく置いておく）[p]
 [return]
 
 

@@ -68,6 +68,10 @@ function Tester() {
         value: 0.1,
         arithmetic: ARITHMETIC_ADDITION
       },
+      [ACTION_FORTUNE_TELLING]: { // 占う
+        value: 0.3,
+        arithmetic: ARITHMETIC_ADDITION
+      },
       // 以下のようなメソッドをここに格納できれば嬉しい
       // TODO:占われて○だったとき＝信頼度を少し上げる。ただし必ず敵陣営の場合は上げない
       // TODO:占われて●だったとき＝信頼度をガクッと下げる。ただし必ず味方陣営の場合は少ししか下げない
