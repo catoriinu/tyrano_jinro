@@ -316,9 +316,8 @@ $('.' + tf.class).css('height', tf.height);
     $('.vote_container').append('<div class="vote_box ' + classVoteNum + '">');
     // 1box分の幅を設定する
     $('.vote_box').css('width', tf.boxWidth + 'px');
-    // boxに、投票先キャラの背景色のCSSをつけるためにクラスを追加する
-    // TODO この後でcss()で直接background-colorを塗れば、CSSファイルに持たせておく必要はなくなるはず
-    $('.' + classVoteNum).addClass('vote_target_' + tf.targetId);
+    // boxに、投票先キャラの背景色をつける
+    $('.' + classVoteNum).css("background-color", f.color.character[tf.targetId]);
     // .vote_containerの子要素の.classVoteNumの子要素に、キャラ画像のimg要素を移動する
     $('.' + tf.imageName).appendTo('.' + classVoteNum);
     // キャラ画像のimg要素を、boxと同じ幅になるよう左右をクリッピングする

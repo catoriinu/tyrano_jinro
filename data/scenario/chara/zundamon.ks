@@ -19,6 +19,8 @@
       haight: 733, // 画像の高さ（画面高さ720pxの中での高さ）
       widthCenter: 258, // 画像の幅の中央(反転しない状態で)
     }
+    // キャラクターのイメージカラーのカラーコード
+    f.color.character[tf.characterId] = '#67ef65';
   [endscript]
 
   ; キャラクターの登録
