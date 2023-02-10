@@ -534,10 +534,20 @@
       if (mp.onlySurvivor && !f.characterObjects[characterId].isAlive) continue;
       // MEMO 今のところ「死亡済みのキャラのみ返す」はできないので、必要になったら修正すること
 
-      // TODO f.actionButtonListのように事前にnewしておくほうがいいかも
+      // 選択中のキャラクターIDかつ選択中のアクションである（つまり、実行予定だったアクションと同じ）ボタンは選択中の色に変える
+      const addClasses = [];
+      if (characterId == f.originalSelectedCharacterId) {
+        if ('actionId' in f.pcActionObject && f.selectedActionId == f.pcActionObject.actionId) {
+          addClasses.push(CLASS_GLINK_SELECTED);
+        }
+      }
+      // ボタンオブジェクトを、sideとaddClassesを指定するために再生成してf.buttonObjectsに格納する
       f.buttonObjects.push(new Button(
         characterId,
         f.characterObjects[characterId].name,
+        'right',
+        CLASS_GLINK_DEFAULT,
+        addClasses
       ));
     }
   [endscript]

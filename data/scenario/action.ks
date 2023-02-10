@@ -7,7 +7,8 @@
 [iscript]
   // PCがアクションを選択済みの場合に、ボタンの色を変えるために変数に格納しておく
   f.selectedActionId = ('actionId' in f.pcActionObject) ? f.pcActionObject.actionId : ACTION_CANCEL; // 未選択なら「発言しない」の色を変える
-  f.selectedCharacterId = ('targetId' in f.pcActionObject) ? f.pcActionObject.targetId : '';
+  // 第2階層のキャラクターボタンの色を変えるかの判定に使うのは、前回選択したキャラクターIDとする。f.selectedCharacterIdはアクションボタン処理中に書き換わってしまうため使えない。
+  f.originalSelectedCharacterId = ('targetId' in f.pcActionObject) ? f.pcActionObject.targetId : '';
 [endscript]
 
 *firstLayer
@@ -93,7 +94,7 @@ tf.candidateObjects = [
 ; ボタン押下後の処理
 ; 第2階層表示中には第1階層のボタンも押下できる状態のため、第1第2どちらを押下されても対応できるように判定する
 [if exp="f.selectedSide == 'right'"]
-  ; 第1階層のボタンを押した場合、selectedCharacterIdに格納する
+  ; 第2階層のボタンを押した場合、selectedCharacterIdに格納する
   [eval exp="f.selectedCharacterId = f.selectedButtonId"]
 [elsif exp="f.selectedSide == 'left'"]
   ; 第1階層のボタンを押した場合、selectedActionIdに格納する。selectedCharacterIdは空にして改めて第2階層までボタンを表示する
