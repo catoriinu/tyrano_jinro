@@ -491,13 +491,29 @@
 
 ; ボタンオブジェクトf.buttonObjectsに、アクションボタン用オブジェクトを詰める
 ; メモ：tf.candidateCharacterObjects, tf.candidateObjectsからの代替
-; @param actionIdList f.actionButtonList定数に定義されている中で、表示したいアクションIDのリスト
+; @param disableActionIdList f.actionButtonList定数に定義されている中で、ボタン表示したくないアクションIDのリスト（未使用）
 [macro name="j_setActionToButtonObjects"]
   [iscript]
+    // tf.disableActionIdList = Array.isArray(mp.disableActionIdList) ? mp.disableActionIdList : [];
     f.buttonObjects = [];
 
-    for (let i = 0; i < mp.actionIdList.length; i++) {
-      f.buttonObjects.push(f.actionButtonList[mp.actionIdList[i]]);
+    for (let aId of Object.keys(f.actionButtonList)) {
+      // ボタン表示したくないアクションIDはf.buttonObjectsに格納しない
+      // if (tf.disableActionIdList.includes(f.actionButtonList[i])) continue;
+
+      // 選択中のアクションIDのボタンは選択中の色に変える
+      const addClasses = [];
+      if (f.actionButtonList[aId].id == f.selectedActionId) {
+        addClasses.push(CLASS_GLINK_SELECTED);
+      }
+      // ボタンオブジェクトを、sideとaddClassesを指定するために再生成してf.buttonObjectsに格納する
+      f.buttonObjects.push(new Button(
+        f.actionButtonList[aId].id,
+        f.actionButtonList[aId].text,
+        'left',
+        CLASS_GLINK_DEFAULT,
+        addClasses
+      ));
     }
   [endscript]
 [endmacro]
@@ -641,6 +657,14 @@
 ; 事前に[j_setDoActionObject]の実行が必要
 ; @param actionObject アクションオブジェクト {characterId:アクション実行するキャラクターID, actionId:実行するアクションID, targetId:アクション対象のキャラクターID} 必須
 [macro name="j_doAction"]
+  ; アクションボタン用変数の初期化（PCからのボタン先行入力を受け付けられるように消す。セリフとリアクションにはマクロ変数を渡すのでこのタイミングで消して問題ない）
+  ; TODO:多分いらないので2行コメントアウト。しばらく問題が起きなければ削除する
+  ; [eval exp="f.selectedActionId = ''"]
+  ; [eval exp="f.selectedCharacterId = ''"]
+  [eval exp="f.doActionObject = {}"]
+  [eval exp="f.pcActionObject = {}"]
+  [eval exp="f.npcActionObject = {}"]
+
   ; セリフ表示
   [m_doAction characterId="&mp.actionObject.characterId" targetCharacterId="&mp.actionObject.targetId" actionId="&mp.actionObject.actionId"]
 
@@ -650,13 +674,6 @@
     // アクション実行者の主張力を下げて、同日中は再発言しにくくする
     f.characterObjects[mp.actionObject.characterId].personality.assertiveness.current -= f.characterObjects[mp.actionObject.characterId].personality.assertiveness.decrease;
   [endscript]
-
-  ; アクションボタン用変数の初期化（PCからのボタン先行入力を受け付けられるように消す。リアクションにはマクロ変数を渡すのでこのタイミングで消して問題ない）
-  [eval exp="f.selectedActionId = ''"]
-  [eval exp="f.selectedCharacterId = ''"]
-  [eval exp="f.doActionObject = {}"]
-  [eval exp="f.pcActionObject = {}"]
-  [eval exp="f.npcActionObject = {}"]
 
   ; リアクションのセリフ表示
   [m_doAction_reaction characterId="&mp.actionObject.targetId" actionId="&mp.actionObject.actionId"]

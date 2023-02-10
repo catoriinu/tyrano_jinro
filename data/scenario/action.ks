@@ -4,8 +4,11 @@
 *start
 ; アクションボタン用変数の初期化
 [eval exp="tf.noNeedStop = false"]
-[eval exp="f.selectedActionId = ''"]
-[eval exp="f.selectedCharacterId = ''"]
+[iscript]
+  // PCがアクションを選択済みの場合に、ボタンの色を変えるために変数に格納しておく
+  f.selectedActionId = ('actionId' in f.pcActionObject) ? f.pcActionObject.actionId : ACTION_CANCEL; // 未選択なら「発言しない」の色を変える
+  f.selectedCharacterId = ('targetId' in f.pcActionObject) ? f.pcActionObject.targetId : '';
+[endscript]
 
 *firstLayer
 ; 第1階層のボタンを表示
@@ -52,28 +55,7 @@
 
 ; 第1階層（左側。行動を選択する）のボタン表示サブルーチン
 *displayFirstLayerButtons
-; 「疑う」「信じる」「聞き出す」は基本セットとしておく
-[eval exp="f.actionIdList = [ACTION_SUSPECT, ACTION_TRUST, ACTION_ASK]"]
-[j_setActionToButtonObjects actionIdList="&f.actionIdList"]
-
-[iscript]
-
-/*
-; TODO テストのため必ず非表示 潜伏役職が残っているなら「COを促す」を表示
-if (false) {
-  tf.candidateObjects.push({id: "prompt", text: "COを促す", target: "*roleLayer"});
-}
-
-; TODO テストのため必ず非表示 プレイヤーがCO可能な場合「COする」を表示
-if (false) {
-  tf.candidateObjects.push({id: "CO", text: "COする", target: "*roleLayer"});
-}
-*/
-
-; 「発言しない」を表示
-f.buttonObjects.push(new Button("cancel", "発言しない"));
-
-[endscript]
+[j_setActionToButtonObjects]
 
 [eval exp="tf.side = 'left'"]
 [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]

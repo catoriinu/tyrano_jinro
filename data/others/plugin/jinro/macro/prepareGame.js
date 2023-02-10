@@ -50,10 +50,13 @@ function prepareGameMain() {
   // 発話者の名前オブジェクト。ksファイル内で、# &f.speaker['名前'] の形式で使う。
   TYRANO.kag.stat.f.speaker = setSpeakersName(characterObjects);
 
-  // ボタンオブジェクト配列の初期化
-  TYRANO.kag.stat.f.buttonObjects = [];
+  // アクション実行オブジェクトを初期化する
+  // MEMO:昼開始時に初期化しているが、ゲームが夜から始まる場合に夜の間にアクション実行できるようにするためここでも初期化しておく
+  TYRANO.kag.stat.f.pcActionObject = {};
+  TYRANO.kag.stat.f.npcActionObject = {};
+  TYRANO.kag.stat.f.doActionObject = {};
 
-  // アクションボタン用アクションリストの初期化（全アクションを追加しておく）
+  // アクションボタン用アクションリストの初期化（全アクションを定義しておき、j_setActionToButtonObjectsマクロ内で非表示にしたいボタンを選ぶ）
   TYRANO.kag.stat.f.actionButtonList = {
     [ACTION_SUSPECT]: new Button(
         ACTION_SUSPECT,
@@ -67,6 +70,10 @@ function prepareGameMain() {
         ACTION_ASK,
         '聞き出す',
     ),
+    [ACTION_CANCEL]: new Button(
+        ACTION_CANCEL,
+        "発言しない"
+    )
   }
 
   // 日時の初期化（初日の夜から始める）

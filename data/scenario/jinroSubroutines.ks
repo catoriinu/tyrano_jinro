@@ -71,7 +71,7 @@ $('.center_button_window').css('height', tf.height);
 
 ; f.buttonObjectsに入っている要素をボタン化し、押したボタンのIDをf.selectedButtonIdに格納するサブルーチン
 ; 事前準備
-; f.buttonObjects = [{id:ボタンのID, text:ボタンに表示するテキスト, side:ボタンを表示する位置（未使用）},...]（必須。サブルーチン内で初期化するので毎回指定すること）
+; f.buttonObjects = [{id:ボタンのID, text:ボタンに表示するテキスト, side:ボタンを表示する位置（未使用）, addClasses:[ボタンに追加したいクラス名配列,...]},...]（必須。サブルーチン内で初期化するので毎回指定すること）
 ; tf.side = 'left','right'のいずれか（省略した場合center。サブルーチン内で初期化するので必要なら毎回指定すること）TODO buttonオブジェクトのsideを使えるようにしたい。
 ; tf.noNeedStop = true（boolean型。省略した場合サブルーチン内の[s]タグで止まる。サブルーチン内で初期化するので必要なら毎回指定すること）
 *glinkFromButtonObjects
@@ -102,7 +102,15 @@ $('.center_button_window').css('height', tf.height);
 *loopstart
   ; y座標計算。範囲を(ボタン数+1)等分し、上限点と下限点を除く点に順番に配置することで、常に間隔が均等になる。式 = (範囲下限 * (tf.cnt + 1)) / (tf.buttonCount + 1) + (範囲上限)
   [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (tf.cnt + 1)) / (tf.buttonCount + 1) + BUTTON_RANGE_Y_UPPER"]
-  [eval exp="tf.glink_name = 'buttonhover,' + tf.side + '_buttonclass_' + f.buttonObjects[tf.cnt].id"]
+  [iscript] 
+    // glinkのname（＝ボタンのclass要素）に設定するクラス名を格納する
+    tf.glink_name = [
+      'buttonhover', // ボタンにカーソルが乗ったときの処理を設定する用
+      tf.side + '_buttonclass_' + f.buttonObjects[tf.cnt].id // 押下したボタンの判定用
+    ].concat(
+      f.buttonObjects[tf.cnt].addClasses // ボタンに追加したいクラスがあれば追加する（例：選択中）
+    ).join(); // ここまで配列に格納した各要素をカンマ区切りの文字列として結合する
+  [endscript]
   [glink color="btn_voivo" size="26" width="300" x="&tf.x" y="&tf.y" name="&tf.glink_name" text="&f.buttonObjects[tf.cnt].text" target="*glinkFromButtonObjects_end"]
   
   [jump target="*loopend" cond="tf.cnt == (tf.buttonCount - 1)"]

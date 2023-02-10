@@ -74,9 +74,15 @@ const FEELING_LOVE = 'love';
 const ACTION_SUSPECT = 'suspect'; // 疑う（アクションボタン）
 const ACTION_TRUST = 'trust'; // 信じる（アクションボタン）
 const ACTION_ASK = 'ask'; // 聞き出す（アクションボタン　未使用）
+const ACTION_CANCEL = 'cancel'; // 発言しない（アクションボタン）
 const ACTION_FORTUNE_TELLING = 'fortuneTelling'; // 占う
 const ACTION_VOTE = 'vote'; // 投票
 
+// CSSのclass要素名（glinkのnameやcolorに設定するなど）
+const CLASS_GLINK_DEFAULT = 'btn_voivo'; // glinkのcolor用。ゲーム内で基本となるボタンのテーマ
+const CLASS_GLINK_SELECTED = 'btn_voivo_selected'; // glinkのname用。現在選択されているボタン用のテーマ
+const CLASS_GLINK_WHITE = 'btn_voivo_white'; // glinkのname用。白色のテーマ（未作成）
+const CLASS_GLINK_BLACK = 'btn_voivo_black'; // glinkのname用。黒色のテーマ（未作成）
 
 // 設定値
 // ボタン配置範囲
