@@ -55,6 +55,8 @@ function prepareGameMain() {
   TYRANO.kag.stat.f.pcActionObject = {};
   TYRANO.kag.stat.f.npcActionObject = {};
   TYRANO.kag.stat.f.doActionObject = {};
+  // これは夜にも使うのでここで初期化
+  TYRANO.kag.stat.f.originalSelectedCharacterId = '';
 
   // アクションボタン用アクションリストの初期化（全アクションを定義しておき、j_setActionToButtonObjectsマクロ内で非表示にしたいボタンを選ぶ）
   TYRANO.kag.stat.f.actionButtonList = {
