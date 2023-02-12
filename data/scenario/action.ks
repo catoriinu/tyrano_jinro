@@ -4,8 +4,14 @@
 *start
 ; アクションボタン用変数の初期化
 [eval exp="tf.noNeedStop = false"]
-[eval exp="f.selectedActionId = ''"]
-[eval exp="f.selectedCharacterId = ''"]
+[iscript]
+  // PCがアクションを選択済みの場合に、ボタンの色を変えるために変数に格納しておく
+  f.selectedActionId = ('actionId' in f.pcActionObject) ? f.pcActionObject.actionId : ACTION_CANCEL; // 未選択なら「発言しない」の色を変える
+  // 第2階層のキャラクターボタンの色を変えるかの判定に使うのは、前回選択したキャラクターIDとする。f.selectedCharacterIdはアクションボタン処理中に書き換わってしまうため使えない。
+  f.originalSelectedCharacterId = ('targetId' in f.pcActionObject) ? f.pcActionObject.targetId : '';
+[endscript]
+; ボタン非表示
+[j_clearFixButton action="true" menu="true"]
 
 *firstLayer
 ; 第1階層のボタンを表示
@@ -45,6 +51,8 @@
 [endscript]
 
 *end
+; ボタン再表示
+[j_displayFixButton action="true" menu="true"]
 [awakegame]
 [return]
 
@@ -52,30 +60,7 @@
 
 ; 第1階層（左側。行動を選択する）のボタン表示サブルーチン
 *displayFirstLayerButtons
-; 「疑う」「信じる」「聞き出す」は基本セットとしておく
-[eval exp="f.actionIdList = [ACTION_SUSPECT, ACTION_TRUST, ACTION_ASK]"]
-[j_setActionToButtonObjects actionIdList="&f.actionIdList"]
-
-[iscript]
-
-/*
-; TODO テストのため必ず非表示 潜伏役職が残っているなら「COを促す」を表示
-if (false) {
-  tf.candidateObjects.push({id: "prompt", text: "COを促す", target: "*roleLayer"});
-}
-
-; TODO テストのため必ず非表示 プレイヤーがCO可能な場合「COする」を表示
-if (false) {
-  tf.candidateObjects.push({id: "CO", text: "COする", target: "*roleLayer"});
-}
-*/
-
-; 「発言しない」を表示
-f.buttonObjects.push(new Button("cancel", "発言しない"));
-
-[endscript]
-
-[eval exp="tf.side = 'left'"]
+[j_setActionToButtonObjects]
 [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 
 ; ボタン押下後の処理
@@ -86,7 +71,7 @@ f.buttonObjects.push(new Button("cancel", "発言しない"));
 
 ; 第2階層（右側。対象のキャラクターを選択する）のボタン表示サブルーチン
 *displaySecondLayerButtons
-[j_setCharacterToButtonObjects onlySurvivor="true"]
+[j_setCharacterToButtonObjects onlySurvivor="true" side="right"]
 [call target="*secondLayerLoop"]
 [return]
 
@@ -105,13 +90,12 @@ tf.candidateObjects = [
 
 
 *secondLayerLoop
-[eval exp="tf.side = 'right'"]
 [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 
 ; ボタン押下後の処理
 ; 第2階層表示中には第1階層のボタンも押下できる状態のため、第1第2どちらを押下されても対応できるように判定する
 [if exp="f.selectedSide == 'right'"]
-  ; 第1階層のボタンを押した場合、selectedCharacterIdに格納する
+  ; 第2階層のボタンを押した場合、selectedCharacterIdに格納する
   [eval exp="f.selectedCharacterId = f.selectedButtonId"]
 [elsif exp="f.selectedSide == 'left'"]
   ; 第1階層のボタンを押した場合、selectedActionIdに格納する。selectedCharacterIdは空にして改めて第2階層までボタンを表示する

@@ -279,7 +279,7 @@ function getCharacterObjectsFromCharacterIds(characterObjects, CharacterIds, sea
  * @return {Array} 値の配列
  */
 function getValuesFromObjectArray(objectArray, key) {
-  console.log(objectArray);
+  // console.log(objectArray);
   const resultArray = [];
   for (let i = 0; i < objectArray.length; i++) {
     resultArray.push(objectArray[i][key]);

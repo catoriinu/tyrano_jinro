@@ -47,7 +47,7 @@
 
 ; シーン：偽の占い対象を入力した後、それを表示しつつそのCO結果を決めることを促すシステムメッセージ
 *displayFakeFortuneTellingTarget
-  [emb exp="f.characterObjects[f.targetCharacterId].name"]を……
+  [emb exp="f.characterObjects[f.selectedButtonId].name"]をどちらとCOする？
 [return]
 
 

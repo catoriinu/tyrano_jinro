@@ -91,24 +91,33 @@
     ; 表の視点を更新する理由は、・CO済みであれば表の視点を使うから　・未COでも思考に占い結果を反映させたいから（仮）
     ; →問題発生。
     ; TODO : 破綻の場合どうする？
-    f.characterObjects[mp.fortuneTellerId].perspective = organizePerspective(f.characterObjects[mp.fortuneTellerId].perspective, todayResult.characterId, getRoleIdsForOrganizePerspective(todayResult.result));
+    f.characterObjects[mp.fortuneTellerId].perspective = organizePerspective(
+      f.characterObjects[mp.fortuneTellerId].perspective,
+      todayResult.action.targetId,
+      getRoleIdsForOrganizePerspective(todayResult.action.result)
+    );
     if (f.characterObjects[mp.fortuneTellerId].role.roleId == ROLE_ID_FORTUNE_TELLER) {
-      f.characterObjects[mp.fortuneTellerId].role.rolePerspective = organizePerspective(f.characterObjects[mp.fortuneTellerId].role.rolePerspective, todayResult.characterId, getRoleIdsForOrganizePerspective(todayResult.result));
+      f.characterObjects[mp.fortuneTellerId].role.rolePerspective = organizePerspective(
+        f.characterObjects[mp.fortuneTellerId].role.rolePerspective,
+        todayResult.action.targetId,
+        getRoleIdsForOrganizePerspective(todayResult.action.result)
+      );
     }
     
-    ; 一時変数に占い結果格納
-    ; TODO:tf.todayResultObjectはtf.fortuneTellingHistoryObjectと役割がかぶっているのでどちらかに統一したい
-    tf.todayResultObject = todayResult;
+    ; メッセージ出力用に占いのアクションオブジェクトを格納
+    f.actionObject = todayResult.action;
 
     ; 全占い結果履歴オブジェクトに占い結果格納
+    // TODO メニュー画面用。メニュー画面を後回しにしているうちは一旦コメントアウト
+    /*
     if (typeof f.allFortuneTellingHistoryObject[mp.fortuneTellerId] !== 'object') {
       ; 初期化直後は空のオブジェクトを作成
       f.allFortuneTellingHistoryObject[mp.fortuneTellerId] = {};
     }
     f.allFortuneTellingHistoryObject[mp.fortuneTellerId][day] = todayResult;
-
+    */
     if (f.developmentMode) {
-      let resultMassage = todayResult.result ? '人　狼' : '村　人';
+      let resultMassage = todayResult.action.result ? '人　狼' : '村　人';
       //alert(f.characterObjects[mp.fortuneTellerId].name + 'は'
       // + f.characterObjects[todayResult.characterId].name + 'を占いました。\n結果　【' + resultMassage + '】');
     }
@@ -314,14 +323,24 @@
 [endmacro]
 
 
+; 未使用メソッド
 ; 指定したキャラクターの占い履歴から、指定した日の履歴オブジェクトをtf.fortuneTellingHistoryObjectに格納する
 ; 占い師、占い騙り両対応。
 ; @param fortuneTellerId 取得したい占い師（騙り占い）のキャラクターID。必須
 ; @param [day] 取得したい占い日。指定しない場合、その占い師の最新の履歴を取得する。引数の渡し方（型）は0でも"0"でも可。
 [macro name=j_fortuneTellingHistoryObjectThatDay]
+  未使用マクロ[p]
+[endmacro]
+
+
+; 指定したキャラクターの、指定した日の占い履歴アクションオブジェクトをもとに、COを実行する。
+; 占い師、占い騙り両対応。
+; @param fortuneTellerId 取得したい占い師（騙り占い）のキャラクターID。必須
+; @param [day] 取得したい占い日。指定しない場合、その占い師の最新の履歴を取得する。引数の渡し方（型）は0でも"0"でも可。
+[macro name="j_COFortuneTelling"]
+
   [iscript]
-    ; 占い履歴を変数に格納する
-    ; なぜか、if文の中でconstで宣言するとif文の外で未定義になったため、事前に宣言しておく。
+    // if文の中でconstで宣言するとif文の外で未定義になるので、事前に宣言しておく。
     let tmpFortuneTellingHistory = {}
     if (f.characterObjects[mp.fortuneTellerId].role.roleId == ROLE_ID_FORTUNE_TELLER) {
       tmpFortuneTellingHistory = f.characterObjects[mp.fortuneTellerId].role.fortuneTellingHistory;
@@ -329,19 +348,22 @@
       tmpFortuneTellingHistory = f.characterObjects[mp.fortuneTellerId].fakeRole.fortuneTellingHistory;
     }
 
-    ; 取得する日を決定する。引数があればその日の、なければ最新の日の履歴を取得する。
+    // 取得する日を決定する。引数があればその日の、なければ最新の日の履歴を取得する。
     const day = mp.day ? mp.day : Object.keys(tmpFortuneTellingHistory).length - 1;
-    tf.fortuneTellingHistoryObject = tmpFortuneTellingHistory[day];
+    // その占い履歴をCO済みにする
+    tmpFortuneTellingHistory[day].doneCO = true;
+    // 信頼度増減とメッセージ出力用にアクションオブジェクトを格納
+    f.actionObject = tmpFortuneTellingHistory[day].action;
+    // 占いCOによる信頼度増減を行う
+    updateReliabirityForAction(f.characterObjects, f.actionObject);
   [endscript]
-[endmacro]
 
+  ; メッセージ出力
+  [m_COFortuneTelling]
 
-; ※未使用メソッド
-; 指定したキャラクターの最新の占い履歴をもとに、占いCO文を出力する。
-; 占い師、占い騙り両対応。
-; @param fortuneTellerId 取得したい占い師（騙り占い）のキャラクターID。必須
-[macro name=j_COfortuneTellingResultLastNight]
-  j_COfortuneTellingResultLastNightマクロは削除済（念のためしばらく置いておく）[p]
+  ; 今日のCOが終わったキャラはisDoneTodaysCOをtrueにする
+  [eval exp="f.characterObjects[mp.fortuneTellerId].isDoneTodaysCO = true"]
+
 [endmacro]
 
 
@@ -383,11 +405,11 @@
 
 
 ; PCがCOしたいかを確認する必要があるかを判定し、tf.isNeedToAskPCWantToCOに結果を入れる
-[macro name=j_setIsNeedToAskPCWantToCO]
+[macro name="j_setIsNeedToAskPCWantToCO"]
   [iscript]
     tf.isNeedToAskPCWantToCO = false;
-    ; 以下の条件を満たした場合、PCがCOしたいかを確認する必要があると判定する
-    ; 生存している && COできる役職か && 今日は未COか
+    // 以下の条件を満たした場合、PCがCOしたいかを確認する必要があると判定する
+    // 生存している && COできる役職か && 今日は未COか
     if (f.characterObjects[f.playerCharacterId].isAlive && f.characterObjects[f.playerCharacterId].role.allowCO && !f.characterObjects[f.playerCharacterId].isDoneTodaysCO) {
       tf.isNeedToAskPCWantToCO = true;
     }
@@ -437,7 +459,7 @@
 ; 占い師COすることができる役職・CO状態かを判定し、tf.canCOFortuneTellerStatusに結果を入れる。内訳はコード内のコメント参照
 ; 定数の並び順が昇順ではないのは、「if文は肯定形にする」と「未COに+1したらCO済みとする」の2つを優先したため。
 ; @param characterId 判定対象のキャラクターID。必須。
-[macro name=j_setCanCOFortuneTellerStatus]
+[macro name="j_setCanCOFortuneTellerStatus"]
   [iscript]
 
     ; 0: 占い師CO不可の役職、またはCO状態
@@ -468,38 +490,70 @@
 
 
 ; ボタンオブジェクトf.buttonObjectsに、アクションボタン用オブジェクトを詰める
-; メモ：tf.candidateCharacterObjects, tf.candidateObjectsからの代替
-; @param actionIdList f.actionButtonList定数に定義されている中で、表示したいアクションIDのリスト
+; @param disableActionIdList f.actionButtonList定数に定義されている中で、ボタン表示したくないアクションIDのリスト（未使用）
 [macro name="j_setActionToButtonObjects"]
   [iscript]
+    // tf.disableActionIdList = Array.isArray(mp.disableActionIdList) ? mp.disableActionIdList : [];
     f.buttonObjects = [];
 
-    for (let i = 0; i < mp.actionIdList.length; i++) {
-      f.buttonObjects.push(f.actionButtonList[mp.actionIdList[i]]);
+    for (let aId of Object.keys(f.actionButtonList)) {
+      // ボタン表示したくないアクションIDはf.buttonObjectsに格納しない
+      // if (tf.disableActionIdList.includes(f.actionButtonList[i])) continue;
+
+      // 選択中のアクションIDのボタンは選択中の色に変える
+      const addClasses = [];
+      if (f.actionButtonList[aId].id == f.selectedActionId) {
+        addClasses.push(CLASS_GLINK_SELECTED);
+      }
+      // ボタンオブジェクトを、sideとaddClassesを指定するために再生成してf.buttonObjectsに格納する
+      f.buttonObjects.push(new Button(
+        f.actionButtonList[aId].id,
+        f.actionButtonList[aId].text,
+        'left',
+        CLASS_GLINK_DEFAULT,
+        addClasses
+      ));
     }
   [endscript]
 [endmacro]
 
 
-; ボタンオブジェクトf.buttonObjectsに、キャラクターオブジェクトを詰める
-; メモ：tf.candidateCharacterObjects, tf.candidateObjectsからの代替
-; @param needPC PCを含めるか。省略した場合含めない。
-; @param onlySurvivor 生存しているキャラのみか。省略した場合全員。（needsPC=trueでない限りPCは含めない）
+; ボタンオブジェクトf.buttonObjectsに、キャラクターを詰める
+; @param characterIds キャラクターID配列。省略した場合は全キャラクターが対象。
+; @param needPC PCを含めるか。省略した場合含めない。※"false"を渡すとtrue判定になるので注意
+; @param onlySurvivor 生存しているキャラのみか。省略した場合全員。（needsPC=trueでない限りPCは含めない）※"false"を渡すとtrue判定になるので注意
+; @param side ボタンの表示位置 'left','right'のいずれか（省略した場合center）
 [macro name="j_setCharacterToButtonObjects"]
   [iscript]
+    // mp.characterIdsを省略した場合、全員分のキャラクターID配列
+    mp.characterIds = ('characterIds' in mp) ? mp.characterIds : Object.keys(f.characterObjects);
+    // mp.sideを省略した場合、'center'
+    mp.side = ('side' in mp) ? mp.side : 'center';
+    // ボタン格納用変数の初期化
     f.buttonObjects = [];
-
-    for (let characterId of Object.keys(f.characterObjects)) {
+    for (let cId of Object.keys(f.characterObjects)) {
       // PCを含めない場合は、PCはスキップ
-      if (!mp.needPC && f.characterObjects[characterId].isPlayer) continue;
+      if (!mp.needPC && f.characterObjects[cId].isPlayer) continue;
       // 生存しているキャラのみの場合は、死亡済みキャラはスキップ
-      if (mp.onlySurvivor && !f.characterObjects[characterId].isAlive) continue;
       // MEMO 今のところ「死亡済みのキャラのみ返す」はできないので、必要になったら修正すること
+      if (mp.onlySurvivor && !f.characterObjects[cId].isAlive) continue;
+      // mp.characterIdsに含まれていないキャラはスキップ
+      if (!mp.characterIds.includes(cId)) continue;
 
-      // TODO f.actionButtonListのように事前にnewしておくほうがいいかも
+      // 選択中のキャラクターIDかつ選択中のアクションである（つまり、実行予定だったアクションと同じ）ボタンは選択中の色に変える
+      const addClasses = [];
+      if (cId == f.originalSelectedCharacterId) {
+        if ('actionId' in f.pcActionObject && f.selectedActionId == f.pcActionObject.actionId) {
+          addClasses.push(CLASS_GLINK_SELECTED);
+        }
+      }
+      // ボタンオブジェクトを、sideとaddClassesを指定するために再生成してf.buttonObjectsに格納する
       f.buttonObjects.push(new Button(
-        characterId,
-        f.characterObjects[characterId].name,
+        cId,
+        f.characterObjects[cId].name,
+        mp.side,
+        CLASS_GLINK_DEFAULT,
+        addClasses
       ));
     }
   [endscript]
@@ -617,26 +671,25 @@
 
 ; 引数で受け取った、doActionObjectのアクションを実行する
 ; 事前に[j_setDoActionObject]の実行が必要
-; @param characterId アクション実行するキャラクターID。必須
-; @param targetCharacterId アクション対象のキャラクターID。必須
-; @param actionId 実行するアクションID。必須
+; @param actionObject アクションオブジェクト {characterId:アクション実行するキャラクターID, actionId:実行するアクションID, targetId:アクション対象のキャラクターID} 必須
 [macro name="j_doAction"]
-  ; セリフ表示
-  [m_doAction characterId="&mp.actionObject.characterId" targetCharacterId="&mp.actionObject.targetId" actionId="&mp.actionObject.actionId"]
-
-  ; 全員の信頼度増減
-  [iscript]
-    updateReliabirityForAction(f.characterObjects, mp.actionObject);
-  [endscript]
-
-  ; TODO アクション実行者の主張力を下げて、同日中は再発言しにくくする
-
-  ; アクションボタン用変数の初期化（PCからのボタン先行入力を受け付けられるように消す。リアクションにはマクロ変数を渡すのでこのタイミングで消して問題ない）
-  [eval exp="f.selectedActionId = ''"]
-  [eval exp="f.selectedCharacterId = ''"]
+  ; アクションボタン用変数の初期化（PCからのボタン先行入力を受け付けられるように消す。セリフとリアクションにはマクロ変数を渡すのでこのタイミングで消して問題ない）
+  ; TODO:多分いらないので2行コメントアウト。しばらく問題が起きなければ削除する
+  ; [eval exp="f.selectedActionId = ''"]
+  ; [eval exp="f.selectedCharacterId = ''"]
   [eval exp="f.doActionObject = {}"]
   [eval exp="f.pcActionObject = {}"]
   [eval exp="f.npcActionObject = {}"]
+
+  ; セリフ表示
+  [m_doAction characterId="&mp.actionObject.characterId" targetCharacterId="&mp.actionObject.targetId" actionId="&mp.actionObject.actionId"]
+
+  [iscript]
+    // 全員の信頼度増減
+    updateReliabirityForAction(f.characterObjects, mp.actionObject);
+    // アクション実行者の主張力を下げて、同日中は再発言しにくくする
+    f.characterObjects[mp.actionObject.characterId].personality.assertiveness.current -= f.characterObjects[mp.actionObject.characterId].personality.assertiveness.decrease;
+  [endscript]
 
   ; リアクションのセリフ表示
   [m_doAction_reaction characterId="&mp.actionObject.targetId" actionId="&mp.actionObject.actionId"]
@@ -644,6 +697,7 @@
 
 
 ; 人狼メニュー画面に表示するための全占い師のCO状況テキストを生成する
+; TODO 作り直す
 [macro name="j_getAllFortuneTellerCOText"]
   ; TODO:これを表示したあと、2日目にプレイヤーが占う時にバグる。
   ; getCharacterObjectsFromCharacterIds()で、for (let k of Object.keys(characterObjects)) {の際にUncaught TypeError: Cannot convert undefined or null to object
@@ -687,13 +741,112 @@
 [endmacro]
 
 
-; 各キャラの投票先を集計し、メッセージに出力する
+; 各キャラの投票先を集計し、投票結果画面として出力する
 [macro name="j_openVote"]
-  [iscript]
-    openVote(f.characterObjects, f.day, f.voteResult, f.electedIdList);
-  [endscript]
-  [emb exp="f.voteResultMessage"][p]
+  ; 全ボタンとメッセージウィンドウを消去
+  [j_clearFixButton]
+  [layopt layer="message0" visible="false"]
+
+  [call storage="jinroSubroutines.ks" target="*openVote"]
+  [p]
+  ; 投票結果を表示していたレイヤーを解放
+  [freeimage layer="1" time="400" wait="true"]
+
+  ; ステータス、メニューボタン再表示とメッセージウィンドウを表示
+  [j_displayFixButton status="true" menu="true"]
+  [layopt layer="message0" visible="true"]
 [endmacro]
+
+
+[macro name="j_displayRoles"]
+役職公開[r]
+ずんだもん：[emb exp="f.characterObjects.zundamon.role.roleName"]、
+四国めたん：[emb exp="f.characterObjects.metan.role.roleName"]、
+春日部つむぎ：[emb exp="f.characterObjects.tsumugi.role.roleName"]、
+雨晴はう：[emb exp="f.characterObjects.hau.role.roleName"]、
+波音リツ：[emb exp="f.characterObjects.ritsu.role.roleName"][p]
+[endmacro]
+
+
+; Fixレイヤーのボタンを表示する。表示中のボタンは指定されても再表示はしない。
+; ボタンの消去は[j_clearFixButton]で行うこと。
+; 以下のマクロ変数を全て省略すると、全てのボタンを表示する。
+; @param action アクションボタンを表示する（※"false"を渡すとtrue判定になるので注意）
+; @param menu メニューボタンを表示する（※"false"を渡すとtrue判定になるので注意）
+; @param status ステータスボタンを表示する（※"false"を渡すとtrue判定になるので注意）
+[macro name="j_displayFixButton"]
+
+  [iscript]
+    // 初回のみ、ボタンの表示ステータスを管理するオブジェクトを生成
+    if (!('displaingButton' in f)) {
+      f.displaingButton = {
+        action: false,
+        menu: false,
+        status: false
+      };
+    };
+    // 一つもマクロ変数に指定されていないなら、全て表示する。一つでも指定されているならマクロ変数通りとする。
+    if (!(('action' in mp) || ('menu' in mp) || ('status' in mp))) {
+      mp.action = true;
+      mp.menu = true;
+      mp.status = true;
+    }
+    console.log('表示');
+    console.log(mp);
+  [endscript]
+
+  [if exp="!f.displaingButton.action && mp.action"]
+    [button graphic="button/button_action_normal.png" storage="action.ks" target="*start" x="23" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_action" enterimg="button/button_action_hover.png"]
+    [eval exp="f.displaingButton.action = true"]
+  [endif]
+
+  [if exp="!f.displaingButton.menu && mp.menu"]
+    [button graphic="button/button_menu_normal.png" x="1143" y="23" width="114" height="103" fix="true" role="menu" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
+    [eval exp="f.displaingButton.menu = true"]
+  [endif]
+
+  [if exp="!f.displaingButton.status && mp.status"]
+    [button graphic="button/button_status_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="1005" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_status" enterimg="button/button_status_hover.png"]
+    [eval exp="f.displaingButton.status = true"]
+  [endif]
+[endmacro]
+
+
+; Fixレイヤーのボタンを消去する。消去中のボタンは指定されても再消去はしない。
+; ボタンの表示は[j_displayFixButton]で行うこと。
+; 以下のマクロ変数を全て省略すると、全てのボタンを消去する。
+; @param action アクションボタンを消去する（※"false"を渡すとtrue判定になるので注意）
+; @param menu メニューボタンを消去する（※"false"を渡すとtrue判定になるので注意）
+; @param status ステータスボタンを消去する（※"false"を渡すとtrue判定になるので注意）
+[macro name="j_clearFixButton"]
+  [iscript]
+    // [j_displayFixButton]は実行済みでf.displaingButtonは存在している前提とする。
+    // 一つもマクロ変数に指定されていないなら、全て消去する。一つでも指定されているならマクロ変数通りとする。
+    if (!(('action' in mp) || ('menu' in mp) || ('status' in mp))) {
+      mp.action = true;
+      mp.menu = true;
+      mp.status = true;
+    }
+    console.log('消去');
+    console.log(mp);
+  [endscript]
+
+  [if exp="f.displaingButton.action && mp.action"]
+    [clearfix name="button_j_action"]
+    [eval exp="f.displaingButton.action = false"]
+  [endif]
+
+  [if exp="f.displaingButton.menu && mp.menu"]
+    [clearfix name="button_j_menu"]
+    [eval exp="f.displaingButton.menu = false"]
+  [endif]
+
+  [if exp="f.displaingButton.status && mp.status"]
+    [clearfix name="button_j_status"]
+    [eval exp="f.displaingButton.status = false"]
+  [endif]
+[endmacro]
+
 
 ; jsonをローカルに保存する
 ; 参考　@link https://ameblo.jp/personwritep/entry-12495099049.html

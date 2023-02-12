@@ -29,64 +29,20 @@
 ; ゲーム準備js読み込み
 [loadjs storage="plugin/jinro/macro/prepareGame.js"]
 
-; アクション、ステータス、メニューボタン表示
-; TODO 表示（＝プレイヤーに操作させてよい）タイミングは後々考える。それ以外は非表示にする。
-[button graphic="button/button_action_normal.png" storage="action.ks" target="*start" x="23" y="25" width="114" height="103" fix="true" role="sleepgame" enterimg="button/button_action_hover.png" clickimg="button/button_action_click.png"]
-[button graphic="button/button_menu_normal.png" x="1143" y="25" width="114" height="103" fix="true" role="menu" enterimg="button/button_menu_hover.png" clickimg="button/button_menu_click.png"]
-[button graphic="button/button_status_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="1005" y="25" width="114" height="103" fix="true" role="sleepgame" enterimg="button/button_status_hover.png" clickimg="button/button_status_click.png"]
+; ステータス、メニューボタン表示
+[j_displayFixButton status="true" menu="true"]
 
 [m_changeFrameWithId]
 #
 人狼ゲームの幕開けです……！[p]
 
 *day0_nightPhase
+[clearstack]
 
 ; 夜時間開始時に、夜時間中に参照するためのcharacterObjectを複製する。占い、噛みなどの記録は本物のf.characterObjectsに更新していく。
 ; 初回はオブジェクト型に初期化する
 [eval exp="f.characterObjectsHistory = {}"]
 [eval exp="f.characterObjectsHistory[f.day] = clone(f.characterObjects)"]
-
-
-; キャラの登場と退場のテスト
-;[m_changeCharacter characterId="zundamon" face="normal"]
-;[m_changeFrameWithId characterId="zundamon"]
-;# ずんだもん
-;めたんー[p]
-;
-;[m_changeCharacter characterId="metan" face="normal"]
-;[m_changeFrameWithId characterId="metan"]
-;# 四国めたん
-;何よ？[p]
-;
-;[m_changeCharacter characterId="zundamon" face="normal"]
-;[m_changeFrameWithId characterId="zundamon"]
-;# ずんだもん
-;つむぎー[p]
-;
-;[m_changeCharacter characterId="tsumugi" face="normal"]
-;[m_changeFrameWithId characterId="tsumugi"]
-;# 春日部つむぎ
-;はーい[p]
-;
-;[m_changeCharacter characterId="zundamon" face="normal"]
-;[m_changeFrameWithId characterId="zundamon"]
-;# ずんだもん
-;はうー、りつー、そしてつむぎ！[p]
-;
-;[m_changeCharacter characterId="hau" face="normal"]
-;[m_changeFrameWithId characterId="hau"]
-;# 雨晴はう
-;ニンニクマシマシ！[p]
-;
-;[m_changeCharacter characterId="ritsu" face="normal"]
-;[m_changeFrameWithId characterId="hau"]
-;# 波音リツ
-;大きなイチモツ！[p]
-;
-;[m_changeCharacter characterId="tsumugi" face="normal"]
-;[m_changeFrameWithId characterId="tsumugi"]
-;# 春日部つむぎ
-;めがまわるー[p]
 
 ; プレイヤーの役職確認セリフ出力
 [m_noticeRole characterId="&f.playerCharacterId" roleId="&f.characterObjects[f.playerCharacterId].role.roleId"]
@@ -101,7 +57,7 @@
   [call storage="./fortuneTellingForPC.ks" target="*fortuneTellingForPC"]
 
   ; 占い結果に合わせてセリフ出力
-  [m_announcedFortuneTellingResult characterId="&f.playerCharacterId" result="&tf.todayResultObject.result"]
+  [m_announcedFortuneTellingResult]
 
   ; 占いカットイン解放
   ;[freeimage layer="1" time=400 wait="false"]
@@ -112,6 +68,7 @@
 [j_nightPhaseFortuneTellingForNPC]
 
 *startDaytime
+[clearstack]
 #
 [eval exp="timePasses()"]
 [bg storage="living_day_nc238325.jpg" time="500"]
@@ -138,22 +95,44 @@
 
 *COPhasePlayer
 
+; PCがCOしたいかを確認する必要があるか。必要がなければジャンプ
 [j_setIsNeedToAskPCWantToCO]
-[if exp="tf.isNeedToAskPCWantToCO"]
+[jump target="*COPhaseNPC" cond="!tf.isNeedToAskPCWantToCO"]
 
-  ; 占い師COすることができる役職・CO状態であれば
+  ; 占い師COすることができる役職・CO状態であれば。COできなければジャンプ
   [j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
-  [if exp="tf.canCOFortuneTellerStatus > 0"]
+  [jump target="*noCO" cond="tf.canCOFortuneTellerStatus == 0"]
 
     [m_askFortuneTellerCO canCOFortuneTellerStatus="&tf.canCOFortuneTellerStatus"]
 
-    ; COするしないボタン表示
-    [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (0 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
-    [glink color="blue" storage="playJinro.ks" size="28" x="360" width="500" y="&tf.y" text="占いCOする" target="*FortuneTellerCO"]
-    [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (1 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
-    [glink color="blue" storage="playJinro.ks" size="28" x="360" width="500" y="&tf.y" text="何もしない" target="*noCO"]
-    [s]
+    ; メニューボタン非表示
+    [j_clearFixButton menu="true"]
 
+    ; COするしないボタン表示
+    [iscript]
+      f.buttonObjects = [];
+      f.buttonObjects.push(new Button(
+        'FortuneTellerCO',
+        '占いCOする',
+        'center',
+        CLASS_GLINK_DEFAULT
+      ));
+      f.buttonObjects.push(new Button(
+        'noCO',
+        '何もしない',
+        'center',
+        CLASS_GLINK_DEFAULT
+      ));
+    [endscript]
+    [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
+
+    ; メニューボタン再表示
+    [j_displayFixButton menu="true"]
+
+    ; 「何もしない」ならジャンプする
+    [jump target="*noCO" cond="f.selectedButtonId == 'noCO'"]
+    ; 「占いCOする」ならジャンプ……しなくてもすぐ下なので何もしない。COできる役職が増えたら増やす
+    ; [jump target="*FortuneTellerCO" cond="f.selectedButtonId == 'FortuneTellerCO'"]
     *FortuneTellerCO
 
     ; 占い未COかつ、占い騙りをすると決めた場合、騙り役職オブジェクトを取得する
@@ -166,19 +145,8 @@
     ; 占いカットイン発生
     [j_cutin1]
 
-    ; 指定した占い師の最新の占い履歴オブジェクトをtf.fortuneTellingHistoryObjectに格納する
-    [j_fortuneTellingHistoryObjectThatDay fortuneTellerId="&f.playerCharacterId"]
-  
-    ; ホバー時用の画像を画面外からスライドインさせる TODO ボタンごとにキャラに合わせた画像を表示する
-    ;[image layer="1" x="1280" y="80" visible="true" storage="01_sad.png" name="01"]
-    ;[anim name="01" left=850 time=350]
-
-    [m_COFortuneTellingResult characterId="&f.playerCharacterId" result="&tf.fortuneTellingHistoryObject.result"]
-
-    ; 占いカットイン解放
-    ;[freeimage layer="1" time=400 wait="false"]
-
-    [eval exp="f.characterObjects[f.playerCharacterId].isDoneTodaysCO = true"]
+    ; 指定した占い師のCOを実行する
+    [j_COFortuneTelling fortuneTellerId="&f.playerCharacterId"]
 
     ; 初回CO時のみの処理
     [if exp="tf.canCOFortuneTellerStatus == 1 || tf.canCOFortuneTellerStatus == 3"]
@@ -190,23 +158,14 @@
       [eval exp="tf.tmpZeroRoleIds = [ROLE_ID_VILLAGER]"]
       [j_updateCommonPerspective characterId="&f.characterObjects[f.playerCharacterId].characterId" zeroRoleIds="&tf.tmpZeroRoleIds"]
     [endif]
-
     [jump target="*COPhaseNPC"]
-  [endif]
 
   ; COなし
   *noCO
 
-  [if exp="f.notExistCOCandidateNPC"]
-    ; COフェイズ終了(NPCにCO候補者がいないため、これ以上COする者はいないとする)
-    [jump target="*discussionPhase"]
-  [else]
-    ; COフェイズ継続(まだNPCにCO候補者がいるので、NPCのCOを確認する)
-    [jump target="*COPhaseNPC"]
-  [endif]
-
-[endif]
-
+  ; f.notExistCOCandidateNPCがtrueなら、COフェイズ終了(NPCにCO候補者がいないため、これ以上COする者はいないとする)
+  [jump target="*discussionPhase" cond="f.notExistCOCandidateNPC"]
+  ; f.notExistCOCandidateNPCがfalseなら、COフェイズ継続(まだNPCにCO候補者がいるので、NPCのCOを確認する)
 
 *COPhaseNPC
 ; NPC（占い師、人狼、狂人）による占いCOフェイズ
@@ -264,22 +223,8 @@
   ; 占いカットイン発生
   [j_cutin1]
 
-  ; 指定した占い師の最新の占い履歴オブジェクトをtf.fortuneTellingHistoryObjectに格納する
-  [j_fortuneTellingHistoryObjectThatDay fortuneTellerId="&f.COCandidateId"]
-  
-  ; ホバー時用の画像を画面外からスライドインさせる TODO ボタンごとにキャラに合わせた画像を表示する
-  ;[image layer="1" x="1280" y="80" visible="true" storage="01_sad.png" name="01"]
-  ;[anim name="01" left=850 time=350]
-
-  [m_COFortuneTellingResult characterId="&f.COCandidateId" result="&tf.fortuneTellingHistoryObject.result"]
-
-  ; 占いカットイン解放
-  [freeimage layer="1" time=400 wait="false"]
-
-  ; TODO: どのように、前のCO内容を次のCOの確率に影響させるか？　今日のCO内容をどこかの配列に保存しておく必要がありそう？
-
-  ; 今日のCOが終わったキャラはisDoneTodaysCOをtrueにする
-  [eval exp="f.characterObjects[f.COCandidateId].isDoneTodaysCO = true"]
+  ; 指定した占い師のCOを実行する
+  [j_COFortuneTelling fortuneTellerId="&f.COCandidateId"]
 
   ; 初回CO時のみの処理
   [if exp="tf.canCOFortuneTellerStatus == 1 || tf.canCOFortuneTellerStatus == 3"]
@@ -302,6 +247,11 @@
 
 
 *discussionPhase
+[clearstack]
+
+; アクションボタン表示
+[j_displayFixButton action="true"]
+
 [m_changeFrameWithId]
 #
 ～議論フェイズ～[p]
@@ -323,7 +273,7 @@
 ; アクション実行
 [j_setDoActionObject]
 [if exp="Object.keys(f.doActionObject).length > 0"]
-  [j_doAction actionObject="&f.doActionObject""]
+  [j_doAction actionObject="&f.doActionObject"]
 [endif]
 
 ; アクション実行上限回数未満の場合は議論フェイズを繰り返す
@@ -331,6 +281,11 @@
 
 
 *votePhase
+[clearstack]
+
+; アクションボタン非表示
+[j_clearFixButton action="true"]
+
 [m_changeFrameWithId]
 #
 ～投票フェイズ～[p]
@@ -355,27 +310,24 @@
 [endif]
 投票するキャラクターを選択してください。[p]
 
-[iscript]
-  ; 生存者である、かつプレイヤー以外のキャラクターオブジェクトを選択肢候補変数に格納する。
-  tf.candidateCharacterObjects = getCharacterObjectsFromCharacterIds(
-    getSurvivorObjects(f.characterObjects),
-    [f.playerCharacterId],
-    false
-  );
+; 生存者である、かつプレイヤー以外のキャラクターIDをボタンオブジェクトに格納する。
+; [j_setCharacterToButtonObjects onlySurvivor="true"]
+; TODO ……のが正しいが、テスト用に生存者全員を投票対象にしておく。
+[j_setCharacterToButtonObjects onlySurvivor="true" needPC="true"]
 
-  ; TODO ……のが正しいが、テスト用に生存者全員を投票対象にしておく。
-  tf.candidateCharacterObjects = getSurvivorObjects(f.characterObjects);
-[endscript]
+; メニューボタン非表示
+[j_clearFixButton menu="true"]
 
 ; 選択肢ボタン表示と入力受付
-[call storage="./jinroSubroutines.ks" target="*glinkFromCandidateCharacterObjects"]
+[eval exp="tf.doSlideInCharacter = true"]
+[call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 
 ; キャラ画像解放
-[freeimage layer="1" time=400 wait="false"]
+[freeimage layer="1" time="400" wait="false"]
 
 ; ボタンで選択した投票先キャラクターIDを、プレイヤーの投票履歴に入れる
 [iscript]
-  f.characterObjects[f.playerCharacterId].voteHistory[f.day] = pushElement(f.characterObjects[f.playerCharacterId].voteHistory[f.day], f.targetCharacterId);
+  f.characterObjects[f.playerCharacterId].voteHistory[f.day] = pushElement(f.characterObjects[f.playerCharacterId].voteHistory[f.day], f.selectedButtonId);
 [endscript]
 
 *skipPlayerVote
@@ -392,7 +344,7 @@
     ; 再投票上限回数未満であれば再投票する
     [if exp="f.revoteCount < MAX_REVOTE_COUNT"]
       再投票です。[r]
-      あと[emb exp="MAX_REVOTE_COUNT-f.revoteCount"]回で決着しない場合は引き分けです。[p]
+      あと[emb exp="MAX_REVOTE_COUNT - f.revoteCount"]回で決着しない場合は引き分けです。[p]
       [jump target="*votePhase"]
     [else]
       ; 再投票上限を越えた場合は引き分け処理
@@ -400,14 +352,12 @@
       [eval exp="tf.winnerCamp = CAMP_DRAW_BY_REVOTE"]
       [jump target="*gameOver"]
     [endif]
-  [else]
-    [eval exp="f.targetCharacterId = f.electedIdList[0]"]
   [endif]
 [endif]
 
 ; 処刑セリフと処刑処理（TODO 今はこの順番だが、処刑ごとの演出がどうなるかによっては逆にしてもいい）
-[m_executed characterId="&f.targetCharacterId"]
-[j_execution characterId="&f.targetCharacterId"]
+[m_executed characterId="&f.electedIdList[0]"]
+[j_execution characterId="&f.electedIdList[0]"]
 
 ; 処刑後の反応（TODO 誰が発言するかを決定するマクロ等が必要）
 [if exp="f.characterObjects.ai.isAlive"]
@@ -423,6 +373,7 @@
 
 ; 夜時間開始
 *nightPhase
+[clearstack]
 
 [eval exp="timePasses()"]
 [bg storage="living_night_close_nc238328.jpg" time="300"]
@@ -434,83 +385,92 @@
 
 
 ; プレイヤーの行動（夜時間オブジェクトを参照）
-[if exp="f.characterObjectsHistory[f.day][f.playerCharacterId].isAlive"]
+; MEMO: *nightPhaseNPCまでの区間を[if]で囲っていると、「人狼で、初日占いCOしており、直前で騙り占いをしている」場合に「人狼の場合のみ」ルートを通らなくなった。おそらく[if]の使いすぎによるスタック溢れでおかしくなった感じ。
+; ここを[jump]に変えたら解決した。今後ももし起きたら、[if]を[jump]に置換可能か検討すること
+; なお、この問題は[clearstack]では解決しなかったが、おまじないとして各フェイズの最初に追加しておく。
+[jump target="*nightPhaseNPC" cond="!f.characterObjectsHistory[f.day][f.playerCharacterId].isAlive"]
 
 [m_changeFrameWithId]
 #
 プレイヤーの行動です。[p]
 
-  ; 村人
-  [if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_VILLAGER"]
-    村人なので行動できません。[p]
-  [endif]
-
-  ; 占い師、または騙り占い師CO済みであれば
-  [j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
-  [if exp="tf.canCOFortuneTellerStatus == 1 || tf.canCOFortuneTellerStatus == 2 || tf.canCOFortuneTellerStatus == 4"]
-
-    ; 騙り占い師の場合
-    [if exp="tf.canCOFortuneTellerStatus == 4"]
-      [m_askFortuneTellingTarget isFortuneTeller="false"]
-
-      ; 占いカットイン発生
-      [j_cutin1]
-
-      ; 騙り占い実行
-      [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingForPC"]
-
-    [else]
-      ; 真占い師の場合
-      [m_askFortuneTellingTarget isFortuneTeller="true"]
-
-      ; 占いカットイン発生
-      [j_cutin1]
-
-      ; 占い実行
-      [call storage="./fortuneTellingForPC.ks" target="*fortuneTellingForPC"]
-
-      ; 占い結果に合わせてセリフ出力
-      [m_announcedFortuneTellingResult characterId="&f.playerCharacterId" result="&tf.todayResultObject.result"]
-
-    [endif]
-
-    ; 占いカットイン解放
-    ;[freeimage layer="1" time=400 wait="false"]
-
-  [endif]
-
-  ; 人狼の場合のみ
-  [if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_WEREWOLF"]
-
-    [if exp="f.isBiteEnd != true"]
-
-      [m_chooseWhoToBite characterId="&f.playerCharacterId"]
-
-      [iscript]
-        ; 夜時間開始時の生存者である、かつ人狼以外のキャラクターオブジェクトを選択肢候補変数に格納する。
-        tf.candidateCharacterObjects = getIsWerewolvesObjects(
-          getSurvivorObjects(f.characterObjectsHistory[f.day]),
-          false
-        );
-      [endscript]
-
-      ; 選択肢ボタン表示と入力受付
-      [call storage="./jinroSubroutines.ks" target="*glinkFromCandidateCharacterObjects"]
-
-      ; 噛み実行
-      [j_biting biterId="&f.playerCharacterId" characterId="&f.targetCharacterId"]
-      [m_exitCharacter characterId="&f.targetCharacterId"]
-
-      ; キャラ画像解放
-      [freeimage layer="1" time=400 wait="false"]
-
-      ; 噛み実行済みフラグを立てる
-      [eval exp="f.isBiteEnd = true"]
-    [endif]
-  [endif]
-
+; 村人
+[if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_VILLAGER"]
+  村人なので行動できません。[p]
 [endif]
 
+; 占い師、または騙り占い師CO済みであれば
+[j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
+[if exp="tf.canCOFortuneTellerStatus == 1 || tf.canCOFortuneTellerStatus == 2 || tf.canCOFortuneTellerStatus == 4"]
+
+  ; 騙り占い師の場合
+  [if exp="tf.canCOFortuneTellerStatus == 4"]
+    [m_askFortuneTellingTarget isFortuneTeller="false"]
+
+    ; 占いカットイン発生
+    [j_cutin1]
+
+    ; 騙り占い実行
+    [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingForPC"]
+
+  [else]
+    ; 真占い師の場合
+    [m_askFortuneTellingTarget isFortuneTeller="true"]
+
+    ; 占いカットイン発生
+    [j_cutin1]
+
+    ; 占い実行
+    [call storage="./fortuneTellingForPC.ks" target="*fortuneTellingForPC"]
+
+    ; 占い結果に合わせてセリフ出力
+    [m_announcedFortuneTellingResult]
+
+  [endif]
+[endif]
+
+; 人狼の場合のみ
+[if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_WEREWOLF"]
+
+  [if exp="f.isBiteEnd != true"]
+
+    ; メニューボタン非表示
+    [j_clearFixButton menu="true"]
+
+    [m_chooseWhoToBite characterId="&f.playerCharacterId"]
+
+    [iscript]
+      ; 夜時間開始時の生存者である、かつ人狼以外であるキャラクターID配列を選択肢候補変数に格納する。
+      tf.candidateCharacterIds = getValuesFromObjectArray(
+        getIsWerewolvesObjects(
+          getSurvivorObjects(f.characterObjectsHistory[f.day]),
+          false
+        ),
+        'characterId'
+      );
+    [endscript]
+
+    ; 選択肢ボタン表示と入力受付
+    [j_setCharacterToButtonObjects characterIds="&tf.candidateCharacterIds"]
+    [eval exp="tf.doSlideInCharacter = true"]
+    [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
+
+    ; メニューボタン再表示
+    [j_displayFixButton menu="true"]
+
+    ; 噛み実行
+    [j_biting biterId="&f.playerCharacterId" characterId="&f.selectedButtonId"]
+    [m_exitCharacter characterId="&f.selectedButtonId"]
+
+    ; キャラ画像解放
+    [freeimage layer="1" time="400" wait="false"]
+
+    ; 噛み実行済みフラグを立てる
+    [eval exp="f.isBiteEnd = true"]
+  [endif]
+[endif]
+
+*nightPhaseNPC
 [m_changeFrameWithId]
 #
 NPCが行動しています……[p]
@@ -537,7 +497,9 @@ NPCが行動しています……[p]
 
 [m_changeFrameWithId]
 #
-おわり。[r]
+おわり。[p]
+
+[j_displayRoles]
 ;タイトルに戻ります。[p]
 ; [j_saveJson]
 

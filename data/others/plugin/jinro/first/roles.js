@@ -63,12 +63,17 @@ function FortuneTeller() {
     console.log(fortuneTellerId + ' fortuneTelled ' + targetCharacterId);
     console.log('result : ' + result);
     
-    // 指定された日（デフォルトは今日）の占い結果を保存＆返却する
+    // 指定された日（デフォルトは今日）の占い結果をアクションオブジェクトに保存＆返却する
     const todayResult = {
-      characterId: targetCharacterId,
-      result: result,
+      action: new Action(
+        fortuneTellerId,
+        ACTION_FORTUNE_TELLING,
+        targetCharacterId,
+        result
+      ),
       doneCO: false
     }
+
     this.fortuneTellingHistory[day] = todayResult;
     
     return todayResult;
@@ -84,10 +89,7 @@ function FortuneTeller() {
   roleObject.determineFortuneTellingTargetId = function (fortuneTellerObject, day) {
     
     // 占い候補になるキャラクターID配列を取得する。
-    const candidateIdList = getValuesFromObjectArray(
-      this.getCandidateCharacterObjects(fortuneTellerObject.characterId, day),
-      'characterId'
-    );
+    const candidateIdList = this.getCandidateCharacterIds(fortuneTellerObject.characterId, day);
     
     // 現在の視点からCO可能な、合法報告生成
     // 真占い師、騙り占い師のどちらであってもキャラクターオブジェクト直下のperspectiveを元にしてよい
@@ -100,24 +102,32 @@ function FortuneTeller() {
   
   /**
    * 占い候補取得メソッド
-   * 指定日の夜開始時点のキャラクターオブジェクト配列から、以下をすべて満たすキャラクターオブジェクト配列を取得する。
+   * 指定日の夜開始時点のキャラクターオブジェクト配列から、以下をすべて満たすキャラクターID配列を取得する。
    * ・自分の占い履歴にない　・自分ではない　・生存している
    * @param {String} fortuneTellerId 占い師のキャラクターID（真偽併用）
    * @param {Number} day 占い実行日（過去の日付で占ったことにしたいときに指定）
-   * @returns {Array} 占い対象候補となったキャラクターオブジェクトの配列
+   * @returns {Array} 占い対象候補となったキャラクターIDの配列
    */
-  roleObject.getCandidateCharacterObjects = function (fortuneTellerId, day = TYRANO.kag.stat.f.day) {
+  roleObject.getCandidateCharacterIds = function (fortuneTellerId, day = TYRANO.kag.stat.f.day) {
     
-    // 占い対象外として、占い履歴（を配列化したもの。オブジェクトのままでは抽出できないため）からcharacterId配列を抽出した配列に、実行者のIDを追加する
-    const notTargetIds = getValuesFromObjectArray(Object.values(this.fortuneTellingHistory), 'characterId');
+    // 占い対象外のキャラクターIDを配列化する
+    // そのキャラの占い履歴内のアクションオブジェクトの中からtargetIdキーの値を抽出して配列化
+    const notTargetIds = getValuesFromObjectArray(
+      getValuesFromObjectArray(Object.values(this.fortuneTellingHistory), 'action'),
+      'targetId'
+    );
+    // そこに占い実行者自身も追加
     notTargetIds.push(fortuneTellerId);
 
     // 占い対象外ではない（＝占い候補の）キャラクターオブジェクトを取得し、その中から生存者のみを返却する
     // 占い対象は、指定された日の夜時間開始時の生存者から選ばれる（騙り占い師が過去の日付の占い履歴を作ることがあるためこうしている）
     // NOTE：生存者の中から占い候補を探すのが正しい順番では？AND判定なので現状でも問題はなさそうだけど。
-    return getSurvivorObjects(
-      getCharacterObjectsFromCharacterIds(TYRANO.kag.stat.f.characterObjectsHistory[day], notTargetIds, false),
-      true
+    return getValuesFromObjectArray(
+      getSurvivorObjects(
+        getCharacterObjectsFromCharacterIds(TYRANO.kag.stat.f.characterObjectsHistory[day], notTargetIds, false),
+        true
+      ),
+      'characterId'
     );
   }
   

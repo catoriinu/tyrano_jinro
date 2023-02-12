@@ -6,6 +6,7 @@
 *registerAllCharacters
   ; defaultPositionをオブジェクトとして初期化する。これからキャラクターごとに格納していくため。
   [eval exp="f.defaultPosition = {}"]
+  [eval exp="f.color.character = {}"]
   [call storage="./chara/zundamon.ks" target="*executeCharaNewAndCharaFace"]
   [call storage="./chara/metan.ks" target="*executeCharaNewAndCharaFace"]
   [call storage="./chara/tsumugi.ks" target="*executeCharaNewAndCharaFace"]

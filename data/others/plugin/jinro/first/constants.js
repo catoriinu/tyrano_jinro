@@ -61,13 +61,6 @@ const DEATH_BY_ATTACK    = 'attack'; // 襲撃。人狼による噛み。
 // 再投票上限回数（これが初回を含めた最大投票回数となる）
 const MAX_REVOTE_COUNT = 4;
 
-// 信頼度を更新する理由
-// TODO アクションIDと理由を紐づける別のオブジェクトがほしい。こっちの中身は受動態にしたい
-const REASON_WAS_VOTED = 'wasVoted'; // 相手に投票されたとき
-const REASON_WAS_SUSPECTED = 'suspect'; // 相手に「疑う」されたとき
-const REASON_WAS_TRUSTED = 'trust'; // 相手に「信じる」されたとき
-const REASON_WAS_ASKED = 'ask'; // 相手に「聞き出す」されたとき
-const REASON_TEST = 'test' // テスト用
 // 計算方法（信頼度更新用）
 const ARITHMETIC_ADDITION = 'addition'; // 現在の値に加算する（減算したい場合は負の値を足す）
 const ARITHMETIC_MULTIPLICATION = 'multiplication'; // 現在の値に乗算する（除算したい場合は1未満の値を掛ける）
@@ -81,9 +74,15 @@ const FEELING_LOVE = 'love';
 const ACTION_SUSPECT = 'suspect'; // 疑う（アクションボタン）
 const ACTION_TRUST = 'trust'; // 信じる（アクションボタン）
 const ACTION_ASK = 'ask'; // 聞き出す（アクションボタン　未使用）
-const ACTION_FORTUNE_TELLING = 'fortuneTelling'; // 占う（未使用）
-const ACTION_VOTE = 'vote'; // 投票（未使用）
+const ACTION_CANCEL = 'cancel'; // 発言しない（アクションボタン）
+const ACTION_FORTUNE_TELLING = 'fortuneTelling'; // 占う
+const ACTION_VOTE = 'vote'; // 投票
 
+// CSSのclass要素名（glinkのnameやcolorに設定するなど）
+const CLASS_GLINK_DEFAULT = 'btn_voivo'; // glinkのcolor用。ゲーム内で基本となるボタンのテーマ
+const CLASS_GLINK_SELECTED = 'btn_voivo_selected'; // glinkのname用。現在選択されているボタン用のテーマ
+const CLASS_GLINK_WHITE = 'btn_voivo_white'; // glinkのname用。白色のテーマ（未作成）
+const CLASS_GLINK_BLACK = 'btn_voivo_black'; // glinkのname用。黒色のテーマ（未作成）
 
 // 設定値
 // ボタン配置範囲

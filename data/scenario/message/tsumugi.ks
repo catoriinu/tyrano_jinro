@@ -18,21 +18,21 @@
   [endif]
 [return]
 
-; COFortuneTellingResult_{result}
+; COFortuneTelling_{result}
 ; シーン：前日の占い結果をCOするときのセリフ
-; NOTE：事前に[j_fortuneTellingHistoryObjectThatDay]の実行が必要。
+; NOTE:事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 ; TODO：
 ; 役職COと結果COで差分を付けられるようにする。（「自分が占い師だ」「昨日の占い結果は～」）
 ; 役職COのとき、自分の前にCO済みの占い師がいる場合「自分こそが占い師だ」と主張することができるようにする
 ; 結果COのとき、自分の前のCO結果によって反応を変えられるようにする（同じ相手を占った、違う相手を占った）
-*COFortuneTellingResult_true
-  [eval exp="tf.characterIdToCall = tf.fortuneTellingHistoryObject.characterId"]
+*COFortuneTelling_true
+  [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
   あーしの占いだと、[call target="changeIdToCallName"]は人狼だったんだよねー。[r]
   隠し通せると思った？残念だったね。[p]
 [return]
 
-*COFortuneTellingResult_false
-  [eval exp="tf.characterIdToCall = tf.fortuneTellingHistoryObject.characterId"]
+*COFortuneTelling_false
+  [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
   あーしの占いだと、[call target="changeIdToCallName"]は人狼じゃなかったよ。[r]
   友達になれるかなあ？[p]
 [return]
