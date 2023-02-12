@@ -198,8 +198,6 @@
 ; @param characterId 噛み対象のID。入っているなら、実行者はプレイヤーである。入っていないなら実行者はNPCのため、メソッド内部で対象を決める。
 [macro name="j_biting"]
   [iscript]
-   console.log("噛みマクロ");
-  console.log(mp);
     let todayResult = {};
     ; ターゲットが決まっている（＝実行者がプレイヤー）なら
     if (mp.characterId) {
@@ -407,11 +405,11 @@
 
 
 ; PCがCOしたいかを確認する必要があるかを判定し、tf.isNeedToAskPCWantToCOに結果を入れる
-[macro name=j_setIsNeedToAskPCWantToCO]
+[macro name="j_setIsNeedToAskPCWantToCO"]
   [iscript]
     tf.isNeedToAskPCWantToCO = false;
-    ; 以下の条件を満たした場合、PCがCOしたいかを確認する必要があると判定する
-    ; 生存している && COできる役職か && 今日は未COか
+    // 以下の条件を満たした場合、PCがCOしたいかを確認する必要があると判定する
+    // 生存している && COできる役職か && 今日は未COか
     if (f.characterObjects[f.playerCharacterId].isAlive && f.characterObjects[f.playerCharacterId].role.allowCO && !f.characterObjects[f.playerCharacterId].isDoneTodaysCO) {
       tf.isNeedToAskPCWantToCO = true;
     }
@@ -461,7 +459,7 @@
 ; 占い師COすることができる役職・CO状態かを判定し、tf.canCOFortuneTellerStatusに結果を入れる。内訳はコード内のコメント参照
 ; 定数の並び順が昇順ではないのは、「if文は肯定形にする」と「未COに+1したらCO済みとする」の2つを優先したため。
 ; @param characterId 判定対象のキャラクターID。必須。
-[macro name=j_setCanCOFortuneTellerStatus]
+[macro name="j_setCanCOFortuneTellerStatus"]
   [iscript]
 
     ; 0: 占い師CO不可の役職、またはCO状態

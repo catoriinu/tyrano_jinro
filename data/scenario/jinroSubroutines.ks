@@ -48,7 +48,7 @@
       f.buttonObjects[tf.cnt].addClasses // ボタンに追加したいクラスがあれば追加する（例：選択中）
     ).join(); // ここまで配列に格納した各要素をカンマ区切りの文字列として結合する
   [endscript]
-  [glink color="btn_voivo" size="26" width="300" x="&tf.x" y="&tf.y" name="&tf.glink_name" text="&f.buttonObjects[tf.cnt].text" target="*glinkFromButtonObjects_end"]
+  [glink color="&f.buttonObjects[tf.cnt].color" size="26" width="300" x="&tf.x" y="&tf.y" name="&tf.glink_name" text="&f.buttonObjects[tf.cnt].text" target="*glinkFromButtonObjects_end"]
   
   ; TODO なぜか勢い余ってtf.cntが終了条件以上に超えてしまうことがあるので、>=での判定にしている。それでもたまに1週多くループするバグが起きるので修正する。
   [jump target="*loopend" cond="tf.cnt >= (tf.buttonCount - 1)"]

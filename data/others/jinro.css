@@ -51,6 +51,16 @@
     background-color: #80da87;
 }
 
+.btn_voivo_black {
+    background-color: #242424;
+    color: #f7f7f7;
+}
+
+.btn_voivo_white {
+    background-color: #f7f7f7;
+    color: #242424;
+}
+
 /* 開票画面用CSS */
 .vote_container {
     display: flex;

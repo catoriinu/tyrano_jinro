@@ -19,6 +19,8 @@
 ; 昼時間に騙り占い師COするために呼び出すときは、*fakeFortuneTellingCOMultipleDaysForPCから呼び出すこと
 ; （上記サブルーチン内で、tf.fortuneTelledDayの格納を行っておく必要がある）
 *fakeFortuneTellingForPC
+  ; TODO アクションボタンと同じように、第1階層はキャラクター、第2階層は騙り結果、という構成にできそう
+  ; 入力し直しもできるようになるのでなるべくそうしたい
 
   ; 夜時間の呼び出しであれば、占い指定日に当日を格納する
   [if exp="!f.isDaytime"]
@@ -31,21 +33,37 @@
   [eval exp="tf.doSlideInCharacter = true"]
   ; 騙り占い候補からボタンを生成。ボタン入力を受け付ける
   [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
+  ; ここでボタンを押した対象のキャラクターのIDを別の変数に移しておかないと、この後の騙り結果入力のボタンで上書きされてしまう
+  [eval exp="f.targetCharacterId = f.selectedButtonId"]
 
   ; 騙り占い先のキャラクター名をメッセージに表示する
   [m_displayFakeFortuneTellingTarget]
 
   ; 騙り結果入力を受け付ける
-  [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (0 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
-  [glink color="black" size="28" x="360" width="500" y="&tf.y" text="●（人狼だった）とCOする" target="*doFakeFortuneTelling" exp="tf.declarationResult = true"]
-  [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (1 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
-  [glink color="white" size="28" x="360" width="500" y="&tf.y" text="○（人狼ではなかった）とCOする" target="*doFakeFortuneTelling" exp="tf.declarationResult = false"]
-  [s]
+  [iscript]
+    f.buttonObjects = [];
+    f.buttonObjects.push(new Button(
+      'black',
+      '人狼だった',
+      'center',
+      CLASS_GLINK_DEFAULT,
+      [CLASS_GLINK_BLACK]
+    ));
+    f.buttonObjects.push(new Button(
+      'white',
+      '人狼ではなかった',
+      'center',
+      CLASS_GLINK_DEFAULT,
+      [CLASS_GLINK_WHITE]
+    ));
+  [endscript]
+  [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
+  ; ボタン入力をboolean型に変換する
+  [eval exp="f.declarationResult = (f.selectedButtonId == 'black') ? true : false"]
 
   ; 騙り占い実行。占い結果をf.actionObjectに格納する
-  *doFakeFortuneTelling
-  [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" day="&tf.fortuneTelledDay" characterId="&f.selectedButtonId" result="&tf.declarationResult"]
-  [m_displayFakeFortuneTellingResult result="&tf.declarationResult"]
+  [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" day="&tf.fortuneTelledDay" characterId="&f.targetCharacterId" result="&f.declarationResult"]
+  [m_displayFakeFortuneTellingResult result="&f.declarationResult"]
 
 [return]
 

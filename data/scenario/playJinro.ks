@@ -96,22 +96,38 @@
 
 *COPhasePlayer
 
+; PCがCOしたいかを確認する必要があるか。必要がなければジャンプ
 [j_setIsNeedToAskPCWantToCO]
-[if exp="tf.isNeedToAskPCWantToCO"]
+[jump target="*COPhaseNPC" cond="!tf.isNeedToAskPCWantToCO"]
 
-  ; 占い師COすることができる役職・CO状態であれば
+  ; 占い師COすることができる役職・CO状態であれば。COできなければジャンプ
   [j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
-  [if exp="tf.canCOFortuneTellerStatus > 0"]
+  [jump target="*noCO" cond="tf.canCOFortuneTellerStatus == 0"]
 
     [m_askFortuneTellerCO canCOFortuneTellerStatus="&tf.canCOFortuneTellerStatus"]
 
     ; COするしないボタン表示
-    [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (0 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
-    [glink color="blue" storage="playJinro.ks" size="28" x="360" width="500" y="&tf.y" text="占いCOする" target="*FortuneTellerCO"]
-    [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (1 + 1)) / (2 + 1) + BUTTON_RANGE_Y_UPPER"]
-    [glink color="blue" storage="playJinro.ks" size="28" x="360" width="500" y="&tf.y" text="何もしない" target="*noCO"]
-    [s]
+    [iscript]
+      f.buttonObjects = [];
+      f.buttonObjects.push(new Button(
+        'FortuneTellerCO',
+        '占いCOする',
+        'center',
+        CLASS_GLINK_DEFAULT
+      ));
+      f.buttonObjects.push(new Button(
+        'noCO',
+        '何もしない',
+        'center',
+        CLASS_GLINK_DEFAULT
+      ));
+    [endscript]
+    [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 
+    ; 「何もしない」ならジャンプする
+    [jump target="*noCO" cond="f.selectedButtonId == 'noCO'"]
+    ; 「占いCOする」ならジャンプ……しなくてもすぐ下なので何もしない。COできる役職が増えたら増やす
+    ; [jump target="*FortuneTellerCO" cond="f.selectedButtonId == 'FortuneTellerCO'"]
     *FortuneTellerCO
 
     ; 占い未COかつ、占い騙りをすると決めた場合、騙り役職オブジェクトを取得する
@@ -137,23 +153,14 @@
       [eval exp="tf.tmpZeroRoleIds = [ROLE_ID_VILLAGER]"]
       [j_updateCommonPerspective characterId="&f.characterObjects[f.playerCharacterId].characterId" zeroRoleIds="&tf.tmpZeroRoleIds"]
     [endif]
-
     [jump target="*COPhaseNPC"]
-  [endif]
 
   ; COなし
   *noCO
 
-  [if exp="f.notExistCOCandidateNPC"]
-    ; COフェイズ終了(NPCにCO候補者がいないため、これ以上COする者はいないとする)
-    [jump target="*discussionPhase"]
-  [else]
-    ; COフェイズ継続(まだNPCにCO候補者がいるので、NPCのCOを確認する)
-    [jump target="*COPhaseNPC"]
-  [endif]
-
-[endif]
-
+  ; f.notExistCOCandidateNPCがtrueなら、COフェイズ終了(NPCにCO候補者がいないため、これ以上COする者はいないとする)
+  [jump target="*discussionPhase" cond="f.notExistCOCandidateNPC"]
+  ; f.notExistCOCandidateNPCがfalseなら、COフェイズ継続(まだNPCにCO候補者がいるので、NPCのCOを確認する)
 
 *COPhaseNPC
 ; NPC（占い師、人狼、狂人）による占いCOフェイズ
