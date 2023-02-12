@@ -497,7 +497,9 @@ NPCが行動しています……[p]
 
 [m_changeFrameWithId]
 #
-おわり。[r]
+おわり。[p]
+
+[j_displayRoles]
 ;タイトルに戻ります。[p]
 ; [j_saveJson]
 

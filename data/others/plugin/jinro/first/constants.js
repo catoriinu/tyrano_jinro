@@ -52,7 +52,7 @@ const ROLE_ID_TO_FACTION = {
 }
 
 // アクション実行上限回数
-const MAX_DO_ACTION_COUNT = 2;
+const MAX_DO_ACTION_COUNT = 3;
 
 // 死因
 const DEATH_BY_EXECUTION = 'execution'; // 処刑。投票による吊り・追放
