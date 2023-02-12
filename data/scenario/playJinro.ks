@@ -38,6 +38,7 @@
 人狼ゲームの幕開けです……！[p]
 
 *day0_nightPhase
+[clearstack]
 
 ; 夜時間開始時に、夜時間中に参照するためのcharacterObjectを複製する。占い、噛みなどの記録は本物のf.characterObjectsに更新していく。
 ; 初回はオブジェクト型に初期化する
@@ -68,6 +69,7 @@
 [j_nightPhaseFortuneTellingForNPC]
 
 *startDaytime
+[clearstack]
 #
 [eval exp="timePasses()"]
 [bg storage="living_day_nc238325.jpg" time="500"]
@@ -233,6 +235,7 @@
 
 
 *discussionPhase
+[clearstack]
 [m_changeFrameWithId]
 #
 ～議論フェイズ～[p]
@@ -254,7 +257,7 @@
 ; アクション実行
 [j_setDoActionObject]
 [if exp="Object.keys(f.doActionObject).length > 0"]
-  [j_doAction actionObject="&f.doActionObject""]
+  [j_doAction actionObject="&f.doActionObject"]
 [endif]
 
 ; アクション実行上限回数未満の場合は議論フェイズを繰り返す
@@ -262,6 +265,7 @@
 
 
 *votePhase
+[clearstack]
 [m_changeFrameWithId]
 #
 ～投票フェイズ～[p]
@@ -346,6 +350,7 @@
 
 ; 夜時間開始
 *nightPhase
+[clearstack]
 
 [eval exp="timePasses()"]
 [bg storage="living_night_close_nc238328.jpg" time="300"]
@@ -357,100 +362,86 @@
 
 
 ; プレイヤーの行動（夜時間オブジェクトを参照）
-[if exp="f.characterObjectsHistory[f.day][f.playerCharacterId].isAlive"]
+; MEMO: *nightPhaseNPCまでの区間を[if]で囲っていると、「人狼で、初日占いCOしており、直前で騙り占いをしている」場合に「人狼の場合のみ」ルートを通らなくなった。おそらく[if]の使いすぎによるスタック溢れでおかしくなった感じ。
+; ここを[jump]に変えたら解決した。今後ももし起きたら、[if]を[jump]に置換可能か検討すること
+; なお、この問題は[clearstack]では解決しなかったが、おまじないとして各フェイズの最初に追加しておく。
+[jump target="*nightPhaseNPC" cond="!f.characterObjectsHistory[f.day][f.playerCharacterId].isAlive"]
 
 [m_changeFrameWithId]
 #
 プレイヤーの行動です。[p]
 
-  ; 村人
-  [if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_VILLAGER"]
-    村人なので行動できません。[p]
-  [endif]
-
-  ; 占い師、または騙り占い師CO済みであれば
-  [j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
-  [if exp="tf.canCOFortuneTellerStatus == 1 || tf.canCOFortuneTellerStatus == 2 || tf.canCOFortuneTellerStatus == 4"]
-
-    ; 騙り占い師の場合
-    [if exp="tf.canCOFortuneTellerStatus == 4"]
-      [m_askFortuneTellingTarget isFortuneTeller="false"]
-
-      ; 占いカットイン発生
-      [j_cutin1]
-
-      ; 騙り占い実行
-      [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingForPC"]
-      [iscript]
-        console.log('騙り占い実行完了');
-      [endscript]
-
-    [else]
-      ; 真占い師の場合
-      [m_askFortuneTellingTarget isFortuneTeller="true"]
-
-      ; 占いカットイン発生
-      [j_cutin1]
-
-      ; 占い実行
-      [call storage="./fortuneTellingForPC.ks" target="*fortuneTellingForPC"]
-
-      ; 占い結果に合わせてセリフ出力
-      [m_announcedFortuneTellingResult]
-
-    [endif]
-      [iscript]
-        console.log('if完了');
-      [endscript]
-  [endif]
-
-[iscript]
-// TODO 人狼で、初日占いCOしており、直前で騙り占いをしていると、なぜかここにすら飛んでこず、噛みをすることもできない。
-console.log('人狼の場合のみ');
-console.log(f.characterObjects[f.playerCharacterId].role.roleId);
-[endscript]
-
-  ; 人狼の場合のみ
-  [if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_WEREWOLF"]
-[iscript]
-console.log(f.isBiteEnd);
-[endscript]
-
-
-    [if exp="f.isBiteEnd != true"]
-
-      [m_chooseWhoToBite characterId="&f.playerCharacterId"]
-
-      [iscript]
-        ; 夜時間開始時の生存者である、かつ人狼以外であるキャラクターID配列を選択肢候補変数に格納する。
-        tf.candidateCharacterIds = getValuesFromObjectArray(
-          getIsWerewolvesObjects(
-            getSurvivorObjects(f.characterObjectsHistory[f.day]),
-            false
-          ),
-          'characterId'
-        );
-      [endscript]
-
-      ; 選択肢ボタン表示と入力受付
-      [j_setCharacterToButtonObjects characterIds="&tf.candidateCharacterIds"]
-      [eval exp="tf.doSlideInCharacter = true"]
-      [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
-
-      ; 噛み実行
-      [j_biting biterId="&f.playerCharacterId" characterId="&f.selectedButtonId"]
-      [m_exitCharacter characterId="&f.selectedButtonId"]
-
-      ; キャラ画像解放
-      [freeimage layer="1" time="400" wait="false"]
-
-      ; 噛み実行済みフラグを立てる
-      [eval exp="f.isBiteEnd = true"]
-    [endif]
-  [endif]
-
+; 村人
+[if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_VILLAGER"]
+  村人なので行動できません。[p]
 [endif]
 
+; 占い師、または騙り占い師CO済みであれば
+[j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
+[if exp="tf.canCOFortuneTellerStatus == 1 || tf.canCOFortuneTellerStatus == 2 || tf.canCOFortuneTellerStatus == 4"]
+
+  ; 騙り占い師の場合
+  [if exp="tf.canCOFortuneTellerStatus == 4"]
+    [m_askFortuneTellingTarget isFortuneTeller="false"]
+
+    ; 占いカットイン発生
+    [j_cutin1]
+
+    ; 騙り占い実行
+    [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingForPC"]
+
+  [else]
+    ; 真占い師の場合
+    [m_askFortuneTellingTarget isFortuneTeller="true"]
+
+    ; 占いカットイン発生
+    [j_cutin1]
+
+    ; 占い実行
+    [call storage="./fortuneTellingForPC.ks" target="*fortuneTellingForPC"]
+
+    ; 占い結果に合わせてセリフ出力
+    [m_announcedFortuneTellingResult]
+
+  [endif]
+[endif]
+
+; 人狼の場合のみ
+[if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_WEREWOLF"]
+
+  [if exp="f.isBiteEnd != true"]
+
+    [m_chooseWhoToBite characterId="&f.playerCharacterId"]
+
+    [iscript]
+      ; 夜時間開始時の生存者である、かつ人狼以外であるキャラクターID配列を選択肢候補変数に格納する。
+      tf.candidateCharacterIds = getValuesFromObjectArray(
+        getIsWerewolvesObjects(
+          getSurvivorObjects(f.characterObjectsHistory[f.day]),
+          false
+        ),
+        'characterId'
+      );
+    [endscript]
+
+    ; 選択肢ボタン表示と入力受付
+    [j_setCharacterToButtonObjects characterIds="&tf.candidateCharacterIds"]
+    [eval exp="tf.doSlideInCharacter = true"]
+    [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
+
+    ; 噛み実行
+    [j_biting biterId="&f.playerCharacterId" characterId="&f.selectedButtonId"]
+    [m_exitCharacter characterId="&f.selectedButtonId"]
+
+    ; キャラ画像解放
+    [freeimage layer="1" time="400" wait="false"]
+
+    ; 噛み実行済みフラグを立てる
+    [eval exp="f.isBiteEnd = true"]
+  [endif]
+[endif]
+
+*nightPhaseNPC
 [m_changeFrameWithId]
 #
 NPCが行動しています……[p]

@@ -46,9 +46,7 @@
   *doFakeFortuneTelling
   [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" day="&tf.fortuneTelledDay" characterId="&f.selectedButtonId" result="&tf.declarationResult"]
   [m_displayFakeFortuneTellingResult result="&tf.declarationResult"]
-[iscript]
-console.log('PCの騙り占いサブルーチン終了');
-[endscript]
+
 [return]
 
 
