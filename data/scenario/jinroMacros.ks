@@ -492,7 +492,6 @@
 
 
 ; ボタンオブジェクトf.buttonObjectsに、アクションボタン用オブジェクトを詰める
-; メモ：tf.candidateCharacterObjects, tf.candidateObjectsからの代替
 ; @param disableActionIdList f.actionButtonList定数に定義されている中で、ボタン表示したくないアクションIDのリスト（未使用）
 [macro name="j_setActionToButtonObjects"]
   [iscript]
@@ -522,7 +521,6 @@
 
 
 ; ボタンオブジェクトf.buttonObjectsに、キャラクターを詰める
-; メモ：tf.candidateCharacterObjects, tf.candidateObjectsからの代替
 ; @param characterIds キャラクターID配列。省略した場合は全キャラクターが対象。
 ; @param needPC PCを含めるか。省略した場合含めない。※"false"を渡すとtrue判定になるので注意
 ; @param onlySurvivor 生存しているキャラのみか。省略した場合全員。（needsPC=trueでない限りPCは含めない）※"false"を渡すとtrue判定になるので注意
