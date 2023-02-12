@@ -81,7 +81,7 @@
 ; @param targetCharacterId 返答相手（＝元々のアクション実行者）のキャラクターID。（TODO）
 ; @param actionId 実行されたアクションID。必須。
 [macro name="m_doAction_reaction"]
-  ; TODO like:信頼度がとても高いとき dislike:信頼度がとても低いとき newtral:それ以外 の三段階のリアクションができると嬉しい
+  ; TODO love:信頼度がとても高いとき hate:信頼度がとても低いとき newtral:それ以外 の三段階のリアクションができると嬉しい
   ;　(「とても」としているのは、よほど極端な状況でない限り、人狼で露骨な反応はしないはずのため。ただ、顔に出やすい性格のキャラは条件をゆるくすると面白いかも）
   ; （上記の判定を信頼度でやるべきか、仲間度でやるべきかは要考慮）
   [m_changeFrameWithId characterId="&mp.characterId"]

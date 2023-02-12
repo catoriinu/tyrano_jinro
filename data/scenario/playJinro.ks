@@ -286,27 +286,21 @@
 [endif]
 投票するキャラクターを選択してください。[p]
 
-[iscript]
-  ; 生存者である、かつプレイヤー以外のキャラクターオブジェクトを選択肢候補変数に格納する。
-  tf.candidateCharacterObjects = getCharacterObjectsFromCharacterIds(
-    getSurvivorObjects(f.characterObjects),
-    [f.playerCharacterId],
-    false
-  );
-
-  ; TODO ……のが正しいが、テスト用に生存者全員を投票対象にしておく。
-  tf.candidateCharacterObjects = getSurvivorObjects(f.characterObjects);
-[endscript]
+; 生存者である、かつプレイヤー以外のキャラクターIDをボタンオブジェクトに格納する。
+; [j_setCharacterToButtonObjects onlySurvivor="true"]
+; TODO ……のが正しいが、テスト用に生存者全員を投票対象にしておく。
+[j_setCharacterToButtonObjects onlySurvivor="true" needPC="true"]
 
 ; 選択肢ボタン表示と入力受付
-[call storage="./jinroSubroutines.ks" target="*glinkFromCandidateCharacterObjects"]
+[eval exp="tf.doSlideInCharacter = true"]
+[call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 
 ; キャラ画像解放
-[freeimage layer="1" time=400 wait="false"]
+[freeimage layer="1" time="400" wait="false"]
 
 ; ボタンで選択した投票先キャラクターIDを、プレイヤーの投票履歴に入れる
 [iscript]
-  f.characterObjects[f.playerCharacterId].voteHistory[f.day] = pushElement(f.characterObjects[f.playerCharacterId].voteHistory[f.day], f.targetCharacterId);
+  f.characterObjects[f.playerCharacterId].voteHistory[f.day] = pushElement(f.characterObjects[f.playerCharacterId].voteHistory[f.day], f.selectedButtonId);
 [endscript]
 
 *skipPlayerVote
@@ -323,7 +317,7 @@
     ; 再投票上限回数未満であれば再投票する
     [if exp="f.revoteCount < MAX_REVOTE_COUNT"]
       再投票です。[r]
-      あと[emb exp="MAX_REVOTE_COUNT-f.revoteCount"]回で決着しない場合は引き分けです。[p]
+      あと[emb exp="MAX_REVOTE_COUNT - f.revoteCount"]回で決着しない場合は引き分けです。[p]
       [jump target="*votePhase"]
     [else]
       ; 再投票上限を越えた場合は引き分け処理
@@ -331,14 +325,12 @@
       [eval exp="tf.winnerCamp = CAMP_DRAW_BY_REVOTE"]
       [jump target="*gameOver"]
     [endif]
-  [else]
-    [eval exp="f.targetCharacterId = f.electedIdList[0]"]
   [endif]
 [endif]
 
 ; 処刑セリフと処刑処理（TODO 今はこの順番だが、処刑ごとの演出がどうなるかによっては逆にしてもいい）
-[m_executed characterId="&f.targetCharacterId"]
-[j_execution characterId="&f.targetCharacterId"]
+[m_executed characterId="&f.electedIdList[0]"]
+[j_execution characterId="&f.electedIdList[0]"]
 
 ; 処刑後の反応（TODO 誰が発言するかを決定するマクロ等が必要）
 [if exp="f.characterObjects.ai.isAlive"]
@@ -389,6 +381,9 @@
 
       ; 騙り占い実行
       [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingForPC"]
+      [iscript]
+        console.log('騙り占い実行完了');
+      [endscript]
 
     [else]
       ; 真占い師の場合
@@ -404,33 +399,50 @@
       [m_announcedFortuneTellingResult]
 
     [endif]
-
+      [iscript]
+        console.log('if完了');
+      [endscript]
   [endif]
+
+[iscript]
+// TODO 人狼で、初日占いCOしており、直前で騙り占いをしていると、なぜかここにすら飛んでこず、噛みをすることもできない。
+console.log('人狼の場合のみ');
+console.log(f.characterObjects[f.playerCharacterId].role.roleId);
+[endscript]
 
   ; 人狼の場合のみ
   [if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_WEREWOLF"]
+[iscript]
+console.log(f.isBiteEnd);
+[endscript]
+
 
     [if exp="f.isBiteEnd != true"]
 
       [m_chooseWhoToBite characterId="&f.playerCharacterId"]
 
       [iscript]
-        ; 夜時間開始時の生存者である、かつ人狼以外のキャラクターオブジェクトを選択肢候補変数に格納する。
-        tf.candidateCharacterObjects = getIsWerewolvesObjects(
-          getSurvivorObjects(f.characterObjectsHistory[f.day]),
-          false
+        ; 夜時間開始時の生存者である、かつ人狼以外であるキャラクターID配列を選択肢候補変数に格納する。
+        tf.candidateCharacterIds = getValuesFromObjectArray(
+          getIsWerewolvesObjects(
+            getSurvivorObjects(f.characterObjectsHistory[f.day]),
+            false
+          ),
+          'characterId'
         );
       [endscript]
 
       ; 選択肢ボタン表示と入力受付
-      [call storage="./jinroSubroutines.ks" target="*glinkFromCandidateCharacterObjects"]
+      [j_setCharacterToButtonObjects characterIds="&tf.candidateCharacterIds"]
+      [eval exp="tf.doSlideInCharacter = true"]
+      [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 
       ; 噛み実行
-      [j_biting biterId="&f.playerCharacterId" characterId="&f.targetCharacterId"]
-      [m_exitCharacter characterId="&f.targetCharacterId"]
+      [j_biting biterId="&f.playerCharacterId" characterId="&f.selectedButtonId"]
+      [m_exitCharacter characterId="&f.selectedButtonId"]
 
       ; キャラ画像解放
-      [freeimage layer="1" time=400 wait="false"]
+      [freeimage layer="1" time="400" wait="false"]
 
       ; 噛み実行済みフラグを立てる
       [eval exp="f.isBiteEnd = true"]

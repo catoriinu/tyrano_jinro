@@ -57,8 +57,6 @@
 ; 第1階層（左側。行動を選択する）のボタン表示サブルーチン
 *displayFirstLayerButtons
 [j_setActionToButtonObjects]
-
-[eval exp="tf.side = 'left'"]
 [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 
 ; ボタン押下後の処理
@@ -69,8 +67,7 @@
 
 ; 第2階層（右側。対象のキャラクターを選択する）のボタン表示サブルーチン
 *displaySecondLayerButtons
-[eval exp="tf.side = 'right'"]
-[j_setCharacterObjectsToButtonObjects onlySurvivor="true" side="&tf.side"]
+[j_setCharacterToButtonObjects onlySurvivor="true" side="right"]
 [call target="*secondLayerLoop"]
 [return]
 

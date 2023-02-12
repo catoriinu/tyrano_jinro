@@ -67,20 +67,25 @@ $('.center_button_window').css('height', tf.height);
 
 
 ; TODO ボタン数が6以上になる場合、6列目は左右ボタンにしてページめくりできるようにしたい
-; TODO 第2階層のボタン表示時、選択済みの第1階層のボタンを目立たせたい（glinkのボタン自体か文字色を変える）
 
 ; f.buttonObjectsに入っている要素をボタン化し、押したボタンのIDをf.selectedButtonIdに格納するサブルーチン
 ; 事前準備
 ; f.buttonObjects = [{id:ボタンのID, text:ボタンに表示するテキスト, side:ボタンを表示する位置（未使用）, addClasses:[ボタンに追加したいクラス名配列,...]},...]（必須。サブルーチン内で初期化するので毎回指定すること）
-; tf.side = 'left','right'のいずれか（省略した場合center。サブルーチン内で初期化するので必要なら毎回指定すること）TODO buttonオブジェクトのsideを使えるようにしたい。
+; tf.doSlideInCharacter = trueならキャラ画像がスライドインしてくる（必ずf.buttonObjects.idがキャラクターIDであること）
+; （省略した場合false。サブルーチン内で初期化するので必要なら毎回指定すること）
 ; tf.noNeedStop = true（boolean型。省略した場合サブルーチン内の[s]タグで止まる。サブルーチン内で初期化するので必要なら毎回指定すること）
 *glinkFromButtonObjects
+
+; キャラ画像のスライドインを行うか
+[eval exp="tf.doSlideInCharacter = ('doSlideInCharacter' in tf) ? tf.doSlideInCharacter : false"]
+
 ; 選択肢ボタン表示ループ
 [eval exp="tf.buttonCount = f.buttonObjects.length"]
+; 背景を表示するサイドは、1つ目のボタンのsideを基準にする
+[eval exp="tf.side = f.buttonObjects[0].side"]
 
 ; ボタンの背景を表示（まずは位置だけ）
 [eval exp="tf.top = BUTTON_RANGE_Y_LOWER / (tf.buttonCount + 1) + BUTTON_RANGE_Y_UPPER - BUTTON_MARGIN_HEIGHT"]
-
 ; ボタンを表示するサイドによって、背景とボタンを表示する位置およびそれぞれのクラス名を入れ分ける
 [if exp="tf.side == 'left'"]
   [eval exp="tf.class = 'left_button_window'"]
@@ -106,7 +111,7 @@ $('.center_button_window').css('height', tf.height);
     // glinkのname（＝ボタンのclass要素）に設定するクラス名を格納する
     tf.glink_name = [
       'buttonhover', // ボタンにカーソルが乗ったときの処理を設定する用
-      tf.side + '_buttonclass_' + f.buttonObjects[tf.cnt].id // 押下したボタンの判定用
+      f.buttonObjects[tf.cnt].side + '_buttonclass_' + f.buttonObjects[tf.cnt].id // 押下したボタンの判定用
     ].concat(
       f.buttonObjects[tf.cnt].addClasses // ボタンに追加したいクラスがあれば追加する（例：選択中）
     ).join(); // ここまで配列に格納した各要素をカンマ区切りの文字列として結合する
@@ -120,23 +125,36 @@ $('.center_button_window').css('height', tf.height);
 *loopend
 
 [iscript]
-  ; ボタンにカーソルが乗ったときの処理
+  // ボタンにカーソルが乗ったときの処理
   $(".buttonhover").hover(
     function(e) {
-      ; ホバーしたボタンのclass属性の中から、ボタン生成時に付与しておいたId部分を抽出する
+      // ホバーしたボタンのclass属性の中から、ボタン生成時に付与しておいたId部分を抽出する
       const classList = $(this).attr("class").split(" ");
 
-      ; 最後にホバーしていたボタン=押下したボタンになる。どのサイドのボタンかと、押下したボタンのIDを格納しておく
+      // 最後にホバーしていたボタン=押下したボタンになる。どのサイドのボタンかと、押下したボタンのIDを格納しておく
       const classNameReg = new RegExp('^(.*)_buttonclass_(.*)$');
       const regResult = classList.find(className => className.match(classNameReg)).match(classNameReg);
       f.selectedSide = regResult[1];
       f.selectedButtonId = regResult[2];
       
-      ; glinkのenterse属性だと細かい設定ができないため独自に設定（特にbufがデフォルトだと他で鳴っている効果音を打ち消してしまう）
+      if (tf.doSlideInCharacter) {
+        // 表示中のキャラを画面外に出してから、ホバーされたキャラを登場させる
+        changeCharacter(f.selectedButtonId, 'normal', f.defaultPosition[f.selectedButtonId].side);
+      }
+
+      // glinkのenterse属性だと細かい設定ができないため独自に設定（特にbufがデフォルトだと他で鳴っている効果音を打ち消してしまう）
       TYRANO.kag.ftag.startTag("playse",{storage:"botan_b34.ogg",volume:60,buf:1});
     },
     function(e) {
-      ; 今のところホバーを外したときの処理は不要
+      if (tf.doSlideInCharacter) {
+        if (typeof f.rightSideCharacterId != 'undefined') {
+          exitCharacter(
+            f.rightSideCharacterId,
+            f.defaultPosition[f.rightSideCharacterId].side,
+            f.defaultPosition[f.rightSideCharacterId].left
+          );
+        }
+      }
     }
   );
 
@@ -152,12 +170,13 @@ $('.center_button_window').css('height', tf.height);
 [endif]
 
 *glinkFromButtonObjects_end
-[eval exp="console.log('button clicked id=' + f.selecterButtonId)"]
+[eval exp="console.log('button clicked id=' + f.selectedButtonId)"]
 
 ; ボタン用変数の初期化
 [eval exp="f.buttonObjects = []"]
 [eval exp="tf.side = ''"]
 [eval exp="tf.noNeedStop = false"]
+[eval exp="tf.doSlideInCharacter = false"]
 [return]
 
 

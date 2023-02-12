@@ -1,14 +1,15 @@
 ; PCの占いサブルーチン
 *fortuneTellingForPC
 
-  ; 占い候補のキャラオブジェクト配列を取得
-  [eval exp="tf.candidateCharacterObjects = f.characterObjects[f.playerCharacterId].role.getCandidateCharacterObjects(f.playerCharacterId)"]
-
+  ; 占い候補のキャラクターID配列を取得、ボタンオブジェクトに格納
+  [eval exp="tf.candidateCharacterIds = f.characterObjects[f.playerCharacterId].role.getCandidateCharacterIds(f.playerCharacterId)"]
+  [j_setCharacterToButtonObjects characterIds="&tf.candidateCharacterIds"]
+  [eval exp="tf.doSlideInCharacter = true"]
   ; 占い候補からボタンを生成。ボタン入力を受け付ける
-  [call storage="./jinroSubroutines.ks" target="*glinkFromCandidateCharacterObjects"]
+  [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 
   ; 占い実行。占い結果をf.actionObjectに格納する
-  [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" characterId="&f.targetCharacterId"]
+  [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" characterId="&f.selectedButtonId"]
 
 [return]
 
@@ -24,11 +25,12 @@
     [eval exp="tf.fortuneTelledDay = f.day"]
   [endif]
 
-  ; 騙り占い候補のキャラオブジェクト配列を取得。指定された日の夜時間開始時の生存者を参照する。
-  [eval exp="tf.candidateCharacterObjects = f.characterObjects[f.playerCharacterId].fakeRole.getCandidateCharacterObjects(f.playerCharacterId, tf.fortuneTelledDay)"]
-
+  ; 騙り占い候補のキャラクターID配列を取得。指定された日の夜時間開始時の生存者を参照する。
+  [eval exp="tf.candidateCharacterIds = f.characterObjects[f.playerCharacterId].fakeRole.getCandidateCharacterIds(f.playerCharacterId, tf.fortuneTelledDay)"]
+  [j_setCharacterToButtonObjects characterIds="&tf.candidateCharacterIds"]
+  [eval exp="tf.doSlideInCharacter = true"]
   ; 騙り占い候補からボタンを生成。ボタン入力を受け付ける
-  [call storage="./jinroSubroutines.ks" target="*glinkFromCandidateCharacterObjects"]
+  [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 
   ; 騙り占い先のキャラクター名をメッセージに表示する
   [m_displayFakeFortuneTellingTarget]
@@ -42,9 +44,11 @@
 
   ; 騙り占い実行。占い結果をf.actionObjectに格納する
   *doFakeFortuneTelling
-  [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" day="&tf.fortuneTelledDay" characterId="&f.targetCharacterId" result="&tf.declarationResult"]
+  [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" day="&tf.fortuneTelledDay" characterId="&f.selectedButtonId" result="&tf.declarationResult"]
   [m_displayFakeFortuneTellingResult result="&tf.declarationResult"]
-
+[iscript]
+console.log('PCの騙り占いサブルーチン終了');
+[endscript]
 [return]
 
 

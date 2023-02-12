@@ -198,6 +198,8 @@
 ; @param characterId 噛み対象のID。入っているなら、実行者はプレイヤーである。入っていないなら実行者はNPCのため、メソッド内部で対象を決める。
 [macro name="j_biting"]
   [iscript]
+   console.log("噛みマクロ");
+  console.log(mp);
     let todayResult = {};
     ; ターゲットが決まっている（＝実行者がプレイヤー）なら
     if (mp.characterId) {
@@ -519,39 +521,40 @@
 [endmacro]
 
 
-; ボタンオブジェクトf.buttonObjectsに、キャラクターオブジェクトを詰める
+; ボタンオブジェクトf.buttonObjectsに、キャラクターを詰める
 ; メモ：tf.candidateCharacterObjects, tf.candidateObjectsからの代替
-; @param characterObjects キャラクターオブジェクト配列。省略した場合はf.characterObjects。
+; @param characterIds キャラクターID配列。省略した場合は全キャラクターが対象。
 ; @param needPC PCを含めるか。省略した場合含めない。※"false"を渡すとtrue判定になるので注意
 ; @param onlySurvivor 生存しているキャラのみか。省略した場合全員。（needsPC=trueでない限りPCは含めない）※"false"を渡すとtrue判定になるので注意
 ; @param side ボタンの表示位置 'left','right'のいずれか（省略した場合center）
-[macro name="j_setCharacterObjectsToButtonObjects"]
+[macro name="j_setCharacterToButtonObjects"]
   [iscript]
-    // mp.characterObjectsを省略した場合、f.characterObjects
-    mp.characterObjects = ('characterObjects' in mp) ? mp.characterObjects : f.characterObjects;
-    // mp.sideを省略した場合、'center'（tf.side変数は他で使ってるので使わないこと）
+    // mp.characterIdsを省略した場合、全員分のキャラクターID配列
+    mp.characterIds = ('characterIds' in mp) ? mp.characterIds : Object.keys(f.characterObjects);
+    // mp.sideを省略した場合、'center'
     mp.side = ('side' in mp) ? mp.side : 'center';
     // ボタン格納用変数の初期化
     f.buttonObjects = [];
-
-    for (let characterId of Object.keys(mp.characterObjects)) {
+    for (let cId of Object.keys(f.characterObjects)) {
       // PCを含めない場合は、PCはスキップ
-      if (!mp.needPC && mp.characterObjects[characterId].isPlayer) continue;
+      if (!mp.needPC && f.characterObjects[cId].isPlayer) continue;
       // 生存しているキャラのみの場合は、死亡済みキャラはスキップ
-      if (mp.onlySurvivor && !mp.characterObjects[characterId].isAlive) continue;
       // MEMO 今のところ「死亡済みのキャラのみ返す」はできないので、必要になったら修正すること
+      if (mp.onlySurvivor && !f.characterObjects[cId].isAlive) continue;
+      // mp.characterIdsに含まれていないキャラはスキップ
+      if (!mp.characterIds.includes(cId)) continue;
 
       // 選択中のキャラクターIDかつ選択中のアクションである（つまり、実行予定だったアクションと同じ）ボタンは選択中の色に変える
       const addClasses = [];
-      if (characterId == f.originalSelectedCharacterId) {
+      if (cId == f.originalSelectedCharacterId) {
         if ('actionId' in f.pcActionObject && f.selectedActionId == f.pcActionObject.actionId) {
           addClasses.push(CLASS_GLINK_SELECTED);
         }
       }
       // ボタンオブジェクトを、sideとaddClassesを指定するために再生成してf.buttonObjectsに格納する
       f.buttonObjects.push(new Button(
-        characterId,
-        mp.characterObjects[characterId].name,
+        cId,
+        f.characterObjects[cId].name,
         mp.side,
         CLASS_GLINK_DEFAULT,
         addClasses
