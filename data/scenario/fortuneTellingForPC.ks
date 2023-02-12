@@ -1,6 +1,9 @@
 ; PCの占いサブルーチン
 *fortuneTellingForPC
 
+  ; ボタン非表示
+  [j_clearFixButton menu="true"]
+
   ; 占い候補のキャラクターID配列を取得、ボタンオブジェクトに格納
   [eval exp="tf.candidateCharacterIds = f.characterObjects[f.playerCharacterId].role.getCandidateCharacterIds(f.playerCharacterId)"]
   [j_setCharacterToButtonObjects characterIds="&tf.candidateCharacterIds"]
@@ -10,6 +13,9 @@
 
   ; 占い実行。占い結果をf.actionObjectに格納する
   [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" characterId="&f.selectedButtonId"]
+
+  ; ボタン再表示
+  [j_displayFixButton menu="true"]
 
 [return]
 
@@ -21,6 +27,9 @@
 *fakeFortuneTellingForPC
   ; TODO アクションボタンと同じように、第1階層はキャラクター、第2階層は騙り結果、という構成にできそう
   ; 入力し直しもできるようになるのでなるべくそうしたい
+
+  ; ボタン非表示
+  [j_clearFixButton menu="true"]
 
   ; 夜時間の呼び出しであれば、占い指定日に当日を格納する
   [if exp="!f.isDaytime"]
@@ -64,6 +73,9 @@
   ; 騙り占い実行。占い結果をf.actionObjectに格納する
   [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" day="&tf.fortuneTelledDay" characterId="&f.targetCharacterId" result="&f.declarationResult"]
   [m_displayFakeFortuneTellingResult result="&f.declarationResult"]
+
+  ; ボタン再表示
+  [j_displayFixButton menu="true"]
 
 [return]
 

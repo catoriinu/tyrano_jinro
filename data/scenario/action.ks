@@ -10,6 +10,8 @@
   // 第2階層のキャラクターボタンの色を変えるかの判定に使うのは、前回選択したキャラクターIDとする。f.selectedCharacterIdはアクションボタン処理中に書き換わってしまうため使えない。
   f.originalSelectedCharacterId = ('targetId' in f.pcActionObject) ? f.pcActionObject.targetId : '';
 [endscript]
+; ボタン非表示
+[j_clearFixButton action="true" menu="true"]
 
 *firstLayer
 ; 第1階層のボタンを表示
@@ -49,6 +51,8 @@
 [endscript]
 
 *end
+; ボタン再表示
+[j_displayFixButton action="true" menu="true"]
 [awakegame]
 [return]
 

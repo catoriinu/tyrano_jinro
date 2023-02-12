@@ -743,17 +743,17 @@
 
 ; 各キャラの投票先を集計し、投票結果画面として出力する
 [macro name="j_openVote"]
-  ; ボタン類とメッセージウィンドウを消去
-  [clearfix name="button_fix"]
+  ; 全ボタンとメッセージウィンドウを消去
+  [j_clearFixButton]
   [layopt layer="message0" visible="false"]
 
   [call storage="jinroSubroutines.ks" target="*openVote"]
   [p]
   ; 投票結果を表示していたレイヤーを解放
-  [freeimage layer="1" time="400" wait="false"]
+  [freeimage layer="1" time="400" wait="true"]
 
-  ; ボタン類とメッセージウィンドウを表示
-  [j_displayFixButton]
+  ; ステータス、メニューボタン再表示とメッセージウィンドウを表示
+  [j_displayFixButton status="true" menu="true"]
   [layopt layer="message0" visible="true"]
 [endmacro]
 
@@ -768,12 +768,83 @@
 [endmacro]
 
 
-; メニュー系のボタンを全て表示する
-; MEMO 消去するときは[clearfix name="button_fix"]
+; Fixレイヤーのボタンを表示する。表示中のボタンは指定されても再表示はしない。
+; ボタンの消去は[j_clearFixButton]で行うこと。
+; 以下のマクロ変数を全て省略すると、全てのボタンを表示する。
+; @param action アクションボタンを表示する（※"false"を渡すとtrue判定になるので注意）
+; @param menu メニューボタンを表示する（※"false"を渡すとtrue判定になるので注意）
+; @param status ステータスボタンを表示する（※"false"を渡すとtrue判定になるので注意）
 [macro name="j_displayFixButton"]
-  [button graphic="button/button_action_normal.png" storage="action.ks" target="*start" x="23" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_fix" enterimg="button/button_action_hover.png" clickimg="button/button_action_click.png"]
-  [button graphic="button/button_menu_normal.png" x="1143" y="23" width="114" height="103" fix="true" role="menu" name="button_fix" enterimg="button/button_menu_hover.png" clickimg="button/button_menu_click.png"]
-  [button graphic="button/button_status_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="1005" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_fix" enterimg="button/button_status_hover.png" clickimg="button/button_status_click.png"]
+
+  [iscript]
+    // 初回のみ、ボタンの表示ステータスを管理するオブジェクトを生成
+    if (!('displaingButton' in f)) {
+      f.displaingButton = {
+        action: false,
+        menu: false,
+        status: false
+      };
+    };
+    // 一つもマクロ変数に指定されていないなら、全て表示する。一つでも指定されているならマクロ変数通りとする。
+    if (!(('action' in mp) || ('menu' in mp) || ('status' in mp))) {
+      mp.action = true;
+      mp.menu = true;
+      mp.status = true;
+    }
+    console.log('表示');
+    console.log(mp);
+  [endscript]
+
+  [if exp="!f.displaingButton.action && mp.action"]
+    [button graphic="button/button_action_normal.png" storage="action.ks" target="*start" x="23" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_action" enterimg="button/button_action_hover.png"]
+    [eval exp="f.displaingButton.action = true"]
+  [endif]
+
+  [if exp="!f.displaingButton.menu && mp.menu"]
+    [button graphic="button/button_menu_normal.png" x="1143" y="23" width="114" height="103" fix="true" role="menu" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
+    [eval exp="f.displaingButton.menu = true"]
+  [endif]
+
+  [if exp="!f.displaingButton.status && mp.status"]
+    [button graphic="button/button_status_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="1005" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_status" enterimg="button/button_status_hover.png"]
+    [eval exp="f.displaingButton.status = true"]
+  [endif]
+[endmacro]
+
+
+; Fixレイヤーのボタンを消去する。消去中のボタンは指定されても再消去はしない。
+; ボタンの表示は[j_displayFixButton]で行うこと。
+; 以下のマクロ変数を全て省略すると、全てのボタンを消去する。
+; @param action アクションボタンを消去する（※"false"を渡すとtrue判定になるので注意）
+; @param menu メニューボタンを消去する（※"false"を渡すとtrue判定になるので注意）
+; @param status ステータスボタンを消去する（※"false"を渡すとtrue判定になるので注意）
+[macro name="j_clearFixButton"]
+  [iscript]
+    // [j_displayFixButton]は実行済みでf.displaingButtonは存在している前提とする。
+    // 一つもマクロ変数に指定されていないなら、全て消去する。一つでも指定されているならマクロ変数通りとする。
+    if (!(('action' in mp) || ('menu' in mp) || ('status' in mp))) {
+      mp.action = true;
+      mp.menu = true;
+      mp.status = true;
+    }
+    console.log('消去');
+    console.log(mp);
+  [endscript]
+
+  [if exp="f.displaingButton.action && mp.action"]
+    [clearfix name="button_j_action"]
+    [eval exp="f.displaingButton.action = false"]
+  [endif]
+
+  [if exp="f.displaingButton.menu && mp.menu"]
+    [clearfix name="button_j_menu"]
+    [eval exp="f.displaingButton.menu = false"]
+  [endif]
+
+  [if exp="f.displaingButton.status && mp.status"]
+    [clearfix name="button_j_status"]
+    [eval exp="f.displaingButton.status = false"]
+  [endif]
 [endmacro]
 
 

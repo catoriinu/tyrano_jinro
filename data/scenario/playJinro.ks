@@ -29,9 +29,8 @@
 ; ゲーム準備js読み込み
 [loadjs storage="plugin/jinro/macro/prepareGame.js"]
 
-; アクション、ステータス、メニューボタン表示
-; TODO 表示（＝プレイヤーに操作させてよい）タイミングは後々考える。それ以外は非表示にする。
-[j_displayFixButton]
+; ステータス、メニューボタン表示
+[j_displayFixButton status="true" menu="true"]
 
 [m_changeFrameWithId]
 #
@@ -106,6 +105,9 @@
 
     [m_askFortuneTellerCO canCOFortuneTellerStatus="&tf.canCOFortuneTellerStatus"]
 
+    ; メニューボタン非表示
+    [j_clearFixButton menu="true"]
+
     ; COするしないボタン表示
     [iscript]
       f.buttonObjects = [];
@@ -123,6 +125,9 @@
       ));
     [endscript]
     [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
+
+    ; メニューボタン再表示
+    [j_displayFixButton menu="true"]
 
     ; 「何もしない」ならジャンプする
     [jump target="*noCO" cond="f.selectedButtonId == 'noCO'"]
@@ -243,6 +248,10 @@
 
 *discussionPhase
 [clearstack]
+
+; アクションボタン表示
+[j_displayFixButton action="true"]
+
 [m_changeFrameWithId]
 #
 ～議論フェイズ～[p]
@@ -273,6 +282,10 @@
 
 *votePhase
 [clearstack]
+
+; アクションボタン非表示
+[j_clearFixButton action="true"]
+
 [m_changeFrameWithId]
 #
 ～投票フェイズ～[p]
@@ -301,6 +314,9 @@
 ; [j_setCharacterToButtonObjects onlySurvivor="true"]
 ; TODO ……のが正しいが、テスト用に生存者全員を投票対象にしておく。
 [j_setCharacterToButtonObjects onlySurvivor="true" needPC="true"]
+
+; メニューボタン非表示
+[j_clearFixButton menu="true"]
 
 ; 選択肢ボタン表示と入力受付
 [eval exp="tf.doSlideInCharacter = true"]
@@ -418,6 +434,9 @@
 
   [if exp="f.isBiteEnd != true"]
 
+    ; メニューボタン非表示
+    [j_clearFixButton menu="true"]
+
     [m_chooseWhoToBite characterId="&f.playerCharacterId"]
 
     [iscript]
@@ -435,6 +454,9 @@
     [j_setCharacterToButtonObjects characterIds="&tf.candidateCharacterIds"]
     [eval exp="tf.doSlideInCharacter = true"]
     [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
+
+    ; メニューボタン再表示
+    [j_displayFixButton menu="true"]
 
     ; 噛み実行
     [j_biting biterId="&f.playerCharacterId" characterId="&f.selectedButtonId"]
