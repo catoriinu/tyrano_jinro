@@ -482,6 +482,12 @@ NPCが行動しています……[p]
 [if exp="!f.isBiteEnd"]
   [j_nightPhaseBitingForNPC]
   ; 噛まれたキャラクターを退場させる（噛み実行マクロ内でf.targetCharacterIdは格納済み）
+  ; MEMO「右側に表示中のキャラが再度発言する際、enterCharacter()で更に左へ移動するケースがある」バグの原因だったとおもわれる。
+  ; NPCが襲撃するタイミングでは、PCの占い対象キャラが表示されている場合がある。
+  ; そこでNPCが襲撃実行し、「噛まれたキャラクターの」退場処理を行うと、PCの占い対象キャラが表示されたまま、f.rightSideCharacterId=undefinedに初期化されてしまう
+  ; そこで翌朝最初に表示中の「PCの占い対象キャラが」発言すると、おかしなenterをしてしまう。
+  ; →exitCharagter()内で「現在登場していないなら初期化しないで終了」するようにした。
+  ; TODO f.displayPositionオブジェクトを作り、キャラクターの表示状態を一元管理したい。
   [m_exitCharacter characterId="&f.targetCharacterId"]
 [endif]
 

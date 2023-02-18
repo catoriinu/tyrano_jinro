@@ -54,7 +54,7 @@ function changeCharacter(characterId, face, side) {
  * @param side 画面内にキャラが登場する位置。right/leftの指定必須。
  */
 function enterCharacter(characterId, face, side) {
-  console.log('enter ' + characterId);
+  console.log('★enter ' + characterId);
 
   // キャラクター画像の移動量と、登場させるキャラクターのsideの変数にキャラクターIDを格納する
   let moveLeft = '';
@@ -88,14 +88,19 @@ function enterCharacter(characterId, face, side) {
  * @param left 退場させたいキャラのleftの移動先。デフォルト座標のleftを指定すること。必須。
  */
 function exitCharacter(characterId, side, left) {
-  console.log('exit ' + characterId);
 
   // 退場させるキャラクターのsideの変数を初期化する
   if (side == 'right') {
+    // 現在登場していないなら初期化しないで終了
+    if (TYRANO.kag.stat.f.rightSideCharacterId != characterId) return;
     TYRANO.kag.stat.f.rightSideCharacterId = undefined;
   } else if (side == 'left') {
+    // 現在登場していないなら初期化しないで終了
+    if (TYRANO.kag.stat.f.leftSideCharacterId != characterId) return;
     TYRANO.kag.stat.f.leftSideCharacterId = undefined;
   }
+
+  console.log('★exit ' + characterId);
 
   TYRANO.kag.ftag.startTag("chara_move",{
     name:characterId,
