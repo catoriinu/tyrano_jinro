@@ -42,7 +42,7 @@
   [iscript]
     tf.winnerCamp = judgeWinnerCamp(f.characterObjects);
     if (f.developmentMode) {
-      alert('勝利陣営: ' + tf.winnerCamp);
+      //alert('勝利陣営: ' + tf.winnerCamp);
     }
   [endscript]
 
@@ -738,6 +738,11 @@
   [iscript]
     countVote(f.characterObjects, f.day);
   [endscript]
+  ; 開発モードならPCの選択したキャラを処刑する
+  [if exp="f.developmentMode"]
+    [eval exp="f.electedIdList = [f.selectedButtonId]"]
+    [eval exp="f.doExecute = true"]
+  [endif]
 [endmacro]
 
 

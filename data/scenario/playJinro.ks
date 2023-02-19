@@ -256,6 +256,9 @@
 #
 ～議論フェイズ～[p]
 *startDiscussionLoop
+
+; アクション実行上限回数以上の場合は議論フェイズを終了する
+[jump target="*votePhase" cond="f.doActionCount >= MAX_DO_ACTION_COUNT"]
 [eval exp="f.doActionCount++"]
 
 [m_changeFrameWithId]
@@ -276,9 +279,8 @@
   [j_doAction actionObject="&f.doActionObject"]
 [endif]
 
-; アクション実行上限回数未満の場合は議論フェイズを繰り返す
-[jump target="*startDiscussionLoop" cond="f.doActionCount < MAX_DO_ACTION_COUNT"]
-
+; 議論フェイズを繰り返す
+[jump target="*startDiscussionLoop"]
 
 *votePhase
 [clearstack]
@@ -305,10 +307,12 @@
 ; プレイヤーの投票先を決める
 [m_changeFrameWithId]
 # 
+投票するキャラクターを選択してください。
 [if exp="f.developmentMode"]
-開発モードのため、プレイヤーの投票先を処刑します。[r]
+[r]
+開発モードのため、プレイヤーの投票先を処刑します。
 [endif]
-投票するキャラクターを選択してください。[p]
+[p]
 
 ; 生存者である、かつプレイヤー以外のキャラクターIDをボタンオブジェクトに格納する。
 ; [j_setCharacterToButtonObjects onlySurvivor="true"]

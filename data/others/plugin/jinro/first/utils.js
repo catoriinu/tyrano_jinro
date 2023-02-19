@@ -32,10 +32,10 @@ function getVillagersRoleIdList() {
   // この中で、ゲーム変数を読み込んだりロジックを書くなどして返却値を決めること
 
   let villagersRoleIdList = [
-    ROLE_ID_FORTUNE_TELLER,
+    ROLE_ID_WEREWOLF,
     ROLE_ID_VILLAGER,
     ROLE_ID_MADMAN,
-    ROLE_ID_WEREWOLF,
+    ROLE_ID_FORTUNE_TELLER,
     ROLE_ID_VILLAGER,
   ];
 
@@ -187,7 +187,7 @@ function isWinWerewolves(survivorObjects) {
   const werewolvesCount = getIsWerewolvesObjects(survivorObjects).length;
   if (TYRANO.kag.stat.f.developmentMode) {
     console.log('生存者数:' + survivorsCount + '名 うち人狼の数:' + werewolvesCount + '名');
-    alert('生存者数:' + survivorsCount + '名 うち人狼の数:' + werewolvesCount + '名');
+    //alert('生存者数:' + survivorsCount + '名 うち人狼の数:' + werewolvesCount + '名');
   }
   return werewolvesCount >= Math.ceil(survivorsCount / 2);
 }
