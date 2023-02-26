@@ -59,43 +59,36 @@
 ; @param result プレイヤーかつ騙りの占い師の場合のみ必要。宣言する占い結果をbooleanまたはstringで渡す。
 [macro name="j_fortuneTelling"]
   [iscript]
-    ; jsに渡す引数の準備。マクロへの指定がなければデフォルト値を入れる
+    // jsに渡す引数の準備。マクロへの指定がなければデフォルト値を入れる
     const day = (typeof mp.day == 'undefined') ? f.day : parseInt(mp.day);
     const targetCharacterId = (typeof mp.characterId == 'undefined') ? '' : mp.characterId;
     const declarationResult = (function(){
       if (typeof mp.result == 'string') {
-        ; ※マクロの引数としてベタ書きでboolやnumを渡しても、stringに型変換されてしまうため、jinroプラグインに渡す前にstring→boolに変換する。
-        ; jsは空文字でないstringをtrueと評価するため、確実に'true'でないとtrueを入れないようにする。
+        // ※マクロの引数としてベタ書きでboolやnumを渡しても、stringに型変換されてしまうため、jinroプラグインに渡す前にstring→boolに変換する。
+        // jsは空文字でないstringをtrueと評価するため、確実に'true'でないとtrueを入れないようにする。
         return (mp.result === 'true') ? true : false;
       } else if (typeof mp.result == 'boolean') {
-        ; boolean型ならそのまま格納する（マクロの引数に変数としてbooleanで渡して来た場合を考慮）
+        // boolean型ならそのまま格納する（マクロの引数に変数としてbooleanで渡して来た場合を考慮）
         return mp.result;
       } else {
-        ; その他の型（未指定でundefined）ならnull
+        // その他の型（未指定でundefined）ならnull
         return null;
       }
     })();
 
     let todayResult = {};
-    ; 占い実行
+    // 占い実行
     if (f.characterObjects[mp.fortuneTellerId].fakeRole.roleId == ROLE_ID_FORTUNE_TELLER) {
-      ; 占い騙りの場合
+      // 占い騙りの場合
       todayResult = f.characterObjects[mp.fortuneTellerId].fakeRole.fortuneTelling(mp.fortuneTellerId, day, targetCharacterId, declarationResult);
     } else {
-      ; 真占いの場合
+      // 真占いの場合
       todayResult = f.characterObjects[mp.fortuneTellerId].role.fortuneTelling(mp.fortuneTellerId, day, targetCharacterId);
     }
 
-    ; 占い師の視点整理。
-    ; 騙りの場合には、騙り役職の視点や、本人の役職視点の視点整理は行わない。（自分視点の真実ではないため）
-    ; 表の視点を更新する理由は、・CO済みであれば表の視点を使うから　・未COでも思考に占い結果を反映させたいから（仮）
-    ; →問題発生。
-    ; TODO : 破綻の場合どうする？
-    f.characterObjects[mp.fortuneTellerId].perspective = organizePerspective(
-      f.characterObjects[mp.fortuneTellerId].perspective,
-      todayResult.action.targetId,
-      getRoleIdsForOrganizePerspective(todayResult.action.result)
-    );
+    // 占い師の視点整理
+    // 真占い師の場合のみ、占い師視点（＝本人の思考に使う視点）の視点整理を行う。
+    // 騙りの場合には視点整理は行わない。（騙りの占い結果は自分視点の真実ではないため、視点整理が必要ないため）
     if (f.characterObjects[mp.fortuneTellerId].role.roleId == ROLE_ID_FORTUNE_TELLER) {
       f.characterObjects[mp.fortuneTellerId].role.rolePerspective = organizePerspective(
         f.characterObjects[mp.fortuneTellerId].role.rolePerspective,
@@ -103,11 +96,11 @@
         getRoleIdsForOrganizePerspective(todayResult.action.result)
       );
     }
-    
-    ; メッセージ出力用に占いのアクションオブジェクトを格納
+
+    // メッセージ出力用に占いのアクションオブジェクトを格納
     f.actionObject = todayResult.action;
 
-    ; 全占い結果履歴オブジェクトに占い結果格納
+    // 全占い結果履歴オブジェクトに占い結果格納
     // TODO メニュー画面用。メニュー画面を後回しにしているうちは一旦コメントアウト
     /*
     if (typeof f.allFortuneTellingHistoryObject[mp.fortuneTellerId] !== 'object') {
@@ -360,6 +353,30 @@
 
   ; メッセージ出力
   [m_COFortuneTelling]
+
+  [iscript]
+    // 真占い師でも騙り占い師でも、表の視点オブジェクトを更新する
+    // ・CO済みということは対外的な真実であるから ・CO済みであれば占い師としての思考は表の視点を使うから
+    try {
+      f.characterObjects[mp.fortuneTellerId].perspective = organizePerspective(
+        f.characterObjects[mp.fortuneTellerId].perspective,
+        f.actionObject.targetId,
+        getRoleIdsForOrganizePerspective(f.actionObject.result)
+      );
+    } catch (error) {
+      console.log(mp.fortuneTellerId + 'は、破綻した占い結果のCOをしてしまいました!');
+      if (f.developmentMode) {
+        alert(mp.fortuneTellerId + 'は、破綻した占い結果のCOをしてしまいました!');
+      }
+      // 破綻フラグを立てる
+      TYRANO.kag.stat.f.characterObjects[mp.fortuneTellerId].isContradicted = true;
+      // 視点オブジェクトが破綻してしまったので、共通視点オブジェクトを入れておく
+      // role.rolePerspectiveは更新しない。本人の役職視点での破綻ではないため
+      f.characterObjects[mp.fortuneTellerId].perspective = clone(f.commonPerspective);
+      // 自分自身は嘘がつける役職（TODO:「嘘をつかない役職配列」をメソッドで取り出せるようにする）だったということで確定する。
+      updateCommonPerspective(mp.fortuneTellerId, [ROLE_ID_VILLAGER, ROLE_ID_FORTUNE_TELLER]);
+    }
+  [endscript]
 
   ; 今日のCOが終わったキャラはisDoneTodaysCOをtrueにする
   [eval exp="f.characterObjects[mp.fortuneTellerId].isDoneTodaysCO = true"]
