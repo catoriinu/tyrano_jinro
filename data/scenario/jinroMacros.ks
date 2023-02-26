@@ -119,28 +119,35 @@
 
 
 ; NPC用騙り占いCOマクロ
-; 初日から、指定された日付の前日の夜までを占ったことにできる。
+; 指定された日から、前日の夜までを占ったことにできる。
 ; @param fortuneTellerId 占い実行者のID。真占い師、占い騙りに関わらず、必須。
-; @param day 占った日付。当日であれば指定不要。
-[macro name=j_fakeFortuneTellingCOMultipleDays]
+; @param fakeFortuneTelledDay 騙り占いを実行する開始日。
+; 指定された日がなければ初日から。（＝2日目以降の騙り占い師CO用）
+; 指定された日が前日の夜ならその1回分のみ。（＝騙り占いCO済み時の、騙り占い結果CO用）
+; MEMO NPCが2日目以降に騙り占い師COするケースは、現状動作確認していない
+[macro name="j_fakeFortuneTellingCOMultipleDays"]
 
-  ; 騙り占いを行う最新の日の日付を入れる。未指定（デフォルト）なら前日の夜までにする。
-  [iscript]
-    tf.lastDay = (typeof mp.day == 'undefined') ? f.day - 1 : parseInt(mp.day);
-    console.log('tf.lastDay = ' + tf.lastDay);
-  [endscript]
+  ; 騙り占いを行う最新の日の日付（＝前日）を入れる。
+  [eval exp="tf.lastDay = f.day - 1"]
+  ; マクロの引数に開始日が指定されていればそれを、されていなければ0（=初日）を入れる
+  [eval exp="tf.fakeFortuneTelledDay = ('fakeFortuneTelledDay' in mp) ? mp.fakeFortuneTelledDay : 0"]
 
-  [eval exp="tf.fortuneTelledDay = 0"]
   ; ※マクロ内で別マクロを呼び出すと、別マクロの終了時にmp変数が全て空にされてしまう。
   ; そのため、元マクロ側の引数を元マクロ内で引き続き使いたい場合は、一時変数などに格納しておかないといけない。
   [eval exp="tf.fortuneTellerId = mp.fortuneTellerId"]
   *fakeFortuneTellingCOMultipleDays_loopstart
 
     ; 占いマクロを、初日(day=0)から最新の日の日付までループ実行していく
-    [j_fortuneTelling fortuneTellerId="&tf.fortuneTellerId" day="&tf.fortuneTelledDay"]
+    [j_fortuneTelling fortuneTellerId="&tf.fortuneTellerId" day="&tf.fakeFortuneTelledDay"]
 
-  [jump target="*fakeFortuneTellingCOMultipleDays_loopend" cond="tf.fortuneTelledDay == tf.lastDay"]
-  [eval exp="tf.fortuneTelledDay++"]
+  ; 前日まで占い終わったらループ終了
+  [jump target="*fakeFortuneTellingCOMultipleDays_loopend" cond="tf.fakeFortuneTelledDay >= tf.lastDay"]
+
+  ; メッセージを表示しないでCOしたことにする（メッセージ表示が必要な、前日の分のCOは呼び元側で行う）
+  [j_COFortuneTelling fortuneTellerId="&tf.fortuneTellerId" day="&tf.fakeFortuneTelledDay" noNeedMessage="true"]
+
+  ; 次の日の騙り占いを行う
+  [eval exp="tf.fakeFortuneTelledDay++"]
   [jump target="*fakeFortuneTellingCOMultipleDays_loopstart"]
 
   *fakeFortuneTellingCOMultipleDays_loopend
@@ -148,10 +155,14 @@
 
 
 ; 夜時間のNPCの占い師（真、騙り共通）の占い実行をまとめて行うマクロ
+; @param needFakeFortuneTelling 騙り占い師の占いも実行するか。指定しない場合実行しない。（昼のCOフェイズ時に騙り占いするようにしている場合、実行してはいけない）
 [macro name="j_nightPhaseFortuneTellingForNPC"]
   [iscript]
+    // マクロ変数をboolean型に変換する。文字列の'true'かboolean型のtrueをtrue扱いとする
+    let needFakeFortuneTelling = ('needFakeFortuneTelling' in mp && (mp.needFakeFortuneTelling === 'true' || mp.needFakeFortuneTelling === true)) ? true : false;
+
     ; 夜開始時点の生存者である、かつプレイヤー以外のキャラクターオブジェクトから、占い師のID配列を抽出する。
-    ; 真占い師も騙り占い師もここで処理する。j_fortuneTellingマクロ内で真か騙りかで処理を分けているため問題ない。
+    ; 真占い師も騙り占い師もここで処理できる。j_fortuneTellingマクロ内で真か騙りかで処理を分けているため問題ない。
     ; 初日夜も同様の処理で良い（初日夜にはまだ騙り占い師はいないため、必然的に真しか取得しない）
     tf.fortuneTellerNpcCharacterIds = getValuesFromObjectArray (
       getHaveTheRoleObjects (
@@ -163,7 +174,7 @@
         [ROLE_ID_FORTUNE_TELLER],
         true,
         true,
-        true
+        needFakeFortuneTelling // falseなら真占い師のみ取得する。trueなら騙り占い師も取得する。
       ),
       'characterId'
     );
@@ -182,6 +193,36 @@
     [eval exp="tf.cnt++"]
     [jump target="*j_nightPhaseFortuneTellingForNPC_loopstart"]
   *j_nightPhaseFortuneTellingForNPC_loopend
+
+[endmacro]
+
+
+; 初日から前日までの占い結果を、メッセージは表示せずにCOしたことにするマクロ
+;（真占い師用（騙り占い師は騙り占いマクロ内でCOしたことにしているため不要）。PC、NPC兼用）
+; 2日目以降に初めて占いCOした場合に、前日までのCO処理を補完するために利用。
+; @param fortuneTellerId 占い実行者のID。必須。
+[macro name="j_COFortuneTellingUntilTheLastDay"]
+
+  ; 前日（ループ終了条件用）
+  [eval exp="tf.lastDay = f.day - 1"]
+  ; 初日（ループ開始条件用）
+  [eval exp="tf.CODay = 0"]
+  ; マクロ内でマクロを呼ぶので、一時変数に退避させる
+  [eval exp="tf.COFortuneTellerId = mp.fortuneTellerId"]
+
+  *j_COFortuneTellingUntilTheLastDay_loopstart
+
+    ; 前日までCOしたらループ終了（当日のCOは呼び元でメッセージを表示して行う）
+    ; ※前日が初日の場合は即終了でよい
+    [jump target="*j_COFortuneTellingUntilTheLastDay_loopend" cond="tf.CODay >= tf.lastDay"]
+
+    ; メッセージなしでCOしたことにする
+    [j_COFortuneTelling fortuneTellerId="&tf.COFortuneTellerId" day="&tf.CODay" noNeedMessage="true"]
+
+    ; 次の日の分をCOする
+    [eval exp="tf.CODay++"]
+    [jump target="*j_COFortuneTellingUntilTheLastDay_loopstart"]
+  *j_COFortuneTellingUntilTheLastDay_loopend
 
 [endmacro]
 
@@ -316,20 +357,11 @@
 [endmacro]
 
 
-; 未使用メソッド
-; 指定したキャラクターの占い履歴から、指定した日の履歴オブジェクトをtf.fortuneTellingHistoryObjectに格納する
-; 占い師、占い騙り両対応。
-; @param fortuneTellerId 取得したい占い師（騙り占い）のキャラクターID。必須
-; @param [day] 取得したい占い日。指定しない場合、その占い師の最新の履歴を取得する。引数の渡し方（型）は0でも"0"でも可。
-[macro name=j_fortuneTellingHistoryObjectThatDay]
-  未使用マクロ[p]
-[endmacro]
-
-
 ; 指定したキャラクターの、指定した日の占い履歴アクションオブジェクトをもとに、COを実行する。
 ; 占い師、占い騙り両対応。
 ; @param fortuneTellerId 取得したい占い師（騙り占い）のキャラクターID。必須
 ; @param [day] 取得したい占い日。指定しない場合、その占い師の最新の履歴を取得する。引数の渡し方（型）は0でも"0"でも可。
+; @param [noNeedMessage] 占いCOメッセージを表示しないか。trueなら表示しない（複数日分の占いCO時、前日以外の分は表示しないべき）
 [macro name="j_COFortuneTelling"]
 
   [iscript]
@@ -342,7 +374,7 @@
     }
 
     // 取得する日を決定する。引数があればその日の、なければ最新の日の履歴を取得する。
-    const day = mp.day ? mp.day : Object.keys(tmpFortuneTellingHistory).length - 1;
+    const day = ('day' in mp) ? parseInt(mp.day) : Object.keys(tmpFortuneTellingHistory).length - 1;
     // その占い履歴をCO済みにする
     tmpFortuneTellingHistory[day].doneCO = true;
     // 信頼度増減とメッセージ出力用にアクションオブジェクトを格納
@@ -351,8 +383,8 @@
     updateReliabirityForAction(f.characterObjects, f.actionObject);
   [endscript]
 
-  ; メッセージ出力
-  [m_COFortuneTelling]
+  ; メッセージ出力（mp.noNeedMessageがtrueなら表示しない）
+  [m_COFortuneTelling cond="!(('noNeedMessage' in mp) && (mp.noNeedMessage === 'true' || mp.noNeedMessage === true))"]
 
   [iscript]
     // 真占い師でも騙り占い師でも、表の視点オブジェクトを更新する

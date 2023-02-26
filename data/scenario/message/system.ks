@@ -40,8 +40,8 @@
 
 
 ; シーン：騙り占いCO時、過去の占い履歴を決めていく際の日付を表示するシステムメッセージ
-*fortuneTelledDayMsg
-  [emb exp="tf.fortuneTelledDayMsg"]の占い先は……
+*fakeFortuneTelledDayMsg
+  [emb exp="f.fakeFortuneTelledDayMsg"]の占い先は……
 [return]
 
 

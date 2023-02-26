@@ -135,17 +135,29 @@
     ; [jump target="*FortuneTellerCO" cond="f.selectedButtonId == 'FortuneTellerCO'"]
     *FortuneTellerCO
 
-    ; 占い未COかつ、占い騙りをすると決めた場合、騙り役職オブジェクトを取得する
-    [if exp="tf.canCOFortuneTellerStatus == 3"]
+    [if exp="tf.canCOFortuneTellerStatus == 1"]
+      ; 占い未COかつ、真占いCOをすると決めた場合
+      ; 前日の分までの占い結果を、メッセージなしでCOしたことにする
+      [j_COFortuneTellingUntilTheLastDay fortuneTellerId="&f.playerCharacterId"]
+
+    [elsif exp="tf.canCOFortuneTellerStatus == 3"]
+      ; 占い未COかつ、占い騙りをすると決めた場合
+      ; 騙り役職オブジェクトを取得する
       [j_assignmentFakeRole characterId="&f.characterObjects[f.playerCharacterId].characterId" roleId="fortuneTeller"]
-      ; 前日までの分、騙り占い実行
+      ; 騙り占いサブルーチン実行。初日から騙り占い結果を入れていく(f.fakeFortuneTelledDayはデフォルトのままでよい)
+      [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingCOMultipleDaysForPC"]
+
+    [elsif exp="tf.canCOFortuneTellerStatus == 4"]
+      ; 騙り占いCO済みの場合
+      ; 騙り占いサブルーチン実行。前日分のみ騙り占い結果を入れる
+      [eval exp="f.fakeFortuneTelledDay = f.day - 1"]
       [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingCOMultipleDaysForPC"]
     [endif]
 
     ; 占いカットイン発生
     [j_cutin1]
 
-    ; 指定した占い師のCOを実行する
+    ; 指定した占い師のCOを実行する（メッセージは当日分のみ表示）
     [j_COFortuneTelling fortuneTellerId="&f.playerCharacterId"]
 
     ; 初回CO時のみの処理
@@ -213,17 +225,30 @@
   ; CO候補者がいるなら、そのキャラクターの行動を開始する
   [eval exp="f.notExistCOCandidateNPC = false"]
 
-  ; 占い騙りがまだなら、騙り役職オブジェクトを取得し、昨夜までの分を占ってからCOする
   [j_setCanCOFortuneTellerStatus characterId="&f.COCandidateId"]
-  [if exp="tf.canCOFortuneTellerStatus == 3"]
+
+  [if exp="tf.canCOFortuneTellerStatus == 1"]
+    ; 占い未COかつ、真占いCOをすると決めた場合
+    ; 前日の分までの占い結果を、メッセージなしでCOしたことにする
+    [j_COFortuneTellingUntilTheLastDay fortuneTellerId="&f.COCandidateId"]
+
+  [elsif exp="tf.canCOFortuneTellerStatus == 3"]
+    ; 占い騙りがまだで、今からCOする場合
+    ; 騙り役職オブジェクトを取得し、騙り占いサブルーチンで昨夜までの分を占ってからCOする
     [j_assignmentFakeRole characterId="&f.COCandidateId" roleId="fortuneTeller"]
     [j_fakeFortuneTellingCOMultipleDays fortuneTellerId="&f.COCandidateId"]
+
+  [elsif exp="tf.canCOFortuneTellerStatus == 4"]
+    ; 騙り占いCO済みの場合
+    ; 騙り占いサブルーチン実行。前日分のみ騙り占い結果を入れる
+    [eval exp="tf.fakeFortuneTelledDay = f.day - 1"]
+    [j_fakeFortuneTellingCOMultipleDays fortuneTellerId="&f.COCandidateId" fakeFortuneTelledDay="&tf.fakeFortuneTelledDay"]
   [endif]
 
   ; 占いカットイン発生
   [j_cutin1]
 
-  ; 指定した占い師のCOを実行する
+  ; 指定した占い師のCOを実行する（メッセージは当日分のみ表示）
   [j_COFortuneTelling fortuneTellerId="&f.COCandidateId"]
 
   ; 初回CO時のみの処理
@@ -403,34 +428,21 @@
   村人なので行動できません。[p]
 [endif]
 
-; 占い師、または騙り占い師CO済みであれば
+; 真占い師であれば
 [j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
-[if exp="tf.canCOFortuneTellerStatus == 1 || tf.canCOFortuneTellerStatus == 2 || tf.canCOFortuneTellerStatus == 4"]
+[if exp="tf.canCOFortuneTellerStatus == 1 || tf.canCOFortuneTellerStatus == 2"]
 
-  ; 騙り占い師の場合
-  [if exp="tf.canCOFortuneTellerStatus == 4"]
-    [m_askFortuneTellingTarget isFortuneTeller="false"]
+  [m_askFortuneTellingTarget isFortuneTeller="true"]
 
-    ; 占いカットイン発生
-    [j_cutin1]
+  ; 占いカットイン発生
+  [j_cutin1]
 
-    ; 騙り占い実行
-    [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingForPC"]
+  ; 占い実行
+  [call storage="./fortuneTellingForPC.ks" target="*fortuneTellingForPC"]
 
-  [else]
-    ; 真占い師の場合
-    [m_askFortuneTellingTarget isFortuneTeller="true"]
+  ; 占い結果に合わせてセリフ出力
+  [m_announcedFortuneTellingResult]
 
-    ; 占いカットイン発生
-    [j_cutin1]
-
-    ; 占い実行
-    [call storage="./fortuneTellingForPC.ks" target="*fortuneTellingForPC"]
-
-    ; 占い結果に合わせてセリフ出力
-    [m_announcedFortuneTellingResult]
-
-  [endif]
 [endif]
 
 ; 人狼の場合のみ
@@ -479,7 +491,7 @@
 #
 NPCが行動しています……[p]
 
-; 占い師（真、騙り共通）の占い実行
+; 占い師（真のみ）の占い実行
 [j_nightPhaseFortuneTellingForNPC]
 
 ; 噛み未実行なら（＝PCが人狼ではないなら）噛み実行

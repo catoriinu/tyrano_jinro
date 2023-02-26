@@ -157,11 +157,11 @@
 
 
 ; シーン：騙り占いCO時、過去の占い履歴を決めていく際の日付を表示するシステムメッセージ
-[macro name="m_fortuneTelledDayMsg"]
+[macro name="m_fakeFortuneTelledDayMsg"]
   [m_changeFrameWithId]
   #
   [eval exp="tf.messageStorage = './message/system.ks'"]
-  [eval exp="tf.messageTarget = '*fortuneTelledDayMsg'"]
+  [eval exp="tf.messageTarget = '*fakeFortuneTelledDayMsg'"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
 [endmacro]
 
