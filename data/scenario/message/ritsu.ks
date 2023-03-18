@@ -26,15 +26,41 @@
 ; 役職COのとき、自分の前にCO済みの占い師がいる場合「自分こそが占い師だ」と主張することができるようにする
 ; 結果COのとき、自分の前のCO結果によって反応を変えられるようにする（同じ相手を占った、違う相手を占った）
 *COFortuneTelling_true
-  [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
-  [call target="changeIdToCallName"]。アンタ人狼ね？[r]
-  さあ、祭りを始めましょうか。[p]
+[if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
+[playse storage="chara/ritsu/005_波音リツ（ノーマル）_X。アンタ人狼ね？…(1).ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
+[playse storage="chara/ritsu/006_波音リツ（ノーマル）_X。アンタ人狼ね？…(1).ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
+[playse storage="chara/ritsu/007_波音リツ（ノーマル）_X。アンタ人狼ね？…(1).ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
+[playse storage="chara/ritsu/008_波音リツ（ノーマル）_X。アンタ人狼ね？…(1).ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
+
+[endif]
+
+[eval exp="tf.characterIdToCall = f.actionObject.targetId"]
+[call target="changeIdToCallName"]。アンタ人狼ね？[r]
+さあ、祭りを始めましょうか。[p]
+[stopse]
 [return]
 
 *COFortuneTelling_false
-  [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
-  [call target="changeIdToCallName"]。アンタは人狼じゃないらしいわね。[r]
-  住民としてこの村を盛り上げてちょうだい。[p]
+[if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
+[playse storage="chara/ritsu/014_波音リツ（ノーマル）_X。アンタは人狼じ…(1).ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
+[playse storage="chara/ritsu/015_波音リツ（ノーマル）_X。アンタは人狼じ…(1).ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
+[playse storage="chara/ritsu/016_波音リツ（ノーマル）_X。アンタは人狼じ…(1).ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
+[playse storage="chara/ritsu/017_波音リツ（ノーマル）_X。アンタは人狼じ…(1).ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
+
+[endif]
+
+[eval exp="tf.characterIdToCall = f.actionObject.targetId"]
+[call target="changeIdToCallName"]。アンタは人狼じゃないらしいわね。[r]
+住民としてこの村を盛り上げてちょうだい。[p]
+[stopse]
 [return]
 
 
@@ -42,16 +68,42 @@
 ; NOTE：事前にtf.selectedCharacterIへの格納（PCならアクションボタンの実行、NPCならTODO）が必要。
 ; シーン：「疑う」アクション実行時
 *doAction_suspect
-  [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
-  [call target="changeIdToCallName"]はどうせ人狼でしょうね。[r]
-  まあ根拠はないけれど。[p]
+[if exp="tf.selectedCharacterId == CHARACTER_ID_ZUNDAMON"]
+[playse storage="chara/ritsu/011_波音リツ（ノーマル）_Xはどうせ人狼でし….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_METAN"]
+[playse storage="chara/ritsu/012_波音リツ（ノーマル）_Xはどうせ人狼でし….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_TSUMUGI"]
+[playse storage="chara/ritsu/013_波音リツ（ノーマル）_Xはどうせ人狼でし….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_HAU"]
+[playse storage="chara/ritsu/014_波音リツ（ノーマル）_Xはどうせ人狼でし….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_RITSU"]
+
+[endif]
+
+[eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+[call target="changeIdToCallName"]はどうせ人狼でしょうね。[r]
+まあ根拠はないけれど。[p]
+[stopse]
 [return]
 
 ; シーン：「信じる」アクション実行時
 *doAction_trust
-  [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
-  こう見えてもあたしは[call target="changeIdToCallName"]を信じてるの。[r]
-  だからがっかりさせないでほしいわね。[p]
+[if exp="tf.selectedCharacterId == CHARACTER_ID_ZUNDAMON"]
+[playse storage="chara/ritsu/015_波音リツ（ノーマル）_こう見えてもあたし….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_METAN"]
+[playse storage="chara/ritsu/016_波音リツ（ノーマル）_こう見えてもあたし….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_TSUMUGI"]
+[playse storage="chara/ritsu/017_波音リツ（ノーマル）_こう見えてもあたし….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_HAU"]
+[playse storage="chara/ritsu/018_波音リツ（ノーマル）_こう見えてもあたし….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_RITSU"]
+
+[endif]
+
+[eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+こう見えてもあたしは[call target="changeIdToCallName"]に期待してるの。[r]
+だからがっかりさせないでほしいわね。[p]
+[stopse]
 [return]
 
 ; シーン：「聞き出す」アクション実行時
@@ -64,13 +116,19 @@
 ; doAction_reaction_{actionId}
 ; シーン：「疑う」アクションの実行対象になった時
 *doAction_reaction_suspect
-  アンタがそう思うならそうなんでしょう。[r]
-  アンタの中ではね。[p]
+[playse storage="chara/ritsu/020_波音リツ（ノーマル）_アンタがそう思うな….ogg" loop="false" sprite_time="50-20000"]
+
+アンタがそう思うならそうなんでしょう。[r]
+アンタの中ではね。[p]
+[stopse]
 [return]
 
 ; シーン：「信じる」アクションの実行対象になった時
 *doAction_reaction_trust
-  ふふ、嬉しいことを言ってくれるじゃない。[p]
+[playse storage="chara/ritsu/021_波音リツ（ノーマル）_ふふ、嬉しいことを….ogg" loop="false" sprite_time="50-20000"]
+
+ふふ、嬉しいことを言ってくれるじゃない。[p]
+[stopse]
 [return]
 
 ; シーン：「聞き出す」アクションの実行対象になった時
@@ -82,7 +140,10 @@
 ; executed
 ; シーン：投票により処刑対象に決まったときの反応
 *executed
-  安価は絶対……。あたしは潔く去るわ。[p]
+[playse storage="chara/ritsu/023_波音リツ（ノーマル）_安価は絶対……。あ….ogg" loop="false" sprite_time="50-20000"]
+
+安価は絶対……。あたしは潔く去るわ。[p]
+[stopse]
 [return]
 
 

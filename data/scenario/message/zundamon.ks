@@ -22,23 +22,35 @@
 ; シーン：初日、役職を告知されたときの反応
 ; 備考：PCのみ想定
 *noticeRole_villager
-  僕は村人なのだ。[r]
-  悪い人狼を見つけて平和な村にするのだ。[p]
+[playse storage="chara/zundamon/001_ずんだもん（ノーマル）_僕は村人なのだ。悪….ogg" loop="false" sprite_time="50-20000"]
+
+僕は村人なのだ。[r]
+悪い人狼を見つけて平和な村にするのだ。[p]
+[stopse]
 [return]
 
 *noticeRole_fortuneTeller
-  僕は占い師なのだ。[r]
-  さっそく誰か占ってみるのだ！[p]
+[playse storage="chara/zundamon/002_ずんだもん（ノーマル）_僕は占い師なのだ。….ogg" loop="false" sprite_time="50-20000"]
+
+僕は占い師なのだ。[r]
+さっそく誰か占ってみるのだ！[p]
+[stopse]
 [return]
 
 *noticeRole_werewolf
-  僕は人狼……。[r]
-  みんな僕がおいしく食べてやるのだ！[p]
+[playse storage="chara/zundamon/003_ずんだもん（ノーマル）_僕は人狼……。みん….ogg" loop="false" sprite_time="50-20000"]
+
+僕は人狼……。[r]
+みんな僕がおいしく食べてやるのだ！[p]
+[stopse]
 [return]
 
 *noticeRole_madman
-  僕は狂人なのだ……。[r]
-  僕がご主人の野望を手助けするのだ！[p]
+[playse storage="chara/zundamon/004_ずんだもん（ノーマル）_僕は狂人なのだ……….ogg" loop="false" sprite_time="50-20000"]
+
+僕は狂人なのだ……。[r]
+僕がご主人の野望を手助けするのだ！[p]
+[stopse]
 [return]
 
 
@@ -47,13 +59,39 @@
 ; NOTE:事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 ; 備考：PCのみ想定
 *announcedFortuneTellingResult_true
-  [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
-  発見なのだ！[call target="changeIdToCallName"]が人狼だったのだ！[p]
+[if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
+
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
+[playse storage="chara/zundamon/005_ずんだもん（ノーマル）_発見なのだ！Xが人….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
+[playse storage="chara/zundamon/006_ずんだもん（ノーマル）_発見なのだ！Xが人….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
+[playse storage="chara/zundamon/007_ずんだもん（ノーマル）_発見なのだ！Xが人….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
+[playse storage="chara/zundamon/008_ずんだもん（ノーマル）_発見なのだ！Xが人….ogg" loop="false" sprite_time="50-20000"]
+[endif]
+
+[eval exp="tf.characterIdToCall = f.actionObject.targetId"]
+発見なのだ！[call target="changeIdToCallName"]が人狼だったのだ！[p]
+[stopse]
 [return]
 
 *announcedFortuneTellingResult_false
-  [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
-  [call target="changeIdToCallName"]は人狼じゃなかったのだ。[p]
+[if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
+
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
+[playse storage="chara/zundamon/009_ずんだもん（ノーマル）_Xは人狼じゃなかっ….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
+[playse storage="chara/zundamon/010_ずんだもん（ノーマル）_Xは人狼じゃなかっ….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
+[playse storage="chara/zundamon/011_ずんだもん（ノーマル）_Xは人狼じゃなかっ….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
+[playse storage="chara/zundamon/012_ずんだもん（ノーマル）_Xは人狼じゃなかっ….ogg" loop="false" sprite_time="50-20000"]
+[endif]
+
+[eval exp="tf.characterIdToCall = f.actionObject.targetId"]
+[call target="changeIdToCallName"]は人狼じゃなかったのだ。[p]
+[stopse]
 [return]
 
 
@@ -61,15 +99,41 @@
 ; シーン：前日の占い結果をCOするときのセリフ
 ; NOTE:事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 *COFortuneTelling_true
-  [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
-  昨日は[call target="changeIdToCallName"]を占ったのだ。[r]
-  結果は人狼だったのだ！[p]
+[if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
+
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
+[playse storage="chara/zundamon/021_ずんだもん（ノーマル）_昨日はXを占ったの…(1).ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
+[playse storage="chara/zundamon/022_ずんだもん（ノーマル）_昨日はXを占ったの…(1).ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
+[playse storage="chara/zundamon/023_ずんだもん（ノーマル）_昨日はXを占ったの…(1).ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
+[playse storage="chara/zundamon/024_ずんだもん（ノーマル）_昨日はXを占ったの…(1).ogg" loop="false" sprite_time="50-20000"]
+[endif]
+
+[eval exp="tf.characterIdToCall = f.actionObject.targetId"]
+昨日は[call target="changeIdToCallName"]を占ったのだ。[r]
+結果は人狼だったのだ！[p]
+[stopse]
 [return]
 
 *COFortuneTelling_false
-  [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
-  昨日は[call target="changeIdToCallName"]を占ったのだ。[r]
-  結果は人狼じゃなかったのだ。[p]
+[if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
+
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
+[playse storage="chara/zundamon/027_ずんだもん（ノーマル）_昨日はXを占ったの…(1).ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
+[playse storage="chara/zundamon/028_ずんだもん（ノーマル）_昨日はXを占ったの…(1).ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
+[playse storage="chara/zundamon/029_ずんだもん（ノーマル）_昨日はXを占ったの…(1).ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
+[playse storage="chara/zundamon/030_ずんだもん（ノーマル）_昨日はXを占ったの…(1).ogg" loop="false" sprite_time="50-20000"]
+[endif]
+
+[eval exp="tf.characterIdToCall = f.actionObject.targetId"]
+昨日は[call target="changeIdToCallName"]を占ったのだ。[r]
+結果は人狼じゃなかったのだ。[p]
+[stopse]
 [return]
 
 
@@ -77,16 +141,42 @@
 ; NOTE：事前にtf.selectedCharacterIへの格納（PCならアクションボタンの実行、NPCならTODO）が必要。
 ; シーン：「疑う」アクション実行時
 *doAction_suspect
-  [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
-  もしかして[call target="changeIdToCallName"]が人狼なのだ……？[r]
-  そんな気がするのだ。[p]
+[if exp="tf.selectedCharacterId == CHARACTER_ID_ZUNDAMON"]
+
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_METAN"]
+[playse storage="chara/zundamon/027_ずんだもん（ノーマル）_もしかしてXが人狼….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_TSUMUGI"]
+[playse storage="chara/zundamon/028_ずんだもん（ノーマル）_もしかしてXが人狼….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_HAU"]
+[playse storage="chara/zundamon/029_ずんだもん（ノーマル）_もしかしてXが人狼….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_RITSU"]
+[playse storage="chara/zundamon/030_ずんだもん（ノーマル）_もしかしてXが人狼….ogg" loop="false" sprite_time="50-20000"]
+[endif]
+
+[eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+もしかして[call target="changeIdToCallName"]が人狼なのだ……？[r]
+そんな気がするのだ。[p]
+[stopse]
 [return]
 
 ; シーン：「信じる」アクション実行時
 *doAction_trust
-  [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
-  僕は[call target="changeIdToCallName"]を信じてるのだ。[r]
-  きっと人狼じゃないのだ！[p]
+[if exp="tf.selectedCharacterId == CHARACTER_ID_ZUNDAMON"]
+
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_METAN"]
+[playse storage="chara/zundamon/043_ずんだもん（ノーマル）_僕はXを信じてるの….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_TSUMUGI"]
+[playse storage="chara/zundamon/044_ずんだもん（ノーマル）_僕はXを信じてるの….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_HAU"]
+[playse storage="chara/zundamon/045_ずんだもん（ノーマル）_僕はXを信じてるの….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_RITSU"]
+[playse storage="chara/zundamon/046_ずんだもん（ノーマル）_僕はXを信じてるの….ogg" loop="false" sprite_time="50-20000"]
+[endif]
+
+[eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+僕は[call target="changeIdToCallName"]を信じてるのだ。[r]
+きっと人狼じゃないのだ！[p]
+[stopse]
 [return]
 
 ; シーン：「聞き出す」アクション実行時
@@ -100,12 +190,18 @@
 ; doAction_reaction_{actionId}
 ; シーン：「疑う」アクションの実行対象になった時
 *doAction_reaction_suspect
-  ぼ、僕は人狼じゃないのだっ！[p]
+[playse storage="chara/zundamon/060_ずんだもん（ノーマル）_ぼ、僕は人狼じゃな….ogg" loop="false" sprite_time="50-20000"]
+
+ぼ、僕は人狼じゃないのだっ！[p]
+[stopse]
 [return]
 
 ; シーン：「信じる」アクションの実行対象になった時
 *doAction_reaction_trust
-  信じてくれてありがとうなのだ！[p]
+[playse storage="chara/zundamon/063_ずんだもん（ノーマル）_信じてくれてありが….ogg" loop="false" sprite_time="50-20000"]
+
+信じてくれてありがとうなのだ！[p]
+[stopse]
 [return]
 
 ; シーン：「聞き出す」アクションの実行対象になった時
@@ -117,15 +213,21 @@
 ; chooseWhoToBite
 ; シーン：人狼で、誰を噛むか選ぶときのセリフ
 *chooseWhoToBite
-  くくく、今夜は誰を食べてやろうか……[r]
-  いただきまーすなのだ！[p]
+[playse storage="chara/zundamon/067_ずんだもん（ノーマル）_くくく、今夜は誰を….ogg" loop="false" sprite_time="50-20000"]
+
+くくく、今夜は誰を食べちゃおうかな……。[r]
+いただきまーすなのだ！[p]
+[stopse]
 [return]
 
 
 ; executed
 ; シーン：投票により処刑対象に決まったときの反応
 *executed
-  なんでなのだ！僕は悪くないのだ！[p]
+[playse storage="chara/zundamon/068_ずんだもん（ノーマル）_なんでなのだ！僕は….ogg" loop="false" sprite_time="50-20000"]
+
+なんでなのだ！僕は悪くないのだ！[p]
+[stopse]
 [return]
 
 
@@ -135,3 +237,12 @@
 *afterExecution
   この決断が、間違ってないといいのだ……。[p]
 [return]
+
+
+; コピー用
+[if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
+[endif]

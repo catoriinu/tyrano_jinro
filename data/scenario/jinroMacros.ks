@@ -11,7 +11,7 @@
 
     ; 死亡判定を行う（判定に成功したら、メソッドが死亡までやってくれる）
     if (causeDeathToCharacter(tmpCharacterObject, DEATH_BY_EXECUTION)) {
-      alert(tmpCharacterObject.name + 'は処刑された。');
+      alert(tmpCharacterObject.name + 'は追放された。'); // 処刑メッセージ
     }
   [endscript]
 [endmacro]
@@ -695,6 +695,9 @@
       alert('未定義のactionIdです');
     }
 
+    // 同陣営判定の対象となる役職は、CO中の役職（COがなければ村人）とする
+    const roleId = (f.characterObjects[f.doActionCandidateId].CORoleId == '') ? ROLE_ID_VILLAGER : f.characterObjects[f.doActionCandidateId].CORoleId;
+
     let targetCharacterId = '';
     if (isLogicalDecision) {
       // 論理的な判断
@@ -702,6 +705,7 @@
       targetCharacterId = getCharacterIdBySameFactionPerspective(
         f.characterObjects[f.doActionCandidateId],
         f.characterObjects[f.doActionCandidateId].perspective,
+        roleId,
         needsMax
       );
     } else {
@@ -900,6 +904,36 @@
     [eval exp="f.displaingButton.status = false"]
   [endif]
 [endmacro]
+
+
+; テスト
+[macro name="j_turnIntoNight"]
+
+[j_clearFixButton status="true" menu="true"]
+
+
+[bg storage="black.png" time="1000" wait="true" effect="fadeInDown"]
+
+;[ptext]
+
+[l]
+[bg storage="living_night_close_nc238328.jpg" time="1000" wait="true" effect="fadeInUp"]
+
+
+[j_displayFixButton status="true" menu="true"]
+
+
+
+[l]
+
+[bg storage="white.png" time="1000" wait="true" effect="fadeInDown"]
+
+[l]
+[bg storage="living_day_nc238325.jpg" time="1000" wait="true" effect="fadeInUp"]
+
+
+[endmacro]
+
 
 
 ; jsonをローカルに保存する

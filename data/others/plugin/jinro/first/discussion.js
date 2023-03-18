@@ -1197,10 +1197,11 @@ function getFeeling(characterObject, sameFactionPossivility) {
  * 自分自身の視点オブジェクトを確認し、最も同陣営割合が高い（低い）キャラクターIDを返却する
  * @param {Object} characterObject キャラクターオブジェクト
  * @param {Object} perspective 視点オブジェクト（perspectiveを使うか、rolePerspectiveを使うかは呼び元に任せる）
+ * @param {String} roleId 同陣営判定を行う役職ID
  * @param {Boolean} needsMax true:最大値のキャラクターIDを取得したい / false:最小値のキャラクターIDを取得したい
  * @returns {String} targetCharacterId 対象のキャラクターID
  */
-function getCharacterIdBySameFactionPerspective(characterObject, perspective, needsMax) {
+function getCharacterIdBySameFactionPerspective(characterObject, perspective, roleId, needsMax) {
 
   let targetCharacterIdList = [];
   // 比較用の値の初期値を格納。最大値が必要なら0、最小値が必要なら1
@@ -1218,18 +1219,19 @@ function getCharacterIdBySameFactionPerspective(characterObject, perspective, ne
     // 全役職をループ
     for (let rId of Object.keys(perspective[cId])) {
       // 自分と同陣営の役職のperspectiveの割合値を合計する（自分視点で必ず同陣営なら1、必ず敵陣営なら0になる）
-      if (ROLE_ID_TO_FACTION[rId] == ROLE_ID_TO_FACTION[characterObject.role.roleId]) {
+      if (ROLE_ID_TO_FACTION[rId] == ROLE_ID_TO_FACTION[roleId]) {
         sumSameFactionPerspective += perspective[cId][rId];
       }
     }
+    console.log('★SameFactionPerspective targetCharacterId:' + cId + ' sumSameFactionPerspective:' + sumSameFactionPerspective);
 
     // 同陣営割合の合計の値を確認し、キャラクターIDを格納するか判定する
     if (sumSameFactionPerspective == maxOrMinValue) {
       // 値が、現在の比較用の値と同値なら候補配列に追加する（取得したいのが最大値でも最小値でも、ここの処理は共通でよい）
       targetCharacterIdList.push(cId);
     } else if (
-      (needsMax && sumSameFactionPerspective > maxOrMinValue) ||
-      (!needsMax && sumSameFactionPerspective < maxOrMinValue)
+      (needsMax && (sumSameFactionPerspective > maxOrMinValue)) ||
+      (!needsMax && (sumSameFactionPerspective < maxOrMinValue))
     ) {
       // 値が現在の比較用の値超過または未満（取得したいのが最大値か最小値かで判定し分ける）ならば、候補配列に格納する
       targetCharacterIdList = [cId];
@@ -1237,15 +1239,45 @@ function getCharacterIdBySameFactionPerspective(characterObject, perspective, ne
     }
   }
 
-  // 候補配列に候補が1人ならその対象を、複数ならランダムで、候補者に決定する。0人の場合は空文字を返す。
-  // MEMO 同値のキャラが複数いた場合にその全員分の配列が欲しいときが来たら引数で処理し分けるようにすること
+  // 候補者配列から最終的な候補者を決める
+  // 候補が1人なら即確定し、0人なら空文字を返す
   let targetCharacterId = '';
   if (targetCharacterIdList.length == 1) {
     targetCharacterId = targetCharacterIdList[0];
+
   } else if (targetCharacterIdList.length >= 2) {
-    targetCharacterId = getRandomElement(targetCharacterIdList);
+    // 候補が複数なら、候補の中で最も仲間度が高い（低い）キャラクターを候補とする
+    // 基本的には、信頼度の差の影響で仲間度にも差が出る。ただしlogicalが1の場合だけは差が出ないことに注意。
+    let sameFactionPossivility = calcSameFactionPossivility(characterObject, perspective, targetCharacterIdList);
+    console.log('★SameFactionPerspective sameFactionPossivility:');
+    console.log(sameFactionPossivility);
+
+    targetCharacterIdList = [];
+    // 比較用の値の初期値を格納。最大値が必要なら0、最小値が必要なら1
+    maxOrMinValue = needsMax ? 0 : 1;
+    for (let cId of Object.keys(sameFactionPossivility)) {
+      // 仲間度の合計の値を確認し、キャラクターIDを格納するか判定する
+      if (sameFactionPossivility[cId] == maxOrMinValue) {
+        // 値が、現在の比較用の値と同値なら候補配列に追加する（取得したいのが最大値でも最小値でも、ここの処理は共通でよい）
+        targetCharacterIdList.push(cId);
+      } else if (
+        (needsMax && (sameFactionPossivility[cId] > maxOrMinValue)) ||
+        (!needsMax && (sameFactionPossivility[cId] < maxOrMinValue))
+      ) {
+        // 値が現在の比較用の値超過または未満（取得したいのが最大値か最小値かで判定し分ける）ならば、候補配列に格納する
+        targetCharacterIdList = [cId];
+        maxOrMinValue = sameFactionPossivility[cId];
+      }
+    }
+
+    // 候補が1人なら即確定し、ここまでやっても候補が複数ならランダムで決める
+    if (targetCharacterIdList.length == 1) {
+      targetCharacterId = targetCharacterIdList[0];
+    } else if (targetCharacterIdList.length >= 2) {
+      targetCharacterId = getRandomElement(targetCharacterIdList);
+    }
   }
-  console.log('getCharacterIdBySameFactionPerspective targetCharacterId:' + targetCharacterId);
+  console.log('★getCharacterIdBySameFactionPerspective targetCharacterId:' + targetCharacterId);
 
   return targetCharacterId;
 }

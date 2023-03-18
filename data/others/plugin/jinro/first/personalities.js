@@ -32,11 +32,11 @@ function Tester() {
     0.7, // active
     0.1, // hungry
     0.1, // egoistic
-    0, // logical 論理力(0～1)
+    0.2, // logical 論理力(0～1)
     { // assertiveness 主張力（originalとcurrentは同値にすること）
       original: 1,  // 元々の値（毎日currentをoriginalで初期化する）
       current: 1,   // 現在の値（判定処理にはcurrentを用いる）
-      decrease: 0.2 // 減少値（発言一回ごとに減少値分currentを減らす）
+      decrease: 0.4 // 減少値（発言一回ごとに減少値分currentを減らす）
     },
     // COProbability {自身のRoleId : その役職としてCOする可能性}
     {
@@ -44,7 +44,7 @@ function Tester() {
         [ROLE_ID_FORTUNE_TELLER]: 1
       },
       [ROLE_ID_WEREWOLF]: {
-        [ROLE_ID_FORTUNE_TELLER]: 1
+        [ROLE_ID_FORTUNE_TELLER]: 0
       },
       [ROLE_ID_MADMAN]: {
         [ROLE_ID_FORTUNE_TELLER]: 1
@@ -53,11 +53,11 @@ function Tester() {
     // impressiveReasonList {信頼度に影響を与える理由: {value: 値（絶対値とする）, arithmetic: 現在の信頼度とvalueとの計算方法}
     {
       [ACTION_SUSPECT]: { // 疑う
-        value: 0.2,
+        value: 0.3,
         arithmetic: ARITHMETIC_ADDITION
       },
       [ACTION_TRUST]: { // 信じる
-        value: 0.2,
+        value: 0.3,
         arithmetic: ARITHMETIC_ADDITION
       },
       [ACTION_ASK]: { // 聞き出す MEMO:試験用に信頼度を最大にできるようにする
@@ -69,7 +69,7 @@ function Tester() {
         arithmetic: ARITHMETIC_ADDITION
       },
       [ACTION_FORTUNE_TELLING]: { // 占う
-        value: 0.3,
+        value: 0.4,
         arithmetic: ARITHMETIC_ADDITION
       },
       // 以下のようなメソッドをここに格納できれば嬉しい

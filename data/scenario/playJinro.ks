@@ -36,6 +36,8 @@
 #
 人狼ゲームの幕開けです……！[p]
 
+; [j_turnIntoNight]
+
 *day0_nightPhase
 [clearstack]
 
