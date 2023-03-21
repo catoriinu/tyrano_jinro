@@ -43,6 +43,8 @@ function prepareGameMain() {
 
   // 噛み先履歴オブジェクトの初期化
   TYRANO.kag.stat.f.bitingHistory = {};
+  // 処刑履歴オブジェクトの初期化
+  TYRANO.kag.stat.f.executionHistory = {};
 
   // 全占い結果履歴オブジェクトの初期化
   TYRANO.kag.stat.f.allFortuneTellingHistoryObject = {};

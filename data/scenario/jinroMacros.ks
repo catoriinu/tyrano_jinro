@@ -16,8 +16,11 @@
     actionObject = causeDeathToCharacter(actionObject);
     if (actionObject.result) {
       alert(f.characterObjects[actionObject.targetId].name + 'は追放された。'); // 処刑メッセージ
-      // TODO ここで破綻判定
     }
+    // 処刑履歴オブジェクトにその日の処刑結果を保存する
+    f.executionHistory[f.day] = actionObject;
+
+    // MEMO:ここでは視点オブジェクトの更新は行わない。処刑後もゲームが継続することが確定したとき＝夜時間開始時用の初期化処理の中で行う。
   [endscript]
 [endmacro]
 

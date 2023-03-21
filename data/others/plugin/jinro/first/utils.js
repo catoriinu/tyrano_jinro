@@ -324,6 +324,23 @@ function daytimeInitialize() {
 function nightInitialize() {
   // 噛み実行済みフラグを最初に初期化しておく。噛んだ後、立てること。人狼が2人以上いたときに、噛み実行済みならスキップするため。
   TYRANO.kag.stat.f.isBiteEnd = false;
+
+  // 直前の昼に処刑が発生していた場合、処刑結果に関する破綻判定を行う
+  if (TYRANO.kag.stat.f.day in TYRANO.kag.stat.f.executionHistory && TYRANO.kag.stat.f.executionHistory[TYRANO.kag.stat.f.day].result) {
+
+    const executedId = TYRANO.kag.stat.f.executionHistory[TYRANO.kag.stat.f.day].targetId;
+
+    // その視点で、処刑対象者が最後の人狼で確定していたにも関わらず夜時間を迎えたならば、破綻とする
+    for (let cId of Object.keys(TYRANO.kag.stat.f.characterObjects)) {
+      // 判定する視点は、表の視点（つまり、騙り占い師なら占い師としての視点）とする
+      let perspective = TYRANO.kag.stat.f.characterObjects[cId].perspective;
+      if (isLastOneInPerspective(executedId, ROLE_ID_WEREWOLF, perspective)) {
+        console.log(cId + '視点で' + executedId + 'は最後の' + ROLE_ID_WEREWOLF + 'の生存者でした。つまり破綻です');
+        updateCharacterObjectToContradicted(cId);
+      }
+    }
+    // 共通視点オブジェクトがここで破綻することはない…はず
+  }
 }
 
 
@@ -331,7 +348,7 @@ function nightInitialize() {
  * 時間を進めるメソッド
  */
 function timePasses() {
-  // 昼に呼ばれたら夜に+する
+  // 昼に呼ばれたら夜にする
   if (TYRANO.kag.stat.f.isDaytime) {
     TYRANO.kag.stat.f.isDaytime = false;
     nightInitialize(); // 夜時間開始時用の初期化を行う

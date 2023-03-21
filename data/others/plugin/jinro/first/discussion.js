@@ -297,15 +297,61 @@ function updateCommonPerspective(characterId, zeroRoleIds) {
       if (TYRANO.kag.stat.f.developmentMode) {
         alert(cId + 'の視点が破綻しました！');
       }
-      // 破綻フラグを立てる
-      TYRANO.kag.stat.f.characterObjects[cId].isContradicted = true;
-      // ここで破綻したら、共通視点オブジェクトで上書きする&自分自身を嘘がつける役職（TODO:「嘘をつかない役職配列」をメソッドで取り出せるようにする）だったということで確定する。
-      // （試しに）updateCommonPerspectiveを再帰呼び出しして共通および全員の視点オブジェクトを更新する
-      TYRANO.kag.stat.f.characterObjects[cId].perspective = clone(TYRANO.kag.stat.f.commonPerspective);
-      TYRANO.kag.stat.f.characterObjects[cId].role.rolePerspective= clone(TYRANO.kag.stat.f.commonPerspective);
-      updateCommonPerspective(cId, [ROLE_ID_VILLAGER, ROLE_ID_FORTUNE_TELLER]);
+      // 破綻したときの処理を行う
+      updateCharacterObjectToContradicted(cId);
     }
   }
+}
+
+
+/**
+ * 破綻したときの処理をまとめて実行する
+ * @param {String} characterId 破綻したキャラクターID
+ */
+function updateCharacterObjectToContradicted(characterId) {
+  // 破綻フラグを立てる
+  TYRANO.kag.stat.f.characterObjects[characterId].isContradicted = true;
+
+  // これ以上破綻を起こさないように、視点オブジェクトを表裏どちらも共通視点オブジェクトで上書きする
+  TYRANO.kag.stat.f.characterObjects[characterId].perspective = clone(TYRANO.kag.stat.f.commonPerspective);
+  TYRANO.kag.stat.f.characterObjects[characterId].role.rolePerspective= clone(TYRANO.kag.stat.f.commonPerspective);
+
+  // 破綻したキャラは、嘘がつける役職（TODO:「嘘をつかない役職配列」をメソッドで取り出せるようにする）だったということで確定する。
+  // updateCommonPerspectiveを呼び出して共通および全員の視点オブジェクトを更新する
+  updateCommonPerspective(characterId, [ROLE_ID_VILLAGER, ROLE_ID_FORTUNE_TELLER]);
+}
+
+
+/**
+ * その視点オブジェクトの中で、そのキャラクターが「その役職の最後の生存者だった」ことが確定するかを判定する。
+ * @param {String} characterId キャラクターID
+ * @param {String} roleId 役職ID
+ * @param {Object} perspective 視点オブジェクト
+ * @returns 
+ */
+function isLastOneInPerspective(characterId, roleId, perspective) {
+
+  // その視点オブジェクトの中で、
+  for (let cId of Object.keys(perspective)) {
+    if (cId == characterId) {
+      // そのキャラクターがその役職で確定しているか。確定していなければ即false
+      if (perspective[cId][roleId] < 1) return false;
+
+    } else if (cId == 'uncertified') {
+      // その役職に就いているキャラがすでに全員確定しているか。未確定が1人でもいれば即false
+      if (perspective.uncertified[roleId] > 0) return false;
+
+    } else {
+      // そのキャラクター以外のキャラに関しては、現在の生存者の中で、
+      // （すでに死亡済みのキャラの中にその役職で確定していたキャラがいても、「最後の生存者」の判定には関係ないためスルーする）
+      if (TYRANO.kag.stat.f.characterObjects[cId].isAlive) {
+        // その役職に就いている可能性があるキャラが他にいないか。まだ可能性が残っているキャラが生存していれば即false
+        if (perspective[cId][roleId] > 0) return false;
+      }
+    }
+  }
+  // 以上の条件に当てはまらなかった場合のみ、そのキャラクターが「その役職の最後の生存者だった」ことが確定する
+  return true;
 }
 
 
