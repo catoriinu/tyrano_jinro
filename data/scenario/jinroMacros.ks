@@ -3,32 +3,20 @@
 
 
 ; 処刑マクロ
-[macro name=j_execution]
+[macro name="j_execution"]
   [iscript]
-    ; 引数のキャラクターIDを持つキャラクターオブジェクトを、ゲーム変数から取得する
-    let tmpCharacterObject = {};
-    tmpCharacterObject = f.characterObjects[mp.characterId];
+    ; 引数のキャラクターIDを対象者とする処刑のアクションオブジェクトを生成
+    let actionObject = new Action(
+      '',
+      ACTION_EXECUTE,
+      mp.characterId
+    );
 
-    ; 死亡判定を行う（判定に成功したら、メソッドが死亡までやってくれる）
-    if (causeDeathToCharacter(tmpCharacterObject, DEATH_BY_EXECUTION)) {
-      alert(tmpCharacterObject.name + 'は追放された。'); // 処刑メッセージ
-    }
-  [endscript]
-[endmacro]
-
-
-; 未使用マクロ
-; 襲撃マクロ
-[macro name=j_attack]
-; 引数テスト:[emb exp="mp.character_id"][p]
-  [iscript]
-    ; 引数のキャラクターIDを持つキャラクターオブジェクトを、ゲーム変数から取得する
-    let tmpCharacterObject = {};
-    tmpCharacterObject = f.characterObjects[mp.character_id];
-
-    ; 死亡判定を行う（判定に成功したら、メソッドが死亡までやってくれる）
-    if (causeDeathToCharacter(tmpCharacterObject, DEATH_BY_ATTACK)) {
-      alert(tmpCharacterObject.name + 'は襲撃された。');
+    ; 死亡判定を行う
+    actionObject = causeDeathToCharacter(actionObject);
+    if (actionObject.result) {
+      alert(f.characterObjects[actionObject.targetId].name + 'は追放された。'); // 処刑メッセージ
+      // TODO ここで破綻判定
     }
   [endscript]
 [endmacro]
@@ -232,22 +220,22 @@
 ; @param characterId 噛み対象のID。入っているなら、実行者はプレイヤーである。入っていないなら実行者はNPCのため、メソッド内部で対象を決める。
 [macro name="j_biting"]
   [iscript]
-    let todayResult = {};
+    let actionObject = {};
     ; ターゲットが決まっている（＝実行者がプレイヤー）なら
     if (mp.characterId) {
-      todayResult = f.characterObjects[f.playerCharacterId].role.biting(mp.biterId, mp.characterId);
+      actionObject = f.characterObjects[f.playerCharacterId].role.biting(mp.biterId, mp.characterId);
     ; ターゲットが決まっていない（＝実行者がNPC）なら
     } else {
-      todayResult = f.characterObjects[mp.biterId].role.biting(mp.biterId);
+      actionObject = f.characterObjects[mp.biterId].role.biting(mp.biterId);
     }
     ; 噛まれたキャラクターの退場用にティラノの変数に入れておく
-    f.targetCharacterId = todayResult.characterId;
+    f.targetCharacterId = actionObject.targetId;
 
-    let resultMassage = todayResult.result ? f.characterObjects[todayResult.characterId].name + 'は無残な姿で発見された。' : '平和な朝を迎えた。';
+    let resultMassage = actionObject.result ? f.characterObjects[actionObject.targetId].name + 'は無残な姿で発見された。' : '平和な朝を迎えた。';
     alert(resultMassage);
-    if (todayResult.result) {
+    if (actionObject.result) {
       ; 噛まれたということは人狼ではないので、視点オブジェクトを更新する（TODO：人狼以外にも噛まれない役職が増えたら修正する）
-      updateCommonPerspective(todayResult.characterId, [ROLE_ID_WEREWOLF]);
+      updateCommonPerspective(actionObject.targetId, [ROLE_ID_WEREWOLF]);
     }
   [endscript]
 [endmacro]

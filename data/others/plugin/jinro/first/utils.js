@@ -205,29 +205,26 @@ function isWinVillagers(survivorObjects) {
 
 
 /**
- * キャラクターの死亡処理および死亡回避処理を行う
- * TODO 役職が増えて死亡契機や死亡回避ケースが増えた場合、修正する（ex:狩人の護衛による失敗、妖狐への襲撃による失敗、妖狐への占いによる死亡）
- * @param {Object} characterObject 死亡処理対象のキャラクターオブジェクト
- * @param {String} causeOfDeath 死因定数
- * @return {Boolean} 死亡成功判定 TODO 死亡判定メッセージも返すようにする？
+ * キャラクターの死亡判定を行う。死亡した場合、生存者フラグを折る。
+ * TODO 現状は死亡するケースしかない。役職が増えて死亡契機や死亡回避ケースが増えた場合、修正する（ex:狩人の護衛による失敗、妖狐への襲撃による失敗、妖狐への占いによる死亡）
+ * @param {Object} actionObject 死亡処理アクションが入ったアクションオブジェクト
+ * @return {Object} 死亡判定結果を格納したアクションオブジェクト
  */
-function causeDeathToCharacter(characterObject, causeOfDeath) {
-  let isDead = false;
-  if (causeOfDeath == DEATH_BY_EXECUTION) {
+function causeDeathToCharacter(actionObject) {
+  if (actionObject.actionId == ACTION_EXECUTE) {
     // 投票による処刑
-    isDead = true;
-    characterObject.isAlive = false;
-    //console.log(characterObject.name + '（' + characterObject.role.roleName + '）は投票の結果処刑された……');
-  } else if (causeOfDeath == DEATH_BY_ATTACK) {
+    TYRANO.kag.stat.f.characterObjects[actionObject.targetId].isAlive = false;
+    actionObject.result = true;
+  } else if (actionObject.actionId == ACTION_BITE) {
     // 人狼による襲撃
-    isDead = true;
-    characterObject.isAlive = false;
-    //console.log(characterObject.name + '（' + characterObject.role.roleName + '）は人狼の襲撃の犠牲となった……');
+    // （fixme:狩人や妖狐による襲撃失敗に気をつける。妖狐実装後のように、死亡原因が重なるようになったときには処理順に依らないよう、夜の前に判定用キャラクターオブジェクトをコピーしておく）
+    TYRANO.kag.stat.f.characterObjects[actionObject.targetId].isAlive = false;
+    actionObject.result = true;
   } else {
     // 未定義の死因は、死ななかった判定にしておく
     //console.log(characterObject.name + '（' + characterObject.role.roleName + '）は何故か死ななかった！');
   }
-  return isDead;
+  return actionObject;
 }
 
 

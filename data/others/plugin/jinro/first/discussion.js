@@ -587,12 +587,12 @@ function Button (id, text, side = 'center', color = '', addClasses = [], target 
 
 /**
  * アクションオブジェクトクラス
- * @param {String} characterId アクション実行者のキャラクターID
+ * @param {String} characterId アクション実行者のキャラクターID（特定の実行者がいないアクションなら不要。例：処刑）
  * @param {String} actionId 実行したアクションID
  * @param {String} targetId アクションの対象者のキャラクターID（対象をとらないアクションなら不要）
- * @param {Boolean} result TODO 占い等実行時の結果
+ * @param {Boolean} result アクションの結果。意味はアクションによって異なる。（占い=t:●/f:○, 処刑・襲撃=t:死亡/f:死亡せず）
  */
-function Action (characterId, actionId, targetId = '', result = null) {
+function Action (characterId = '', actionId, targetId = '', result = null) {
   this.characterId = characterId;
   this.actionId = actionId;
   this.targetId = targetId;
