@@ -15,8 +15,8 @@
 ; @param roleId 発言者の役職ID。必須
 ; @param face 発言者の表情。（TODO）
 [macro name="m_noticeRole"]
-  [m_changeFrameWithId characterId="&mp.characterId"]
   [m_changeCharacter characterId="&mp.characterId" face="normal"]
+  [m_changeFrameWithId characterId="&mp.characterId"]
   # &f.speaker[f.characterObjects[mp.characterId].name]
   [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
   [eval exp="tf.messageTarget = '*noticeRole_' + mp.roleId"]
@@ -27,8 +27,8 @@
 ; シーン：真占い師で、占い実行結果を知ったときの反応
 ; 事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 [macro name="m_announcedFortuneTellingResult"]
-  [m_changeFrameWithId characterId="&f.actionObject.characterId"]
   [m_changeCharacter characterId="&f.actionObject.characterId" face="normal"]
+  [m_changeFrameWithId characterId="&f.actionObject.characterId"]
   # &f.speaker[f.characterObjects[f.actionObject.characterId].name]
   [eval exp="tf.messageStorage = './message/' + f.actionObject.characterId + '.ks'"]
   [eval exp="tf.messageTarget = '*announcedFortuneTellingResult_' + f.actionObject.result"]
@@ -50,8 +50,8 @@
 ; シーン：前日の占い結果をCOするときのセリフ
 ; 事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 [macro name="m_COFortuneTelling"]
-  [m_changeFrameWithId characterId="&f.actionObject.characterId"]
   [m_changeCharacter characterId="&f.actionObject.characterId" face="normal"]
+  [m_changeFrameWithId characterId="&f.actionObject.characterId"]
   # &f.speaker[f.characterObjects[f.actionObject.characterId].name]
   [eval exp="tf.messageStorage = './message/' + f.actionObject.characterId + '.ks'"]
   [eval exp="tf.messageTarget = '*COFortuneTelling_' + f.actionObject.result"]
@@ -65,8 +65,8 @@
 ; @param targetCharacterId アクション対象のキャラクターID。必須
 ; @param actionId 実行するアクションID。必須。
 [macro name="m_doAction"]
-  [m_changeFrameWithId characterId="&mp.characterId"]
   [m_changeCharacter characterId="&mp.characterId" face="normal"]
+  [m_changeFrameWithId characterId="&mp.characterId"]
   # &f.speaker[f.characterObjects[mp.characterId].name]
   [eval exp="tf.selectedCharacterId = mp.targetCharacterId"]
   [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
@@ -84,8 +84,8 @@
   ; TODO love:信頼度がとても高いとき hate:信頼度がとても低いとき newtral:それ以外 の三段階のリアクションができると嬉しい
   ;　(「とても」としているのは、よほど極端な状況でない限り、人狼で露骨な反応はしないはずのため。ただ、顔に出やすい性格のキャラは条件をゆるくすると面白いかも）
   ; （上記の判定を信頼度でやるべきか、仲間度でやるべきかは要考慮）
-  [m_changeFrameWithId characterId="&mp.characterId"]
   [m_changeCharacter characterId="&mp.characterId" face="normal"]
+  [m_changeFrameWithId characterId="&mp.characterId"]
   # &f.speaker[f.characterObjects[mp.characterId].name]
   ; [eval exp="tf.targetCharacterId = mp.targetCharacterId"]
   [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
@@ -98,8 +98,8 @@
 ; @param characterId 発言者のキャラクターID。必須
 ; @param face 発言者の表情。（TODO）
 [macro name="m_chooseWhoToBite"]
-  [m_changeFrameWithId characterId="&mp.characterId"]
   [m_changeCharacter characterId="&mp.characterId" face="normal"]
+  [m_changeFrameWithId characterId="&mp.characterId"]
   # &f.speaker[f.characterObjects[mp.characterId].name]
   [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
   [eval exp="tf.messageTarget = '*chooseWhoToBite'"]
@@ -111,8 +111,8 @@
 ; @param characterId 発言者のキャラクターID。必須
 ; @param face 発言者の表情。（TODO）
 [macro name="m_executed"]
-  [m_changeFrameWithId characterId="&mp.characterId"]
   [m_changeCharacter characterId="&mp.characterId" face="normal"]
+  [m_changeFrameWithId characterId="&mp.characterId"]
   # &f.speaker[f.characterObjects[mp.characterId].name]
   [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
   [eval exp="tf.messageTarget = '*executed'"]
@@ -125,8 +125,8 @@
 ; @param characterId 発言者のキャラクターID。必須
 ; @param face 発言者の表情。（TODO）
 [macro name="m_afterExecution"]
-  [m_changeFrameWithId characterId="&mp.characterId"]
   [m_changeCharacter characterId="&mp.characterId" face="normal"]
+  [m_changeFrameWithId characterId="&mp.characterId"]
   # &f.speaker[f.characterObjects[mp.characterId].name]
   [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
   [eval exp="tf.messageTarget = '*afterExecution'"]
@@ -203,6 +203,7 @@
 
 ; メッセージフレームを、発言者の位置に合わせて切り替える
 ; 現在のフレームと同じフレームに変える場合は何もしない
+; NOTICE: [m_changeCharacter]と併用する場合、[m_changeCharacter]を先に実行してf.displayedCharacterを更新しておく必要がある
 ; TODO 高頻度で切り替え時にチラつくのをなんとかしたい
 ; @param characterId 発言者のキャラクターID。ない場合、発言者枠なしのメッセージフレームに変える。
 [macro name="m_changeFrameWithId"]
