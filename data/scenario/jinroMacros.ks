@@ -27,9 +27,10 @@
 
 ; 勝利陣営がいるかを判定し、勝利陣営がいた場合、指定されたラベルにジャンプする（storage, targetともに必須）
 ; ex: [j_judgeWinnerCampAndJump storage="playJinro.ks" target="*gameOver"]
-[macro name=j_judgeWinnerCampAndJump]
+[macro name="j_judgeWinnerCampAndJump"]
+  [m_changeFrameWithId]
   #
-  勝敗判定中……[r]
+  勝敗判定中……[p]
   [iscript]
     tf.winnerCamp = judgeWinnerCamp(f.characterObjects);
     if (f.developmentMode) {
@@ -233,13 +234,6 @@
     }
     ; 噛まれたキャラクターの退場用にティラノの変数に入れておく
     f.targetCharacterId = actionObject.targetId;
-
-    let resultMassage = actionObject.result ? f.characterObjects[actionObject.targetId].name + 'は無残な姿で発見された。' : '平和な朝を迎えた。';
-    alert(resultMassage);
-    if (actionObject.result) {
-      ; 噛まれたということは人狼ではないので、視点オブジェクトを更新する（TODO：人狼以外にも噛まれない役職が増えたら修正する）
-      updateCommonPerspective(actionObject.targetId, [ROLE_ID_WEREWOLF]);
-    }
   [endscript]
 [endmacro]
 
@@ -897,31 +891,74 @@
 [endmacro]
 
 
-; テスト
+; 時間を夜から昼に進める
+[macro name="j_turnIntoDaytime"]
+
+
+  ; PC,NPCを退場させる
+  [m_exitCharacter characterId="&f.leftSideCharacterId"]
+  ;[m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
+  ; 夜に占った後だとNPCが画面に出ているので退場が必要
+  [m_exitCharacter characterId="&f.rightSideCharacterId"]
+  ;[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+  #
+  [m_changeFrameWithId]
+
+  ; 昨夜（時間を経過させる前なので厳密には同日）の襲撃アクションオブジェクトを取得する
+  ; TODO 襲撃死と同時に別の死亡者が出る（例：呪殺）ようになった場合は修正する。配列で複数オブジェクトを取得することになるはず
+  [eval exp="f.bitingObjectLastNight = f.bitingHistory[f.day]"]
+
+  ; 昼時間開始時用の初期化を行う
+  [eval exp="daytimeInitialize()"]
+
+  [bg storage="black.png" time="1000" wait="true" effect="fadeInDown"]
+
+  [emb exp="f.day + '日目の朝を迎えました。'"][l][r]
+  [if exp="typeof f.bitingObjectLastNight === 'undefined'"]
+    ; 昨夜の襲撃結果が取得できなかった（＝初日犠牲者のいない1日目昼）場合
+    ; TODO 人狼の人数を可変で出力する
+    ; FIXME 投票画面のように全員を表示してもいいかも。役職の内訳を表示してもいいかも。
+    この中に人狼が1人潜んでいます……。[p]
+
+  [elsif exp="f.bitingObjectLastNight.result"]
+    ; 昨夜の襲撃結果が襲撃成功の場合
+    ; キャラを登場させ、メッセージ表示
+    ; TODO とりあえず楽なので通常のポジションに登場させているが、襲撃死の演出を作ったら例えば画面中央に画像として表示させるだけとかにしたい
+    [m_changeCharacter characterId="&f.bitingObjectLastNight.targetId" face="normal"]
+    [emb exp="f.characterObjects[f.bitingObjectLastNight.targetId].name + 'は無残な姿で発見されました……。'"][p]
+
+    ; 噛まれたということは人狼ではないので、視点オブジェクトを更新する（TODO：人狼以外にも噛まれない役職が増えたら修正する）
+    [eval exp="updateCommonPerspective(f.bitingObjectLastNight.targetId, [ROLE_ID_WEREWOLF])"]
+
+    ; キャラを退場させる
+    [m_exitCharacter characterId="&f.bitingObjectLastNight.targetId"]
+
+  [else]
+    ; 昨夜の襲撃結果が襲撃失敗の場合
+    誰も襲われていない、平和な朝でした。[p]
+
+  [endif]
+
+  [bg storage="living_day_nc238325.jpg" time="1000" wait="true" effect="fadeInUp"]
+
+  ; PCが生存していれば再度画面に登場させる
+  [m_changeCharacter characterId="&f.playerCharacterId" face="normal" cond="f.characterObjects[f.playerCharacterId].isAlive"]
+
+[endmacro]
+
+
+; 時間を昼から夜に進める
 [macro name="j_turnIntoNight"]
 
-[j_clearFixButton status="true" menu="true"]
+  ; PCを退場させる
+  [m_exitCharacter characterId="&f.leftSideCharacterId"]
+  ;[m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
 
+  ; 夜時間開始時用の初期化を行う
+  [eval exp="nightInitialize()"]
+  [bg storage="living_night_close_nc238328.jpg" time="1000" wait="true" effect="fadeInUp"]
 
-[bg storage="black.png" time="1000" wait="true" effect="fadeInDown"]
-
-;[ptext]
-
-[l]
-[bg storage="living_night_close_nc238328.jpg" time="1000" wait="true" effect="fadeInUp"]
-
-
-[j_displayFixButton status="true" menu="true"]
-
-
-
-[l]
-
-[bg storage="white.png" time="1000" wait="true" effect="fadeInDown"]
-
-[l]
-[bg storage="living_day_nc238325.jpg" time="1000" wait="true" effect="fadeInUp"]
-
+  恐ろしい夜がやってきました。[p]
 
 [endmacro]
 

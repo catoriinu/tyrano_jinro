@@ -36,10 +36,8 @@
 #
 人狼ゲームの幕開けです……！[p]
 
-; [j_turnIntoNight]
-
-*day0_nightPhase
 [clearstack]
+*day0_nightPhase
 
 ; 夜時間開始時に、夜時間中に参照するためのcharacterObjectを複製する。占い、噛みなどの記録は本物のf.characterObjectsに更新していく。
 ; 初回はオブジェクト型に初期化する
@@ -69,13 +67,10 @@
 ; 初日夜のNPCの行動。占い師のみ行動する。
 [j_nightPhaseFortuneTellingForNPC]
 
+; 昼時間開始
 *startDaytime
+[j_turnIntoDaytime]
 [clearstack]
-#
-[eval exp="timePasses()"]
-[bg storage="living_day_nc238325.jpg" time="500"]
-[m_timePasses isDaytime="&f.isDaytime"]
-
 
 [m_changeFrameWithId]
 #
@@ -404,16 +399,8 @@
 
 ; 夜時間開始
 *nightPhase
+[j_turnIntoNight]
 [clearstack]
-
-[eval exp="timePasses()"]
-[bg storage="living_night_close_nc238328.jpg" time="300"]
-[m_timePasses isDaytime="&f.isDaytime"]
-
-
-; 夜時間開始時に、夜時間中に生存しているかを参照するためのcharacterObjectを複製する。占い、噛みなどの記録は本物のf.characterObjectsに更新していく。
-[eval exp="f.characterObjectsHistory[f.day] = clone(f.characterObjects)"]
-
 
 ; プレイヤーの行動（夜時間オブジェクトを参照）
 ; MEMO: *nightPhaseNPCまでの区間を[if]で囲っていると、「人狼で、初日占いCOしており、直前で騙り占いをしている」場合に「人狼の場合のみ」ルートを通らなくなった。おそらく[if]の使いすぎによるスタック溢れでおかしくなった感じ。
@@ -512,7 +499,7 @@ NPCが行動しています……[p]
 ; 勝敗判定
 [j_judgeWinnerCampAndJump storage="playJinro.ks" target="*gameOver"]
 
-[bg storage="living_day_nc238325.jpg" time="100"]
+; 勝敗がつかなければ次の日に進む
 [jump target="*startDaytime"]
 
 

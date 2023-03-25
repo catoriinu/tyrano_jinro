@@ -289,7 +289,15 @@ function getValuesFromObjectArray(objectArray, key) {
  * 昼時間開始時用の初期化を行う
  */
 function daytimeInitialize() {
-  
+
+  // 昨夜（時間を経過させる前なので厳密には同日）の襲撃アクションオブジェクトを取得する
+  // TODO 襲撃死と同時に別の死亡者が出る（例：呪殺）ようになった場合は修正する。配列で複数オブジェクトを取得することになるはず
+  TYRANO.kag.stat.f.bitingObjectLastNight = TYRANO.kag.stat.f.bitingHistory[TYRANO.kag.stat.f.day];
+
+  // 時間を翌日の昼に進める
+  TYRANO.kag.stat.f.day++;
+  TYRANO.kag.stat.f.isDaytime = true;
+
   // NPCのCO候補者がいないフラグをfalseにする（昼の最初はいると考えてfalseで初期化。いないときにtrueにする）
   TYRANO.kag.stat.f.notExistCOCandidateNPC = false;
 
@@ -322,6 +330,9 @@ function daytimeInitialize() {
  * 夜時間開始時用の初期化を行う
  */
 function nightInitialize() {
+  // 時間を夜に進める
+  TYRANO.kag.stat.f.isDaytime = false;
+
   // 噛み実行済みフラグを最初に初期化しておく。噛んだ後、立てること。人狼が2人以上いたときに、噛み実行済みならスキップするため。
   TYRANO.kag.stat.f.isBiteEnd = false;
 
@@ -341,24 +352,11 @@ function nightInitialize() {
     }
     // 共通視点オブジェクトがここで破綻することはない…はず
   }
+
+  // 夜時間開始時に、夜時間中に生存しているかを参照するためのcharacterObjectを複製する。占い、噛みなどの記録は本物のf.characterObjectsに更新していく。
+  TYRANO.kag.stat.f.characterObjectsHistory[TYRANO.kag.stat.f.day] = clone(TYRANO.kag.stat.f.characterObjects)
 }
 
-
-/**
- * 時間を進めるメソッド
- */
-function timePasses() {
-  // 昼に呼ばれたら夜にする
-  if (TYRANO.kag.stat.f.isDaytime) {
-    TYRANO.kag.stat.f.isDaytime = false;
-    nightInitialize(); // 夜時間開始時用の初期化を行う
-  } else {
-    // 夜に呼ばれたら翌日の昼にする
-    TYRANO.kag.stat.f.day++;
-    TYRANO.kag.stat.f.isDaytime = true;
-    daytimeInitialize(); // 昼時間開始時用の初期化を行う
-  }
-}
 
 
 /**
