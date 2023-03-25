@@ -44,13 +44,17 @@
     // glinkのname（＝ボタンのclass要素）に設定するクラス名を格納する
     tf.glink_name = [
       'buttonhover', // ボタンにカーソルが乗ったときの処理を設定する用
-      f.buttonObjects[tf.cnt].side + '_buttonclass_' + f.buttonObjects[tf.cnt].id // 押下したボタンの判定用
+      'selected_side_' + f.buttonObjects[tf.cnt].side + '_buttonid_' + f.buttonObjects[tf.cnt].id // ホバーしたボタンの判定用
     ].concat(
       f.buttonObjects[tf.cnt].addClasses // ボタンに追加したいクラスがあれば追加する（例：選択中）
     ).join(); // ここまで配列に格納した各要素をカンマ区切りの文字列として結合する
   [endscript]
-  [glink color="&f.buttonObjects[tf.cnt].color" size="26" width="300" x="&tf.x" y="&tf.y" name="&tf.glink_name" text="&f.buttonObjects[tf.cnt].text" target="*glinkFromButtonObjects_end"]
-  
+  ; ボタンを生成する
+  ; 最終的に押下したボタンを判定するために、ボタン情報をpreexpに格納しておく
+  ; 補足：ティラノスクリプトv521fにて、preexpの評価タイミングがボタン押下時ではなくボタン生成時に修正された
+  ; 　　　そのおかげで、ホバーしたボタンのクラスからボタン情報を取得していた場合に存在した「ボタン表示時にカーソルが初めからボタンの位置にあると、hoverイベントが発生しないのでクラス名を取得できない」バグが解消された
+  [glink color="&f.buttonObjects[tf.cnt].color" size="26" width="300" x="&tf.x" y="&tf.y" name="&tf.glink_name" text="&f.buttonObjects[tf.cnt].text" preexp="[f.buttonObjects[tf.cnt].side, f.buttonObjects[tf.cnt].id]" exp="[f.selectedSide, f.selectedButtonId] = preexp" target="*glinkFromButtonObjects_end"]
+
   ; TODO なぜか勢い余ってtf.cntが終了条件以上に超えてしまうことがあるので、>=での判定にしている。それでもたまに1週多くループするバグが起きるので修正する。
   [jump target="*loopend" cond="tf.cnt >= (tf.buttonCount - 1)"]
   [eval exp="tf.cnt++"]
@@ -64,8 +68,8 @@
       // ホバーしたボタンのclass属性の中から、ボタン生成時に付与しておいたId部分を抽出する
       const classList = $(this).attr("class").split(" ");
 
-      // 最後にホバーしていたボタン=押下したボタンになる。どのサイドのボタンかと、押下したボタンのIDを格納しておく
-      const classNameReg = new RegExp('^(.*)_buttonclass_(.*)$');
+      // どのサイドのボタンかと、押下したボタンのIDを格納しておく。ver.0.7（ティラノスクリプトv521f）以降では、ホバー時に登場させるキャラの判定のみに使っている
+      const classNameReg = new RegExp('^selected_side_(.*)_buttonid_(.*)$');
       const regResult = classList.find(className => className.match(classNameReg)).match(classNameReg);
       f.selectedSide = regResult[1];
       f.selectedButtonId = regResult[2];
@@ -97,7 +101,7 @@
 [endif]
 
 *glinkFromButtonObjects_end
-[eval exp="console.log('button clicked id=' + f.selectedButtonId)"]
+[eval exp="console.log('button clicked side=' + f.selectedSide + ' id=' + f.selectedButtonId)"]
 
 ; ボタン用変数の初期化
 [eval exp="f.buttonObjects = []"]
