@@ -32,7 +32,7 @@
 ;[playbgm storage="honwakapuppu.ogg" volume="12" sprite_time="50-75000"]
 [m_changeFrameWithId][p]
 
-[jump target="movie_test"]
+;[jump target="movie_test"]
 
 [m_changeCharacter characterId="mochiko" face="normal"]
 [m_changeFrameWithId characterId="mochiko"]
@@ -89,7 +89,6 @@
 [m_changeFrameWithId characterId="miko"]
 [playse storage="chara/miko/movie_20230325/009_櫻歌ミコ（ノーマル）_画面は開発中のもの….ogg" loop="false" sprite_time="50-20000"]
 # 櫻歌ミコ
-[p]
 画面は開発中のものです！[p]
 
 [m_changeCharacter characterId="mochiko" face="surprise"]
@@ -169,7 +168,6 @@ NPCの思考プロセスにはまだまだ改良が必要ですが、[r]
 [m_changeFrameWithId characterId="miko"]
 [playse storage="chara/miko/movie_20230325/021_櫻歌ミコ（ノーマル）_フルボイボイス！.ogg" loop="false" sprite_time="50-20000"]
 # 櫻歌ミコ
-[p]
 フルボイボイス！[p]
 
 [m_changeCharacter characterId="mochiko" face="smile"]
@@ -197,7 +195,6 @@ VOICEVOXやティラノスクリプトといった制作ツールや、[r]
 [m_changeFrameWithId characterId="miko"]
 [playse storage="chara/miko/movie_20230325/025_櫻歌ミコ（ノーマル）_ありがとうございま….ogg" loop="false" sprite_time="50-20000"]
 # 櫻歌ミコ
-[p]
 ありがとうございます！[p]
 
 [m_changeCharacter characterId="mochiko" face="normal"]
@@ -247,7 +244,6 @@ VOICEVOXやティラノスクリプトといった制作ツールや、[r]
 [m_changeFrameWithId characterId="mochiko"]
 [playse storage="chara/mochiko/movie_20230325/034_もち子さん（ノーマル）_分かってますよ！.ogg" loop="false" sprite_time="50-20000"]
 # もち子さん
-[p]
 分かってますよ！[p]
 
 [m_changeCharacter characterId="mochiko" face="normal"]

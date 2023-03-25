@@ -896,11 +896,9 @@
 
 
   ; PC,NPCを退場させる
-  [m_exitCharacter characterId="&f.leftSideCharacterId"]
-  ;[m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
+  [m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
   ; 夜に占った後だとNPCが画面に出ているので退場が必要
-  [m_exitCharacter characterId="&f.rightSideCharacterId"]
-  ;[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+  [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
   #
   [m_changeFrameWithId]
 
@@ -951,8 +949,7 @@
 [macro name="j_turnIntoNight"]
 
   ; PCを退場させる
-  [m_exitCharacter characterId="&f.leftSideCharacterId"]
-  ;[m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
+  [m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
 
   ; 夜時間開始時用の初期化を行う
   [eval exp="nightInitialize()"]

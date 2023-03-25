@@ -52,6 +52,12 @@ function prepareGameMain() {
   // 発話者の名前オブジェクト。ksファイル内で、# &f.speaker['名前'] の形式で使う。
   TYRANO.kag.stat.f.speaker = setSpeakersName(characterObjects);
 
+  // 画面上に表示中のキャラクターを表すオブジェクト（表示キャラオブジェクト）の初期化
+  TYRANO.kag.stat.f.displayedCharacter = {
+    left: new DisplayedCharacterSingle(),
+    right: new DisplayedCharacterSingle()
+  }
+
   // アクション実行オブジェクトを初期化する
   // MEMO:昼開始時に初期化しているが、ゲームが夜から始まる場合に夜の間にアクション実行できるようにするためここでも初期化しておく
   TYRANO.kag.stat.f.pcActionObject = {};

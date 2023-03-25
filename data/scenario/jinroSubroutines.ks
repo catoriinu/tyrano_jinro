@@ -72,7 +72,7 @@
       
       if (tf.doSlideInCharacter) {
         // 表示中のキャラを画面外に出してから、ホバーされたキャラを登場させる
-        changeCharacter(f.selectedButtonId, 'normal', f.defaultPosition[f.selectedButtonId].side);
+        changeCharacter(f.selectedButtonId, 'normal');
       }
 
       // glinkのenterse属性だと細かい設定ができないため独自に設定（特にbufがデフォルトだと他で鳴っている効果音を打ち消してしまう）
@@ -80,13 +80,7 @@
     },
     function(e) {
       if (tf.doSlideInCharacter) {
-        if (typeof f.rightSideCharacterId != 'undefined') {
-          exitCharacter(
-            f.rightSideCharacterId,
-            f.defaultPosition[f.rightSideCharacterId].side,
-            f.defaultPosition[f.rightSideCharacterId].left
-          );
-        }
+        exitCharacter(f.displayedCharacter.right.characterId);
       }
     }
   );

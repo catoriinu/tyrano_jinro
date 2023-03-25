@@ -135,6 +135,7 @@
 
 
 ; シーン：時間が経過したときのシステムメッセージ
+; TODO 現状、呼び元がない。j_turnIntoDaytime、j_turnIntoNightから呼ぶようにするかもしれないので残しておく。
 ; @param isDaytime （true:昼/false:夜）になったか。必須。関連メソッド：timePasses()
 [macro name="m_timePasses"]
   [m_changeFrameWithId]
@@ -200,15 +201,15 @@
 
 ; ～ここから個人用設定あり～
 
-; メッセージフレームを、発言者に合わせて切り替える
+; メッセージフレームを、発言者の位置に合わせて切り替える
 ; 現在のフレームと同じフレームに変える場合は何もしない
 ; TODO 高頻度で切り替え時にチラつくのをなんとかしたい
 ; @param characterId 発言者のキャラクターID。ない場合、発言者枠なしのメッセージフレームに変える。
 [macro name="m_changeFrameWithId"]
-  [if exp="typeof mp.characterId === 'undefined'"]
+  [if exp="!('characterId' in mp)"]
     [position layer="message0" frame="message_window_none.png" cond="f.currentFrame != 'none'"]
     [eval exp="f.currentFrame = 'none'"]
-  [elsif exp="mp.characterId == f.playerCharacterId"]
+  [elsif exp="f.displayedCharacter.left.isDisplay && mp.characterId == f.displayedCharacter.left.characterId"]
     [position layer="message0" frame="message_window_left.png" cond="f.currentFrame != 'left'"]
     [eval exp="f.currentFrame = 'left'"]
   [else]
@@ -218,34 +219,70 @@
 [endmacro]
 
 
-; キャラクターを、発言者に合わせて切り替える
+; 登場しているキャラクターを交代する。既に登場しているキャラクターの場合は表情のみ変える。
 ; キャラの表示位置は、PC：画面左側、NPC：画面右側とする。同じ側には一人しか出ない（ので、例えばNPC1が右側にいるときNPC2が喋る場合、NPC1が退場してからNPC2が登場する）
 ; すでにそのキャラがchara_newで登録,およびその表情がchara_faceで登録済みである前提とする。
 ; @param characterId 登場させたいキャラのキャラクターID。必須。
-; @param face 登場させたいキャラのface。（TODO：なければ現在のfaceのまま）
+; @param face 登場させたいキャラのface。基本的に必須。
 [macro name="m_changeCharacter"]
-  [iscript]
-    changeCharacter(
-      mp.characterId,
-      mp.face,
-      f.defaultPosition[mp.characterId].side
-    );
-  [endscript]
+
+  ; マクロの引数を一時変数に保持しておく。別マクロを呼ぶ際にmpが上書きされ、戻ってきたときに参照できなくなるため
+  [eval exp="tf.cc = clone(mp)"]
+  ; そのキャラがデフォルトで登場する位置を格納する（exitCharacterマクロでtf.side変数を上書きするため、tc.cc配下に保持しておく）
+  [eval exp="tf.cc.side = f.defaultPosition[tf.cc.characterId].side"] 
+
+  ; その位置に既に登場しているキャラがいる場合
+  [if exp="f.displayedCharacter[tf.cc.side].isDisplay"]
+
+    ; それが登場させたいキャラ自身の場合
+    [if exp="f.displayedCharacter[tf.cc.side].characterId == tf.cc.characterId"]
+
+      ; 表情の指定があり、かつ今の表情と違う場合、表情を変える
+      [if exp="'face' in tf.cc && f.displayedCharacter[tf.cc.side].face != tf.cc.face"]
+        [chara_mod name="&tf.cc.characterId" face="&tf.cc.face" time="500" wait="false"]
+        ; 表示キャラオブジェクトを更新する
+        [eval exp="f.displayedCharacter[tf.cc.side].face = tf.cc.face"]
+      [endif]
+
+    [else]
+
+      ; 今登場している別のキャラを退場させてから、そのキャラを登場させる
+      [m_exitCharacter characterId="&f.displayedCharacter[tf.cc.side].characterId"]
+      [m_enterCharacter characterId="&tf.cc.characterId" face="&tf.cc.face" side="&tf.cc.side"]
+    [endif]
+
+  [else]
+
+    ; 登場しているキャラがいないなら、そのキャラを登場させる
+    [m_enterCharacter characterId="&tf.cc.characterId" face="&tf.cc.face" side="&tf.cc.side"]
+
+  [endif]
 [endmacro]
 
 
 ; 登場マクロ
 ; 現在は登場していないキャラを登場させる
 ; @param characterId 登場させたいキャラのキャラクターID。必須。
-; @param face 登場させたいキャラのface。必須。（TODO：なければ現在のfaceのままにしてもいいかも）
+; @param face 登場させたいキャラのface。必須。
+; @param side そのキャラがデフォルトで登場する位置。必須。
 [macro name="m_enterCharacter"]
-  [iscript]
-    enterCharacter(
-      mp.characterId,
-      mp.face,
-      f.defaultPosition[mp.characterId].side
-    );
-  [endscript]
+
+  [eval exp="console.log('★enter ' + mp.characterId)"]
+
+  ; 表情を変える
+  ; MEMO 「そのキャラの今の表情」を取得可能であれば、「今の表情と違う場合のみ」にしたい。が、HTML要素内に表情の情報がimgのパスくらいしかなかったので無理そう。
+  [chara_mod name="&mp.characterId" face="&mp.face" time="1" wait="false"]
+
+  ; sideに合わせて、キャラクター画像を移動させるべき量を格納する
+  [eval exp="tf.moveLeft = '-=1000'" cond="mp.side == 'right'"]
+  [eval exp="tf.moveLeft = '+=1000'" cond="mp.side == 'left'"]
+
+  ; sideがrightなら画面右から右側に、leftなら画面左から左側にスライドインしてくる
+  [chara_move name="&mp.characterId" time="600" anim="true" left="&tf.moveLeft" wait="false" effect="easeOutExpo"]
+
+  ; 表示キャラオブジェクトを更新する
+  [eval exp="f.displayedCharacter[mp.side] = new DisplayedCharacterSingle(true, mp.characterId, mp.face)"]
+
 [endmacro]
 
 
@@ -254,16 +291,25 @@
 ; TODO 襲撃死時とPCの処刑時の呼び出しで、フェードアウトしない。NPCの処刑時はする。ここというより、呼び出し元の処理順が問題かも。
 ; @param characterId 退場させたいキャラのキャラクターID。必須。
 [macro name="m_exitCharacter"]
-  [iscript]
-    exitCharacter(
-      mp.characterId,
-      f.defaultPosition[mp.characterId].side,
-      f.defaultPosition[mp.characterId].left
-    );
-  [endscript]
-[endmacro]
 
-; メモ
-; 登場状態はゲーム変数に持たせるのではなく、キャラクターオブジェクトに集約する考えで行くと、キャラクターオブジェクトに「登場中である」をもたせた方がよさそう。
-; でもキャラクターオブジェクトに人狼系のパラメータだけでなく、ティラノの都合のパラメータを持たせるのはどうなんだろう。
-; ゲーム変数にもたせておけば、セーブ・ロード時とかにも使いやすかったりしないか？
+  ; そのキャラがどちらのサイドに表示されているかを取得する
+  [iscript]
+    tf.side = (function(){
+      if (f.displayedCharacter.right.isDisplay && f.displayedCharacter.right.characterId == mp.characterId) return 'right';
+      if (f.displayedCharacter.left.isDisplay  && f.displayedCharacter.left.characterId  == mp.characterId) return 'left';
+      return null;
+    })();
+  [endscript]
+  ; 現在そのキャラが表示されていないなら、何もせず終了
+  [jump target="*end_m_exitCharacter" cond="tf.side === null"]
+
+  [eval exp="console.log('★exit ' + mp.characterId)"]
+
+  ; そのキャラをデフォルトの位置に移動させる
+  [chara_move name="&mp.characterId" time="600" left="&f.defaultPosition[mp.characterId].left" wait="false"]
+
+  ; 表示キャラオブジェクトを更新する
+  [eval exp="f.displayedCharacter[tf.side] = new DisplayedCharacterSingle()"]
+
+  *end_m_exitCharacter
+[endmacro]
