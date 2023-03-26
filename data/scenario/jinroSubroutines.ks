@@ -174,7 +174,7 @@
     // 現在のCSSは、画面の上部がキャラの背景色で、下部に行くに従って黒にグラデーションするというもの。別の演出にしたい場合は書き換えるなり格納しわけるなりすること
     let boxCss = {
       //"background-color": f.color.character[tf.bgColorCharacterId],
-      "background-image": "linear-gradient(to bottom, " + f.color.character[tf.bgColorCharacterId] + " 10%, rgba(0, 0, 0, 1) 160%"
+      "background-image": "linear-gradient(to bottom, " + f.color.character[tf.bgColorCharacterId] + " 10%, rgba(0, 0, 0, 1) 150%"
     }
     $('.' + classNum).css(boxCss);
     // .dch_containerの子要素の.classNumの子要素に、キャラ画像のimg要素を移動する

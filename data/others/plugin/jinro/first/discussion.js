@@ -546,67 +546,6 @@ function countTargetedId(actionObjects, countId) {
 }
 
 
-
-/**
- * 票を公開するためのメッセージを作成する
- * @param {Array} characterObjects キャラクターオブジェクト配列
- * @param {Number} day 開票日
- * @param {Object} voteResult 投票結果オブジェクト
- * @param {Array} electedIdList 最多得票者配列
- */
-function openVote(characterObjects, day, voteResult, electedIdList) {
-  TYRANO.kag.stat.f.voteResultMessage = '';
-
-  for (let i = 0; i < TYRANO.kag.stat.f.participantsIdList.length; i++) {
-    let characterId = TYRANO.kag.stat.f.participantsIdList[i];
-
-    let isElected = electedIdList.includes(characterId) ? '★' : '';
-    let numbers = displayIsElected(characterId, voteResult);
-    let name = characterObjects[characterId].name;
-    let voteTargetName = displayVoteTargetName(characterId, characterObjects, day);
-
-    TYRANO.kag.stat.f.voteResultMessage += (
-      isElected + '' + 
-      numbers + '　' + 
-      name + '→' + 
-      voteTargetName + ' / '
-    )
-  }
-   // TODO:改行できるようにする。無理やりJS内でやるのではなく、ksファイルに戻って出力させた方が楽かも
-   // あと、通常のメッセージ枠に出力ではなく、専用のレイヤーに出力するなどしないと、人数が多いと行数が足りない。
-}
-
-
-/**
- * openVote()から呼び出す用
- * @param {*} characterId 
- * @param {*} voteResult 
- * @returns テキスト
- */
-function displayIsElected(characterId, voteResult) {
-  if (characterId in voteResult) {
-    return voteResult[characterId] + '票';
-  }
-  return '0票';
-}
-
-
-/**
- * openVote()から呼び出す用
- * @param {*} characterId 
- * @param {*} characterObjects 
- * @param {*} day 
- * @returns テキスト
- */
-function displayVoteTargetName(characterId, characterObjects, day) {
-  // 配列でなければ、投票していない
-  if (!Array.isArray(characterObjects[characterId].voteHistory[day])) return 'なし';
-  // 末尾のキャラクターIDを取得（最新の再投票先は末尾に追加されているため）
-  let voteTargetId = characterObjects[characterId].voteHistory[day].slice(-1)[0];
-  return characterObjects[voteTargetId].name;
-}
-
-
 /**
  * ボタンオブジェクトクラス
  * TODO 別のファイルに移動すること

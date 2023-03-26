@@ -818,20 +818,20 @@
         }
       })();
 
-      tmpCharacterList.push({
-        characterId: cId,
-        fileName: 'normal.png',
-        topText: votedCountText,
-        leftText: '→' + f.characterObjects[f.voteResultObjects[i].targetId].name,
-        bgColorCharacterId: f.voteResultObjects[i].targetId,
-      })
+      tmpCharacterList.push(new DisplayCharactersHorizontallySingle(
+        cId,
+        'normal.png',
+        f.voteResultObjects[i].targetId,
+        votedCountText,
+        '→' + f.characterObjects[f.voteResultObjects[i].targetId].name
+      ))
     }
 
-    f.dch = {
-      displacedPxToRight: 20,
-      displacedPxToTop: -100,
-      characterList: tmpCharacterList,
-    }
+    f.dch = new DisplayCharactersHorizontally(
+      tmpCharacterList,
+      20, // キャラクター画像の表示位置を中央より右へずらす。leftTextの文字を表示するスペースを作るため
+      -100, // キャラクター画像の表示位置を中央より上へずらす。メニューボタンは非表示にしているので、干渉しない分上げておく
+    );
   [endscript]
 [endmacro]
 
@@ -858,20 +858,20 @@
     let tmpCharacterList = [];
     for (let i = 0; i < f.participantsIdList.length; i++) {
       let cId = f.participantsIdList[i];
-      tmpCharacterList.push({
-        characterId: cId,
-        fileName: 'normal.png',
-        topText: '',
-        leftText: f.characterObjects[cId].name,
-        bgColorCharacterId: cId,
-      })
+      tmpCharacterList.push(new DisplayCharactersHorizontallySingle(
+        cId,
+        'normal.png',
+        cId,
+        '',
+        f.characterObjects[cId].name
+      ))
     }
 
-    f.dch = {
-      displacedPxToRight: 20, // 以下のpx数分だけ、キャラクター画像の表示位置を中央より右へずらす。leftTextの文字を表示するスペースを作るため
-      displacedPxToTop: -100,
-      characterList: tmpCharacterList,
-    }
+    f.dch = new DisplayCharactersHorizontally(
+      tmpCharacterList,
+      20, // キャラクター画像の表示位置を中央より右へずらす。leftTextの文字を表示するスペースを作るため
+      -100, // キャラクター画像の表示位置を中央より上へずらす。メニューボタンは非表示にしているので、干渉しない分上げておく
+    );
   [endscript]
 [endmacro]
 

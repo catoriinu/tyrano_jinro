@@ -132,3 +132,35 @@ function DisplayedCharacterSingle(isDisplay = false, characterId = null, face = 
   this.characterId = characterId;
   this.face = face;
 }
+
+
+/**
+ * 横並びでキャラクター画像を表示するサブルーチン(displayCharactersHorizontally)用の情報オブジェクト
+ * 生成したオブジェクトはf.dchに格納しておくこと
+ * @param {Array} characterList 表示するキャラクター情報（DisplayCharactersHorizontallySingleオブジェクト）を値に持つ配列
+ * @param {Number} displacedPxToRight キャラクター画像の左側からの表示位置を、標準からどれだけ右にずらしたいか(px)(負の値なら左にずれる)
+ * @param {Number} displacedPxToTop キャラクター画像の上側からの表示位置を、標準からどれだけ下にずらしたいか(px)(負の値なら上にずれる)
+ */
+function DisplayCharactersHorizontally(characterList = [], displacedPxToRight = 0, displacedPxToTop = 0) {
+  this.characterList = characterList;
+  this.displacedPxToRight = displacedPxToRight;
+  this.displacedPxToTop = displacedPxToTop;
+}
+
+
+/**
+ * 横並びでキャラクター画像を表示する際のキャラクター単体についての情報オブジェクト
+ * 生成したオブジェクトは、DisplayCharactersHorizontallyオブジェクトのcharacterList配列の値として格納すること
+ * @param {String} characterId キャラクターID
+ * @param {String} fileName 表示する画像のファイルパス。拡張子も必要。最終的には[image storage="chara/{characterId}/{fileName}"]形式で渡される。
+ * @param {String} bgColorCharacterId 背景色にしたいイメージカラーを持つキャラクターID
+ * @param {String} topText box上部に横書きで表示するテキスト。表示不要なら引数不要
+ * @param {String} leftText box左部に縦書きで表示するテキスト。表示不要なら引数不要
+ */
+function DisplayCharactersHorizontallySingle(characterId, fileName, bgColorCharacterId, topText = '', leftText = '') {
+  this.characterId = characterId;
+  this.fileName = fileName;
+  this.bgColorCharacterId = bgColorCharacterId;
+  this.topText = topText;
+  this.leftText = leftText;
+}
