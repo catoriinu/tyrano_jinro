@@ -790,7 +790,9 @@
   [j_clearFixButton]
   [layopt layer="message0" visible="false"]
 
-  [call storage="jinroSubroutines.ks" target="*openVote"]
+  ; 投票結果を表示
+  [j_setDchForOpenVote]
+  [call storage="jinroSubroutines.ks" target="*displayCharactersHorizontally"]
   [p]
   ; 投票結果を表示していたレイヤーを解放
   [freeimage layer="1" time="400" wait="true"]
@@ -798,6 +800,79 @@
   ; ステータス、メニューボタン再表示とメッセージウィンドウを表示
   [j_displayFixButton status="true" menu="true"]
   [layopt layer="message0" visible="true"]
+[endmacro]
+
+
+[macro name="j_setDchForOpenVote"]
+  [iscript]
+    let tmpCharacterList = [];
+    for (let i = 0; i < f.voteResultObjects.length; i++) {
+      let cId = f.voteResultObjects[i].characterId;
+
+      let votedCountText = (function(){
+        if (cId in f.votedCountObject) {
+          let electedMark = f.electedIdList.includes(cId) ? '★' : '';
+          return electedMark + f.votedCountObject[cId] + '票';
+        } else {
+          return '0票';
+        }
+      })();
+
+      tmpCharacterList.push({
+        characterId: cId,
+        fileName: 'normal.png',
+        topText: votedCountText,
+        leftText: '→' + f.characterObjects[f.voteResultObjects[i].targetId].name,
+        bgColorCharacterId: f.voteResultObjects[i].targetId,
+      })
+    }
+
+    f.dch = {
+      displacedPxToRight: 20,
+      displacedPxToTop: -100,
+      characterList: tmpCharacterList,
+    }
+  [endscript]
+[endmacro]
+
+
+; キャラクター紹介画面を出力する
+[macro name="j_introductionCharacters"]
+  ; 全ボタンを消去
+  [j_clearFixButton]
+
+  ; キャラクタ－画像を表示
+  [j_setDchForintroductionCharacters]
+  [call storage="jinroSubroutines.ks" target="*displayCharactersHorizontally"]
+  [p]
+  ; キャラクター画像を表示していたレイヤーを解放
+  [freeimage layer="1" time="400" wait="true"]
+
+  ; ステータス、メニューボタン再表示
+  [j_displayFixButton status="true" menu="true"]
+[endmacro]
+
+
+[macro name="j_setDchForintroductionCharacters"]
+  [iscript]
+    let tmpCharacterList = [];
+    for (let i = 0; i < f.participantsIdList.length; i++) {
+      let cId = f.participantsIdList[i];
+      tmpCharacterList.push({
+        characterId: cId,
+        fileName: 'normal.png',
+        topText: '',
+        leftText: f.characterObjects[cId].name,
+        bgColorCharacterId: cId,
+      })
+    }
+
+    f.dch = {
+      displacedPxToRight: 20, // 以下のpx数分だけ、キャラクター画像の表示位置を中央より右へずらす。leftTextの文字を表示するスペースを作るため
+      displacedPxToTop: -100,
+      characterList: tmpCharacterList,
+    }
+  [endscript]
 [endmacro]
 
 
@@ -915,8 +990,9 @@
   [if exp="typeof f.bitingObjectLastNight === 'undefined'"]
     ; 昨夜の襲撃結果が取得できなかった（＝初日犠牲者のいない1日目昼）場合
     ; TODO 人狼の人数を可変で出力する
-    ; FIXME 投票画面のように全員を表示してもいいかも。役職の内訳を表示してもいいかも。
-    この中に人狼が1人潜んでいます……。[p]
+    ; FIXME 役職の内訳を表示してもいいかも。
+    この中に人狼が1人潜んでいます……。
+    [j_introductionCharacters]
 
   [elsif exp="f.bitingObjectLastNight.result"]
     ; 昨夜の襲撃結果が襲撃成功の場合
