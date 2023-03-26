@@ -26,15 +26,41 @@
 ; 役職COのとき、自分の前にCO済みの占い師がいる場合「自分こそが占い師だ」と主張することができるようにする
 ; 結果COのとき、自分の前のCO結果によって反応を変えられるようにする（同じ相手を占った、違う相手を占った）
 *COFortuneTelling_true
-  [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
-  あーしの占いだと、[call target="changeIdToCallName"]は人狼だったんだよねー。[r]
-  隠し通せると思った？残念だったね。[p]
+[if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
+[playse storage="chara/tsumugi/005_春日部つむぎ（ノーマル）_あーしの占いだと、…(1).ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
+[playse storage="chara/tsumugi/006_春日部つむぎ（ノーマル）_あーしの占いだと、…(1).ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
+
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
+[playse storage="chara/tsumugi/007_春日部つむぎ（ノーマル）_あーしの占いだと、…(1).ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
+[playse storage="chara/tsumugi/008_春日部つむぎ（ノーマル）_あーしの占いだと、…(1).ogg" loop="false" sprite_time="50-20000"]
+[endif]
+
+[eval exp="tf.characterIdToCall = f.actionObject.targetId"]
+あーしの占いだと、[call target="changeIdToCallName"]は人狼だったんだよねー。[r]
+隠し通せると思った？残念だったね。[p]
+[stopse]
 [return]
 
 *COFortuneTelling_false
-  [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
-  あーしの占いだと、[call target="changeIdToCallName"]は人狼じゃなかったよ。[r]
-  友達になれるかなあ？[p]
+[if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
+[playse storage="chara/tsumugi/014_春日部つむぎ（ノーマル）_あーしの占いだと、…(1).ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
+[playse storage="chara/tsumugi/015_春日部つむぎ（ノーマル）_あーしの占いだと、…(1).ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
+
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
+[playse storage="chara/tsumugi/016_春日部つむぎ（ノーマル）_あーしの占いだと、…(1).ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
+[playse storage="chara/tsumugi/017_春日部つむぎ（ノーマル）_あーしの占いだと、…(1).ogg" loop="false" sprite_time="50-20000"]
+[endif]
+
+[eval exp="tf.characterIdToCall = f.actionObject.targetId"]
+あーしの占いだと、[call target="changeIdToCallName"]は人狼じゃなかったよ。[r]
+友達になれるかなあ？[p]
+[stopse]
 [return]
 
 
@@ -42,16 +68,42 @@
 ; NOTE：事前にtf.selectedCharacterIへの格納（PCならアクションボタンの実行、NPCならTODO）が必要。
 ; シーン：「疑う」アクション実行時
 *doAction_suspect
-  [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
-  [call target="changeIdToCallName"]ってもしかしなくても人狼だよね？[r]
-  ちょっとヤバい感じするし。[p]
+[if exp="tf.selectedCharacterId == CHARACTER_ID_ZUNDAMON"]
+[playse storage="chara/tsumugi/011_春日部つむぎ（ノーマル）_Xってもしかしなく….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_METAN"]
+[playse storage="chara/tsumugi/012_春日部つむぎ（ノーマル）_Xってもしかしなく….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_TSUMUGI"]
+
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_HAU"]
+[playse storage="chara/tsumugi/013_春日部つむぎ（ノーマル）_Xってもしかしなく….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_RITSU"]
+[playse storage="chara/tsumugi/014_春日部つむぎ（ノーマル）_Xってもしかしなく….ogg" loop="false" sprite_time="50-20000"]
+[endif]
+
+[eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+[call target="changeIdToCallName"]ってもしかしなくても人狼だよね？[r]
+ちょっとヤバい感じするし。[p]
+[stopse]
 [return]
 
 ; シーン：「信じる」アクション実行時
 *doAction_trust
-  [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
-  あーしは[call target="changeIdToCallName"]は味方だと思ってるよ。[r]
-  できたら[call target="changeIdToCallName"]もあーしのこと、信じてほしいな……なんてね。[p]
+[if exp="tf.selectedCharacterId == CHARACTER_ID_ZUNDAMON"]
+[playse storage="chara/tsumugi/015_春日部つむぎ（ノーマル）_あーしはXを味方だ….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_METAN"]
+[playse storage="chara/tsumugi/016_春日部つむぎ（ノーマル）_あーしはXを味方だ….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_TSUMUGI"]
+
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_HAU"]
+[playse storage="chara/tsumugi/017_春日部つむぎ（ノーマル）_あーしはXを味方だ….ogg" loop="false" sprite_time="50-20000"]
+[elsif exp="tf.selectedCharacterId == CHARACTER_ID_RITSU"]
+[playse storage="chara/tsumugi/018_春日部つむぎ（ノーマル）_あーしはXを味方だ….ogg" loop="false" sprite_time="50-20000"]
+[endif]
+
+[eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+あーしは[call target="changeIdToCallName"]を味方だと思ってるよ。[r]
+だから[call target="changeIdToCallName"]もあーしのこと、信じてほしいな……なんてね。[p]
+[stopse]
 [return]
 
 ; シーン：「聞き出す」アクション実行時
@@ -64,13 +116,19 @@
 ; doAction_reaction_{actionId}
 ; シーン：「疑う」アクションの実行対象になった時
 *doAction_reaction_suspect
-  そんな風に思われてたんだ……。[r]
-  ちょっとショックかも。[p]
+[playse storage="chara/tsumugi/020_春日部つむぎ（ノーマル）_そんな風に思われて….ogg" loop="false" sprite_time="50-20000"]
+
+そんな風に思われてたんだ……。[r]
+ちょっとショックかも。[p]
+[stopse]
 [return]
 
 ; シーン：「信じる」アクションの実行対象になった時
 *doAction_reaction_trust
-  マジ？なんか嬉しいかも！[p]
+[playse storage="chara/tsumugi/021_春日部つむぎ（ノーマル）_マジ？なんか嬉しい….ogg" loop="false" sprite_time="50-20000"]
+
+マジ？なんか嬉しいかも！[p]
+[stopse]
 [return]
 
 ; シーン：「聞き出す」アクションの実行対象になった時
@@ -82,8 +140,11 @@
 ; executed
 ; シーン：投票により処刑対象に決まったときの反応
 *executed
-  うそ。あーし選ばれちゃったの？
-  そんなに怪しかったのかな……[p]
+[playse storage="chara/tsumugi/023_春日部つむぎ（ノーマル）_うそ、あーし選ばれ….ogg" loop="false" sprite_time="50-20000"]
+
+うそ。あーし選ばれちゃったの？[r]
+そんなに怪しかったのかな……[p]
+[stopse]
 [return]
 
 

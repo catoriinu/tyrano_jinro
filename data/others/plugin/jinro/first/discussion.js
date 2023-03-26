@@ -293,18 +293,65 @@ function updateCommonPerspective(characterId, zeroRoleIds) {
       TYRANO.kag.stat.f.characterObjects[cId].perspective = organizePerspective(TYRANO.kag.stat.f.characterObjects[cId].perspective, characterId, zeroRoleIds);
       TYRANO.kag.stat.f.characterObjects[cId].role.rolePerspective = organizePerspective(TYRANO.kag.stat.f.characterObjects[cId].role.rolePerspective, characterId, zeroRoleIds);
     } catch (error) {
+      console.log(cId + 'の視点が破綻しました！');
       if (TYRANO.kag.stat.f.developmentMode) {
         alert(cId + 'の視点が破綻しました！');
       }
-      // 破綻フラグを立てる
-      TYRANO.kag.stat.f.characterObjects[cId].isContradicted = true;
-      // ここで破綻したら、共通視点オブジェクトで上書きする&自分自身を嘘がつける役職（TODO:「嘘をつかない役職配列」をメソッドで取り出せるようにする）だったということで確定する。
-      // （試しに）updateCommonPerspectiveを再帰呼び出しして共通および全員の視点オブジェクトを更新する
-      TYRANO.kag.stat.f.characterObjects[cId].perspective = clone(TYRANO.kag.stat.f.commonPerspective);
-      TYRANO.kag.stat.f.characterObjects[cId].role.rolePerspective= clone(TYRANO.kag.stat.f.commonPerspective);
-      updateCommonPerspective(cId, [ROLE_ID_VILLAGER, ROLE_ID_FORTUNE_TELLER]);
+      // 破綻したときの処理を行う
+      updateCharacterObjectToContradicted(cId);
     }
   }
+}
+
+
+/**
+ * 破綻したときの処理をまとめて実行する
+ * @param {String} characterId 破綻したキャラクターID
+ */
+function updateCharacterObjectToContradicted(characterId) {
+  // 破綻フラグを立てる
+  TYRANO.kag.stat.f.characterObjects[characterId].isContradicted = true;
+
+  // これ以上破綻を起こさないように、視点オブジェクトを表裏どちらも共通視点オブジェクトで上書きする
+  TYRANO.kag.stat.f.characterObjects[characterId].perspective = clone(TYRANO.kag.stat.f.commonPerspective);
+  TYRANO.kag.stat.f.characterObjects[characterId].role.rolePerspective= clone(TYRANO.kag.stat.f.commonPerspective);
+
+  // 破綻したキャラは、嘘がつける役職（TODO:「嘘をつかない役職配列」をメソッドで取り出せるようにする）だったということで確定する。
+  // updateCommonPerspectiveを呼び出して共通および全員の視点オブジェクトを更新する
+  updateCommonPerspective(characterId, [ROLE_ID_VILLAGER, ROLE_ID_FORTUNE_TELLER]);
+}
+
+
+/**
+ * その視点オブジェクトの中で、そのキャラクターが「その役職の最後の生存者だった」ことが確定するかを判定する。
+ * @param {String} characterId キャラクターID
+ * @param {String} roleId 役職ID
+ * @param {Object} perspective 視点オブジェクト
+ * @returns 
+ */
+function isLastOneInPerspective(characterId, roleId, perspective) {
+
+  // その視点オブジェクトの中で、
+  for (let cId of Object.keys(perspective)) {
+    if (cId == characterId) {
+      // そのキャラクターがその役職で確定しているか。確定していなければ即false
+      if (perspective[cId][roleId] < 1) return false;
+
+    } else if (cId == 'uncertified') {
+      // その役職に就いているキャラがすでに全員確定しているか。未確定が1人でもいれば即false
+      if (perspective.uncertified[roleId] > 0) return false;
+
+    } else {
+      // そのキャラクター以外のキャラに関しては、現在の生存者の中で、
+      // （すでに死亡済みのキャラの中にその役職で確定していたキャラがいても、「最後の生存者」の判定には関係ないためスルーする）
+      if (TYRANO.kag.stat.f.characterObjects[cId].isAlive) {
+        // その役職に就いている可能性があるキャラが他にいないか。まだ可能性が残っているキャラが生存していれば即false
+        if (perspective[cId][roleId] > 0) return false;
+      }
+    }
+  }
+  // 以上の条件に当てはまらなかった場合のみ、そのキャラクターが「その役職の最後の生存者だった」ことが確定する
+  return true;
 }
 
 
@@ -499,67 +546,6 @@ function countTargetedId(actionObjects, countId) {
 }
 
 
-
-/**
- * 票を公開するためのメッセージを作成する
- * @param {Array} characterObjects キャラクターオブジェクト配列
- * @param {Number} day 開票日
- * @param {Object} voteResult 投票結果オブジェクト
- * @param {Array} electedIdList 最多得票者配列
- */
-function openVote(characterObjects, day, voteResult, electedIdList) {
-  TYRANO.kag.stat.f.voteResultMessage = '';
-
-  for (let i = 0; i < TYRANO.kag.stat.f.participantsIdList.length; i++) {
-    let characterId = TYRANO.kag.stat.f.participantsIdList[i];
-
-    let isElected = electedIdList.includes(characterId) ? '★' : '';
-    let numbers = displayIsElected(characterId, voteResult);
-    let name = characterObjects[characterId].name;
-    let voteTargetName = displayVoteTargetName(characterId, characterObjects, day);
-
-    TYRANO.kag.stat.f.voteResultMessage += (
-      isElected + '' + 
-      numbers + '　' + 
-      name + '→' + 
-      voteTargetName + ' / '
-    )
-  }
-   // TODO:改行できるようにする。無理やりJS内でやるのではなく、ksファイルに戻って出力させた方が楽かも
-   // あと、通常のメッセージ枠に出力ではなく、専用のレイヤーに出力するなどしないと、人数が多いと行数が足りない。
-}
-
-
-/**
- * openVote()から呼び出す用
- * @param {*} characterId 
- * @param {*} voteResult 
- * @returns テキスト
- */
-function displayIsElected(characterId, voteResult) {
-  if (characterId in voteResult) {
-    return voteResult[characterId] + '票';
-  }
-  return '0票';
-}
-
-
-/**
- * openVote()から呼び出す用
- * @param {*} characterId 
- * @param {*} characterObjects 
- * @param {*} day 
- * @returns テキスト
- */
-function displayVoteTargetName(characterId, characterObjects, day) {
-  // 配列でなければ、投票していない
-  if (!Array.isArray(characterObjects[characterId].voteHistory[day])) return 'なし';
-  // 末尾のキャラクターIDを取得（最新の再投票先は末尾に追加されているため）
-  let voteTargetId = characterObjects[characterId].voteHistory[day].slice(-1)[0];
-  return characterObjects[voteTargetId].name;
-}
-
-
 /**
  * ボタンオブジェクトクラス
  * TODO 別のファイルに移動すること
@@ -586,12 +572,12 @@ function Button (id, text, side = 'center', color = '', addClasses = [], target 
 
 /**
  * アクションオブジェクトクラス
- * @param {String} characterId アクション実行者のキャラクターID
+ * @param {String} characterId アクション実行者のキャラクターID（特定の実行者がいないアクションなら不要。例：処刑）
  * @param {String} actionId 実行したアクションID
  * @param {String} targetId アクションの対象者のキャラクターID（対象をとらないアクションなら不要）
- * @param {Boolean} result TODO 占い等実行時の結果
+ * @param {Boolean} result アクションの結果。意味はアクションによって異なる。（占い=t:●/f:○, 処刑・襲撃=t:死亡/f:死亡せず）
  */
-function Action (characterId, actionId, targetId = '', result = null) {
+function Action (characterId = '', actionId, targetId = '', result = null) {
   this.characterId = characterId;
   this.actionId = actionId;
   this.targetId = targetId;
@@ -1196,10 +1182,11 @@ function getFeeling(characterObject, sameFactionPossivility) {
  * 自分自身の視点オブジェクトを確認し、最も同陣営割合が高い（低い）キャラクターIDを返却する
  * @param {Object} characterObject キャラクターオブジェクト
  * @param {Object} perspective 視点オブジェクト（perspectiveを使うか、rolePerspectiveを使うかは呼び元に任せる）
+ * @param {String} roleId 同陣営判定を行う役職ID
  * @param {Boolean} needsMax true:最大値のキャラクターIDを取得したい / false:最小値のキャラクターIDを取得したい
  * @returns {String} targetCharacterId 対象のキャラクターID
  */
-function getCharacterIdBySameFactionPerspective(characterObject, perspective, needsMax) {
+function getCharacterIdBySameFactionPerspective(characterObject, perspective, roleId, needsMax) {
 
   let targetCharacterIdList = [];
   // 比較用の値の初期値を格納。最大値が必要なら0、最小値が必要なら1
@@ -1217,18 +1204,19 @@ function getCharacterIdBySameFactionPerspective(characterObject, perspective, ne
     // 全役職をループ
     for (let rId of Object.keys(perspective[cId])) {
       // 自分と同陣営の役職のperspectiveの割合値を合計する（自分視点で必ず同陣営なら1、必ず敵陣営なら0になる）
-      if (ROLE_ID_TO_FACTION[rId] == ROLE_ID_TO_FACTION[characterObject.role.roleId]) {
+      if (ROLE_ID_TO_FACTION[rId] == ROLE_ID_TO_FACTION[roleId]) {
         sumSameFactionPerspective += perspective[cId][rId];
       }
     }
+    console.log('★SameFactionPerspective targetCharacterId:' + cId + ' sumSameFactionPerspective:' + sumSameFactionPerspective);
 
     // 同陣営割合の合計の値を確認し、キャラクターIDを格納するか判定する
     if (sumSameFactionPerspective == maxOrMinValue) {
       // 値が、現在の比較用の値と同値なら候補配列に追加する（取得したいのが最大値でも最小値でも、ここの処理は共通でよい）
       targetCharacterIdList.push(cId);
     } else if (
-      (needsMax && sumSameFactionPerspective > maxOrMinValue) ||
-      (!needsMax && sumSameFactionPerspective < maxOrMinValue)
+      (needsMax && (sumSameFactionPerspective > maxOrMinValue)) ||
+      (!needsMax && (sumSameFactionPerspective < maxOrMinValue))
     ) {
       // 値が現在の比較用の値超過または未満（取得したいのが最大値か最小値かで判定し分ける）ならば、候補配列に格納する
       targetCharacterIdList = [cId];
@@ -1236,15 +1224,45 @@ function getCharacterIdBySameFactionPerspective(characterObject, perspective, ne
     }
   }
 
-  // 候補配列に候補が1人ならその対象を、複数ならランダムで、候補者に決定する。0人の場合は空文字を返す。
-  // MEMO 同値のキャラが複数いた場合にその全員分の配列が欲しいときが来たら引数で処理し分けるようにすること
+  // 候補者配列から最終的な候補者を決める
+  // 候補が1人なら即確定し、0人なら空文字を返す
   let targetCharacterId = '';
   if (targetCharacterIdList.length == 1) {
     targetCharacterId = targetCharacterIdList[0];
+
   } else if (targetCharacterIdList.length >= 2) {
-    targetCharacterId = getRandomElement(targetCharacterIdList);
+    // 候補が複数なら、候補の中で最も仲間度が高い（低い）キャラクターを候補とする
+    // 基本的には、信頼度の差の影響で仲間度にも差が出る。ただしlogicalが1の場合だけは差が出ないことに注意。
+    let sameFactionPossivility = calcSameFactionPossivility(characterObject, perspective, targetCharacterIdList);
+    console.log('★SameFactionPerspective sameFactionPossivility:');
+    console.log(sameFactionPossivility);
+
+    targetCharacterIdList = [];
+    // 比較用の値の初期値を格納。最大値が必要なら0、最小値が必要なら1
+    maxOrMinValue = needsMax ? 0 : 1;
+    for (let cId of Object.keys(sameFactionPossivility)) {
+      // 仲間度の合計の値を確認し、キャラクターIDを格納するか判定する
+      if (sameFactionPossivility[cId] == maxOrMinValue) {
+        // 値が、現在の比較用の値と同値なら候補配列に追加する（取得したいのが最大値でも最小値でも、ここの処理は共通でよい）
+        targetCharacterIdList.push(cId);
+      } else if (
+        (needsMax && (sameFactionPossivility[cId] > maxOrMinValue)) ||
+        (!needsMax && (sameFactionPossivility[cId] < maxOrMinValue))
+      ) {
+        // 値が現在の比較用の値超過または未満（取得したいのが最大値か最小値かで判定し分ける）ならば、候補配列に格納する
+        targetCharacterIdList = [cId];
+        maxOrMinValue = sameFactionPossivility[cId];
+      }
+    }
+
+    // 候補が1人なら即確定し、ここまでやっても候補が複数ならランダムで決める
+    if (targetCharacterIdList.length == 1) {
+      targetCharacterId = targetCharacterIdList[0];
+    } else if (targetCharacterIdList.length >= 2) {
+      targetCharacterId = getRandomElement(targetCharacterIdList);
+    }
   }
-  console.log('getCharacterIdBySameFactionPerspective targetCharacterId:' + targetCharacterId);
+  console.log('★getCharacterIdBySameFactionPerspective targetCharacterId:' + targetCharacterId);
 
   return targetCharacterId;
 }

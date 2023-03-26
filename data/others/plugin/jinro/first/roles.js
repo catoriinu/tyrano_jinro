@@ -179,27 +179,29 @@ function Werewolf() {
   /**
    * 襲撃する
    * @param {String} biterId 襲撃実行者（狼）のキャラクターID
-   * @param {String} targetCharacterId 襲撃対象者のキャラクターID
-   * @returns {Object} 襲撃結果オブジェクト{characterId, result(t:襲撃成功/f:襲撃失敗)}
+   * @param {String} targetId 襲撃対象者のキャラクターID
+   * @returns {Object} 襲撃のアクションオブジェクト{biterId, ACTION_BITE, targetId, result(t:襲撃成功/f:襲撃失敗)}
    */
-  roleObject.biting = function (biterId = "", targetCharacterId = "") {
+  roleObject.biting = function (biterId = "", targetId = "") {
 
     // 噛み先が未決定の場合、決める（NPC専用。プレイヤーなら噛み先を先に決めているため）
-    if (!targetCharacterId) {
-      targetCharacterId = this.determineBitingTargetId(biterId);
+    if (!targetId) {
+      targetId = this.determineBitingTargetId(biterId);
     }
 
-    // 襲撃する。（fixme:狩人や妖狐による襲撃失敗に気をつける。
-    // 妖狐実装後のように、死亡原因が重なるようになったときには処理順に依らないよう、夜の前に判定用キャラクターオブジェクトをコピーしておく）
-    let result = causeDeathToCharacter(TYRANO.kag.stat.f.characterObjects[targetCharacterId], DEATH_BY_ATTACK);
+    // 襲撃のアクションオブジェクトを生成
+    let actionObject = new Action(
+      biterId,
+      ACTION_BITE,
+      targetId
+    );
+
+    // 襲撃する
+    actionObject = causeDeathToCharacter(actionObject);
 
     // （キャラクターオブジェクトで管理する必要がないので）ゲーム変数にその日の噛み結果を保存する
-    const todayResult = {
-      characterId: targetCharacterId,
-      result: result,
-    }
-    TYRANO.kag.stat.f.bitingHistory[TYRANO.kag.stat.f.day] = todayResult;
-    return todayResult;
+    TYRANO.kag.stat.f.bitingHistory[TYRANO.kag.stat.f.day] = actionObject;
+    return actionObject;
   }
 
   /**

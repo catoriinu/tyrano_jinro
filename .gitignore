@@ -18,6 +18,7 @@ data/sound/
 data/system/
 data/video/
 tyrano/
+old_tyrano/
 index.html
 readme.txt
 studio_config.json

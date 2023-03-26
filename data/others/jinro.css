@@ -61,33 +61,13 @@
     color: #242424;
 }
 
-/* 開票画面用CSS */
-.vote_container {
+/* 横並びでキャラクター画像を表示するサブルーチン用CSS */
+.dch_container {
     display: flex;
     flex-direction: row;
 }
 
-.vote_box {
+.dch_box {
     /* width: 256px; */
     height: 720px;
-}
-
-.vote_target_zundamon {
-    background-color: #67ef65;
-}
-
-.vote_target_metan {
-    background-color:#ef65ec;
-}
-
-.vote_target_tsumugi {
-    background-color:#efe865;
-}
-
-.vote_target_hau {
-    background-color:#65e3ef;
-}
-
-.vote_target_ritsu {
-    background-color:#ef6a65;
 }

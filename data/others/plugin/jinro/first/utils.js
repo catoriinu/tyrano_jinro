@@ -32,10 +32,10 @@ function getVillagersRoleIdList() {
   // この中で、ゲーム変数を読み込んだりロジックを書くなどして返却値を決めること
 
   let villagersRoleIdList = [
-    ROLE_ID_FORTUNE_TELLER,
+    ROLE_ID_WEREWOLF,
     ROLE_ID_VILLAGER,
     ROLE_ID_MADMAN,
-    ROLE_ID_WEREWOLF,
+    ROLE_ID_FORTUNE_TELLER,
     ROLE_ID_VILLAGER,
   ];
 
@@ -187,7 +187,7 @@ function isWinWerewolves(survivorObjects) {
   const werewolvesCount = getIsWerewolvesObjects(survivorObjects).length;
   if (TYRANO.kag.stat.f.developmentMode) {
     console.log('生存者数:' + survivorsCount + '名 うち人狼の数:' + werewolvesCount + '名');
-    alert('生存者数:' + survivorsCount + '名 うち人狼の数:' + werewolvesCount + '名');
+    //alert('生存者数:' + survivorsCount + '名 うち人狼の数:' + werewolvesCount + '名');
   }
   return werewolvesCount >= Math.ceil(survivorsCount / 2);
 }
@@ -205,29 +205,26 @@ function isWinVillagers(survivorObjects) {
 
 
 /**
- * キャラクターの死亡処理および死亡回避処理を行う
- * TODO 役職が増えて死亡契機や死亡回避ケースが増えた場合、修正する（ex:狩人の護衛による失敗、妖狐への襲撃による失敗、妖狐への占いによる死亡）
- * @param {Object} characterObject 死亡処理対象のキャラクターオブジェクト
- * @param {String} causeOfDeath 死因定数
- * @return {Boolean} 死亡成功判定 TODO 死亡判定メッセージも返すようにする？
+ * キャラクターの死亡判定を行う。死亡した場合、生存者フラグを折る。
+ * TODO 現状は死亡するケースしかない。役職が増えて死亡契機や死亡回避ケースが増えた場合、修正する（ex:狩人の護衛による失敗、妖狐への襲撃による失敗、妖狐への占いによる死亡）
+ * @param {Object} actionObject 死亡処理アクションが入ったアクションオブジェクト
+ * @return {Object} 死亡判定結果を格納したアクションオブジェクト
  */
-function causeDeathToCharacter(characterObject, causeOfDeath) {
-  let isDead = false;
-  if (causeOfDeath == DEATH_BY_EXECUTION) {
+function causeDeathToCharacter(actionObject) {
+  if (actionObject.actionId == ACTION_EXECUTE) {
     // 投票による処刑
-    isDead = true;
-    characterObject.isAlive = false;
-    //console.log(characterObject.name + '（' + characterObject.role.roleName + '）は投票の結果処刑された……');
-  } else if (causeOfDeath == DEATH_BY_ATTACK) {
+    TYRANO.kag.stat.f.characterObjects[actionObject.targetId].isAlive = false;
+    actionObject.result = true;
+  } else if (actionObject.actionId == ACTION_BITE) {
     // 人狼による襲撃
-    isDead = true;
-    characterObject.isAlive = false;
-    //console.log(characterObject.name + '（' + characterObject.role.roleName + '）は人狼の襲撃の犠牲となった……');
+    // （fixme:狩人や妖狐による襲撃失敗に気をつける。妖狐実装後のように、死亡原因が重なるようになったときには処理順に依らないよう、夜の前に判定用キャラクターオブジェクトをコピーしておく）
+    TYRANO.kag.stat.f.characterObjects[actionObject.targetId].isAlive = false;
+    actionObject.result = true;
   } else {
     // 未定義の死因は、死ななかった判定にしておく
     //console.log(characterObject.name + '（' + characterObject.role.roleName + '）は何故か死ななかった！');
   }
-  return isDead;
+  return actionObject;
 }
 
 
@@ -292,7 +289,15 @@ function getValuesFromObjectArray(objectArray, key) {
  * 昼時間開始時用の初期化を行う
  */
 function daytimeInitialize() {
-  
+
+  // 昨夜（時間を経過させる前なので厳密には同日）の襲撃アクションオブジェクトを取得する
+  // TODO 襲撃死と同時に別の死亡者が出る（例：呪殺）ようになった場合は修正する。配列で複数オブジェクトを取得することになるはず
+  TYRANO.kag.stat.f.bitingObjectLastNight = TYRANO.kag.stat.f.bitingHistory[TYRANO.kag.stat.f.day];
+
+  // 時間を翌日の昼に進める
+  TYRANO.kag.stat.f.day++;
+  TYRANO.kag.stat.f.isDaytime = true;
+
   // NPCのCO候補者がいないフラグをfalseにする（昼の最初はいると考えてfalseで初期化。いないときにtrueにする）
   TYRANO.kag.stat.f.notExistCOCandidateNPC = false;
 
@@ -325,26 +330,33 @@ function daytimeInitialize() {
  * 夜時間開始時用の初期化を行う
  */
 function nightInitialize() {
+  // 時間を夜に進める
+  TYRANO.kag.stat.f.isDaytime = false;
+
   // 噛み実行済みフラグを最初に初期化しておく。噛んだ後、立てること。人狼が2人以上いたときに、噛み実行済みならスキップするため。
   TYRANO.kag.stat.f.isBiteEnd = false;
-}
 
+  // 直前の昼に処刑が発生していた場合、処刑結果に関する破綻判定を行う
+  if (TYRANO.kag.stat.f.day in TYRANO.kag.stat.f.executionHistory && TYRANO.kag.stat.f.executionHistory[TYRANO.kag.stat.f.day].result) {
 
-/**
- * 時間を進めるメソッド
- */
-function timePasses() {
-  // 昼に呼ばれたら夜に+する
-  if (TYRANO.kag.stat.f.isDaytime) {
-    TYRANO.kag.stat.f.isDaytime = false;
-    nightInitialize(); // 夜時間開始時用の初期化を行う
-  } else {
-    // 夜に呼ばれたら翌日の昼にする
-    TYRANO.kag.stat.f.day++;
-    TYRANO.kag.stat.f.isDaytime = true;
-    daytimeInitialize(); // 昼時間開始時用の初期化を行う
+    const executedId = TYRANO.kag.stat.f.executionHistory[TYRANO.kag.stat.f.day].targetId;
+
+    // その視点で、処刑対象者が最後の人狼で確定していたにも関わらず夜時間を迎えたならば、破綻とする
+    for (let cId of Object.keys(TYRANO.kag.stat.f.characterObjects)) {
+      // 判定する視点は、表の視点（つまり、騙り占い師なら占い師としての視点）とする
+      let perspective = TYRANO.kag.stat.f.characterObjects[cId].perspective;
+      if (isLastOneInPerspective(executedId, ROLE_ID_WEREWOLF, perspective)) {
+        console.log(cId + '視点で' + executedId + 'は最後の' + ROLE_ID_WEREWOLF + 'の生存者でした。つまり破綻です');
+        updateCharacterObjectToContradicted(cId);
+      }
+    }
+    // 共通視点オブジェクトがここで破綻することはない…はず
   }
+
+  // 夜時間開始時に、夜時間中に生存しているかを参照するためのcharacterObjectを複製する。占い、噛みなどの記録は本物のf.characterObjectsに更新していく。
+  TYRANO.kag.stat.f.characterObjectsHistory[TYRANO.kag.stat.f.day] = clone(TYRANO.kag.stat.f.characterObjects)
 }
+
 
 
 /**

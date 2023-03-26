@@ -3,46 +3,41 @@
 
 
 ; 処刑マクロ
-[macro name=j_execution]
+[macro name="j_execution"]
   [iscript]
-    ; 引数のキャラクターIDを持つキャラクターオブジェクトを、ゲーム変数から取得する
-    let tmpCharacterObject = {};
-    tmpCharacterObject = f.characterObjects[mp.characterId];
+    // 引数のキャラクターIDを対象者とする処刑のアクションオブジェクトを生成
+    let actionObject = new Action(
+      '',
+      ACTION_EXECUTE,
+      mp.characterId
+    );
 
-    ; 死亡判定を行う（判定に成功したら、メソッドが死亡までやってくれる）
-    if (causeDeathToCharacter(tmpCharacterObject, DEATH_BY_EXECUTION)) {
-      alert(tmpCharacterObject.name + 'は処刑された。');
-    }
+    // 死亡判定を行う
+    tf.actionObject = causeDeathToCharacter(actionObject);
+    // MEMO:ここでは視点オブジェクトの更新は行わない。処刑後もゲームが継続することが確定したとき＝夜時間開始時用の初期化処理の中で行う。
   [endscript]
-[endmacro]
 
-
-; 未使用マクロ
-; 襲撃マクロ
-[macro name=j_attack]
-; 引数テスト:[emb exp="mp.character_id"][p]
-  [iscript]
-    ; 引数のキャラクターIDを持つキャラクターオブジェクトを、ゲーム変数から取得する
-    let tmpCharacterObject = {};
-    tmpCharacterObject = f.characterObjects[mp.character_id];
-
-    ; 死亡判定を行う（判定に成功したら、メソッドが死亡までやってくれる）
-    if (causeDeathToCharacter(tmpCharacterObject, DEATH_BY_ATTACK)) {
-      alert(tmpCharacterObject.name + 'は襲撃された。');
-    }
-  [endscript]
+  [if exp="tf.actionObject.result"]
+    ; 処刑メッセージ
+    [m_changeFrameWithId]
+    #
+    [emb exp="f.characterObjects[tf.actionObject.targetId].name + 'は追放されました。'"][p]
+  [endif]
+  ; 処刑履歴オブジェクトにその日の処刑結果を保存する
+  [eval exp="f.executionHistory[f.day] = tf.actionObject"]
 [endmacro]
 
 
 ; 勝利陣営がいるかを判定し、勝利陣営がいた場合、指定されたラベルにジャンプする（storage, targetともに必須）
 ; ex: [j_judgeWinnerCampAndJump storage="playJinro.ks" target="*gameOver"]
-[macro name=j_judgeWinnerCampAndJump]
+[macro name="j_judgeWinnerCampAndJump"]
+  [m_changeFrameWithId]
   #
-  勝敗判定中……[r]
+  勝敗判定中……[p]
   [iscript]
     tf.winnerCamp = judgeWinnerCamp(f.characterObjects);
     if (f.developmentMode) {
-      alert('勝利陣営: ' + tf.winnerCamp);
+      //alert('勝利陣営: ' + tf.winnerCamp);
     }
   [endscript]
 
@@ -59,43 +54,36 @@
 ; @param result プレイヤーかつ騙りの占い師の場合のみ必要。宣言する占い結果をbooleanまたはstringで渡す。
 [macro name="j_fortuneTelling"]
   [iscript]
-    ; jsに渡す引数の準備。マクロへの指定がなければデフォルト値を入れる
+    // jsに渡す引数の準備。マクロへの指定がなければデフォルト値を入れる
     const day = (typeof mp.day == 'undefined') ? f.day : parseInt(mp.day);
     const targetCharacterId = (typeof mp.characterId == 'undefined') ? '' : mp.characterId;
     const declarationResult = (function(){
       if (typeof mp.result == 'string') {
-        ; ※マクロの引数としてベタ書きでboolやnumを渡しても、stringに型変換されてしまうため、jinroプラグインに渡す前にstring→boolに変換する。
-        ; jsは空文字でないstringをtrueと評価するため、確実に'true'でないとtrueを入れないようにする。
+        // ※マクロの引数としてベタ書きでboolやnumを渡しても、stringに型変換されてしまうため、jinroプラグインに渡す前にstring→boolに変換する。
+        // jsは空文字でないstringをtrueと評価するため、確実に'true'でないとtrueを入れないようにする。
         return (mp.result === 'true') ? true : false;
       } else if (typeof mp.result == 'boolean') {
-        ; boolean型ならそのまま格納する（マクロの引数に変数としてbooleanで渡して来た場合を考慮）
+        // boolean型ならそのまま格納する（マクロの引数に変数としてbooleanで渡して来た場合を考慮）
         return mp.result;
       } else {
-        ; その他の型（未指定でundefined）ならnull
+        // その他の型（未指定でundefined）ならnull
         return null;
       }
     })();
 
     let todayResult = {};
-    ; 占い実行
+    // 占い実行
     if (f.characterObjects[mp.fortuneTellerId].fakeRole.roleId == ROLE_ID_FORTUNE_TELLER) {
-      ; 占い騙りの場合
+      // 占い騙りの場合
       todayResult = f.characterObjects[mp.fortuneTellerId].fakeRole.fortuneTelling(mp.fortuneTellerId, day, targetCharacterId, declarationResult);
     } else {
-      ; 真占いの場合
+      // 真占いの場合
       todayResult = f.characterObjects[mp.fortuneTellerId].role.fortuneTelling(mp.fortuneTellerId, day, targetCharacterId);
     }
 
-    ; 占い師の視点整理。
-    ; 騙りの場合には、騙り役職の視点や、本人の役職視点の視点整理は行わない。（自分視点の真実ではないため）
-    ; 表の視点を更新する理由は、・CO済みであれば表の視点を使うから　・未COでも思考に占い結果を反映させたいから（仮）
-    ; →問題発生。
-    ; TODO : 破綻の場合どうする？
-    f.characterObjects[mp.fortuneTellerId].perspective = organizePerspective(
-      f.characterObjects[mp.fortuneTellerId].perspective,
-      todayResult.action.targetId,
-      getRoleIdsForOrganizePerspective(todayResult.action.result)
-    );
+    // 占い師の視点整理
+    // 真占い師の場合のみ、占い師視点（＝本人の思考に使う視点）の視点整理を行う。
+    // 騙りの場合には視点整理は行わない。（騙りの占い結果は自分視点の真実ではないため、視点整理が必要ないため）
     if (f.characterObjects[mp.fortuneTellerId].role.roleId == ROLE_ID_FORTUNE_TELLER) {
       f.characterObjects[mp.fortuneTellerId].role.rolePerspective = organizePerspective(
         f.characterObjects[mp.fortuneTellerId].role.rolePerspective,
@@ -103,11 +91,11 @@
         getRoleIdsForOrganizePerspective(todayResult.action.result)
       );
     }
-    
-    ; メッセージ出力用に占いのアクションオブジェクトを格納
+
+    // メッセージ出力用に占いのアクションオブジェクトを格納
     f.actionObject = todayResult.action;
 
-    ; 全占い結果履歴オブジェクトに占い結果格納
+    // 全占い結果履歴オブジェクトに占い結果格納
     // TODO メニュー画面用。メニュー画面を後回しにしているうちは一旦コメントアウト
     /*
     if (typeof f.allFortuneTellingHistoryObject[mp.fortuneTellerId] !== 'object') {
@@ -126,28 +114,35 @@
 
 
 ; NPC用騙り占いCOマクロ
-; 初日から、指定された日付の前日の夜までを占ったことにできる。
+; 指定された日から、前日の夜までを占ったことにできる。
 ; @param fortuneTellerId 占い実行者のID。真占い師、占い騙りに関わらず、必須。
-; @param day 占った日付。当日であれば指定不要。
-[macro name=j_fakeFortuneTellingCOMultipleDays]
+; @param fakeFortuneTelledDay 騙り占いを実行する開始日。
+; 指定された日がなければ初日から。（＝2日目以降の騙り占い師CO用）
+; 指定された日が前日の夜ならその1回分のみ。（＝騙り占いCO済み時の、騙り占い結果CO用）
+; MEMO NPCが2日目以降に騙り占い師COするケースは、現状動作確認していない
+[macro name="j_fakeFortuneTellingCOMultipleDays"]
 
-  ; 騙り占いを行う最新の日の日付を入れる。未指定（デフォルト）なら前日の夜までにする。
-  [iscript]
-    tf.lastDay = (typeof mp.day == 'undefined') ? f.day - 1 : parseInt(mp.day);
-    console.log('tf.lastDay = ' + tf.lastDay);
-  [endscript]
+  ; 騙り占いを行う最新の日の日付（＝前日）を入れる。
+  [eval exp="tf.lastDay = f.day - 1"]
+  ; マクロの引数に開始日が指定されていればそれを、されていなければ0（=初日）を入れる
+  [eval exp="tf.fakeFortuneTelledDay = ('fakeFortuneTelledDay' in mp) ? mp.fakeFortuneTelledDay : 0"]
 
-  [eval exp="tf.fortuneTelledDay = 0"]
   ; ※マクロ内で別マクロを呼び出すと、別マクロの終了時にmp変数が全て空にされてしまう。
   ; そのため、元マクロ側の引数を元マクロ内で引き続き使いたい場合は、一時変数などに格納しておかないといけない。
   [eval exp="tf.fortuneTellerId = mp.fortuneTellerId"]
   *fakeFortuneTellingCOMultipleDays_loopstart
 
     ; 占いマクロを、初日(day=0)から最新の日の日付までループ実行していく
-    [j_fortuneTelling fortuneTellerId="&tf.fortuneTellerId" day="&tf.fortuneTelledDay"]
+    [j_fortuneTelling fortuneTellerId="&tf.fortuneTellerId" day="&tf.fakeFortuneTelledDay"]
 
-  [jump target="*fakeFortuneTellingCOMultipleDays_loopend" cond="tf.fortuneTelledDay == tf.lastDay"]
-  [eval exp="tf.fortuneTelledDay++"]
+  ; 前日まで占い終わったらループ終了
+  [jump target="*fakeFortuneTellingCOMultipleDays_loopend" cond="tf.fakeFortuneTelledDay >= tf.lastDay"]
+
+  ; メッセージを表示しないでCOしたことにする（メッセージ表示が必要な、前日の分のCOは呼び元側で行う）
+  [j_COFortuneTelling fortuneTellerId="&tf.fortuneTellerId" day="&tf.fakeFortuneTelledDay" noNeedMessage="true"]
+
+  ; 次の日の騙り占いを行う
+  [eval exp="tf.fakeFortuneTelledDay++"]
   [jump target="*fakeFortuneTellingCOMultipleDays_loopstart"]
 
   *fakeFortuneTellingCOMultipleDays_loopend
@@ -155,10 +150,14 @@
 
 
 ; 夜時間のNPCの占い師（真、騙り共通）の占い実行をまとめて行うマクロ
+; @param needFakeFortuneTelling 騙り占い師の占いも実行するか。指定しない場合実行しない。（昼のCOフェイズ時に騙り占いするようにしている場合、実行してはいけない）
 [macro name="j_nightPhaseFortuneTellingForNPC"]
   [iscript]
+    // マクロ変数をboolean型に変換する。文字列の'true'かboolean型のtrueをtrue扱いとする
+    let needFakeFortuneTelling = ('needFakeFortuneTelling' in mp && (mp.needFakeFortuneTelling === 'true' || mp.needFakeFortuneTelling === true)) ? true : false;
+
     ; 夜開始時点の生存者である、かつプレイヤー以外のキャラクターオブジェクトから、占い師のID配列を抽出する。
-    ; 真占い師も騙り占い師もここで処理する。j_fortuneTellingマクロ内で真か騙りかで処理を分けているため問題ない。
+    ; 真占い師も騙り占い師もここで処理できる。j_fortuneTellingマクロ内で真か騙りかで処理を分けているため問題ない。
     ; 初日夜も同様の処理で良い（初日夜にはまだ騙り占い師はいないため、必然的に真しか取得しない）
     tf.fortuneTellerNpcCharacterIds = getValuesFromObjectArray (
       getHaveTheRoleObjects (
@@ -170,7 +169,7 @@
         [ROLE_ID_FORTUNE_TELLER],
         true,
         true,
-        true
+        needFakeFortuneTelling // falseなら真占い師のみ取得する。trueなら騙り占い師も取得する。
       ),
       'characterId'
     );
@@ -193,28 +192,51 @@
 [endmacro]
 
 
+; 初日から前日までの占い結果を、メッセージは表示せずにCOしたことにするマクロ
+;（真占い師用（騙り占い師は騙り占いマクロ内でCOしたことにしているため不要）。PC、NPC兼用）
+; 2日目以降に初めて占いCOした場合に、前日までのCO処理を補完するために利用。
+; @param fortuneTellerId 占い実行者のID。必須。
+[macro name="j_COFortuneTellingUntilTheLastDay"]
+
+  ; 前日（ループ終了条件用）
+  [eval exp="tf.lastDay = f.day - 1"]
+  ; 初日（ループ開始条件用）
+  [eval exp="tf.CODay = 0"]
+  ; マクロ内でマクロを呼ぶので、一時変数に退避させる
+  [eval exp="tf.COFortuneTellerId = mp.fortuneTellerId"]
+
+  *j_COFortuneTellingUntilTheLastDay_loopstart
+
+    ; 前日までCOしたらループ終了（当日のCOは呼び元でメッセージを表示して行う）
+    ; ※前日が初日の場合は即終了でよい
+    [jump target="*j_COFortuneTellingUntilTheLastDay_loopend" cond="tf.CODay >= tf.lastDay"]
+
+    ; メッセージなしでCOしたことにする
+    [j_COFortuneTelling fortuneTellerId="&tf.COFortuneTellerId" day="&tf.CODay" noNeedMessage="true"]
+
+    ; 次の日の分をCOする
+    [eval exp="tf.CODay++"]
+    [jump target="*j_COFortuneTellingUntilTheLastDay_loopstart"]
+  *j_COFortuneTellingUntilTheLastDay_loopend
+
+[endmacro]
+
+
 ; 噛みマクロ
 ; @param biterId 噛み実行者のID。必須。ただし、猫又（噛んだ人狼が無残する）のように、誰が噛んだかを管理する必要が出るまではメッセージ表示用にしか利用しない。
 ; @param characterId 噛み対象のID。入っているなら、実行者はプレイヤーである。入っていないなら実行者はNPCのため、メソッド内部で対象を決める。
 [macro name="j_biting"]
   [iscript]
-    let todayResult = {};
+    let actionObject = {};
     ; ターゲットが決まっている（＝実行者がプレイヤー）なら
     if (mp.characterId) {
-      todayResult = f.characterObjects[f.playerCharacterId].role.biting(mp.biterId, mp.characterId);
+      actionObject = f.characterObjects[f.playerCharacterId].role.biting(mp.biterId, mp.characterId);
     ; ターゲットが決まっていない（＝実行者がNPC）なら
     } else {
-      todayResult = f.characterObjects[mp.biterId].role.biting(mp.biterId);
+      actionObject = f.characterObjects[mp.biterId].role.biting(mp.biterId);
     }
     ; 噛まれたキャラクターの退場用にティラノの変数に入れておく
-    f.targetCharacterId = todayResult.characterId;
-
-    let resultMassage = todayResult.result ? f.characterObjects[todayResult.characterId].name + 'は無残な姿で発見された。' : '平和な朝を迎えた。';
-    alert(resultMassage);
-    if (todayResult.result) {
-      ; 噛まれたということは人狼ではないので、視点オブジェクトを更新する（TODO：人狼以外にも噛まれない役職が増えたら修正する）
-      updateCommonPerspective(todayResult.characterId, [ROLE_ID_WEREWOLF]);
-    }
+    f.targetCharacterId = actionObject.targetId;
   [endscript]
 [endmacro]
 
@@ -323,20 +345,11 @@
 [endmacro]
 
 
-; 未使用メソッド
-; 指定したキャラクターの占い履歴から、指定した日の履歴オブジェクトをtf.fortuneTellingHistoryObjectに格納する
-; 占い師、占い騙り両対応。
-; @param fortuneTellerId 取得したい占い師（騙り占い）のキャラクターID。必須
-; @param [day] 取得したい占い日。指定しない場合、その占い師の最新の履歴を取得する。引数の渡し方（型）は0でも"0"でも可。
-[macro name=j_fortuneTellingHistoryObjectThatDay]
-  未使用マクロ[p]
-[endmacro]
-
-
 ; 指定したキャラクターの、指定した日の占い履歴アクションオブジェクトをもとに、COを実行する。
 ; 占い師、占い騙り両対応。
 ; @param fortuneTellerId 取得したい占い師（騙り占い）のキャラクターID。必須
 ; @param [day] 取得したい占い日。指定しない場合、その占い師の最新の履歴を取得する。引数の渡し方（型）は0でも"0"でも可。
+; @param [noNeedMessage] 占いCOメッセージを表示しないか。trueなら表示しない（複数日分の占いCO時、前日以外の分は表示しないべき）
 [macro name="j_COFortuneTelling"]
 
   [iscript]
@@ -349,7 +362,7 @@
     }
 
     // 取得する日を決定する。引数があればその日の、なければ最新の日の履歴を取得する。
-    const day = mp.day ? mp.day : Object.keys(tmpFortuneTellingHistory).length - 1;
+    const day = ('day' in mp) ? parseInt(mp.day) : Object.keys(tmpFortuneTellingHistory).length - 1;
     // その占い履歴をCO済みにする
     tmpFortuneTellingHistory[day].doneCO = true;
     // 信頼度増減とメッセージ出力用にアクションオブジェクトを格納
@@ -358,8 +371,32 @@
     updateReliabirityForAction(f.characterObjects, f.actionObject);
   [endscript]
 
-  ; メッセージ出力
-  [m_COFortuneTelling]
+  ; メッセージ出力（mp.noNeedMessageがtrueなら表示しない）
+  [m_COFortuneTelling cond="!(('noNeedMessage' in mp) && (mp.noNeedMessage === 'true' || mp.noNeedMessage === true))"]
+
+  [iscript]
+    // 真占い師でも騙り占い師でも、表の視点オブジェクトを更新する
+    // ・CO済みということは対外的な真実であるから ・CO済みであれば占い師としての思考は表の視点を使うから
+    try {
+      f.characterObjects[mp.fortuneTellerId].perspective = organizePerspective(
+        f.characterObjects[mp.fortuneTellerId].perspective,
+        f.actionObject.targetId,
+        getRoleIdsForOrganizePerspective(f.actionObject.result)
+      );
+    } catch (error) {
+      console.log(mp.fortuneTellerId + 'は、破綻した占い結果のCOをしてしまいました!');
+      if (f.developmentMode) {
+        alert(mp.fortuneTellerId + 'は、破綻した占い結果のCOをしてしまいました!');
+      }
+      // 破綻フラグを立てる
+      TYRANO.kag.stat.f.characterObjects[mp.fortuneTellerId].isContradicted = true;
+      // 視点オブジェクトが破綻してしまったので、共通視点オブジェクトを入れておく
+      // role.rolePerspectiveは更新しない。本人の役職視点での破綻ではないため
+      f.characterObjects[mp.fortuneTellerId].perspective = clone(f.commonPerspective);
+      // 自分自身は嘘がつける役職（TODO:「嘘をつかない役職配列」をメソッドで取り出せるようにする）だったということで確定する。
+      updateCommonPerspective(mp.fortuneTellerId, [ROLE_ID_VILLAGER, ROLE_ID_FORTUNE_TELLER]);
+    }
+  [endscript]
 
   ; 今日のCOが終わったキャラはisDoneTodaysCOをtrueにする
   [eval exp="f.characterObjects[mp.fortuneTellerId].isDoneTodaysCO = true"]
@@ -646,6 +683,9 @@
       alert('未定義のactionIdです');
     }
 
+    // 同陣営判定の対象となる役職は、CO中の役職（COがなければ村人）とする
+    const roleId = (f.characterObjects[f.doActionCandidateId].CORoleId == '') ? ROLE_ID_VILLAGER : f.characterObjects[f.doActionCandidateId].CORoleId;
+
     let targetCharacterId = '';
     if (isLogicalDecision) {
       // 論理的な判断
@@ -653,6 +693,7 @@
       targetCharacterId = getCharacterIdBySameFactionPerspective(
         f.characterObjects[f.doActionCandidateId],
         f.characterObjects[f.doActionCandidateId].perspective,
+        roleId,
         needsMax
       );
     } else {
@@ -738,6 +779,11 @@
   [iscript]
     countVote(f.characterObjects, f.day);
   [endscript]
+  ; 開発モードならPCの選択したキャラを処刑する
+  [if exp="f.developmentMode"]
+    [eval exp="f.electedIdList = [f.selectedButtonId]"]
+    [eval exp="f.doExecute = true"]
+  [endif]
 [endmacro]
 
 
@@ -747,7 +793,9 @@
   [j_clearFixButton]
   [layopt layer="message0" visible="false"]
 
-  [call storage="jinroSubroutines.ks" target="*openVote"]
+  ; 投票結果を表示
+  [j_setDchForOpenVote]
+  [call storage="jinroSubroutines.ks" target="*displayCharactersHorizontally"]
   [p]
   ; 投票結果を表示していたレイヤーを解放
   [freeimage layer="1" time="400" wait="true"]
@@ -755,6 +803,79 @@
   ; ステータス、メニューボタン再表示とメッセージウィンドウを表示
   [j_displayFixButton status="true" menu="true"]
   [layopt layer="message0" visible="true"]
+[endmacro]
+
+
+[macro name="j_setDchForOpenVote"]
+  [iscript]
+    let tmpCharacterList = [];
+    for (let i = 0; i < f.voteResultObjects.length; i++) {
+      let cId = f.voteResultObjects[i].characterId;
+
+      let votedCountText = (function(){
+        if (cId in f.votedCountObject) {
+          let electedMark = f.electedIdList.includes(cId) ? '★' : '';
+          return electedMark + f.votedCountObject[cId] + '票';
+        } else {
+          return '0票';
+        }
+      })();
+
+      tmpCharacterList.push(new DisplayCharactersHorizontallySingle(
+        cId,
+        'normal.png',
+        f.voteResultObjects[i].targetId,
+        votedCountText,
+        '→' + f.characterObjects[f.voteResultObjects[i].targetId].name
+      ))
+    }
+
+    f.dch = new DisplayCharactersHorizontally(
+      tmpCharacterList,
+      20, // キャラクター画像の表示位置を中央より右へずらす。leftTextの文字を表示するスペースを作るため
+      -100, // キャラクター画像の表示位置を中央より上へずらす。メニューボタンは非表示にしているので、干渉しない分上げておく
+    );
+  [endscript]
+[endmacro]
+
+
+; キャラクター紹介画面を出力する
+[macro name="j_introductionCharacters"]
+  ; 全ボタンを消去
+  [j_clearFixButton]
+
+  ; キャラクタ－画像を表示
+  [j_setDchForintroductionCharacters]
+  [call storage="jinroSubroutines.ks" target="*displayCharactersHorizontally"]
+  [p]
+  ; キャラクター画像を表示していたレイヤーを解放
+  [freeimage layer="1" time="400" wait="true"]
+
+  ; ステータス、メニューボタン再表示
+  [j_displayFixButton status="true" menu="true"]
+[endmacro]
+
+
+[macro name="j_setDchForintroductionCharacters"]
+  [iscript]
+    let tmpCharacterList = [];
+    for (let i = 0; i < f.participantsIdList.length; i++) {
+      let cId = f.participantsIdList[i];
+      tmpCharacterList.push(new DisplayCharactersHorizontallySingle(
+        cId,
+        'normal.png',
+        cId,
+        '',
+        f.characterObjects[cId].name
+      ))
+    }
+
+    f.dch = new DisplayCharactersHorizontally(
+      tmpCharacterList,
+      20, // キャラクター画像の表示位置を中央より右へずらす。leftTextの文字を表示するスペースを作るため
+      -100, // キャラクター画像の表示位置を中央より上へずらす。メニューボタンは非表示にしているので、干渉しない分上げておく
+    );
+  [endscript]
 [endmacro]
 
 
@@ -846,6 +967,77 @@
     [eval exp="f.displaingButton.status = false"]
   [endif]
 [endmacro]
+
+
+; 時間を夜から昼に進める
+[macro name="j_turnIntoDaytime"]
+
+
+  ; PC,NPCを退場させる
+  [m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
+  ; 夜に占った後だとNPCが画面に出ているので退場が必要
+  [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+  #
+  [m_changeFrameWithId]
+
+  ; 昨夜（時間を経過させる前なので厳密には同日）の襲撃アクションオブジェクトを取得する
+  ; TODO 襲撃死と同時に別の死亡者が出る（例：呪殺）ようになった場合は修正する。配列で複数オブジェクトを取得することになるはず
+  [eval exp="f.bitingObjectLastNight = f.bitingHistory[f.day]"]
+
+  ; 昼時間開始時用の初期化を行う
+  [eval exp="daytimeInitialize()"]
+
+  [bg storage="black.png" time="1000" wait="true" effect="fadeInDown"]
+
+  [emb exp="f.day + '日目の朝を迎えました。'"][l][r]
+  [if exp="typeof f.bitingObjectLastNight === 'undefined'"]
+    ; 昨夜の襲撃結果が取得できなかった（＝初日犠牲者のいない1日目昼）場合
+    ; TODO 人狼の人数を可変で出力する
+    ; FIXME 役職の内訳を表示してもいいかも。
+    この中に人狼が1人潜んでいます……。
+    [j_introductionCharacters]
+
+  [elsif exp="f.bitingObjectLastNight.result"]
+    ; 昨夜の襲撃結果が襲撃成功の場合
+    ; キャラを登場させ、メッセージ表示
+    ; TODO とりあえず楽なので通常のポジションに登場させているが、襲撃死の演出を作ったら例えば画面中央に画像として表示させるだけとかにしたい
+    [m_changeCharacter characterId="&f.bitingObjectLastNight.targetId" face="normal"]
+    [emb exp="f.characterObjects[f.bitingObjectLastNight.targetId].name + 'は無残な姿で発見されました……。'"][p]
+
+    ; 噛まれたということは人狼ではないので、視点オブジェクトを更新する（TODO：人狼以外にも噛まれない役職が増えたら修正する）
+    [eval exp="updateCommonPerspective(f.bitingObjectLastNight.targetId, [ROLE_ID_WEREWOLF])"]
+
+    ; キャラを退場させる
+    [m_exitCharacter characterId="&f.bitingObjectLastNight.targetId"]
+
+  [else]
+    ; 昨夜の襲撃結果が襲撃失敗の場合
+    誰も襲われていない、平和な朝でした。[p]
+
+  [endif]
+
+  [bg storage="living_day_nc238325.jpg" time="1000" wait="true" effect="fadeInUp"]
+
+  ; PCが生存していれば再度画面に登場させる
+  [m_changeCharacter characterId="&f.playerCharacterId" face="normal" cond="f.characterObjects[f.playerCharacterId].isAlive"]
+
+[endmacro]
+
+
+; 時間を昼から夜に進める
+[macro name="j_turnIntoNight"]
+
+  ; PCを退場させる
+  [m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
+
+  ; 夜時間開始時用の初期化を行う
+  [eval exp="nightInitialize()"]
+  [bg storage="living_night_close_nc238328.jpg" time="1000" wait="true" effect="fadeInUp"]
+
+  恐ろしい夜がやってきました。[p]
+
+[endmacro]
+
 
 
 ; jsonをローカルに保存する

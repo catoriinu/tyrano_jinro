@@ -54,10 +54,6 @@ const ROLE_ID_TO_FACTION = {
 // アクション実行上限回数
 const MAX_DO_ACTION_COUNT = 3;
 
-// 死因
-const DEATH_BY_EXECUTION = 'execution'; // 処刑。投票による吊り・追放
-const DEATH_BY_ATTACK    = 'attack'; // 襲撃。人狼による噛み。
-
 // 再投票上限回数（これが初回を含めた最大投票回数となる）
 const MAX_REVOTE_COUNT = 4;
 
@@ -77,6 +73,8 @@ const ACTION_ASK = 'ask'; // 聞き出す（アクションボタン　未使用
 const ACTION_CANCEL = 'cancel'; // 発言しない（アクションボタン）
 const ACTION_FORTUNE_TELLING = 'fortuneTelling'; // 占う
 const ACTION_VOTE = 'vote'; // 投票
+const ACTION_EXECUTE = 'execute'; // 処刑。投票による吊り・追放（死亡処理アクション）
+const ACTION_BITE = 'bite'; // 襲撃。人狼による噛み（死亡処理アクション）
 
 // CSSのclass要素名（glinkのnameやcolorに設定するなど）
 const CLASS_GLINK_DEFAULT = 'btn_voivo'; // glinkのcolor用。ゲーム内で基本となるボタンのテーマ

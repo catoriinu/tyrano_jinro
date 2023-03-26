@@ -1,106 +1,166 @@
 /**
- * m_changeCharacterの実体メソッド
- * キャラクターを、発言者に合わせて切り替える
+ * m_changeCharacterマクロのjsポーティング版メソッド
+ * ※基本的にはマクロの方を使うべき。jsから呼び出したいときのみこのメソッドを使うことを許容。
+ * 　jsでティラノタグを呼び出し実行すると、ページ送りが行われてしまうことに注意すること。
+ * 登場しているキャラクターを交代する。既に登場しているキャラクターの場合は表情のみ変える。
  * キャラの表示位置は、PC：画面左側、NPC：画面右側とする。同じ側には一人しか出ない（ので、例えばNPC1が右側にいるときNPC2が喋る場合、NPC1が退場してからNPC2が登場する）
  * すでにそのキャラがchara_newで登録,およびその表情がchara_faceで登録済みである前提とする。
  * @param characterId 登場させたいキャラのキャラクターID。必須。
- * @param face 登場させたいキャラのface。（TODO：なければ現在のfaceのまま）
- * @param side 画面内にキャラが登場する位置。right/leftの指定必須。
+ * @param face 登場させたいキャラのface。基本的に必須。
  */
-function changeCharacter(characterId, face, side) {
+function changeCharacter(characterId, face = null) {
 
-  if (side == 'right') {
-    // 右側のキャラクター
-    // すでに右側にキャラが登場しており、それが登場させたいキャラと違うなら、右側のキャラを退場させる
-    if (typeof TYRANO.kag.stat.f.rightSideCharacterId != 'undefined' && TYRANO.kag.stat.f.rightSideCharacterId != characterId) {
-      exitCharacter(
-        TYRANO.kag.stat.f.rightSideCharacterId,
-        TYRANO.kag.stat.f.defaultPosition[TYRANO.kag.stat.f.rightSideCharacterId].side,
-        TYRANO.kag.stat.f.defaultPosition[TYRANO.kag.stat.f.rightSideCharacterId].left
-      );
-    }
+  // そのキャラがデフォルトで登場する位置を格納する（マクロ側と違い、単に変数名の短縮のため）
+  let side = TYRANO.kag.stat.f.defaultPosition[characterId].side;
 
-    if (TYRANO.kag.stat.f.rightSideCharacterId == characterId) {
-      // 登場させたいキャラがすでに登場しているなら、表情変更のみ
-      // TODO：同じ表情の場合どうなる？
-      // [chara_mod name="&mp.characterId" face="&mp.face" time="500" wait="false"]
-      TYRANO.kag.ftag.startTag("chara_mod",{name:characterId, face:face, time:500, wait:false});
+  // その位置に既に登場しているキャラがいる場合
+  if (TYRANO.kag.stat.f.displayedCharacter[side].isDisplay) {
+
+    // それが登場させたいキャラ自身の場合
+    if (TYRANO.kag.stat.f.displayedCharacter[side].characterId == characterId) {
+      // 表情の指定があり、かつ今の表情と違う場合、表情を変える
+      if (face && TYRANO.kag.stat.f.displayedCharacter[side].face != face) {
+        TYRANO.kag.ftag.startTag('chara_mod', {
+          name: characterId,
+          face: face,
+          time: 500,
+          wait: 'false'
+        });
+        // 表示キャラオブジェクトを更新する
+        TYRANO.kag.stat.f.displayedCharacter[side].face = face;
+      }
+
     } else {
-      // 登場させたいキャラがまだ登場していないなら、登場させる
+      // 今登場している別のキャラを退場させてから、そのキャラを登場させる
+      exitCharacter(TYRANO.kag.stat.f.displayedCharacter[side].characterId);
       enterCharacter(characterId, face, side);
     }
 
-  } else if (side == 'left') {
-    // 左側のキャラクター
-    // 左側にはPCしか登場しないため退場処理はなし（NOTE：左側にも別のキャラが登場するようにするなら、右側と同じように退場処理を入れる）
-    if (TYRANO.kag.stat.f.leftSideCharacterId == characterId) {
-      // 登場させたいキャラがすでに登場しているなら、表情変更のみ
-      // TODO：同じ表情の場合どうなる？
-      // [chara_mod name="&mp.characterId" face="&mp.face" time="500" wait="false"]
-      TYRANO.kag.ftag.startTag("chara_mod",{name:characterId, face:face, time:500, wait:false});
-    } else {
-      // 登場させたいキャラがまだ登場していないなら、登場させる
-      enterCharacter(characterId, face, side);
-    }
+  } else {
+    // 登場しているキャラがいないなら、そのキャラを登場させる
+    enterCharacter(characterId, face, side);
   }
 }
 
-
 /**
- * m_enterCharacterの実体メソッド
+ * m_enterCharacterマクロのjsポーティング版メソッド
+ * ※基本的にはマクロの方を使うべき。jsから呼び出したいときのみこのメソッドを使うことを許容。
+ * 　jsでティラノタグを呼び出し実行すると、ページ送りが行われてしまうことに注意すること。
  * 現在は登場していないキャラを登場させる
  * @param characterId 登場させたいキャラのキャラクターID。必須。
- * @param face 登場させたいキャラのface。必須。（TODO：なければ現在のfaceのままにしてもいいかも）
- * @param side 画面内にキャラが登場する位置。right/leftの指定必須。
+ * @param face 登場させたいキャラのface。必須。
+ * @param side 画面内にキャラが登場する位置。必須。
  */
 function enterCharacter(characterId, face, side) {
-  console.log('enter ' + characterId);
 
-  // キャラクター画像の移動量と、登場させるキャラクターのsideの変数にキャラクターIDを格納する
-  let moveLeft = '';
-  if (side == 'right') {
-    moveLeft = '-=1000';
-    TYRANO.kag.stat.f.rightSideCharacterId = characterId;
-  } else if (side == 'left') {
+  console.log('★enter ' + characterId);
+
+  // 表情を変える
+  // MEMO 「そのキャラの今の表情」を取得可能であれば、「今の表情と違う場合のみ」にしたい。が、HTML要素内に表情の情報がimgのパスくらいしかなかったので無理そう。
+  TYRANO.kag.ftag.startTag('chara_mod', {
+    name: characterId,
+    face: face,
+    time: 1,
+    wait: 'false'
+  });
+
+  // sideに合わせて、キャラクター画像を移動させるべき量を格納する
+  let moveLeft = '-=1000';
+  if (side == 'left') {
     moveLeft = '+=1000';
-    TYRANO.kag.stat.f.leftSideCharacterId = characterId;
   }
 
   // sideがrightなら画面右から右側に、leftなら画面左から左側にスライドインしてくる
-  // [chara_move name="&mp.characterId" time="600" anim="true" left="{moveLeft}" wait="false" effect="easeOutExpo"]
   TYRANO.kag.ftag.startTag("chara_move",{
-    name:characterId,
-    time:600,
-    anim:"true",
-    left:moveLeft,
-    wait:"false",
-    effect:"easeOutExpo"
+    name: characterId,
+    time: 600,
+    anim: "true",
+    left: moveLeft,
+    wait: "false",
+    effect: "easeOutExpo"
   });
+
+  // 表示キャラオブジェクトを更新する
+  TYRANO.kag.stat.f.displayedCharacter[side] = new DisplayedCharacterSingle(true, characterId, face);
 }
 
 
 /**
+ * m_exitCharacterマクロのjsポーティング版メソッド
+ * ※基本的にはマクロの方を使うべき。jsから呼び出したいときのみこのメソッドを使うことを許容。
+ * 　jsでティラノタグを呼び出し実行すると、ページ送りが行われてしまうことに注意すること。
  * 退場マクロ
  * 現在登場しているキャラを退場させる
  * TODO 襲撃死時とPCの処刑時の呼び出しで、フェードアウトしない。NPCの処刑時はする。ここというより、呼び出し元の処理順が問題かも。
  * @param characterId 退場させたいキャラのキャラクターID。必須。
- * @param side 画面内にキャラが登場している位置。right/leftの指定必須。
- * @param left 退場させたいキャラのleftの移動先。デフォルト座標のleftを指定すること。必須。
  */
-function exitCharacter(characterId, side, left) {
-  console.log('exit ' + characterId);
+function exitCharacter(characterId) {
 
-  // 退場させるキャラクターのsideの変数を初期化する
-  if (side == 'right') {
-    TYRANO.kag.stat.f.rightSideCharacterId = undefined;
-  } else if (side == 'left') {
-    TYRANO.kag.stat.f.leftSideCharacterId = undefined;
-  }
+  // そのキャラがどちらのサイドに表示されているかを取得する
+  let side = (function(){
+    if (TYRANO.kag.stat.f.displayedCharacter.right != null && TYRANO.kag.stat.f.displayedCharacter.right.characterId == characterId) return 'right';
+    if (TYRANO.kag.stat.f.displayedCharacter.left  != null && TYRANO.kag.stat.f.displayedCharacter.left.characterId  == characterId) return 'left';
+    return null;
+  })();
+  // 現在そのキャラが表示されていないなら、何もせず終了
+  if (side === null) return;
 
-  TYRANO.kag.ftag.startTag("chara_move",{
-    name:characterId,
-    time:600,
-    left:left,
-    wait:"false",
+  console.log('★exit ' + characterId);
+
+  // そのキャラをデフォルトの位置に移動させる
+  TYRANO.kag.ftag.startTag('chara_move', {
+    name: characterId,
+    time: 600,
+    left: TYRANO.kag.stat.f.defaultPosition[characterId].left,
+    wait: 'false',
   });
+
+  // 表示キャラオブジェクトを更新する
+  TYRANO.kag.stat.f.displayedCharacter[side] = new DisplayedCharacterSingle();
+}
+
+
+// TODO 別の場所に移動したい。このファイル自体も改名したい。
+/**
+ * @classdec 表示キャラオブジェクト（f.displayedCharacter）のleft/rightの値として格納する、一人分のキャラクター情報クラス
+ * @param {Boolean} isDisplay 表示中か true:表示中 | false:表示されていない
+ * @param {String} characterId キャラクターID
+ * @param {String} face 表情
+ */
+function DisplayedCharacterSingle(isDisplay = false, characterId = null, face = null) {
+  this.isDisplay = isDisplay;
+  this.characterId = characterId;
+  this.face = face;
+}
+
+
+/**
+ * 横並びでキャラクター画像を表示するサブルーチン(displayCharactersHorizontally)用の情報オブジェクト
+ * 生成したオブジェクトはf.dchに格納しておくこと
+ * @param {Array} characterList 表示するキャラクター情報（DisplayCharactersHorizontallySingleオブジェクト）を値に持つ配列
+ * @param {Number} displacedPxToRight キャラクター画像の左側からの表示位置を、標準からどれだけ右にずらしたいか(px)(負の値なら左にずれる)
+ * @param {Number} displacedPxToTop キャラクター画像の上側からの表示位置を、標準からどれだけ下にずらしたいか(px)(負の値なら上にずれる)
+ */
+function DisplayCharactersHorizontally(characterList = [], displacedPxToRight = 0, displacedPxToTop = 0) {
+  this.characterList = characterList;
+  this.displacedPxToRight = displacedPxToRight;
+  this.displacedPxToTop = displacedPxToTop;
+}
+
+
+/**
+ * 横並びでキャラクター画像を表示する際のキャラクター単体についての情報オブジェクト
+ * 生成したオブジェクトは、DisplayCharactersHorizontallyオブジェクトのcharacterList配列の値として格納すること
+ * @param {String} characterId キャラクターID
+ * @param {String} fileName 表示する画像のファイルパス。拡張子も必要。最終的には[image storage="chara/{characterId}/{fileName}"]形式で渡される。
+ * @param {String} bgColorCharacterId 背景色にしたいイメージカラーを持つキャラクターID
+ * @param {String} topText box上部に横書きで表示するテキスト。表示不要なら引数不要
+ * @param {String} leftText box左部に縦書きで表示するテキスト。表示不要なら引数不要
+ */
+function DisplayCharactersHorizontallySingle(characterId, fileName, bgColorCharacterId, topText = '', leftText = '') {
+  this.characterId = characterId;
+  this.fileName = fileName;
+  this.bgColorCharacterId = bgColorCharacterId;
+  this.topText = topText;
+  this.leftText = leftText;
 }
