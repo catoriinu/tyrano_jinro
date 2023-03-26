@@ -29,6 +29,8 @@
 ; ゲーム準備js読み込み
 [loadjs storage="plugin/jinro/macro/prepareGame.js"]
 
+[playbgm storage="nc282335.ogg" loop="true" volume="5"]
+
 ; ステータス、メニューボタン表示
 [j_displayFixButton status="true" menu="true"]
 
@@ -321,7 +323,7 @@
 [j_decideVote]
 
 [if exp="!f.characterObjects[f.playerCharacterId].isAlive"]
-  プレイヤーが死亡済みなので投票できません。[r]
+  プレイヤーが死亡済みなので投票できません。[l][r]
   [jump target="*skipPlayerVote" cond="!f.developmentMode"]
   が、開発用モードなので投票できます。[p]
 [endif]
@@ -348,8 +350,8 @@
 [eval exp="tf.doSlideInCharacter = true"]
 [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 
-; キャラ画像解放
-[freeimage layer="1" time="400" wait="false"]
+; NPCを退場させる（PCの投票先、または（PCが投票していない場合）直前に発言したキャラが残っているため。退場させないと、処刑先のキャラが喋るまでそのままになってしまう）
+[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 
 ; ボタンで選択した投票先キャラクターIDを、プレイヤーの投票履歴に入れる
 [iscript]
@@ -503,6 +505,8 @@ NPCが行動しています……[p]
 [m_changeFrameWithId]
 #
 おわり。[p]
+
+[fadeoutbgm time="2000"]
 
 [j_displayRoles]
 ;タイトルに戻ります。[p]
