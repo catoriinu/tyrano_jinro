@@ -5,23 +5,26 @@
 ; 処刑マクロ
 [macro name="j_execution"]
   [iscript]
-    ; 引数のキャラクターIDを対象者とする処刑のアクションオブジェクトを生成
+    // 引数のキャラクターIDを対象者とする処刑のアクションオブジェクトを生成
     let actionObject = new Action(
       '',
       ACTION_EXECUTE,
       mp.characterId
     );
 
-    ; 死亡判定を行う
-    actionObject = causeDeathToCharacter(actionObject);
-    if (actionObject.result) {
-      alert(f.characterObjects[actionObject.targetId].name + 'は追放された。'); // 処刑メッセージ
-    }
-    // 処刑履歴オブジェクトにその日の処刑結果を保存する
-    f.executionHistory[f.day] = actionObject;
-
+    // 死亡判定を行う
+    tf.actionObject = causeDeathToCharacter(actionObject);
     // MEMO:ここでは視点オブジェクトの更新は行わない。処刑後もゲームが継続することが確定したとき＝夜時間開始時用の初期化処理の中で行う。
   [endscript]
+
+  [if exp="tf.actionObject.result"]
+    ; 処刑メッセージ
+    [m_changeFrameWithId]
+    #
+    [emb exp="f.characterObjects[tf.actionObject.targetId].name + 'は追放されました。'"][p]
+  [endif]
+  ; 処刑履歴オブジェクトにその日の処刑結果を保存する
+  [eval exp="f.executionHistory[f.day] = tf.actionObject"]
 [endmacro]
 
 
