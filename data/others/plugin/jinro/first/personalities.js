@@ -72,9 +72,6 @@ function Tester() {
         value: 0.4,
         arithmetic: ARITHMETIC_ADDITION
       },
-      // 以下のようなメソッドをここに格納できれば嬉しい
-      // TODO:占われて○だったとき＝信頼度を少し上げる。ただし必ず敵陣営の場合は上げない
-      // TODO:占われて●だったとき＝信頼度をガクッと下げる。ただし必ず味方陣営の場合は少ししか下げない
     },
     { // feelingBorder {hate:仲間度がこれ未満ならhate状態, love:仲間度がこれ超過ならlove状態}
       hate: 0.2,
@@ -133,9 +130,6 @@ function Doll() {
         value: 0.3,
         arithmetic: ARITHMETIC_ADDITION
       },
-      // 以下のようなメソッドをここに格納できれば嬉しい
-      // TODO:占われて○だったとき＝信頼度を少し上げる。ただし必ず敵陣営の場合は上げない
-      // TODO:占われて●だったとき＝信頼度をガクッと下げる。ただし必ず味方陣営の場合は少ししか下げない
     },
     { // feelingBorder {hate:仲間度がこれ未満ならhate状態, love:仲間度がこれ超過ならlove状態}
       hate: 0.2,

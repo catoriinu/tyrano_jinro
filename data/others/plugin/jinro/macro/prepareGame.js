@@ -14,7 +14,6 @@ function prepareGameMain() {
   }
   
   // 参加者数と役職数が等しいことをチェックしてから先に進む
-  // TODO 配列が入っていることの確認もしたほうがいいかも
   if (TYRANO.kag.stat.f.participantsIdList.length != TYRANO.kag.stat.f.villagersRoleIdList.length) {
     alert('参加者数(' + participantsIdList.length + ')と役職数(' + TYRANO.kag.stat.f.villagersRoleIdList.length + ')が合っていません！');
   }
@@ -164,7 +163,7 @@ function setDefaultPerspective(characterObjects, participantsIdList, villagersRo
     characterObjects[characterId].perspective = organizePerspective(
       commonPerspective,
       characterId,
-      TYRANO.kag.stat.f.uniqueRoleIdList.filter(rId => (rId != ROLE_ID_VILLAGER)) // TODO：COなしなら村人を入れておくが、それで破綻する可能性もあるかもしれない。その場合共通視点を入れるようにしたほうがいいかも
+      TYRANO.kag.stat.f.uniqueRoleIdList.filter(rId => (rId != ROLE_ID_VILLAGER)) // COなしのうちは村人を入れておく
     );
 
     characterObjects[characterId].role.rolePerspective = organizePerspective(

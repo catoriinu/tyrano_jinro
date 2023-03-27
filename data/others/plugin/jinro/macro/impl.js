@@ -91,7 +91,6 @@ function enterCharacter(characterId, face, side) {
  * 　jsでティラノタグを呼び出し実行すると、ページ送りが行われてしまうことに注意すること。
  * 退場マクロ
  * 現在登場しているキャラを退場させる
- * TODO 襲撃死時とPCの処刑時の呼び出しで、フェードアウトしない。NPCの処刑時はする。ここというより、呼び出し元の処理順が問題かも。
  * @param characterId 退場させたいキャラのキャラクターID。必須。
  */
 function exitCharacter(characterId) {

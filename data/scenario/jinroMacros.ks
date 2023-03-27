@@ -715,9 +715,6 @@
 ; @param actionObject アクションオブジェクト {characterId:アクション実行するキャラクターID, actionId:実行するアクションID, targetId:アクション対象のキャラクターID} 必須
 [macro name="j_doAction"]
   ; アクションボタン用変数の初期化（PCからのボタン先行入力を受け付けられるように消す。セリフとリアクションにはマクロ変数を渡すのでこのタイミングで消して問題ない）
-  ; TODO:多分いらないので2行コメントアウト。しばらく問題が起きなければ削除する
-  ; [eval exp="f.selectedActionId = ''"]
-  ; [eval exp="f.selectedCharacterId = ''"]
   [eval exp="f.doActionObject = {}"]
   [eval exp="f.pcActionObject = {}"]
   [eval exp="f.npcActionObject = {}"]
@@ -740,9 +737,6 @@
 ; 人狼メニュー画面に表示するための全占い師のCO状況テキストを生成する
 ; TODO 作り直す
 [macro name="j_getAllFortuneTellerCOText"]
-  ; TODO:これを表示したあと、2日目にプレイヤーが占う時にバグる。
-  ; getCharacterObjectsFromCharacterIds()で、for (let k of Object.keys(characterObjects)) {の際にUncaught TypeError: Cannot convert undefined or null to object
-  ; おそらくcharacterObjectsがnullになっている。人狼メニュー画面から戻った時にcharacterObjectsが初期化されるor読み込めない状態になっている？
   [iscript]
     tf.allFortuneTellerCOText = '';
     for (let cId of Object.keys(f.allFortuneTellingHistoryObject)) {
@@ -1000,7 +994,6 @@
   [elsif exp="f.bitingObjectLastNight.result"]
     ; 昨夜の襲撃結果が襲撃成功の場合
     ; キャラを登場させ、メッセージ表示
-    ; TODO とりあえず楽なので通常のポジションに登場させているが、襲撃死の演出を作ったら例えば画面中央に画像として表示させるだけとかにしたい
     [m_changeCharacter characterId="&f.bitingObjectLastNight.targetId" face="normal"]
     [emb exp="f.characterObjects[f.bitingObjectLastNight.targetId].name + 'は無残な姿で発見されました……。'"][p]
 

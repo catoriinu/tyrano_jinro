@@ -260,7 +260,6 @@
     [eval exp="tf.tmpZeroRoleIds = [ROLE_ID_VILLAGER]"]
     [j_updateCommonPerspective characterId="&f.COCandidateId" zeroRoleIds="&tf.tmpZeroRoleIds"]
   [endif]
-; TODO 占い結果を聞いて、各キャラのrolePerspectiveで真偽をつける
 
 ; NPCのCOが終了したら、他のNPCのCOを確認しに戻る
 ; ※NPCのCOが1人終わるごとにPCにCO有無を確認しに戻るのはPCの操作が面倒になるはず。
@@ -317,8 +316,6 @@
 ～投票フェイズ～[p]
 
 ; 投票フェイズ
-; TODO:前日の投票フェーズや、同日の再投票時に入ってしまった不要な変数を初期化する（多分ありそう）
-
 ; NPCの投票先を決める
 [j_decideVote]
 

@@ -81,7 +81,7 @@ function FortuneTeller() {
   
   /**
    * 占い先を決定する（NPC用）
-   * TODO もし占い候補がいなければ（全員占い済みなら）、自分以外の生存者からランダムで選ぶ。
+   * TODO もし占い候補がいなければ（全員占い済みなら）占わないことができるようにする。翌朝COもしないようにする。
    * @param {Object} fortuneTellerOjbect 占い実行者（真占い師または騙りの占い師）のキャラクターオブジェクト
    * @param {Number} day 占い実行日（過去の日付で占ったことにしたいときに指定）
    * @return {Array} [占い先のキャラクターID, ※偽装占い結果] ※偽装占い結果は偽占い師の場合にboolean(t:●/f:○)で返却する。真占い師の場合null固定。
@@ -93,7 +93,7 @@ function FortuneTeller() {
     
     // 現在の視点からCO可能な、合法報告生成
     // 真占い師、騙り占い師のどちらであってもキャラクターオブジェクト直下のperspectiveを元にしてよい
-    // FIXME:「昨夜襲撃されたキャラを●と報告する」が破綻扱いになっていない。ここというよりは呼び出し元でキャッチすべきことだけど。
+    // TODO:「昨夜襲撃されたキャラを●と報告する」という破綻があり得る。（キャラの論理力によって）破綻するCOをしないようにしてもいいかも。
     const regalAnnouncements = generateRegalAnnouncements(candidateIdList, fortuneTellerObject.perspective);
     
     // 合法報告の生成結果から、占い先を考慮し返却する
