@@ -281,13 +281,13 @@
 *startDiscussionLoop
 
 ; アクション実行上限回数以上の場合は議論フェイズを終了する
-[jump target="*votePhase" cond="f.doActionCount >= MAX_DO_ACTION_COUNT"]
+[jump target="*votePhase" cond="f.doActionCount >= sf.j_development.maxDoActionCount"]
 [eval exp="f.doActionCount++"]
 
 [m_changeFrameWithId]
 #
 ; TODO 画面上のどこかに常に、あるいはメニュー画面内に表示しておけるとベスト
-～ラウンド[emb exp="f.doActionCount"]/[emb exp="MAX_DO_ACTION_COUNT"]～[r]
+～ラウンド[emb exp="f.doActionCount"]/[emb exp="sf.j_development.maxDoActionCount"]～[r]
 ; NPCのアクション実行者がいるか、いるならアクションとその対象を格納する
 [j_decideDoActionByNPC]
 [if exp="f.doActionCandidateId != ''"]
@@ -320,25 +320,27 @@
 [j_decideVote]
 
 [if exp="!f.characterObjects[f.playerCharacterId].isAlive"]
-  プレイヤーが死亡済みなので投票できません。[l][r]
-  [jump target="*skipPlayerVote" cond="!f.developmentMode"]
-  が、開発用モードなので投票できます。[p]
+  プレイヤーがリタイア済みなので投票できません。[l][r]
+  [jump target="*skipPlayerVote" cond="!sf.j_development.dictatorMode"]
+  が、独裁者モードなので投票できます。[p]
 [endif]
 
 ; プレイヤーの投票先を決める
 [m_changeFrameWithId]
 # 
 投票するキャラクターを選択してください。
-[if exp="f.developmentMode"]
-[r]
-開発モードのため、プレイヤーの投票先を処刑します。
+[eval exp="tf.needPC = false"]
+
+[if exp="sf.j_development.dictatorMode"]
+  [r]
+  独裁者モードのため、プレイヤーの投票先を追放します。
+  [eval exp="tf.needPC = true"]
 [endif]
 [p]
 
-; 生存者である、かつプレイヤー以外のキャラクターIDをボタンオブジェクトに格納する。
-; [j_setCharacterToButtonObjects onlySurvivor="true"]
-; TODO ……のが正しいが、テスト用に生存者全員を投票対象にしておく。
-[j_setCharacterToButtonObjects onlySurvivor="true" needPC="true"]
+; 生存者である、かつプレイヤー以外のキャラクターIDをボタンオブジェクトに格納する
+; 開発者用設定：独裁者モードならプレイヤーも投票対象にできるようにする
+[j_setCharacterToButtonObjects onlySurvivor="true" needPC="&tf.needPC"]
 
 ; メニューボタン非表示
 [j_clearFixButton menu="true"]

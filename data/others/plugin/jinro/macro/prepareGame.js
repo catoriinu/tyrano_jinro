@@ -108,16 +108,17 @@ function TestObj () {
 /**
  * 発話者の名前オブジェクトに、表示名を格納していく
  * @param {Array} characterObjects キャラクターオブジェクト配列
- * @return {Array} 発話者の名前オブジェクト keyがname、valueが表示名（開発モードかヒントモードの場合、後ろに役職名を追加する）
+ * @return {Array} 発話者の名前オブジェクト [{name: 表示名},...]
  */
 function setSpeakersName(characterObjects) {
   const speaker = {}
   for (let k of Object.keys(characterObjects)) {
     let tmpName = characterObjects[k].name;
-    console.log(tmpName);
-    if (TYRANO.kag.stat.f.developmentMode || TYRANO.kag.stat.f.hintMode) {
+    // 開発者用設定：独裁者モードなら後ろに役職名を追加する
+    if (TYRANO.kag.variable.sf.j_development.dictatorMode) {
       tmpName += '（' + ROLE_ID_TO_NAME[characterObjects[k].role.roleId] + '）';
     }
+    console.log(tmpName);
     speaker[characterObjects[k].name] = tmpName;
   }
   return speaker;

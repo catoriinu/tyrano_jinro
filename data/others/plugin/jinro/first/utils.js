@@ -39,11 +39,11 @@ function getVillagersRoleIdList() {
     ROLE_ID_VILLAGER,
   ];
 
-  // シャッフルしてから返却する
-  if (TYRANO.kag.stat.f.developmentMode) {
-    // TODO テスト用にそのまま返却
+  if (!TYRANO.kag.variable.sf.j_development.doShuffle) {
+    // 開発者用設定：役職シャッフルが固定なら上記の通り返却する
     return villagersRoleIdList;
   }
+  // シャッフルしてから返却する
   return shuffleElements(villagersRoleIdList);
 
 }

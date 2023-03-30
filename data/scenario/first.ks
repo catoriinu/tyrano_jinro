@@ -18,8 +18,6 @@
 
 ; 開発モードか？ TODO:公開前にはOFFにすること！
 [eval exp="f.developmentMode = false"]
-; ヒントモードか？ TODO:公開前にはOFFにすること！
-[eval exp="f.hintMode = false"]
 
 ; デフォルトフォントの設定
 [deffont size=32 color="0x28332a" face=MPLUSRounded][resetfont]

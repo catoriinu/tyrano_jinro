@@ -773,8 +773,8 @@
   [iscript]
     countVote(f.characterObjects, f.day);
   [endscript]
-  ; 開発モードならPCの選択したキャラを処刑する
-  [if exp="f.developmentMode"]
+  ; 開発者用設定：独裁者モードならPCの選択したキャラを処刑する
+  [if exp="sf.j_development.dictatorMode"]
     [eval exp="f.electedIdList = [f.selectedButtonId]"]
     [eval exp="f.doExecute = true"]
   [endif]
