@@ -1263,3 +1263,82 @@ function getCharacterIdBySameFactionPerspective(characterObject, perspective, ro
 
   return targetCharacterId;
 }
+
+
+/**
+ * 自分自身の信頼度を確認し、最も信頼度が高い（低い）キャラクターIDを返却する
+ * @param {Object} characterObject キャラクターオブジェクト
+ * @param {Boolean} needsMax true:最大値のキャラクターIDを取得したい / false:最小値のキャラクターIDを取得したい
+ * @returns {String} targetCharacterId 対象のキャラクターID
+ */
+function getCharacterIdByReliability(characterObject, needsMax) {
+
+  let targetCharacterIdList = [];
+  // 比較用の値の初期値を格納。最大値が必要なら0、最小値が必要なら1
+  let maxOrMinValue = needsMax ? 0 : 1;
+
+  for (let cId of Object.keys(characterObject.reliability)) {
+    // 自分自身と死亡済みのキャラは除外
+    // MEMO そうしたくないときが来たら引数で処理し分けるようにする
+    if (cId == characterObject.characterId) continue;
+    if (!TYRANO.kag.stat.f.characterObjects[cId].isAlive) continue;
+
+    let tmpReliability = characterObject.reliability[cId]
+    console.log('★Reliability targetCharacterId:' + cId + ' Reliability:' + tmpReliability);
+
+    // 同陣営割合の合計の値を確認し、キャラクターIDを格納するか判定する
+    if (tmpReliability == maxOrMinValue) {
+      // 値が、現在の比較用の値と同値なら候補配列に追加する（取得したいのが最大値でも最小値でも、ここの処理は共通でよい）
+      targetCharacterIdList.push(cId);
+    } else if (
+      (needsMax && (tmpReliability > maxOrMinValue)) ||
+      (!needsMax && (tmpReliability < maxOrMinValue))
+    ) {
+      // 値が現在の比較用の値超過または未満（取得したいのが最大値か最小値かで判定し分ける）ならば、候補配列に格納する
+      targetCharacterIdList = [cId];
+      maxOrMinValue = tmpReliability;
+    }
+  }
+
+  // 候補者配列から最終的な候補者を決める
+  // 候補が1人なら即確定し、0人なら空文字を返す
+  let targetCharacterId = '';
+  if (targetCharacterIdList.length == 1) {
+    targetCharacterId = targetCharacterIdList[0];
+
+  } else if (targetCharacterIdList.length >= 2) {
+    // 候補が複数なら、候補の中で最も仲間度が高い（低い）キャラクターを候補とする
+    // 基本的には、同陣営割合の差の影響で仲間度にも差が出る。ただしlogicalが0の場合だけは差が出ないことに注意。
+    let sameFactionPossivility = calcSameFactionPossivility(characterObject, perspective, targetCharacterIdList);
+    console.log('★Reliability sameFactionPossivility:');
+    console.log(sameFactionPossivility);
+
+    targetCharacterIdList = [];
+    // 比較用の値の初期値を格納。最大値が必要なら0、最小値が必要なら1
+    maxOrMinValue = needsMax ? 0 : 1;
+    for (let cId of Object.keys(sameFactionPossivility)) {
+      // 仲間度の合計の値を確認し、キャラクターIDを格納するか判定する
+      if (sameFactionPossivility[cId] == maxOrMinValue) {
+        // 値が、現在の比較用の値と同値なら候補配列に追加する（取得したいのが最大値でも最小値でも、ここの処理は共通でよい）
+        targetCharacterIdList.push(cId);
+      } else if (
+        (needsMax && (sameFactionPossivility[cId] > maxOrMinValue)) ||
+        (!needsMax && (sameFactionPossivility[cId] < maxOrMinValue))
+      ) {
+        // 値が現在の比較用の値超過または未満（取得したいのが最大値か最小値かで判定し分ける）ならば、候補配列に格納する
+        targetCharacterIdList = [cId];
+        maxOrMinValue = sameFactionPossivility[cId];
+      }
+    }
+
+    // 候補が1人なら即確定し、ここまでやっても候補が複数ならランダムで決める
+    if (targetCharacterIdList.length == 1) {
+      targetCharacterId = targetCharacterIdList[0];
+    } else if (targetCharacterIdList.length >= 2) {
+      targetCharacterId = getRandomElement(targetCharacterIdList);
+    }
+  }
+  console.log('getCharacterIdByReliability targetCharacterId:' + targetCharacterId);
+
+  return targetCharacterId;
+}

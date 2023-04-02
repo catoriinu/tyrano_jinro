@@ -34,11 +34,11 @@ function prepareGameMain() {
     // 「性格準拠」の場合、何もしない（最初にcontinueすることを明示しておく）
     if (TYRANO.kag.variable.sf.j_development.thinking == 'default') continue
     if (TYRANO.kag.variable.sf.j_development.thinking == 'logical') {
-      // 「論理的」の場合、全キャラクターのlogicalを1に上書きする
-      characterObjects[characterId].personality.logical = 1;
+      // 「論理的」の場合、全キャラクターのlogicalを0.9999に上書きする（1だと仲間度の計算に全く信頼度が反映されなくなってしまうため）
+      characterObjects[characterId].personality.logical = 0.9999;
     } else if (TYRANO.kag.variable.sf.j_development.thinking == 'emotional') {
-      // 「感情的」の場合、全キャラクターのlogicalを0に上書きする
-      characterObjects[characterId].personality.logical = 0;
+      // 「感情的」の場合、全キャラクターのlogicalを0.0001に上書きする（0だと仲間度の計算に全く同陣営割合が反映されなくなってしまうため）
+      characterObjects[characterId].personality.logical = 0.0001;
     }
   }
   // 共通の視点オブジェクトをティラノ変数に、各キャラの視点オブジェクトを各自のcharacterObject.perspectiveに格納する

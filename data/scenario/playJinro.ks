@@ -291,10 +291,18 @@
 ; NPCのアクション実行者がいるか、いるならアクションとその対象を格納する
 [j_decideDoActionByNPC]
 [if exp="f.doActionCandidateId != ''"]
-～[emb exp="f.characterObjects[f.doActionCandidateId].name"]が話そうとしています～[p]
+～[emb exp="f.characterObjects[f.npcActionObject.characterId].name"]が話そうとしています
+  ; 開発者用設定：独裁者モードなら、アクション実行者のアクション内容をメッセージに表示する
+  [if exp="sf.j_development.dictatorMode"]
+    [iscript]
+      tf.tmpDoActionMessage = ((f.npcActionObject.actionId == ACTION_TRUST) ? '信じる' : (f.npcActionObject.actionId == ACTION_SUSPECT) ? '疑う' : '？');
+    [endscript]
+    （[emb exp="f.characterObjects[f.npcActionObject.targetId].name"]に[emb exp="tf.tmpDoActionMessage"]）
+  [endif]
 [else]
-～誰も話そうとしていないようです～[p]
+～誰も話そうとしていないようです
 [endif]
+～[p]
 
 ; アクション実行
 [j_setDoActionObject]

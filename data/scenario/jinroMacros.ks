@@ -645,23 +645,22 @@
 
   ; 実行するアクションとその対象を決定する
   [iscript]
-    // 論理的な判断をするか感情的な判断をするか、論理力をもとに判定する
+    // 論理的な判断をするか感情的な判断をするか、論理力をもとに決める
     // MEMO ここで仲間度を用いないのは、仲間度のみに限定すると中途半端な対象しか選択されないため。
     // 論理力の低いキャラでも論理的な判断（＝そのキャラ視点における人狼ゲーム的な正解）で発言するチャンスを設けることで、プレイヤーを悩ませられると思う。
-    const [probability, isLogicalDecision] = [1, true];
-    // TODO randomDecide(f.characterObjects[f.doActionCandidateId].personality.logical);
+    const [probability, isLogicalDecision] = randomDecide(f.characterObjects[f.doActionCandidateId].personality.logical);
 
     // 実行するアクションを決める
     // TODO アクションID定数に置換する
     // MEMO 選ばれるアクションは一旦ランダムとする。何らかの基準で比重を変えたい場合はここを修正する。
-    const actionId = getRandomElement(['suspect', 'trust']);
+    const actionId = getRandomElement([ACTION_SUSPECT, ACTION_TRUST]);
 
     // アクションの対象を決める
-    // TODO アクションID定数の中にmax,minを持っていてもいいかも
+    // TODO アクションID定数の中にmax,minを持っていた方が、アクションを増やしやすいかも
     let needsMax = true;
-    if (actionId == 'suspect') {
+    if (actionId == ACTION_SUSPECT) {
       needsMax = false;
-    } else if (actionId == 'trust') {
+    } else if (actionId == ACTION_TRUST) {
       needsMax = true;
     } else {
       alert('未定義のactionIdです');
@@ -673,7 +672,10 @@
     let targetCharacterId = '';
     if (isLogicalDecision) {
       // 論理的な判断
-      // perspectiveをもとに仲間度を決める（役職騙り中の人狼や狂人は騙り役職としての視点オブジェクトで判定する。発言は嘘をつくため）
+
+      // 同陣営判定の対象となる役職は、CO中の役職（COがなければ村人）とする
+      const roleId = (f.characterObjects[f.doActionCandidateId].CORoleId == '') ? ROLE_ID_VILLAGER : f.characterObjects[f.doActionCandidateId].CORoleId;
+      // perspectiveをもとに同陣営割合を出して対象を決める（役職騙り中の人狼や狂人は騙り役職としての視点オブジェクトで判定する。発言は嘘をつくため）
       targetCharacterId = getCharacterIdBySameFactionPerspective(
         f.characterObjects[f.doActionCandidateId],
         f.characterObjects[f.doActionCandidateId].perspective,
@@ -682,7 +684,8 @@
       );
     } else {
       // 感情的な判断
-      // TODO targetCharacterId = getCharacterIdByReliability(f.doActionCandidateId, needsMax);
+      // 信頼度をもとに対象を決める
+      targetCharacterId = getCharacterIdByReliability(f.characterObjects[f.doActionCandidateId], needsMax);
     }
     console.log('actionId:' + actionId);
 
