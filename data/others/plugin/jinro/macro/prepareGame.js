@@ -29,6 +29,17 @@ function prepareGameMain() {
       characterObjects[characterId].isPlayer = true;
       TYRANO.kag.stat.f.playerCharacterId = characterId
     }
+
+    // 開発者モード：「NPCの思考方針」によるlogicalの上書き処理。logicalを上書きすることで仲間度の算出結果が変わる。
+    // 「性格準拠」の場合、何もしない（最初にcontinueすることを明示しておく）
+    if (TYRANO.kag.variable.sf.j_development.thinking == 'default') continue
+    if (TYRANO.kag.variable.sf.j_development.thinking == 'logical') {
+      // 「論理的」の場合、全キャラクターのlogicalを1に上書きする
+      characterObjects[characterId].personality.logical = 1;
+    } else if (TYRANO.kag.variable.sf.j_development.thinking == 'emotional') {
+      // 「感情的」の場合、全キャラクターのlogicalを0に上書きする
+      characterObjects[characterId].personality.logical = 0;
+    }
   }
   // 共通の視点オブジェクトをティラノ変数に、各キャラの視点オブジェクトを各自のcharacterObject.perspectiveに格納する
   setDefaultPerspective(characterObjects, TYRANO.kag.stat.f.participantsIdList, TYRANO.kag.stat.f.villagersRoleIdList);

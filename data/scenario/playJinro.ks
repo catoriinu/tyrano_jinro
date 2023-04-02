@@ -365,20 +365,18 @@
 ; 票を公開する
 [j_openVote]
 
-[if exp="!f.developmentMode"]
-  [if exp="!f.doExecute"]
-    [eval exp="f.revoteCount += 1"]
-    ; 再投票上限回数未満であれば再投票する
-    [if exp="f.revoteCount < MAX_REVOTE_COUNT"]
-      再投票です。[r]
-      あと[emb exp="MAX_REVOTE_COUNT - f.revoteCount"]回で決着しない場合は引き分けです。[p]
-      [jump target="*votePhase"]
-    [else]
-      ; 再投票上限を越えた場合は引き分け処理
-      投票で決着がつきませんでした。[p]
-      [eval exp="tf.winnerCamp = CAMP_DRAW_BY_REVOTE"]
-      [jump target="*gameOver"]
-    [endif]
+[if exp="!f.doExecute"]
+  [eval exp="f.revoteCount += 1"]
+  ; 再投票上限回数未満であれば再投票する
+  [if exp="f.revoteCount < MAX_REVOTE_COUNT"]
+    再投票です。[r]
+    あと[emb exp="MAX_REVOTE_COUNT - f.revoteCount"]回で決着しない場合は引き分けです。[p]
+    [jump target="*votePhase"]
+  [else]
+    ; 再投票上限を越えた場合は引き分け処理
+    投票で決着がつきませんでした。[p]
+    [eval exp="tf.winnerCamp = CAMP_DRAW_BY_REVOTE"]
+    [jump target="*gameOver"]
   [endif]
 [endif]
 

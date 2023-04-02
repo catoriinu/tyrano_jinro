@@ -294,9 +294,6 @@ function updateCommonPerspective(characterId, zeroRoleIds) {
       TYRANO.kag.stat.f.characterObjects[cId].role.rolePerspective = organizePerspective(TYRANO.kag.stat.f.characterObjects[cId].role.rolePerspective, characterId, zeroRoleIds);
     } catch (error) {
       console.log(cId + 'の視点が破綻しました！');
-      if (TYRANO.kag.stat.f.developmentMode) {
-        alert(cId + 'の視点が破綻しました！');
-      }
       // 破綻したときの処理を行う
       updateCharacterObjectToContradicted(cId);
     }

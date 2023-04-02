@@ -185,10 +185,7 @@ function isWinWerewolves(survivorObjects) {
   // 人狼が、生存者数の半数以上であれば、人狼陣営の勝利
   const survivorsCount = survivorObjects.length;
   const werewolvesCount = getIsWerewolvesObjects(survivorObjects).length;
-  if (TYRANO.kag.stat.f.developmentMode) {
-    console.log('生存者数:' + survivorsCount + '名 うち人狼の数:' + werewolvesCount + '名');
-    //alert('生存者数:' + survivorsCount + '名 うち人狼の数:' + werewolvesCount + '名');
-  }
+  console.log('生存者数:' + survivorsCount + '名 うち人狼の数:' + werewolvesCount + '名');
   return werewolvesCount >= Math.ceil(survivorsCount / 2);
 }
 

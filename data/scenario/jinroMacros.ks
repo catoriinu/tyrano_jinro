@@ -36,9 +36,6 @@
   勝敗判定中……[p]
   [iscript]
     tf.winnerCamp = judgeWinnerCamp(f.characterObjects);
-    if (f.developmentMode) {
-      //alert('勝利陣営: ' + tf.winnerCamp);
-    }
   [endscript]
 
   [if exp="tf.winnerCamp != null"]
@@ -104,11 +101,6 @@
     }
     f.allFortuneTellingHistoryObject[mp.fortuneTellerId][day] = todayResult;
     */
-    if (f.developmentMode) {
-      let resultMassage = todayResult.action.result ? '人　狼' : '村　人';
-      //alert(f.characterObjects[mp.fortuneTellerId].name + 'は'
-      // + f.characterObjects[todayResult.characterId].name + 'を占いました。\n結果　【' + resultMassage + '】');
-    }
   [endscript]
 [endmacro]
 
@@ -385,9 +377,6 @@
       );
     } catch (error) {
       console.log(mp.fortuneTellerId + 'は、破綻した占い結果のCOをしてしまいました!');
-      if (f.developmentMode) {
-        alert(mp.fortuneTellerId + 'は、破綻した占い結果のCOをしてしまいました!');
-      }
       // 破綻フラグを立てる
       TYRANO.kag.stat.f.characterObjects[mp.fortuneTellerId].isContradicted = true;
       // 視点オブジェクトが破綻してしまったので、共通視点オブジェクトを入れておく
@@ -432,11 +421,6 @@
     } else if (COCandidateIdArray.length >= 2) {
       f.COCandidateId = getRandomElement(COCandidateIdArray);
     }
-    
-    if (f.developmentMode) {
-      //alert('CO判定結果 キャラクターID:' + f.COCandidateId + ' maxProbability:' + maxProbability);
-    }
-    
   [endscript]
 [endmacro]
 
