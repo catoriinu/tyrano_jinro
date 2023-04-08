@@ -4,12 +4,10 @@
  */
 function prepareGameMain() {
 
-  // 今回の参加者のキャラクターIDと、配役される役職IDを取得する
-  // TODO selectStage.ksを経由して事前に取得するように完全移行できたら、この判定は不要になる
-  if (typeof TYRANO.kag.stat.f.participantsIdList == 'undefined') {
-    // 参加者のキャラクターID配列
-    TYRANO.kag.stat.f.participantsIdList = getParticipantsIdList();
-    // 参加している役職ID配列
+  // 今回の参加者のキャラクターID配列と、配役される役職ID配列を取得する
+  TYRANO.kag.stat.f.participantsIdList = getParticipantsIdList();
+  // TODO 役職選択画面で役職を選択済みなら、既に配列に値が入っているのでここでは役職を割り当てない
+  if (!TYRANO.kag.stat.f.isSelectedMyRole) {
     TYRANO.kag.stat.f.villagersRoleIdList = getVillagersRoleIdList();
   }
   
@@ -58,6 +56,9 @@ function prepareGameMain() {
 
   // 全占い結果履歴オブジェクトの初期化
   TYRANO.kag.stat.f.allFortuneTellingHistoryObject = {};
+
+  // アクション履歴オブジェクトの初期化
+  TYRANO.kag.stat.f.doActionHistory = {};
 
   // 発話者の名前オブジェクト。ksファイル内で、# &f.speaker['名前'] の形式で使う。
   TYRANO.kag.stat.f.speaker = setSpeakersName(characterObjects);

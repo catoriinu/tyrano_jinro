@@ -514,9 +514,12 @@ NPCが行動しています……[p]
 [fadeoutbgm time="2000"]
 
 [j_displayRoles]
-;タイトルに戻ります。[p]
-; [j_saveJson]
+タイトルに戻ります。[p]
 
-; TODO タイトル画面または戻る前に、キャラの退場、メッセージ枠の削除、ボタンの削除など必要。
-;[jump storage="title.ks"]
+; タイトル画面に戻る前に、キャラの退場、メッセージ枠の削除、ボタンの削除を行う
+[j_clearFixButton]
+[m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
+[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+[layopt layer="message0" visible="false"]
+[jump storage="title.ks"]
 [s]

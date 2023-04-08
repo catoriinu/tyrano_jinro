@@ -651,7 +651,6 @@
     const [probability, isLogicalDecision] = randomDecide(f.characterObjects[f.doActionCandidateId].personality.logical);
 
     // 実行するアクションを決める
-    // TODO アクションID定数に置換する
     // MEMO 選ばれるアクションは一旦ランダムとする。何らかの基準で比重を変えたい場合はここを修正する。
     const actionId = getRandomElement([ACTION_SUSPECT, ACTION_TRUST]);
 
@@ -714,6 +713,10 @@
     updateReliabirityForAction(f.characterObjects, mp.actionObject);
     // アクション実行者の主張力を下げて、同日中は再発言しにくくする
     f.characterObjects[mp.actionObject.characterId].personality.assertiveness.current -= f.characterObjects[mp.actionObject.characterId].personality.assertiveness.decrease;
+
+    // アクション実行履歴オブジェクトに、アクションオブジェクトを保存する
+    let timeStr = getTimeStr();
+    f.doActionHistory[f.day][timeStr].push(mp.actionObject);
   [endscript]
 
   ; リアクションのセリフ表示
@@ -903,12 +906,13 @@
   [endif]
 
   [if exp="!f.displaingButton.menu && mp.menu"]
-    [button graphic="button/button_menu_normal.png" x="1143" y="23" width="114" height="103" fix="true" role="menu" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
+    ;[button graphic="button/button_menu_normal.png" x="1143" y="23" width="114" height="103" fix="true" role="menu" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
+    [button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="1005" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
     [eval exp="f.displaingButton.menu = true"]
   [endif]
 
   [if exp="!f.displaingButton.status && mp.status"]
-    [button graphic="button/button_status_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="1005" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_status" enterimg="button/button_status_hover.png"]
+    [button graphic="button/button_status_normal.png" storage="statusJinro.ks" target="*statusJinroMain" x="1143" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_status" enterimg="button/button_status_hover.png"]
     [eval exp="f.displaingButton.status = true"]
   [endif]
 [endmacro]
@@ -1022,7 +1026,7 @@
 
 ; jsonをローカルに保存する
 ; 参考　@link https://ameblo.jp/personwritep/entry-12495099049.html
-[macro name=j_saveJson]
+[macro name="j_saveJson"]
   [iscript]
     ; cloneメソッドでコピーし、元の変数に影響ないようにする
     ; sf.system、tf.systemのオブジェクトは、人狼ゲーム側で入れたデータではないので除いておく
@@ -1045,7 +1049,8 @@
     let a=document.createElement("a");
     a.href=URL.createObjectURL(blob);
     document.body.appendChild(a); // Firefoxで必要
-    a.download='all_variables.json';
+    let now = new Date().toLocaleString().replace(/\/|:|\s/g, '');
+    a.download='jinro_all_variables_' + now + '.json';
     a.click();
     document.body.removeChild(a); // Firefoxで必要
     URL.revokeObjectURL(a.href);

@@ -8,6 +8,11 @@
 
 *start 
 
+; TODO 役職選択画面（selectStage）関連の初期化処理
+; タイトル画面に戻ってきたら、役職選択済みフラグを折る
+[eval exp="f.isSelectedMyRole = false"]
+
+
 [button x=175 y=480 graphic="title/button_start.png" enterimg="title/button_start2.png"  target="gamestart"]
 [button x=175 y=570 graphic="title/button_load.png" enterimg="title/button_load2.png" role="load" ]
 [button x=740 y=480 graphic="title/button_config.png" enterimg="title/button_config2.png" role="sleepgame" storage="config.ks" ]

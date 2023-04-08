@@ -27,6 +27,10 @@
   ; 0番目がボタンで選択したPCの役職、それ以降がNPCの役職になるようにする。
   tmpRoleIdList.splice(tmpRoleIdList.indexOf(tf.pcRoleId), 1);
   f.villagersRoleIdList = [tf.pcRoleId].concat(tmpRoleIdList);
+
+  // TODO 役職選択画面（selectStage）関連の初期化処理
+  // 役職選択済みフラグを立てる
+  f.isSelectedMyRole = true;
 [endscript]
 
 ; メッセージ削除してゲーム開始
