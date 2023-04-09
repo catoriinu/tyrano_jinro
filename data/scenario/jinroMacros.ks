@@ -511,15 +511,15 @@
 
 
 ; ボタンオブジェクトf.buttonObjectsに、アクションボタン用オブジェクトを詰める
-; @param disableActionIdList f.actionButtonList定数に定義されている中で、ボタン表示したくないアクションIDのリスト（未使用）
+; @param disableActionIdList f.actionButtonList定数に定義されている中で、ボタン表示したくないアクションIDのリスト
 [macro name="j_setActionToButtonObjects"]
   [iscript]
-    // tf.disableActionIdList = Array.isArray(mp.disableActionIdList) ? mp.disableActionIdList : [];
+    tf.disableActionIdList = Array.isArray(mp.disableActionIdList) ? mp.disableActionIdList : [];
     f.buttonObjects = [];
 
     for (let aId of Object.keys(f.actionButtonList)) {
       // ボタン表示したくないアクションIDはf.buttonObjectsに格納しない
-      // if (tf.disableActionIdList.includes(f.actionButtonList[i])) continue;
+      if (tf.disableActionIdList.includes(aId)) continue;
 
       // 選択中のアクションIDのボタンは選択中の色に変える
       const addClasses = [];

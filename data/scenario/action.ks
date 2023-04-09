@@ -59,7 +59,9 @@
 
 ; 第1階層（左側。行動を選択する）のボタン表示サブルーチン
 *displayFirstLayerButtons
-[j_setActionToButtonObjects]
+; TODO 未実装である「聞き出す」は表示させない
+[eval exp="tf.disableActionIdList = [ACTION_ASK]"]
+[j_setActionToButtonObjects disableActionIdList="&tf.disableActionIdList"]
 [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 
 ; ボタン押下後の処理

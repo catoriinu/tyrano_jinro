@@ -24,6 +24,7 @@
 [m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 [layopt layer="message0" visible="false"]
+[freeimage layer="1"]
 [jump storage="title.ks"]
 [s]
 
