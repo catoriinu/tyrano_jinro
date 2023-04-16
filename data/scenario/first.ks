@@ -16,9 +16,6 @@
 [eval exp="f.color = {}"]
 [loadcss file="./data/others/jinro.css"]
 
-; 開発モードか？ TODO:公開前にはOFFにすること！
-[eval exp="f.developmentMode = false"]
-
 ; デフォルトフォントの設定
 [deffont size=32 color="0x28332a" face=MPLUSRounded][resetfont]
 

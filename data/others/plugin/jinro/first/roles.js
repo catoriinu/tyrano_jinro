@@ -2,15 +2,15 @@
  * @classdec 役職の基底クラス。個別の役職クラスに継承され、コンストラクタから呼び出される。
  * @prop {stirng} roleId 役職ID
  * @prop {String} roleName 役職名
- * @prop {Number} camp 陣営。どの陣営が勝利したときに、自身の役職が勝利になるのか（※勝利陣営判定とは別） 0:村人陣営 1:人狼陣営
+ * @prop {String} faction 陣営。どの陣営が勝利したときに、自身の役職が勝利になるのか（※勝利陣営判定とは別）
  * @prop {Boolean} isWerewolves 人狼か。勝利陣営判定時に人狼陣営として扱うか。また、占い・霊能結果で人狼判定が出るかにも利用する。
  * @prop {Boolean} allowCO 村役職COすることができる役職か。false=ない場合、CO候補者判定の対象外にする。
  * @prop {Object} rolePerspective その役職の視点オブジェクト。本人の思考はこちらを元にする。ただし騙り時、fakeRole.rolePerspectiveは利用しないので空オブジェクトのままとなる。
  */
-function Role(roleId, roleName, camp, isWerewolves, allowCO) {
+function Role(roleId, roleName, isWerewolves, allowCO) {
   this.roleId = roleId;
   this.roleName = roleName;
-  this.camp = camp;
+  this.faction = ROLE_ID_TO_FACTION[roleId];
   this.isWerewolves = isWerewolves;
   this.allowCO = allowCO;
   this.rolePerspective = {};
@@ -21,7 +21,7 @@ function Role(roleId, roleName, camp, isWerewolves, allowCO) {
  * @classdec 村人クラス（個別の役職クラス）
  */
 function Villager() {
-  return new Role (ROLE_ID_VILLAGER, '村人', 0, false, false);
+  return new Role (ROLE_ID_VILLAGER, '村人', false, false);
 }
 
 
@@ -31,7 +31,7 @@ function Villager() {
 function FortuneTeller() {
   
   // 基底クラスのインスタンス取得
-  const roleObject = new Role (ROLE_ID_FORTUNE_TELLER, '占い師', 0, false, true);
+  const roleObject = new Role (ROLE_ID_FORTUNE_TELLER, '占い師', false, true);
 
   // 個別の役職クラスに必要なプロパティ、関数を取得
   roleObject.fortuneTellingHistory = {}; 
@@ -173,7 +173,7 @@ function FortuneTeller() {
  */
 function Werewolf() {
   // 基底クラスのインスタンス取得
-  const roleObject = new Role (ROLE_ID_WEREWOLF, '人狼', 1, true, true);
+  const roleObject = new Role (ROLE_ID_WEREWOLF, '人狼', true, true);
 
   // 個別の役職クラスに必要なプロパティ、関数を取得
   /**
@@ -227,5 +227,5 @@ function Werewolf() {
  * @classdec 狂人クラス（個別の役職クラス）
  */
 function Madman() {
-  return new Role (ROLE_ID_MADMAN, '狂人', 1, false, true);
+  return new Role (ROLE_ID_MADMAN, '狂人', false, true);
 }

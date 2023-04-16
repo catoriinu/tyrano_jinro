@@ -29,11 +29,10 @@
 ; ゲーム準備js読み込み
 [loadjs storage="plugin/jinro/macro/prepareGame.js"]
 
-[playbgm storage="nc282335.ogg" loop="true" volume="5"]
-
 ; ステータス、メニューボタン表示
 [j_displayFixButton status="true" menu="true"]
 
+[playse storage="dodon.ogg" loop="false" volume="50" sprite_time="50-20000"]
 [m_changeFrameWithId]
 #
 人狼ゲームの幕開けです……！[p]
@@ -73,6 +72,7 @@
 *startDaytime
 [j_turnIntoDaytime]
 [clearstack]
+[playbgm storage="nc282335.ogg" loop="true" volume="5" restart="false"]
 
 [m_changeFrameWithId]
 #
@@ -328,7 +328,7 @@
 [j_decideVote]
 
 [if exp="!f.characterObjects[f.playerCharacterId].isAlive"]
-  プレイヤーがリタイア済みなので投票できません。[l][r]
+  プレイヤーが退場済みなので投票できません。[l][r]
   [jump target="*skipPlayerVote" cond="!sf.j_development.dictatorMode"]
   が、独裁者モードなので投票できます。[p]
 [endif]
@@ -383,7 +383,7 @@
   [else]
     ; 再投票上限を越えた場合は引き分け処理
     投票で決着がつきませんでした。[p]
-    [eval exp="tf.winnerCamp = CAMP_DRAW_BY_REVOTE"]
+    [eval exp="tf.winnerFaction = FACTION_DRAW_BY_REVOTE"]
     [jump target="*gameOver"]
   [endif]
 [endif]
@@ -401,7 +401,7 @@
 
 
 ; 勝敗判定
-[j_judgeWinnerCampAndJump storage="playJinro.ks" target="*gameOver"]
+[j_judgeWinnerFactionAndJump storage="playJinro.ks" target="*gameOver"]
 
 
 ; 夜時間開始
@@ -498,20 +498,19 @@ NPCが行動しています……[p]
 [endif]
 
 ; 勝敗判定
-[j_judgeWinnerCampAndJump storage="playJinro.ks" target="*gameOver"]
+[j_judgeWinnerFactionAndJump storage="playJinro.ks" target="*gameOver"]
 
 ; 勝敗がつかなければ次の日に進む
 [jump target="*startDaytime"]
 
 
 *gameOver
-[m_displayGameOverAndWinnerCamp winnerCamp="&tf.winnerCamp"]
+[fadeoutbgm time="1000"]
+[m_displayGameOverAndWinnerFaction winnerFaction="&tf.winnerFaction"]
 
 [m_changeFrameWithId]
 #
 おわり。[p]
-
-[fadeoutbgm time="2000"]
 
 [j_displayRoles]
 タイトルに戻ります。[p]

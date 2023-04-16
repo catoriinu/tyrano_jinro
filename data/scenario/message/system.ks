@@ -62,17 +62,14 @@
 
 
 ; シーン：ゲームの勝敗判定結果を表示するシステムメッセージ
-*displayGameOverAndWinnerCamp_villagers
-  ゲームが終了しました。[p]
+*displayGameOverAndWinnerFaction_villagers
   村人の勝利！[p]
 [return]
 
-*displayGameOverAndWinnerCamp_werewolves
-  ゲームが終了しました。[p]
+*displayGameOverAndWinnerFaction_werewolves
   人狼の勝利！[p]
 [return]
 
-*displayGameOverAndWinnerCamp_drawByRevote
-  ゲームが終了しました。[p]
+*displayGameOverAndWinnerFaction_drawByRevote
   引き分けです。[p]
 [return]

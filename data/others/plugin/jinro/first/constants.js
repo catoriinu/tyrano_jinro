@@ -34,20 +34,18 @@ const ROLE_ID_TO_NAME = {
 }
 
 // 陣営
-const CAMP_VILLAGERS  = 'villagers'; // 村人陣営
-const CAMP_WEREWOLVES = 'werewolves'; // 人狼陣営
-const CAMP_DRAW_BY_REVOTE = 'drawByRevote'; // 再投票による引き分け
+const FACTION_VILLAGERS  = 'villagers'; // 村人陣営
+const FACTION_WEREWOLVES = 'werewolves'; // 人狼陣営
+const FACTION_DRAW_BY_REVOTE = 'drawByRevote'; // 再投票による引き分け
 
 // 役職IDと役職陣営の対応オブジェクト
-// TODO:全体的にCAMP→FACTIONに置換する
-// TODO:role.campもこの定数を利用して入れるようにしたい
 const ROLE_ID_TO_FACTION = {
-    [ROLE_ID_VILLAGER]: CAMP_VILLAGERS,
-    [ROLE_ID_WEREWOLF]: CAMP_WEREWOLVES,
-    [ROLE_ID_FORTUNE_TELLER]: CAMP_VILLAGERS,
-    [ROLE_ID_MADMAN]: CAMP_WEREWOLVES,
-    [ROLE_ID_PHYCHIC]: CAMP_VILLAGERS,
-    [ROLE_ID_HUNTER]: CAMP_VILLAGERS,
+    [ROLE_ID_VILLAGER]: FACTION_VILLAGERS,
+    [ROLE_ID_WEREWOLF]: FACTION_WEREWOLVES,
+    [ROLE_ID_FORTUNE_TELLER]: FACTION_VILLAGERS,
+    [ROLE_ID_MADMAN]: FACTION_WEREWOLVES,
+    [ROLE_ID_PHYCHIC]: FACTION_VILLAGERS,
+    [ROLE_ID_HUNTER]: FACTION_VILLAGERS,
     [ROLE_ID_FOX]: 'TODO',
 }
 
@@ -55,7 +53,7 @@ const ROLE_ID_TO_FACTION = {
 const MAX_DO_ACTION_COUNT = 3;
 
 // 再投票上限回数（これが初回を含めた最大投票回数となる）
-const MAX_REVOTE_COUNT = 4;
+const MAX_REVOTE_COUNT = 1;
 
 // 計算方法（信頼度更新用）
 const ARITHMETIC_ADDITION = 'addition'; // 現在の値に加算する（減算したい場合は負の値を足す）

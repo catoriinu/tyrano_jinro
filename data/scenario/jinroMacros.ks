@@ -29,16 +29,16 @@
 
 
 ; 勝利陣営がいるかを判定し、勝利陣営がいた場合、指定されたラベルにジャンプする（storage, targetともに必須）
-; ex: [j_judgeWinnerCampAndJump storage="playJinro.ks" target="*gameOver"]
-[macro name="j_judgeWinnerCampAndJump"]
+; ex: [j_judgeWinnerFactionAndJump storage="playJinro.ks" target="*gameOver"]
+[macro name="j_judgeWinnerFactionAndJump"]
   [m_changeFrameWithId]
   #
   勝敗判定中……[p]
   [iscript]
-    tf.winnerCamp = judgeWinnerCamp(f.characterObjects);
+    tf.winnerFaction = judgeWinnerFaction(f.characterObjects);
   [endscript]
 
-  [if exp="tf.winnerCamp != null"]
+  [if exp="tf.winnerFaction != null"]
     [jump *]
   [endif]
 [endmacro]
@@ -863,6 +863,22 @@
 [endmacro]
 
 
+; ゲーム終了時のプレイヤーの勝敗結果（または引き分け）によって、再生する効果音を鳴らし分ける
+; @param winnerFaction 勝利陣営。必須
+[macro name="j_playSePlayerResult"]
+  [if exp="mp.winnerFaction == FACTION_DRAW_BY_REVOTE"]
+    ; 引き分け
+    [playse storage="megaten.ogg" loop="false" volume="40" sprite_time="50-20000"]
+  [elsif exp="f.characterObjects[f.playerCharacterId].role.faction == mp.winnerFaction"]
+    ; 勝利
+    [playse storage="kirakira4.ogg" loop="false" volume="40" sprite_time="50-20000"]
+  [else]
+    ; 敗北
+    [playse storage="chiin1.ogg" loop="false" volume="40" sprite_time="50-20000"]
+  [endif]
+[endmacro]
+
+
 [macro name="j_displayRoles"]
 役職公開[r]
 ずんだもん：[emb exp="f.characterObjects.zundamon.role.roleName"]、
@@ -956,7 +972,7 @@
 
 ; 時間を夜から昼に進める
 [macro name="j_turnIntoDaytime"]
-
+  [fadeoutbgm time="200"]
 
   ; PC,NPCを退場させる
   [m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
@@ -974,8 +990,10 @@
 
   [bg storage="black.png" time="1000" wait="true" effect="fadeInDown"]
 
+  [playse storage="shock1.ogg" loop="false" volume="50" sprite_time="50-20000"]
   [emb exp="f.day + '日目の朝を迎えました。'"][l][r]
   [if exp="typeof f.bitingObjectLastNight === 'undefined'"]
+    [playse storage="shock1.ogg" loop="false" volume="50" sprite_time="50-20000"]
     ; 昨夜の襲撃結果が取得できなかった（＝初日犠牲者のいない1日目昼）場合
     ; TODO 人狼の人数を可変で出力する
     ; FIXME 役職の内訳を表示してもいいかも。
@@ -983,6 +1001,7 @@
     [j_introductionCharacters]
 
   [elsif exp="f.bitingObjectLastNight.result"]
+    [playse storage="shock1.ogg" loop="false" volume="40" sprite_time="50-20000"]
     ; 昨夜の襲撃結果が襲撃成功の場合
     ; キャラを登場させ、メッセージ表示
     [m_changeCharacter characterId="&f.bitingObjectLastNight.targetId" face="normal"]
@@ -1000,6 +1019,7 @@
 
   [endif]
 
+  [playbgm storage="nc282335.ogg" loop="true" volume="5" restart="false"]
   [bg storage="living_day_nc238325.jpg" time="1000" wait="true" effect="fadeInUp"]
 
   ; PCが生存していれば再度画面に登場させる

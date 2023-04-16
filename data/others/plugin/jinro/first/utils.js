@@ -125,20 +125,20 @@ function roleAssignment(roleId) {
  * @param {Array} characterObjects キャラクターオブジェクトの配列
  * @return {String|null} 勝利した陣営の定数　いなければnull
  */
-function judgeWinnerCamp(characterObjects) {
+function judgeWinnerFaction(characterObjects) {
   // 生存者のオブジェクトを取得する
   const survivorObjects = getSurvivorObjects(characterObjects);
 
   // 勝利陣営判定を行う
-  let winnerCamp = null;
+  let winnerFaction = null;
   if (isWinWerewolves(survivorObjects)) {
     // 人狼陣営が勝利条件を満たした場合
-    winnerCamp = CAMP_WEREWOLVES;
+    winnerFaction = FACTION_WEREWOLVES;
   } else if (isWinVillagers(survivorObjects)) {
     // 村人陣営が勝利条件を満たした場合
-    winnerCamp = CAMP_VILLAGERS;
+    winnerFaction = FACTION_VILLAGERS;
   }
-  return winnerCamp;
+  return winnerFaction;
 }
 
 

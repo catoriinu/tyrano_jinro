@@ -38,12 +38,14 @@
 
 *gamestart
 [freeimage layer="1"]
+[stopbgm]
 ;人狼ゲームのメインシナリオファイルへジャンプする
 [jump storage="playJinro.ks"]
 
 
 *selectStage
 [freeimage layer="1"]
+[stopbgm]
 ;ステージ選択（TODO 現在はPCの役職のみ選択可能）シナリオファイルへジャンプする
 [jump storage="selectStage.ks"]
 
