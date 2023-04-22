@@ -739,17 +739,28 @@
 [macro name="j_getAllFortuneTellerCOText"]
   [iscript]
     tf.allFortuneTellerCOText = '';
-    for (let cId of Object.keys(f.allFortuneTellingHistoryObject)) {
-      ; そのcIdが占い師CO済みなら表示する TODO:べきだが、現在はテスト用に無効化
-      if (f.characterObjects[cId].CORoleId == ROLE_ID_FORTUNE_TELLER) {}
-      if (true) {
+
+    for (let cId of Object.keys(f.characterObjects)) {
+      // 占い師CO済みのキャラクターか
+      if (f.characterObjects[cId].CORoleId == ROLE_ID_FORTUNE_TELLER) {
         tf.allFortuneTellerCOText += f.characterObjects[cId].name + ' : ';
-        for (let day of Object.keys(f.allFortuneTellingHistoryObject[cId])) {
-          ; TODO:「その日にCO済みなら（doneCO）」の判定が必要。履歴表示時にfalseなら表示しないようにしないと、未COの履歴も表示されてしまう。
-          ; 「ただしプレイヤーの占い履歴は未COでも表示する」があるとよさそう。
-          let tmpResult = f.allFortuneTellingHistoryObject[cId][day].result ? '●' : '○';
-          let tmpCharacterId = f.allFortuneTellingHistoryObject[cId][day].characterId;
-          tf.allFortuneTellerCOText += f.characterObjects[tmpCharacterId].name + tmpResult;
+
+        // 真偽を確認し、占い履歴オブジェクトを取得する
+        let fortuneTellingHistory = {}
+        if (f.characterObjects[cId].role.roleId == ROLE_ID_FORTUNE_TELLER) {
+          fortuneTellingHistory = f.characterObjects[cId].role.fortuneTellingHistory;
+        } else {
+          fortuneTellingHistory = f.characterObjects[cId].fakeRole.fortuneTellingHistory;
+        }
+
+        for (let day of Object.keys(fortuneTellingHistory)) {
+          // 「その日にCO済みなら（doneCO）」の判定が必要。履歴表示時にfalseなら表示しないようにしないと、夜の時点で開いたときに未COの履歴も表示されてしまう。
+          // ただしプレイヤーの占い履歴は未COでも表示する（占い師CO自体をしていないなら表示しない TODO：役職未COと分かるようにすれば、表示してもいいかも）
+          if (cId != f.playerCharacterId && !fortuneTellingHistory[day].doneCO) continue;
+          
+          let targetId = fortuneTellingHistory[day].action.targetId;
+          let result = fortuneTellingHistory[day].action.result ? '●' : '○';
+          tf.allFortuneTellerCOText += f.characterObjects[targetId].name + result;
         }
         tf.allFortuneTellerCOText += '<br>';
       }
@@ -1029,7 +1040,7 @@
 
   [endif]
 
-  [playbgm storage="nc282335.ogg" loop="true" volume="5" restart="false"]
+  [playbgm storage="nc282335.ogg" loop="true" volume="12" restart="false"]
   [bg storage="living_day_nc238325.jpg" time="1000" wait="true" effect="fadeInUp"]
 
   ; PCが生存していれば再度画面に登場させる

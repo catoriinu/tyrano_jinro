@@ -72,7 +72,7 @@
 *startDaytime
 [j_turnIntoDaytime]
 [clearstack]
-[playbgm storage="nc282335.ogg" loop="true" volume="5" restart="false"]
+[playbgm storage="nc282335.ogg" loop="true" volume="13" restart="false"]
 
 [m_changeFrameWithId]
 #

@@ -9,7 +9,7 @@
 *start 
 [ptext layer="1" x="1050" y="684" text="ver.0.7.1" color="white" size="24"]
 [layopt layer="1" visible="true"]
-[playbgm storage="fun_fun_Ukelele_1loop.ogg" volume="15" loop="true" restart="false"]
+[playbgm storage="fun_fun_Ukelele_1loop.ogg" volume="25" loop="true" restart="false"]
 ; TODO 役職選択画面（selectStage）関連の初期化処理
 ; タイトル画面に戻ってきたら、役職選択済みフラグを折る
 [eval exp="f.isSelectedMyRole = false"]

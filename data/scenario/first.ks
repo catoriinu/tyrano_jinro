@@ -1,6 +1,6 @@
 ;一番最初に呼び出されるファイル
 
-[title name="ボイボ人狼 v.0.7.1"]
+[title name="ボイボ人狼 ver.0.7.1"]
 
 [stop_keyconfig]
 
