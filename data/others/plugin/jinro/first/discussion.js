@@ -1,6 +1,6 @@
 /**
  * そのキャラクターが、役職COを実行する可能性があるかを返す
- * NOTE:視点オブジェクトを利用した仕組みに変えるべきなため、廃止したい。
+ * NOTE:視点オブジェクトや性格を利用した仕組みに変えるべきなため、廃止したい。
  * @param {String} characterId キャラクターID
  * @returns {Array} [{Number}最終確率, {Boolean}判定結果]
  */
@@ -10,8 +10,15 @@ function isCOMyRoll(characterId) {
 
   // COする可能性がある役職についているか
   if (characterObject.role.roleId in characterObject.personality.roleCOProbability) {
+    let probability = characterObject.personality.roleCOProbability[characterObject.role.roleId][ROLE_ID_FORTUNE_TELLER];
+
+    // 初日以降に初COする確率は大幅に下げる
+    if (TYRANO.kag.stat.f.day > 1) {
+      probability /= 5;
+    }
+
     // randomDecide()に判定させた結果配列を返す
-    return randomDecide(characterObject.personality.roleCOProbability[characterObject.role.roleId][ROLE_ID_FORTUNE_TELLER]);
+    return randomDecide(probability);
   } else {
     // COの無い役職の場合は、randomDecide()と同じデータ形式で絶対にCOしないようなレスポンスを返却する
     return [0, false];

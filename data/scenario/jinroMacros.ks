@@ -397,25 +397,35 @@
 ; @param characterIds CO候補となるキャラクターID配列（NPCかつ生存者を想定）。必須
 [macro name="j_decideCOCandidateId"]
   [iscript]
-    ; TODO:直前（PC、NPCどちらも）のCOの内容によって、各キャラ内のCOしたい度が変動するようにする
+    // TODO:直前（PC、NPCどちらも）のCOの内容によって、各キャラ内のCOしたい度が変動するようにする
+    // TODO:現状、占い師の役職COと占い結果COしか考慮していない。他の役職を追加するときには要修正
 
-    ; キャラクターID配列を回してCOできる役職かつisDoneTodaysCOがfalseであれば、isCOMyRoll()を噛ませる。
     let maxProbability = 0;
     let COCandidateIdArray = [];
     f.COCandidateId = '';
     for (let i = 0; i < mp.characterIds.length; i++) {
-      if (f.characterObjects[mp.characterIds[i]].role.allowCO && !f.characterObjects[mp.characterIds[i]].isDoneTodaysCO) {
-        console.log('キャラクターID: ' + mp.characterIds[i]);
-        let [probability, isCO] = isCOMyRoll(mp.characterIds[i]);
-        ; COしたい、かつCO確率が現在保存中の最大の確率以上であれば、キャラクターIDをCO候補配列に格納する
-        ; TODO 怪しい。「CO確率が現在保存中の最大の確率以上」をするなら、「格納」ではなく「上書き」では？そうしないのであれば、isCOだけ見ればよくないか？
-        if (isCO && probability >= maxProbability) {
-          COCandidateIdArray.push(mp.characterIds[i]);
-          maxProbability = probability;
-        }
+
+      // 今日、CO済みのキャラは対象外
+      if (f.characterObjects[mp.characterIds[i]].isDoneTodaysCO) continue;
+
+      let probability = 0;
+      let isCO = false;
+      if (f.characterObjects[mp.characterIds[i]].CORoleId != '') {
+        // 既に役職CO済みの場合、必ず結果COしたいとする
+        [probability, isCO] = [1, true]
+      } else if (f.characterObjects[mp.characterIds[i]].role.allowCO) {
+        // 役職COできる役職で未COの場合、そのキャラの性格からCO確率を取得する
+        [probability, isCO] = isCOMyRoll(mp.characterIds[i]);
+      }
+
+      // COしたい、かつCO確率が現在保存中の最大の確率以上であれば、キャラクターIDをCO候補配列に格納する
+      if (isCO && probability >= maxProbability) {
+        COCandidateIdArray.push(mp.characterIds[i]);
+        maxProbability = probability;
       }
     }
-    ; CO候補配列に候補が1人ならその対象を、複数ならランダムで、COするキャラクターIDに決定する。0人の場合は空文字を返す。
+
+    // CO候補配列に候補が1人ならその対象を、複数ならランダムで、COするキャラクターIDに決定する。0人の場合は空文字を格納する。
     if (COCandidateIdArray.length == 1) {
       f.COCandidateId = COCandidateIdArray[0];
     } else if (COCandidateIdArray.length >= 2) {
