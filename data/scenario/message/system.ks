@@ -63,11 +63,11 @@
 
 ; シーン：ゲームの勝敗判定結果を表示するシステムメッセージ
 *displayGameOverAndWinnerFaction_villagers
-  村人の勝利！[p]
+  村人陣営の勝利！[p]
 [return]
 
 *displayGameOverAndWinnerFaction_werewolves
-  人狼の勝利！[p]
+  人狼陣営の勝利！[p]
 [return]
 
 *displayGameOverAndWinnerFaction_drawByRevote

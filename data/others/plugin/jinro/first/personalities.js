@@ -41,13 +41,13 @@ function Tester() {
     // COProbability {自身のRoleId : その役職としてCOする可能性}
     {
       [ROLE_ID_FORTUNE_TELLER]: {
-        [ROLE_ID_FORTUNE_TELLER]: 1
+        [ROLE_ID_FORTUNE_TELLER]: 0.95
       },
       [ROLE_ID_WEREWOLF]: {
-        [ROLE_ID_FORTUNE_TELLER]: 0
+        [ROLE_ID_FORTUNE_TELLER]: 0.4
       },
       [ROLE_ID_MADMAN]: {
-        [ROLE_ID_FORTUNE_TELLER]: 1
+        [ROLE_ID_FORTUNE_TELLER]: 0.8
       }
     },
     // impressiveReasonList {信頼度に影響を与える理由: {value: 値（絶対値とする）, arithmetic: 現在の信頼度とvalueとの計算方法}

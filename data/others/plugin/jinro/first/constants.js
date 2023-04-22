@@ -53,7 +53,7 @@ const ROLE_ID_TO_FACTION = {
 const MAX_DO_ACTION_COUNT = 3;
 
 // 再投票上限回数（これが初回を含めた最大投票回数となる）
-const MAX_REVOTE_COUNT = 1;
+const MAX_REVOTE_COUNT = 4;
 
 // 計算方法（信頼度更新用）
 const ARITHMETIC_ADDITION = 'addition'; // 現在の値に加算する（減算したい場合は負の値を足す）
