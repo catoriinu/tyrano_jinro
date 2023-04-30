@@ -829,7 +829,7 @@
       tmpCharacterList.push(new DisplayCharactersHorizontallySingle(
         cId,
         'normal.png',
-        f.voteResultObjects[i].targetId,
+        getBgColorFromCharacterId(f.voteResultObjects[i].targetId),
         votedCountText,
         '→' + f.characterObjects[f.voteResultObjects[i].targetId].name
       ))
@@ -869,7 +869,7 @@
       tmpCharacterList.push(new DisplayCharactersHorizontallySingle(
         cId,
         'normal.png',
-        cId,
+        getBgColorFromCharacterId(cId),
         '',
         f.characterObjects[cId].name
       ))
@@ -879,6 +879,38 @@
       tmpCharacterList,
       20, // キャラクター画像の表示位置を中央より右へずらす。leftTextの文字を表示するスペースを作るため
       -100, // キャラクター画像の表示位置を中央より上へずらす。メニューボタンは非表示にしているので、干渉しない分上げておく
+    );
+  [endscript]
+[endmacro]
+
+
+
+[macro name="j_setDchForStatus"]
+  [iscript]
+    let tmpCharacterList = [];
+    for (let i = 0; i < f.participantsIdList.length; i++) {
+      let cId = f.participantsIdList[i];
+
+      let bgColor = getBgColorFromCharacterId(cId);
+      let fileName = 'normal.png';
+      if (!f.characterObjects[cId].isAlive) {
+        bgColor = '#000000';
+        // fileName = '退場済用の表情差分';
+      }
+
+      tmpCharacterList.push(new DisplayCharactersHorizontallySingle(
+        cId,
+        fileName,
+        bgColor,
+        '',
+        f.characterObjects[cId].name
+      ))
+    }
+
+    f.dch = new DisplayCharactersHorizontally(
+      tmpCharacterList,
+      20, // キャラクター画像の表示位置を中央より右へずらす。leftTextの文字を表示するスペースを作るため
+      50, // キャラクター画像の表示位置を中央より上へずらす。メニューボタンは非表示にしているので、干渉しない分上げておく
     );
   [endscript]
 [endmacro]

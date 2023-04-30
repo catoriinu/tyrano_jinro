@@ -34,6 +34,8 @@
             </div>
         </div>
     </div>
+    <div class="dch_container">
+    </div>
 </div>
 [endhtml]
 
@@ -83,8 +85,6 @@
 [endscript]
 
 
-
-
 ;[ptext layer="1" x="400" y="100" text="現在のCO状況" color="white" size="60"]
 
 ; 占い師のCO状況表示
@@ -94,6 +94,12 @@
 
 ;[glink color="blue" size="28" x="300" y="500" width="500" text="元の画面に戻る" target="*awake"]
 [button graphic="button/button_status_click.png" target="*awake" x="1143" y="23" width="114" height="103" enterimg="button/button_status_hover.png"]
+
+  ; キャラクタ－画像を表示
+  [j_setDchForStatus]
+  [call storage="jinroSubroutines.ks" target="*displayCharactersHorizontallyForStatus"]
+
+
 [s]
 
 
