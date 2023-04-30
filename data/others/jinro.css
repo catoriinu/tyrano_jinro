@@ -71,3 +71,85 @@
     /* width: 256px; */
     height: 720px;
 }
+
+/* ステータス画面用 */
+.main {
+    background-color: rgba(0, 0, 0, 0.6);
+    font-family: "MPLUSRounded";
+    font-size: 22pt;
+    line-height: 1.65;
+    color: #28332a;
+    width: 1280px;
+    height: 720px;
+}
+.window {
+    background-color: rgba(255,255,255,0.82);
+    border:solid 3px rgba(0,0,0,0.82);
+    width: 1262px;
+    height: 149px;
+    padding: 7px;
+    border-radius: 20px 20px 20px 20px / 20px 20px 20px 20px;
+}
+
+
+input {
+    display: none;
+}
+input:checked + label {
+    background: #80da87;/* マウス選択時の背景色を指定する */
+}
+
+.radioLabel,.checkLabel {
+    position: relative;
+    display: inline-block;
+    margin: 10px 10px; /* ボックス外側の余白を指定する */
+    /* width: 120px; ボックスの横幅を指定する */
+    text-align: center; /* テキストのセンタリングを指定する */
+    /* line-height: 22px; /* 行の高さを指定する */
+    background-color: #CCFFC7;
+    cursor: pointer; /* マウスカーソルの形（リンクカーソル）を指定する */
+    /* border: 3px solid #87AD8E;/* ボックスの境界線を実線で指定する */
+    /* border-radius: 5px; 角丸を指定する */
+    padding: 1px 15px 3px 14px;
+    border-radius: 1.5em;
+    border: none;
+    box-shadow: none;
+    box-sizing: border-box;
+    transition: .15s ease-out;
+}
+.radioLabel::after,.checkLabel::after {
+    position: absolute;
+    content: "";
+    background-color: none;
+    top: -6px;
+    right: -6px;
+    bottom: -6px;
+    left: -6px;
+    border-radius: 1.5em;
+    border: 3px solid #87AD8E;
+    transition: .15s ease-out;
+}
+
+.radioLabel:hover,.checkLabel:hover {
+    background-color: #69876E;
+}
+
+.radioLabel:hover::after,.checkLabel:hover::after {
+    border: 1px solid #4C614F;
+}
+
+
+
+.counter {
+    display: inline-block;
+}
+.counter button {
+    border-radius: 50%;
+    background-color: #CCFFC7;
+    width: 30px;
+    height: 30px;
+    font-size: 24px;
+    line-height: 1;
+    border: none;
+    cursor: pointer;
+}
