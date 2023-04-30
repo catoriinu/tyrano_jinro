@@ -56,7 +56,7 @@
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
 [playse storage="chara/metan/019_四国めたん（ノーマル）_聞きなさい。Xは人…(1).ogg" loop="false" sprite_time="50-20000"]
 [endif]
-
+;o
 [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
 聞きなさい。[call target="changeIdToCallName"]は人狼ではなかったわ。[r]
 信頼の証に、同盟を結ばせてもらえるかしら。[p]
@@ -79,7 +79,7 @@
 [elsif exp="tf.selectedCharacterId == CHARACTER_ID_RITSU"]
 [playse storage="chara/metan/018_四国めたん（ノーマル）_X、そろそろ認めた….ogg" loop="false" sprite_time="50-20000"]
 [endif]
-
+;o
 [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
 [call target="changeIdToCallName"]、そろそろ認めたらどうかしら？[r]
 自分が人狼だということを。[p]
@@ -99,7 +99,7 @@
 [elsif exp="tf.selectedCharacterId == CHARACTER_ID_RITSU"]
 [playse storage="chara/metan/022_四国めたん（ノーマル）_X、わたくしと共に….ogg" loop="false" sprite_time="50-20000"]
 [endif]
-
+;o
 [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
 [call target="changeIdToCallName"]、わたくしと共にこの苦難を乗り越えましょう。[p]
 [stopse]
@@ -117,7 +117,7 @@
 ; シーン：「疑う」アクションの実行対象になった時
 *doAction_reaction_suspect
 [playse storage="chara/metan/024_四国めたん（ノーマル）_心外ね。あなたはも….ogg" loop="false" sprite_time="50-20000"]
-
+;o
 心外ね。あなたはもう少し賢いと思っていたのだけど。[p]
 [stopse]
 [return]
@@ -125,7 +125,7 @@
 ; シーン：「信じる」アクションの実行対象になった時
 *doAction_reaction_trust
 [playse storage="chara/metan/025_四国めたん（ノーマル）_べ、別に嬉しくなん….ogg" loop="false" sprite_time="50-20000"]
-
+;x
 べ、別に嬉しくなんてないわ……！[p]
 [stopse]
 [return]
@@ -140,7 +140,7 @@
 ; シーン：投票により処刑対象に決まったときの反応
 *executed
 [playse storage="chara/metan/027_四国めたん（ノーマル）_これがわたくしの運….ogg" loop="false" sprite_time="50-20000"]
-
+;x
 これがわたくしの運命なら、受け入れるしかないのでしょうね。[p]
 [stopse]
 [return]

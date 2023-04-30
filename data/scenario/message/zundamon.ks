@@ -23,7 +23,7 @@
 ; 備考：PCのみ想定
 *noticeRole_villager
 [playse storage="chara/zundamon/001_ずんだもん（ノーマル）_僕は村人なのだ。悪….ogg" loop="false" sprite_time="50-20000"]
-
+;x
 僕は村人なのだ。[r]
 悪い人狼を見つけて平和な村にするのだ。[p]
 [stopse]
@@ -39,7 +39,7 @@
 
 *noticeRole_werewolf
 [playse storage="chara/zundamon/003_ずんだもん（ノーマル）_僕は人狼……。みん….ogg" loop="false" sprite_time="50-20000"]
-
+;x
 僕は人狼……。[r]
 みんな僕がおいしく食べてやるのだ！[p]
 [stopse]
@@ -47,7 +47,7 @@
 
 *noticeRole_madman
 [playse storage="chara/zundamon/004_ずんだもん（ノーマル）_僕は狂人なのだ……….ogg" loop="false" sprite_time="50-20000"]
-
+;x
 僕は狂人なのだ……。[r]
 僕がご主人の野望を手助けするのだ！[p]
 [stopse]
@@ -110,7 +110,7 @@
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
 [playse storage="chara/zundamon/024_ずんだもん（ノーマル）_昨日はXを占ったの…(1).ogg" loop="false" sprite_time="50-20000"]
 [endif]
-
+;x
 [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
 昨日は[call target="changeIdToCallName"]を占ったのだ。[r]
 結果は人狼だったのだ！[p]
@@ -129,7 +129,7 @@
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
 [playse storage="chara/zundamon/030_ずんだもん（ノーマル）_昨日はXを占ったの…(1).ogg" loop="false" sprite_time="50-20000"]
 [endif]
-
+;x
 [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
 昨日は[call target="changeIdToCallName"]を占ったのだ。[r]
 結果は人狼じゃなかったのだ。[p]
@@ -191,7 +191,7 @@
 ; シーン：「疑う」アクションの実行対象になった時
 *doAction_reaction_suspect
 [playse storage="chara/zundamon/060_ずんだもん（ノーマル）_ぼ、僕は人狼じゃな….ogg" loop="false" sprite_time="50-20000"]
-
+;x
 ぼ、僕は人狼じゃないのだっ！[p]
 [stopse]
 [return]
@@ -199,7 +199,7 @@
 ; シーン：「信じる」アクションの実行対象になった時
 *doAction_reaction_trust
 [playse storage="chara/zundamon/063_ずんだもん（ノーマル）_信じてくれてありが….ogg" loop="false" sprite_time="50-20000"]
-
+;x
 信じてくれてありがとうなのだ！[p]
 [stopse]
 [return]
@@ -225,7 +225,7 @@
 ; シーン：投票により処刑対象に決まったときの反応
 *executed
 [playse storage="chara/zundamon/068_ずんだもん（ノーマル）_なんでなのだ！僕は….ogg" loop="false" sprite_time="50-20000"]
-
+;x
 なんでなのだ！僕は悪くないのだ！[p]
 [stopse]
 [return]

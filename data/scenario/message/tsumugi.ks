@@ -37,7 +37,7 @@
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
 [playse storage="chara/tsumugi/008_春日部つむぎ（ノーマル）_あーしの占いだと、…(1).ogg" loop="false" sprite_time="50-20000"]
 [endif]
-
+;x
 [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
 あーしの占いだと、[call target="changeIdToCallName"]は人狼だったんだよねー。[r]
 隠し通せると思った？残念だったね。[p]
@@ -56,7 +56,7 @@
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
 [playse storage="chara/tsumugi/017_春日部つむぎ（ノーマル）_あーしの占いだと、…(1).ogg" loop="false" sprite_time="50-20000"]
 [endif]
-
+;x
 [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
 あーしの占いだと、[call target="changeIdToCallName"]は人狼じゃなかったよ。[r]
 友達になれるかなあ？[p]
@@ -79,7 +79,7 @@
 [elsif exp="tf.selectedCharacterId == CHARACTER_ID_RITSU"]
 [playse storage="chara/tsumugi/014_春日部つむぎ（ノーマル）_Xってもしかしなく….ogg" loop="false" sprite_time="50-20000"]
 [endif]
-
+;x
 [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
 [call target="changeIdToCallName"]ってもしかしなくても人狼だよね？[r]
 ちょっとヤバい感じするし。[p]
@@ -141,7 +141,7 @@
 ; シーン：投票により処刑対象に決まったときの反応
 *executed
 [playse storage="chara/tsumugi/023_春日部つむぎ（ノーマル）_うそ、あーし選ばれ….ogg" loop="false" sprite_time="50-20000"]
-
+;x
 うそ。あーし選ばれちゃったの？[r]
 そんなに怪しかったのかな……[p]
 [stopse]
