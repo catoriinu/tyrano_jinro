@@ -2,20 +2,21 @@
 
 ; 呼び方サブルーチン
 ; 事前にtf.characterIdToCallにcharacterIdを入れてから、このサブルーチンを呼び出す
-; このmessageサブルーチンのキャラクターが、tf.characterIdToCallのキャラクターを呼ぶ際の二人称を出力する
+; このmessageサブルーチンのキャラクターが、tf.characterIdToCallのキャラクターを呼ぶ際の二人称をtf.calledCharacterNameに格納する
 ; キャラクターごとの差異をなくすため、自分自身のIDが渡された場合は一人称を入れる
 *changeIdToCallName
-  [if exp="tf.characterIdToCall == CHARACTER_ID_ZUNDAMON"]
-    ずんだもん
-  [elsif exp="tf.characterIdToCall == CHARACTER_ID_METAN"]
-    めたんさん
-  [elsif exp="tf.characterIdToCall == CHARACTER_ID_TSUMUGI"]
-    つむぎさん
-  [elsif exp="tf.characterIdToCall == CHARACTER_ID_HAU"]
-    僕
-  [elsif exp="tf.characterIdToCall == CHARACTER_ID_RITSU"]
-    リツさん
-  [endif]
+  [iscript]
+    tf.calledCharacterName = (function(characterId) {
+      const calledCharacterNameObject = {
+        [CHARACTER_ID_ZUNDAMON]: 'ずんだもん',
+        [CHARACTER_ID_METAN]:    'めたんさん',
+        [CHARACTER_ID_TSUMUGI]:  'つむぎさん',
+        [CHARACTER_ID_HAU]:      '僕',
+        [CHARACTER_ID_RITSU]:    'リツさん',
+      }
+      return calledCharacterNameObject[characterId];
+  }(tf.characterIdToCall));
+  [endscript]
 [return]
 
 ; COFortuneTelling_{result}
@@ -39,7 +40,9 @@
 [endif]
 
 [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
-僕が占ったのは[call target="changeIdToCallName"]です。[r]
+[call target="changeIdToCallName"]
+
+僕が占ったのは[emb exp="tf.calledCharacterName"]です。[r]
 残念ながら、人狼でした……。[p]
 [stopse]
 [return]
@@ -58,7 +61,9 @@
 [endif]
 
 [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
-僕が占ったのは[call target="changeIdToCallName"]です。[r]
+[call target="changeIdToCallName"]
+
+僕が占ったのは[emb exp="tf.calledCharacterName"]です。[r]
 安心してください、人狼ではありませんでした。[p]
 [stopse]
 [return]
@@ -81,7 +86,9 @@
 [endif]
 
 [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
-僕は[call target="changeIdToCallName"]が怪しいと思います。[r]
+[call target="changeIdToCallName"]
+
+僕は[emb exp="tf.calledCharacterName"]が怪しいと思います。[r]
 か、勘違いだったらすみません……！[p]
 [stopse]
 [return]
@@ -101,15 +108,19 @@
 [endif]
 
 [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
-[call target="changeIdToCallName"]はきっと大丈夫です。[r]
+[call target="changeIdToCallName"]
+
+[emb exp="tf.calledCharacterName"]はきっと大丈夫です。[r]
 僕はそう信じてます。[p]
 [stopse]
 [return]
 
 ; シーン：「聞き出す」アクション実行時
 *doAction_ask
-  [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
-  えっと、[call target="changeIdToCallName"]はどう思いますか？[p]
+[eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+[call target="changeIdToCallName"]
+
+えっと、[emb exp="tf.calledCharacterName"]はどう思いますか？[p]
 [return]
 
 

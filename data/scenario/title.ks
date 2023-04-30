@@ -7,13 +7,16 @@
 [wait time="100"]
 
 *start 
-[ptext layer="1" x="1050" y="684" text="ver.0.7.1" color="white" size="24"]
+[ptext layer="1" x="1050" y="684" text="ver.0.7.2" color="white" size="24"]
 [layopt layer="1" visible="true"]
 [playbgm storage="fun_fun_Ukelele_1loop.ogg" volume="25" loop="true" restart="false"]
 ; TODO 役職選択画面（selectStage）関連の初期化処理
 ; タイトル画面に戻ってきたら、役職選択済みフラグを折る
 [eval exp="f.isSelectedMyRole = false"]
 
+; タイトル画面に戻ってきたらバックログをリセットする
+; TODO ゲーム開始時にリセットするようにするなど、仕様を変えるならここも修正すること
+[eval exp="tf.system.backlog = [];"]
 
 [eval exp="tf.buttonColor = CLASS_GLINK_DEFAULT"]
 [glink color="&tf.buttonColor" size="30" width="300" x="488" y="480" name="buttonhover" text="プレイ" target="*gamestart"]

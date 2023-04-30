@@ -290,19 +290,26 @@
 ～ラウンド[emb exp="f.doActionCount"]/[emb exp="sf.j_development.maxDoActionCount"]～[r]
 ; NPCのアクション実行者がいるか、いるならアクションとその対象を格納する
 [j_decideDoActionByNPC]
-[if exp="f.doActionCandidateId != ''"]
-～[emb exp="f.characterObjects[f.npcActionObject.characterId].name"]が話そうとしています
-  ; 開発者用設定：独裁者モードなら、アクション実行者のアクション内容をメッセージに表示する
-  [if exp="sf.j_development.dictatorMode"]
-    [iscript]
-      tf.tmpDoActionMessage = ((f.npcActionObject.actionId == ACTION_TRUST) ? '信じる' : (f.npcActionObject.actionId == ACTION_SUSPECT) ? '疑う' : '？');
-    [endscript]
-    （[emb exp="f.characterObjects[f.npcActionObject.targetId].name"]に[emb exp="tf.tmpDoActionMessage"]）
+
+; ここはバックログに記録しない。プレイヤーがアクション実行すると、実際にはアクションしなかったことになる可能性があるため
+[nolog]
+
+  [if exp="f.doActionCandidateId != ''"]
+  ～[emb exp="f.characterObjects[f.npcActionObject.characterId].name"]が話そうとしています
+    ; 開発者用設定：独裁者モードなら、アクション実行者のアクション内容をメッセージに表示する
+    [if exp="sf.j_development.dictatorMode"]
+      [iscript]
+        tf.tmpDoActionMessage = ((f.npcActionObject.actionId == ACTION_TRUST) ? '信じる' : (f.npcActionObject.actionId == ACTION_SUSPECT) ? '疑う' : '？');
+      [endscript]
+      （[emb exp="f.characterObjects[f.npcActionObject.targetId].name"]に[emb exp="tf.tmpDoActionMessage"]）
+    [endif]
+  [else]
+  ～誰も話そうとしていないようです
   [endif]
-[else]
-～誰も話そうとしていないようです
-[endif]
-～[p]
+  ～[p]
+
+; ここまでログを記録しない
+[endnolog]
 
 ; アクション実行
 [j_setDoActionObject]
@@ -326,6 +333,9 @@
 ; 投票フェイズ
 ; NPCの投票先を決める
 [j_decideVote]
+
+; ここはバックログに記録しない。記録する必要がないシステムメッセージのため
+[nolog]
 
 [if exp="!f.characterObjects[f.playerCharacterId].isAlive"]
   プレイヤーが退場済みなので投票できません。[l][r]
@@ -366,6 +376,8 @@
 [endscript]
 
 *skipPlayerVote
+; ここまでログを記録しない
+[endnolog]
 
 ; 票を集計する
 [j_countVote]
