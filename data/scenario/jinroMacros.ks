@@ -812,6 +812,9 @@
 
 
 [macro name="j_setDchForOpenVote"]
+  ; バックログ用変数を初期化する
+  [eval exp="tf.voteBacklog = ''"]
+
   [iscript]
     let tmpCharacterList = [];
     for (let i = 0; i < f.voteResultObjects.length; i++) {
@@ -833,6 +836,15 @@
         votedCountText,
         '→' + f.characterObjects[f.voteResultObjects[i].targetId].name
       ))
+
+      // 投票数の先頭が'★'ではない場合、' 'を追加する（行頭を揃えるため）
+      if (votedCountText.charAt(0) != '★') { 
+        votedCountText = '　' + votedCountText;
+      }
+      // 最後以外の要素の行末に、<br>を追加する（最後以外は改行するため）
+      let br = (i == (f.voteResultObjects.length - 1)) ? '' : '<br>';
+      // 必要な文字列を連結してバックログ用変数に格納する
+      tf.voteBacklog += (votedCountText + ' ' + f.characterObjects[cId].name + '→' + f.characterObjects[f.voteResultObjects[i].targetId].name + br);
     }
 
     f.dch = new DisplayCharactersHorizontally(
@@ -841,6 +853,10 @@
       -100, // キャラクター画像の表示位置を中央より上へずらす。メニューボタンは非表示にしているので、干渉しない分上げておく
     );
   [endscript]
+
+  ; バックログ用変数が初期状態でなければ、バックログに記録する
+  ; [iscript]内の処理が始まるより前に、この[pushlog]が先読みされて実行されてしまうので、その時点ではログ出力しないように初期状態なら実行しないようにcond条件を設定している
+  [pushlog text="&tf.voteBacklog" cond="tf.voteBacklog != ''"]
 [endmacro]
 
 
@@ -975,7 +991,6 @@
   [endif]
 
   [if exp="!f.displaingButton.menu && mp.menu"]
-    ;[button graphic="button/button_menu_normal.png" x="1143" y="23" width="114" height="103" fix="true" role="menu" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
     [button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="1005" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
     [eval exp="f.displaingButton.menu = true"]
   [endif]

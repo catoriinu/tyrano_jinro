@@ -100,11 +100,16 @@
   [call storage="jinroSubroutines.ks" target="*displayCharactersHorizontallyForStatus"]
 
 
+; バックログボタン表示
+[button graphic="button/button_backlog_normal.png" x="1005" y="23" width="114" height="103" fix="true" role="backlog" name="button_j_fix,button_j_backlog" enterimg="button/button_backlog_hover.png"]
 [s]
 
 
 *awake
 ; TODO:背景は元の画像に戻す。または人狼メニュー画面のbgはbgではなくレイヤー深めの画像を使うだけにするか。
 ;[bg storage="living_day_nc238325.jpg" time="100" wait="true"]
+
+; バックログボタンを非表示にする
+[clearfix name="button_j_backlog"]
 [awakegame]
 [s]
