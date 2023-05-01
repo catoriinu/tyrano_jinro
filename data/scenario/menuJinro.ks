@@ -21,6 +21,11 @@
 
 *returnTitle
 [j_clearFixButton]
+; このシナリオにジャンプしてくるためのメニューボタンは、[button role="sleepgame"]である。
+; 「ゲームを再開する」時には[awakegame]で押した箇所まで復帰するが、
+; 「タイトルに戻る」のようにsleepgame中に別シナリオにジャンプしたい場合は、[breakgame]で停止データを削除しなければならない。
+; しないでジャンプするとずっとsleepgame中の扱いになり、fix=trueのボタンがクリックできなくなる。
+[breakgame]
 [m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 [layopt layer="message0" visible="false"]

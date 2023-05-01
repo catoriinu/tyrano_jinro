@@ -959,7 +959,6 @@
   [endif]
 
   [if exp="!f.displaingButton.menu && mp.menu"]
-    ;[button graphic="button/button_menu_normal.png" x="1143" y="23" width="114" height="103" fix="true" role="menu" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
     [button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="1005" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
     [eval exp="f.displaingButton.menu = true"]
   [endif]
