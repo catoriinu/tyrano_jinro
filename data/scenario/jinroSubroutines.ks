@@ -226,10 +226,10 @@ MEMO 最終的には以下の構成のHTMLが生成される。
     tf.bgColor = f.dch.characterList[tf.cnt].bgColor;
 
     // 余白(px)
-    tf.mergin = 3;
+    tf.mergin = 100;
     // boxの左側からの表示開始位置（に余白分を足した値）
     // ティラノの変数にNumber型の0を入れて初期化しようとしても、キーを定義できずundefinedになる。そのため必ず余白分の値を入れること
-    tf.boxLeft = (tf.boxWidth * tf.cnt) + tf.mergin;
+    tf.boxLeft = (tf.boxWidth * tf.cnt) + 3;
     // キャラクター画像の左側からの表示位置。そのキャラのwidthCenterの位置がboxの中央に来るようにした後、f.dch.displacedPxToRightの分だけ右へずらす
     tf.imageLeft = (tf.boxWidth * (tf.cnt + 1)) - tf.halfOfBoxWidth - f.defaultPosition[tf.characterId].widthCenter + f.dch.displacedPxToRight;
     // キャラクター画像の上側からの表示位置。通常の立ち絵表示時の高さよりもf.dch.displacedPxToTopの分だけ下にずらして表示する（※基本的にはf.dch.displacedPxToTopには負の数を入れ、上にずらすほうが見栄えが良い）
@@ -242,8 +242,8 @@ MEMO 最終的には以下の構成のHTMLが生成される。
 
   ; キャラクター画像、横テキスト、上テキストを表示
   [image storage="&tf.storage" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" left="&tf.imageLeft" top="&tf.imageTop" name="&tf.imageName" layer="1"]
-  [ptext layer="1" text="&f.dch.characterList[tf.cnt].leftText" x="&tf.boxLeft" y="&tf.mergin" vertical="true" face="にくまるフォント" color="0x28332a" size="38" edge="2px 0xFFFFFF"]
-  [ptext layer="1" text="&f.dch.characterList[tf.cnt].topText" x="&tf.boxLeft" y="&tf.mergin" width="&tf.boxWidth" align="center" face="にくまるフォント" color="0x28332a" size="38" edge="2px 0xFFFFFF"]
+  ;[ptext layer="1" text="&f.dch.characterList[tf.cnt].leftText" x="&tf.boxLeft" y="&tf.mergin" vertical="true" face="にくまるフォント" color="0x28332a" size="38" edge="2px 0xFFFFFF"]
+  ;[ptext layer="1" text="&f.dch.characterList[tf.cnt].topText" x="&tf.boxLeft" y="&tf.mergin" width="&tf.boxWidth" align="center" face="にくまるフォント" color="0x28332a" size="38" edge="2px 0xFFFFFF"]
 
   [iscript]
     // キャラ1人分のdiv要素の中のクラス名を作成する
@@ -256,14 +256,29 @@ MEMO 最終的には以下の構成のHTMLが生成される。
 
     // キャラを並べるためおよびこれ以下の処理を行うために、Flexboxである.dch_containerに1キャラ分のdiv要素を追加する
     $('.dch_container').append('<div class="dch_box ' + classNum + '">');
-    // 1box分の幅を設定する
-    $('.dch_box').css('width', tf.boxWidth + 'px');
-    // boxに背景色をつける
-    // 現在のCSSは、画面の上部が背景色で、下部に行くに従って黒にグラデーションするというもの。別の演出にしたい場合は書き換えるなり格納しわけるなりすること
-    let boxCss = {
-      "background-image": "linear-gradient(to bottom, " + tf.bgColor + " 10%, rgba(0, 0, 0, 1) 150%"
-    }
-    $('.' + classNum).css(boxCss);
+
+    // メモ dch_boxにつけるcssをcssにしておきたい。となると、dch_boxというクラス名はやめておくべき
+    // 1box分のCSSを適用する
+    $('.' + classNum).css({
+      'width': tf.boxWidth + 'px', // 1box分の幅を設定する
+      "background-image": "linear-gradient(to bottom, " + tf.bgColor + " 10%, rgba(0, 0, 0, 1) 150%" // boxに背景色をつける。現在のCSSは、画面の上部が背景色で、下部に行くに従って黒にグラデーションするというもの。
+    });
+
+    // boxの中に文字表示用のCSSを適用する
+    $('.' + classNum).append('<div class="' + classNum + 'VerticalText">');
+    $('.' + classNum + 'VerticalText').css({
+      'writing-mode': 'vertical-lr', // 文字列を垂直方向に、左から右に配置する
+      'text-orientation': 'upright', // 文字列を常に垂直に表示する
+      'font-family': "にくまるフォント",
+      'font-size': '30pt',
+      'color': '#28332a',
+      'text-shadow': $.generateTextShadowStrokeCSS('2px #FFFFFF'), // tyrano/libs.jsの縁取り用メソッドを借用する（[ptext edge="2px 0xFFFFFF"]で使っているメソッドと同じ。渡す引数の指定方法も同じ）
+      'margin-left': '-7px',
+      'margin-top': '5px'
+    });
+    // 文字表示を行う
+    $('.' + classNum + 'VerticalText').text(f.dch.characterList[tf.cnt].leftText);
+
     // .dch_containerの子要素の.classNumの子要素に、キャラ画像のimg要素を移動する
     $('.' + tf.imageName).appendTo('.' + classNum);
     // キャラ画像のimg要素を、boxと同じ幅になるよう左右をクリッピングする

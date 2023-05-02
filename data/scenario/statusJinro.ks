@@ -9,15 +9,15 @@
 <div class="main">
     <div class="window">
         <div class="infomation">
-            <input type="radio" name="display" id="participants" value="participants" checked><label class="radioLabel" for="participants">住人一覧</label>
-            <input type="radio" name="display" id="voteHistory" value="voteHistory"><label class="radioLabel" for="voteHistory">投票履歴</label>
-            <input type="radio" name="display" id="fortuneTellingHistory" value="fortuneTellingHistory"><label class="radioLabel" for="fortuneTellingHistory">占い履歴</label>
-            <!--<input type="radio" name="display" id="radioMedium" value="medium"><label class="radioLabel" for="radioMedium">霊能履歴</label>-->
-            <!--<input type="radio" name="display" id="radioKnight" value="knight"><label class="radioLabel" for="radioKnight">護衛履歴</label>-->
+            <input type="radio" name="display" id="participants" value="participants" checked /><label class="radioLabel" for="participants">住人一覧</label>
+            <input type="radio" name="display" id="voteHistory" value="voteHistory" /><label class="radioLabel" for="voteHistory">投票履歴</label>
+            <input type="radio" name="display" id="fortuneTellingHistory" value="fortuneTellingHistory" /><label class="radioLabel" for="fortuneTellingHistory">占い履歴</label>
+            <!--<input type="radio" name="display" id="radioMedium" value="medium" /><label class="radioLabel" for="radioMedium">霊能履歴</label>-->
+            <!--<input type="radio" name="display" id="radioKnight" value="knight" /><label class="radioLabel" for="radioKnight">護衛履歴</label>-->
         </div>
 
         <div class="survivor">
-            <input type="checkbox" id="survivor"><label class="checkLabel" for="survivor">生存者のみ</label>
+            <input type="checkbox" id="survivor" /><label class="checkLabel" for="survivor">生存者のみ</label>
         </div>
 
         <div class="counterForVoteHistory">
