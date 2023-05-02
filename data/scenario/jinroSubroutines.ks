@@ -240,49 +240,62 @@ MEMO 最終的には以下の構成のHTMLが生成される。
     tf.storage = 'chara/' + tf.characterId + '/' + f.dch.characterList[tf.cnt].fileName;
   [endscript]
 
+  ; TODO ここがなくなったので、サブルーチン内を完全にjs化することが可能
   ; キャラクター画像、横テキスト、上テキストを表示
-  [image storage="&tf.storage" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" left="&tf.imageLeft" top="&tf.imageTop" name="&tf.imageName" layer="1"]
+  ;[image storage="&tf.storage" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" left="&tf.imageLeft" top="&tf.imageTop" name="&tf.imageName" layer="1"]
   ;[ptext layer="1" text="&f.dch.characterList[tf.cnt].leftText" x="&tf.boxLeft" y="&tf.mergin" vertical="true" face="にくまるフォント" color="0x28332a" size="38" edge="2px 0xFFFFFF"]
   ;[ptext layer="1" text="&f.dch.characterList[tf.cnt].topText" x="&tf.boxLeft" y="&tf.mergin" width="&tf.boxWidth" align="center" face="にくまるフォント" color="0x28332a" size="38" edge="2px 0xFFFFFF"]
 
   [iscript]
     // キャラ1人分のdiv要素の中のクラス名を作成する
     let classNum = 'dch_' + tf.cnt;
+
+    // キャラを並べるためおよびこれ以下の処理を行うために、Flexboxである.dchStatusContainerに1キャラ分のdiv要素を追加する
+    const $statusBox = $('<div>');
+    $statusBox.attr({
+      'class': 'dchStatusBox ' + classNum
+    }).css({
+      'width': tf.boxWidth + 'px', // 1box分の幅を設定する
+      'background-image': 'linear-gradient(to bottom, ' + tf.bgColor + ' 5%, rgba(0, 0, 0, 1) 130%' // boxに背景色をつける。現在のCSSは、画面の上部が背景色で、下部に行くに従って黒にグラデーションするというもの。
+    });
+
+    const $statusBoxVerticalText = $('<p>');
+    $statusBoxVerticalText.attr({
+      'class': 'dchStatusBoxVerticalText ' + classNum + 'VerticalText'
+    }).css({
+       // tyrano/libs.jsの縁取り用メソッドを借用する（[ptext edge="2px 0xFFFFFF"]で使っているメソッドと同じ。渡す引数の指定方法も同じ）
+      'text-shadow': $.generateTextShadowStrokeCSS('2px #FFFFFF'),
+      'position': 'absolute',
+      'z-index': 2, // 文字は画像より上に出す
+    }).text(
+      f.dch.characterList[tf.cnt].leftText
+    );
+    // 文字をboxの子要素として追加する
+    $statusBoxVerticalText.appendTo($statusBox);
+
     // キャラ画像のimg要素を、boxと同じ幅になるよう左右をクリッピングするために必要なpx数を計算する
     let clipPx = {
       fromLeft: f.defaultPosition[tf.characterId].widthCenter - tf.halfOfBoxWidth - f.dch.displacedPxToRight,
       fromRight: f.defaultPosition[tf.characterId].width - f.defaultPosition[tf.characterId].widthCenter - tf.halfOfBoxWidth + f.dch.displacedPxToRight
     }
-
-    // キャラを並べるためおよびこれ以下の処理を行うために、Flexboxである.dch_containerに1キャラ分のdiv要素を追加する
-    $('.dch_container').append('<div class="dch_box ' + classNum + '">');
-
-    // メモ dch_boxにつけるcssをcssにしておきたい。となると、dch_boxというクラス名はやめておくべき
-    // 1box分のCSSを適用する
-    $('.' + classNum).css({
-      'width': tf.boxWidth + 'px', // 1box分の幅を設定する
-      "background-image": "linear-gradient(to bottom, " + tf.bgColor + " 10%, rgba(0, 0, 0, 1) 150%" // boxに背景色をつける。現在のCSSは、画面の上部が背景色で、下部に行くに従って黒にグラデーションするというもの。
+    // キャラ画像表示
+    const $characterImg = $('<img>');
+    $characterImg.attr({
+      'src': './data/fgimage/chara/' + tf.characterId + '/' + f.dch.characterList[tf.cnt].fileName,
+      'class': tf.imageName
+    }).css({
+      'position': 'absolute',
+      'top': tf.imageTop,
+      'left': tf.imageLeft,
+      'width': f.defaultPosition[tf.characterId].width,
+      'z-index': 1,
+      'clip-path': 'inset(0px ' + clipPx.fromRight + 'px 0px ' + clipPx.fromLeft + 'px)'
     });
+    // キャラ画像のimg要素をboxの子要素として追加する
+    $characterImg.appendTo($statusBox);
 
-    // boxの中に文字表示用のCSSを適用する
-    $('.' + classNum).append('<div class="' + classNum + 'VerticalText">');
-    $('.' + classNum + 'VerticalText').css({
-      'writing-mode': 'vertical-lr', // 文字列を垂直方向に、左から右に配置する
-      'text-orientation': 'upright', // 文字列を常に垂直に表示する
-      'font-family': "にくまるフォント",
-      'font-size': '30pt',
-      'color': '#28332a',
-      'text-shadow': $.generateTextShadowStrokeCSS('2px #FFFFFF'), // tyrano/libs.jsの縁取り用メソッドを借用する（[ptext edge="2px 0xFFFFFF"]で使っているメソッドと同じ。渡す引数の指定方法も同じ）
-      'margin-left': '-7px',
-      'margin-top': '5px'
-    });
-    // 文字表示を行う
-    $('.' + classNum + 'VerticalText').text(f.dch.characterList[tf.cnt].leftText);
-
-    // .dch_containerの子要素の.classNumの子要素に、キャラ画像のimg要素を移動する
-    $('.' + tf.imageName).appendTo('.' + classNum);
-    // キャラ画像のimg要素を、boxと同じ幅になるよう左右をクリッピングする
-    $('.' + tf.imageName).css('clip-path', 'inset(0px ' + clipPx.fromRight + 'px 0px ' + clipPx.fromLeft + 'px)');
+    // 1キャラ分のboxを.dchStatusContainerの子要素として追加する
+    $statusBox.appendTo('.dchStatusContainer');
   [endscript]
 
   [jump target="*displayCharactersHorizontallyForStatus_loopend" cond="tf.cnt == (tf.characterCount - 1)"]

@@ -34,7 +34,13 @@
             </div>
         </div>
     </div>
-    <div class="dch_container">
+    <div class="dchStatusContainer">
+        <!-- ここはdisplayCharactersHorizontallyForStatusサブルーチン内で生成する
+        <div class="dchStatusBox">
+            <p class="dchStatusBoxVerticalText">キャラクター名</p>
+            <img src="./data/fgimage/chara/キャラクター画像" />
+        </div>
+        -->
     </div>
 </div>
 [endhtml]
