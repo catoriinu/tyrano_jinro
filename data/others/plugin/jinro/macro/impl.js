@@ -163,3 +163,42 @@ function DisplayCharactersHorizontallySingle(characterId, fileName, bgColor, top
   this.topText = topText;
   this.leftText = leftText;
 }
+
+
+
+function PlaySeListSubject() {
+
+  this.playSeObserverList = [];
+
+  // subscribe
+  this.addPlaySeList = function (playSeObserver) {
+    console.log('subscribe addPlaySeList');
+    this.playSeObserverList.push(playSeObserver);
+  }
+
+  // notify
+  this.playSeList = function () {
+    console.log('notify playSeList');
+    // 前のSEの再生が終わっていないなら待つ
+    // 前のSEの再生完了時刻を取得する
+    // 前のSEの再生完了時刻からintervalが経過するまで待つ
+    for (let i = 0; i < this.playSeObserverList.length; i++) {
+      const playSeObserver = this.playSeObserverList[i];
+      playSeObserver.playSe();
+    }
+  }
+
+}
+
+
+function PlaySeObserver(mp) {
+  // stopだけは強制的に追加で設定する
+  mp.stop = true;
+  this.mp = mp;
+
+  this.playSe = function() {
+    console.log('do PlaySeObserver');
+    console.log(this.mp);
+    TYRANO.kag.ftag.startTag("playse", this.mp);
+  }
+}

@@ -902,6 +902,7 @@
 
 
 [macro name="j_setDchForStatus"]
+  ; メモ：夜の場合は夜時間開始時のオブジェクト（f.characterObjectsHistory[f.day]）のほうがいい？isAlive判定など。どちらの方が自然か検討する。
   [iscript]
     let tmpCharacterList = [];
     for (let i = 0; i < f.participantsIdList.length; i++) {
@@ -1144,5 +1145,66 @@
     URL.revokeObjectURL(a.href);
   [endscript]
 [endmacro]
+
+
+
+
+; @param no_init "true"指定時は、再生終了後もそのbufに追加済みのSEを初期化しない。デフォルト=false(初期化する)
+[macro name="playselist"]
+  [iscript]
+    console.log('playselist tf.playSeListSubjects');
+    console.log(tf.playSeListSubjects);
+
+    // bufはデフォルト"0"
+    if (!('buf' in mp)) {
+      mp.buf = "0";
+    }
+    if (!('playSeListSubjects' in tf) || !(mp.buf in tf.playSeListSubjects) || tf.playSeListSubjects[mp.buf].constructor.name != "PlaySeListSubject") {
+      alert('事前に[add_playselist]を実行してください buf=' + mp.buf);
+    }
+    tf.playSeListSubjects[mp.buf].playSeList();
+
+    console.log(TYRANO.kag.tmp.is_se_play);
+    console.log('end playselist');
+
+    // 再生し終わったらtf.playselist[mp.buf]を初期化する。ただし引数mp.no_initで指定された場合は初期化しない
+    let dontInit = ('no_init' in mp && (mp.no_init === 'true' || mp.no_init === true));
+    if (!dontInit) {
+      delete tf.playSeListSubjects[mp.buf];
+    }
+  [endscript]
+[endmacro]
+
+
+
+
+; @param init "true"指定時は、事前に同じbufへ[add_playselist]実行済みであっても初期化を行い、1番目のSEとして追加する。デフォルト=false(初期化しない)
+; @param interval(未実装) 単位=ミリ秒。指定した時間分だけ、再生する前に時間を空ける。
+; @param after_interval(未実装) 単位=ミリ秒。指定した時間分だけ、再生した後に時間を空ける。
+[macro name="add_playselist"]
+  [iscript]
+    // bufはデフォルト"0"
+    if (!('buf' in mp)) {
+      mp.buf = "0";
+    }
+    // 最初はオブジェクト型で初期化
+    if (!('playSeListSubjects' in tf)) {
+      tf.playSeListSubjects = {};
+    }
+    // 引数mp.initで指定されているなら、tf.playSeListSubjects[mp.buf]が残っていても初期化する
+    let doInit = ('init' in mp && (mp.init === 'true' || mp.init === true));
+    if (doInit && mp.buf in tf.playSeListSubjects) {
+      delete tf.playSeListSubjects[mp.buf];
+    }
+    // まだ存在しないならPlaySeListSubjectを生成する
+    if (!(mp.buf in tf.playSeListSubjects)) {
+      tf.playSeListSubjects[mp.buf] = new PlaySeListSubject();
+    }
+    // observerを生成し、PlaySeListSubjectに追加する。ここで追加したPlaySeObserverは[playselist]したときに実行される
+    const playSeObserver = new PlaySeObserver(mp);
+    tf.playSeListSubjects[mp.buf].addPlaySeList(playSeObserver);
+  [endscript]
+[endmacro]
+
 
 [return]
