@@ -16,6 +16,8 @@
 [eval exp="f.color = {}"]
 [loadcss file="./data/others/jinro.css"]
 
+[plugin name="playselist"] 
+
 ; デフォルトフォントの設定
 [deffont size=32 color="0x28332a" face=MPLUSRounded][resetfont]
 
