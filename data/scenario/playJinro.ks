@@ -38,8 +38,8 @@
 人狼ゲームの幕開けです……！[p]
 
 maru
-[add_playselist storage="megaten.ogg" loop="false" volume="40" sprite_time="50-20000"]
-[add_playselist storage="kirakira4.ogg" loop="false" volume="40" sprite_time="50-20000"]
+[add_playselist storage="megaten.ogg" loop="false" volume="40" sprite_time="" interval="450"]
+[add_playselist storage="kirakira4.ogg" loop="false" volume="40" sprite_time=""]
 [playselist]
 [p]
 
