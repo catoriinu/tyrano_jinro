@@ -157,10 +157,11 @@ input:checked + label {
 .dchStatusContainer {
     display: flex;
     flex-direction: row;
+    height: 551px;/* .mainのheight - .windowのheight = 571pxだと思っていたが実測551pxでぴったりだった */
 }
 
 .dchStatusBox {
-    height: 571px; /* .mainのheight - .windowのheight */
+    
 }
 
 .dchStatusBoxVerticalText {

@@ -231,7 +231,9 @@ MEMO 最終的には以下の構成のHTMLが生成される。
     // ティラノの変数にNumber型の0を入れて初期化しようとしても、キーを定義できずundefinedになる。そのため必ず余白分の値を入れること
     tf.boxLeft = (tf.boxWidth * tf.cnt) + 3;
     // キャラクター画像の左側からの表示位置。そのキャラのwidthCenterの位置がboxの中央に来るようにした後、f.dch.displacedPxToRightの分だけ右へずらす
-    tf.imageLeft = (tf.boxWidth * (tf.cnt + 1)) - tf.halfOfBoxWidth - f.defaultPosition[tf.characterId].widthCenter + f.dch.displacedPxToRight;
+    //tf.imageLeft = (tf.boxWidth * (tf.cnt + 1)) - tf.halfOfBoxWidth - f.defaultPosition[tf.characterId].widthCenter + f.dch.displacedPxToRight;
+    // MEMO $characterImgのpositionを、absoluteからrelativeに変更したことで、(tf.cnt + 1))が不要になった
+    tf.imageLeft = tf.boxWidth - tf.halfOfBoxWidth - f.defaultPosition[tf.characterId].widthCenter + f.dch.displacedPxToRight;
     // キャラクター画像の上側からの表示位置。通常の立ち絵表示時の高さよりもf.dch.displacedPxToTopの分だけ下にずらして表示する（※基本的にはf.dch.displacedPxToTopには負の数を入れ、上にずらすほうが見栄えが良い）
     tf.imageTop = f.defaultPosition[tf.characterId].top + f.dch.displacedPxToTop;
     // キャラクター画像のクラス名。のちほどキャラ画像のimg要素をbox内に移動させるためのセレクタになる。
@@ -256,7 +258,8 @@ MEMO 最終的には以下の構成のHTMLが生成される。
       'class': 'dchStatusBox ' + classNum
     }).css({
       'width': tf.boxWidth + 'px', // 1box分の幅を設定する
-      'background-image': 'linear-gradient(to bottom, ' + tf.bgColor + ' 5%, rgba(0, 0, 0, 1) 130%' // boxに背景色をつける。現在のCSSは、画面の上部が背景色で、下部に行くに従って黒にグラデーションするというもの。
+      'background-image': 'linear-gradient(to bottom, ' + tf.bgColor + ' 5%, rgba(0, 0, 0, 1) 130%', // boxに背景色をつける。現在のCSSは、画面の上部が背景色で、下部に行くに従って黒にグラデーションするというもの。
+      'position': 'relative',
     });
 
     const $statusBoxVerticalText = $('<p>');
@@ -284,7 +287,7 @@ MEMO 最終的には以下の構成のHTMLが生成される。
       'src': './data/fgimage/chara/' + tf.characterId + '/' + f.dch.characterList[tf.cnt].fileName,
       'class': tf.imageName
     }).css({
-      'position': 'absolute',
+      'position': 'relative',
       'top': tf.imageTop,
       'left': tf.imageLeft,
       'width': f.defaultPosition[tf.characterId].width,
@@ -293,6 +296,33 @@ MEMO 最終的には以下の構成のHTMLが生成される。
     });
     // キャラ画像のimg要素をboxの子要素として追加する
     $characterImg.appendTo($statusBox);
+
+    // キャラ情報コンテナ表示
+    const $infoContainer = $('<div>');
+    $infoContainer.attr({
+      'class': 'infoContainer'
+    }).css({
+      'position': 'absolute',
+      'width': tf.boxWidth + 'px', // 1box分の幅を設定する
+      'display': 'flex',
+      'flex-direction': 'column',
+      'bottom': '0',
+      'z-index': 3,
+    });
+
+
+    // 役職情報表示
+    // PCは、自分の役職を常時表示する
+    // NPCは、CO済み役職がある場合に表示する（未COでも要素は生成し、スペースを確保する）
+    const $infoBoxLine1 = createRoleInfoBox(f.characterObjects[tf.characterId], 2);
+    $infoBoxLine1.appendTo($infoContainer);
+
+    // 死因情報表示
+    // TODO 夜時間はどうする？
+    const $infoBoxLine2 = createDeathInfoBox(f.characterObjects[tf.characterId], 2);
+    $infoBoxLine2.appendTo($infoContainer);
+
+    $infoContainer.appendTo($statusBox);
 
     // 1キャラ分のboxを.dchStatusContainerの子要素として追加する
     $statusBox.appendTo('.dchStatusContainer');

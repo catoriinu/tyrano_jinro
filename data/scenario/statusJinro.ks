@@ -17,7 +17,8 @@
         </div>
 
         <div class="survivor">
-            <input type="checkbox" id="survivor" /><label class="checkLabel" for="survivor">生存者のみ</label>
+            <!--<input type="checkbox" id="survivor" /><label class="checkLabel" for="survivor">生存者のみ</label>-->
+            <!-- 名前表示/詳細表示（CO役職、死因など表示→占い結果と同じ位置でいいのでは？）-->
         </div>
 
         <div class="counterForVoteHistory">
@@ -39,6 +40,10 @@
         <div class="dchStatusBox">
             <p class="dchStatusBoxVerticalText">キャラクター名</p>
             <img src="./data/fgimage/chara/キャラクター画像" />
+            <div class="infoContainer">
+                <div class="infoBox line1"></div>
+                <div class="infoBox line2"></div>
+            </div>
         </div>
         -->
     </div>

@@ -163,3 +163,173 @@ function DisplayCharactersHorizontallySingle(characterId, fileName, bgColor, top
   this.topText = topText;
   this.leftText = leftText;
 }
+
+
+
+/**
+ * ここからステータス画面用
+ */
+
+
+function createRoleInfoBox(characterObject, lineNumber) {
+  const $roleInfoBox = $('<div>');
+
+  const attrObject = {
+    'class': 'infoBox line1'
+  }
+
+  const [cssObject, text] = getCssObjectAndTextForRoleInfoBox(characterObject, lineNumber);
+
+  $roleInfoBox.attr(
+    attrObject
+  ).css(
+    cssObject
+  ).text(
+    text
+  );
+
+  return $roleInfoBox;
+}
+
+
+function getCssObjectAndTextForRoleInfoBox(characterObject, lineNumber) {
+
+  console.log(characterObject);
+
+  const cssObject = getCssHeightForInfoLine(lineNumber);
+  let color = '';
+  let text = '';
+
+  if (characterObject.isPlayer) {
+
+    if (ROLE_ID_TO_FACTION[characterObject.role.roleId] == FACTION_VILLAGERS) {
+      color = 'white';
+    } else if (ROLE_ID_TO_FACTION[characterObject.role.roleId] == FACTION_WEREWOLVES) {
+      color = 'black';
+    } else {
+      alert('未定義の役職IDです');
+    }
+    text += ROLE_ID_TO_NAME[characterObject.role.roleId];
+
+  } else {
+    if (characterObject.CORoleId) {
+      // 今のところ村役職しかCOしないので、白にする
+      color = 'white';
+      if (characterObject.isContradicted) {
+        // ただし破綻済みの場合は黒にする（TODO ことができるようにしておくが、プレイヤーに有利になりすぎるので有効化しない）
+        color = 'black';
+      }
+    }
+  }
+
+  if (characterObject.CORoleId) {
+    text += ('（' + ROLE_ID_TO_NAME[characterObject.CORoleId] + '）');
+  }
+
+  Object.assign(cssObject, getCssBGColor(color));
+
+  return [cssObject, text];
+}
+
+
+
+function getCssHeightForInfoLine(lineNumber) {
+  if (lineNumber <= 3) {
+    // 総line数が3以下なら、1line分の高さは80px
+    return {height: '80px'};
+  } else {
+    // 総line数が4以上なら、総line分の高さが240pxまでに収まるように、1line分の高さを算出する
+    return {height: (240 / lineNumber) + 'px'};
+  }
+}
+
+
+
+/**
+ * 
+ */
+function getCssBGColor(color) {
+  const bgColorObject = {}
+  switch (color) {
+    case 'black':
+      bgColorObject['background-color'] = 'rgba(36, 36, 36, 0.9)'; // #242424
+      bgColorObject['color'] = 'rgba(247, 247, 247, 0.9)'; // #f7f7f7
+      break;
+    case 'white':
+      bgColorObject['background-color'] = 'rgba(247, 247, 247, 0.9)'; // #f7f7f7
+      bgColorObject['color'] = 'rgba(36, 36, 36, 0.9)'; // #242424
+      break;
+  }
+  return bgColorObject;
+}
+
+// TODO テキストだけでなくアイコンでも表示できるようにしたい
+function getTextForRoleInfoBox(characterObject) {
+  let text = '';
+
+  if (characterObject.isPlayer) {
+    text += ROLE_ID_TO_NAME[characterObject.role.roleId];
+  }
+  
+  if (characterObject.CORoleId) {
+    text += ('（' + ROLE_ID_TO_NAME[characterObject.CORoleId] + '）');
+  }
+
+  return text;
+}
+
+
+
+function createDeathInfoBox(characterObject, lineNumber) {
+
+  const $deathInfoBox = $('<div>');
+
+  const attrObject = {
+    'class': 'infoBox line2'
+  }
+
+  const [cssObject, text] = getCssObjectAndTextForDeathInfoBox(characterObject, lineNumber);
+  
+  $deathInfoBox.attr(
+    attrObject
+  ).css(
+    cssObject
+  ).text(
+    text
+  );
+
+  return $deathInfoBox;
+}
+
+
+function getCssObjectAndTextForDeathInfoBox(characterObject, lineNumber) {
+
+  const cssObject = getCssHeightForInfoLine(lineNumber);
+  let text = '';
+
+  if (!characterObject.isAlive) {
+    Object.assign(cssObject, getCssBGColor('black'));
+
+    // 投票で死亡したキャラかを確認する
+    let [deathDay, deathActionObject] = findActionFromHistoryByTargetId(TYRANO.kag.stat.f.executionHistory, characterObject.characterId);
+    text = '追放';
+    // 襲撃で死亡したキャラか
+    if (deathDay === null) {
+      [deathDay, deathActionObject] = findActionFromHistoryByTargetId(TYRANO.kag.stat.f.bitingHistory, characterObject.characterId);
+      text = '襲撃';
+    }
+    text = deathDay + '日目' + text;
+  }
+  return [cssObject, text];
+}
+
+// {day: Actionオブジェクト}形式であるHistoryオブジェクトから、targetIdで検索を行う
+function findActionFromHistoryByTargetId(historyObject, searchTargetId) {
+  const day = Object.keys(historyObject).find(day => historyObject[day].targetId === searchTargetId);
+  
+  if (day !== undefined) {
+    return [day, historyObject[day]];
+  } else {
+    return [null, null];
+  }
+}
