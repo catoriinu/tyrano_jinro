@@ -64,15 +64,13 @@ function FortuneTeller() {
     console.log('result : ' + result);
     
     // 指定された日（デフォルトは今日）の占い結果をアクションオブジェクトに保存＆返却する
-    const todayResult = {
-      action: new Action(
-        fortuneTellerId,
-        ACTION_FORTUNE_TELLING,
-        targetCharacterId,
-        result
-      ),
-      doneCO: false
-    }
+    const todayResult = new Action(
+      fortuneTellerId,
+      ACTION_FORTUNE_TELLING,
+      targetCharacterId,
+      result,
+      false
+    )
 
     this.fortuneTellingHistory[day] = todayResult;
     
@@ -112,10 +110,8 @@ function FortuneTeller() {
     
     // 占い対象外のキャラクターIDを配列化する
     // そのキャラの占い履歴内のアクションオブジェクトの中からtargetIdキーの値を抽出して配列化
-    const notTargetIds = getValuesFromObjectArray(
-      getValuesFromObjectArray(Object.values(this.fortuneTellingHistory), 'action'),
-      'targetId'
-    );
+    const notTargetIds = Object.values(this.fortuneTellingHistory).map(actionObject => actionObject.targetId).filter(Boolean);
+
     // そこに占い実行者自身も追加
     notTargetIds.push(fortuneTellerId);
 
