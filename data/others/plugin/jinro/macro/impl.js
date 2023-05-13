@@ -175,7 +175,7 @@ function createRoleInfoBox(characterObject, lineNumber) {
   const $roleInfoBox = $('<div>');
 
   const attrObject = {
-    'class': 'infoBox line1'
+    'class': 'infoBox line1 participantsInfo'
   }
 
   const [cssObject, text] = getCssObjectAndTextForRoleInfoBox(characterObject, lineNumber);
@@ -285,7 +285,7 @@ function createDeathInfoBox(characterObject, lineNumber) {
   const $deathInfoBox = $('<div>');
 
   const attrObject = {
-    'class': 'infoBox line2'
+    'class': 'infoBox line1 participantsInfo'
   }
 
   const [cssObject, text] = getCssObjectAndTextForDeathInfoBox(characterObject, lineNumber);
@@ -359,13 +359,13 @@ function createRoleHistoryInfoBox(roleCharacterObject, targetId, roleId, lineNum
 
   const cssObject = getCssHeightForInfoLine(totalLineNumber);
 
-  //Object.assign(cssObject, getCssDisplayNone());
-  Object.assign(cssObject);
+  Object.assign(cssObject, getCssDisplayNone());
+  //Object.assign(cssObject);
 
   const text = getDetailForRoleHistoryInfoBox(roleCharacterObject, targetId, roleId);
 
   $roleHistoryInfoBox.attr({
-    'class': 'infoBox line' + lineNum + ' ' + roleId + 'History'
+    'class': 'infoBox line' + lineNum + ' ' + roleId + 'HistoryInfo'
   }).css(
     cssObject
   ).text(

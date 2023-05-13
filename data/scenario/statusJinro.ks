@@ -61,9 +61,11 @@
             if ($(this).val() === "participants") {
                 // 「住人一覧」をクリックした場合「生存者のみ」チェックボックスを表示する
                 $('.survivor').show();
+                $('.participantsInfo').show();
             } else {
                 // それ以外の場合は非表示にする
                 $('.survivor').hide();
+                $('.participantsInfo').hide();
             }
 
             if ($(this).val() === "voteHistory") {
@@ -72,6 +74,14 @@
             } else {
                 // それ以外の場合は非表示にする
                 $(".counterForVoteHistory").hide();
+            }
+
+            if ($(this).val() === "fortuneTellingHistory") {
+                // 「占い履歴」をクリックした場合、占い履歴情報を表示する
+                $(".fortuneTellerHistoryInfo").show();
+            } else {
+                // それ以外の場合は非表示にする
+                $(".fortuneTellerHistoryInfo").hide();
             }
         });
     });
