@@ -233,13 +233,13 @@ function getCssObjectAndTextForRoleInfoBox(characterObject, lineNumber) {
 
 
 
-function getCssHeightForInfoLine(lineNumber) {
-  if (lineNumber <= 3) {
+function getCssHeightForInfoLine(totalLineNumber) {
+  if (totalLineNumber <= 3) {
     // 総line数が3以下なら、1line分の高さは80px
     return {height: '80px'};
   } else {
     // 総line数が4以上なら、総line分の高さが240pxまでに収まるように、1line分の高さを算出する
-    return {height: (240 / lineNumber) + 'px'};
+    return {height: (240 / totalLineNumber) + 'px'};
   }
 }
 
@@ -311,11 +311,11 @@ function getCssObjectAndTextForDeathInfoBox(characterObject, lineNumber) {
     Object.assign(cssObject, getCssBGColor('black'));
 
     // 投票で死亡したキャラかを確認する
-    let [deathDay, deathActionObject] = findActionFromHistoryByTargetId(TYRANO.kag.stat.f.executionHistory, characterObject.characterId);
+    let [deathDay, deathActionObject] = findObjectFromHistoryByTargetId(TYRANO.kag.stat.f.executionHistory, characterObject.characterId);
     text = '追放';
     // 襲撃で死亡したキャラか
     if (deathDay === null) {
-      [deathDay, deathActionObject] = findActionFromHistoryByTargetId(TYRANO.kag.stat.f.bitingHistory, characterObject.characterId);
+      [deathDay, deathActionObject] = findObjectFromHistoryByTargetId(TYRANO.kag.stat.f.bitingHistory, characterObject.characterId);
       text = '襲撃';
     }
     text = deathDay + '日目' + text;
@@ -323,8 +323,8 @@ function getCssObjectAndTextForDeathInfoBox(characterObject, lineNumber) {
   return [cssObject, text];
 }
 
-// {day: Actionオブジェクト}形式であるHistoryオブジェクトから、targetIdで検索を行う
-function findActionFromHistoryByTargetId(historyObject, searchTargetId) {
+// {day: オブジェクト}形式であるHistoryオブジェクトから、targetIdで検索を行う
+function findObjectFromHistoryByTargetId(historyObject, searchTargetId) {
   const day = Object.keys(historyObject).find(day => historyObject[day].targetId === searchTargetId);
   
   if (day !== undefined) {
@@ -332,4 +332,91 @@ function findActionFromHistoryByTargetId(historyObject, searchTargetId) {
   } else {
     return [null, null];
   }
+}
+
+
+
+function createRoleHistoryInfoBoxes($infoContainer, characterObjects, targetId, roleId) {
+
+  // その役職をCO済みのキャラクターID配列を取得する
+  const COCharacterList = Object.keys(characterObjects).filter(key => characterObjects[key].CORoleId === roleId);
+  // TODO プレイヤーがその役職なら、未COでも追加する
+
+  for (let lineNum = 1; lineNum <= COCharacterList.length; lineNum++) {
+
+    const roleCharacterId = COCharacterList[lineNum - 1]
+    const roleCharacterObject = characterObjects[roleCharacterId];
+
+    const $roleHistoryInfoBox = createRoleHistoryInfoBox(roleCharacterObject, targetId, roleId, lineNum, COCharacterList.length);
+
+    $roleHistoryInfoBox.appendTo($infoContainer);
+  }
+}
+
+
+function createRoleHistoryInfoBox(roleCharacterObject, targetId, roleId, lineNum, totalLineNumber) {
+  const $roleHistoryInfoBox = $('<div>');
+
+  const cssObject = getCssHeightForInfoLine(totalLineNumber);
+
+  //Object.assign(cssObject, getCssDisplayNone());
+  Object.assign(cssObject);
+
+  const text = getDetailForRoleHistoryInfoBox(roleCharacterObject, targetId, roleId);
+
+  $roleHistoryInfoBox.attr({
+    'class': 'infoBox line' + lineNum + ' ' + roleId + 'History'
+  }).css(
+    cssObject
+  ).text(
+    text
+  );
+
+  return $roleHistoryInfoBox;
+}
+
+function getCssDisplayNone() {
+  return {display: 'none'};
+}
+
+function getDetailForRoleHistoryInfoBox(roleCharacterObject, targetId, roleId) {
+
+  // 仮にテキストだけとする
+  let text = '';
+
+  const roleHistoryObject = getRoleHistoryObject(roleCharacterObject, roleId);
+
+  const [day, actionObject] = findObjectFromHistoryByTargetId(roleHistoryObject, targetId);
+
+  // アクションが見つかったなら
+  if (day !== null) {
+    // そのアクションが公開情報である、または（未公開情報であっても）その役職のキャラがプレイヤーなら表示対象とする
+    if (actionObject.isPublic || roleCharacterObject.isPlayer) {
+      let result = actionObject.result ? '●' : '○';
+      text = roleCharacterObject.name + ' ' + day  + ':' + result;
+    }
+  }
+  return text;
+}
+
+function getRoleHistoryObject(characterObject, roleId) {
+  if (roleId == ROLE_ID_FORTUNE_TELLER) {
+    // 真占い師
+    if (characterObject.role.roleId == ROLE_ID_FORTUNE_TELLER) {
+      return characterObject.role.fortuneTellingHistory;
+    }
+    // 騙り占い師
+    return characterObject.fakeRole.fortuneTellingHistory;
+  }
+  return {};
+}
+
+
+
+// 切り替えトリガーでやるべきか、表示時に作っておくべきか。
+// まずは表示時に作っておく方式でやってみる。
+function showFortuneTellingHistory() {
+  // 占い師COしているキャラ数を取得する
+  // 3以上なら、その$infoContainerの中に、<dev class="infoBox line3">要素が存在するか確認し、しなければ追加する
+  // 
 }

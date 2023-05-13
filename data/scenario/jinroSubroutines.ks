@@ -322,6 +322,11 @@ MEMO 最終的には以下の構成のHTMLが生成される。
     const $infoBoxLine2 = createDeathInfoBox(f.characterObjects[tf.characterId], 2);
     $infoBoxLine2.appendTo($infoContainer);
 
+    // 占い履歴情報を格納（メソッド内部でappendTo($infoContainer)まで実施する）
+    createRoleHistoryInfoBoxes($infoContainer, f.characterObjects, tf.characterId, ROLE_ID_FORTUNE_TELLER)
+    // 初期状態hide（display: none）で、占い履歴、最新の日の投票履歴のdev要素も生成しておく
+    // ボタンで切り替えるのは、hide-showだけにする
+
     $infoContainer.appendTo($statusBox);
 
     // 1キャラ分のboxを.dchStatusContainerの子要素として追加する
