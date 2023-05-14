@@ -177,6 +177,41 @@ input:checked + label {
 
 
 
+.balloonTop {
+    position: relative;
+    display: inline-block;
+    margin: 10px 5px 2px 5px;/* 横方向の中央揃えの微調整 */
+    padding: 2px 10px;
+    background: #FFFFFF;
+    border: solid 3px #28332a;
+    box-sizing: border-box;
+    border-radius: 15px;
+    max-width: 100%;
+}
+  
+.balloonTop:before {
+    content: "";
+    position: absolute;
+    top: -19px;
+    left: 50%;
+    margin-left: -15px;
+    border: 12px solid transparent;
+    border-bottom: 9px solid #FFFFFF; /* borderよりも1px増やしている。しないと.balloonTopの横線がうっすら見えてしまう */
+    z-index: 2;
+}
+  
+.balloonTop:after {
+    content: "";
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    margin-left: -17px;
+    border: 14px solid transparent;
+    border-bottom: 11px solid #28332a;
+    z-index: 1;
+}
+
+
 .balloonLeft {
     position: relative;
     display: inline-block;

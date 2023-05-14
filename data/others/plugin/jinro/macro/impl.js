@@ -178,6 +178,19 @@ function createRoleInfoBox(characterObject, lineNumber) {
     'class': 'infoBox line1 participantsInfo'
   }
 
+  const [cssObject, text, $playerRoleImg, $balloonTop, $CORoleImg] = getCssObjectAndTextForRoleInfoBox(characterObject, lineNumber);
+
+  $roleInfoBox.attr(
+    attrObject
+  ).css(
+    cssObject
+  );
+
+  if ($playerRoleImg instanceof jQuery) $playerRoleImg.appendTo($roleInfoBox);
+  if ($CORoleImg instanceof jQuery) $CORoleImg.appendTo($balloonTop);
+  if ($balloonTop instanceof jQuery) $balloonTop.appendTo($roleInfoBox);
+
+  /*
   const [cssObject, text] = getCssObjectAndTextForRoleInfoBox(characterObject, lineNumber);
 
   $roleInfoBox.attr(
@@ -187,6 +200,7 @@ function createRoleInfoBox(characterObject, lineNumber) {
   ).text(
     text
   );
+  */
 
   return $roleInfoBox;
 }
@@ -199,6 +213,9 @@ function getCssObjectAndTextForRoleInfoBox(characterObject, lineNumber) {
   const cssObject = getCssHeightForInfoLine(lineNumber);
   let color = '';
   let text = '';
+  let $playerRoleImg = {};
+  let $CORoleImg = {};
+  let $balloonTop = {};
 
   if (characterObject.isPlayer) {
 
@@ -210,6 +227,7 @@ function getCssObjectAndTextForRoleInfoBox(characterObject, lineNumber) {
       alert('未定義の役職IDです');
     }
     text += ROLE_ID_TO_NAME[characterObject.role.roleId];
+    $playerRoleImg = getRoleIconImgObject(characterObject.role.roleId);
 
   } else {
     if (characterObject.CORoleId) {
@@ -224,11 +242,25 @@ function getCssObjectAndTextForRoleInfoBox(characterObject, lineNumber) {
 
   if (characterObject.CORoleId) {
     text += ('（' + ROLE_ID_TO_NAME[characterObject.CORoleId] + '）');
+    $CORoleImg = getRoleIconImgObject(characterObject.CORoleId);
+
+    // フキダシ
+    $balloonTop = $('<div>').addClass('balloonTop');
+    //$CORoleImg.appendTo($balloonTop);
   }
 
   Object.assign(cssObject, getCssBGColor(color));
 
-  return [cssObject, text];
+  Object.assign(cssObject, {
+    'position': 'relative',
+    'display': 'flex',
+    //'justify-content': 'center',
+    //'align-items': 'center',
+    //'flex-direction': 'row'
+  });
+
+
+  return [cssObject, text, $playerRoleImg, $balloonTop, $CORoleImg];
 }
 
 
@@ -263,19 +295,22 @@ function getCssBGColor(color) {
   return bgColorObject;
 }
 
-// TODO テキストだけでなくアイコンでも表示できるようにしたい
-function getTextForRoleInfoBox(characterObject) {
-  let text = '';
 
-  if (characterObject.isPlayer) {
-    text += ROLE_ID_TO_NAME[characterObject.role.roleId];
-  }
-  
-  if (characterObject.CORoleId) {
-    text += ('（' + ROLE_ID_TO_NAME[characterObject.CORoleId] + '）');
-  }
 
-  return text;
+// 役職アイコンのimg要素を表示するためのJQueryオブジェクトを取得する
+function getRoleIconImgObject(roleId) {
+  $roleIconImg = $('<img>');
+  $roleIconImg.attr({
+    'src': './data/image/role/icon_' + roleId + '.png',
+    'class': 'roleIcon_' + roleId
+  }).css({
+    'position': 'relative',
+    'display': 'inline-block',
+    'max-height': '100%',
+    'width': 'auto'
+  });
+
+  return $roleIconImg;
 }
 
 
