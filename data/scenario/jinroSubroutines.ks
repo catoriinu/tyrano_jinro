@@ -253,23 +253,18 @@ MEMO 最終的には以下の構成のHTMLが生成される。
     let classNum = 'dch_' + tf.cnt;
 
     // キャラを並べるためおよびこれ以下の処理を行うために、Flexboxである.dchStatusContainerに1キャラ分のdiv要素を追加する
-    const $statusBox = $('<div>');
-    $statusBox.attr({
-      'class': 'dchStatusBox ' + classNum
+    const $statusBox = $('<div>').attr({
+      'class': 'statusBox ' + classNum
     }).css({
       'width': tf.boxWidth + 'px', // 1box分の幅を設定する
       'background-image': 'linear-gradient(to bottom, ' + tf.bgColor + ' 5%, rgba(0, 0, 0, 1) 130%', // boxに背景色をつける。現在のCSSは、画面の上部が背景色で、下部に行くに従って黒にグラデーションするというもの。
-      'position': 'relative',
     });
 
-    const $statusBoxVerticalText = $('<p>');
-    $statusBoxVerticalText.attr({
-      'class': 'dchStatusBoxVerticalText ' + classNum + 'VerticalText'
+    const $statusBoxVerticalText = $('<p>').attr({
+      'class': 'statusBoxVerticalText ' + classNum + 'VerticalText'
     }).css({
        // tyrano/libs.jsの縁取り用メソッドを借用する（[ptext edge="2px 0xFFFFFF"]で使っているメソッドと同じ。渡す引数の指定方法も同じ）
       'text-shadow': $.generateTextShadowStrokeCSS('2px #FFFFFF'),
-      'position': 'absolute',
-      'z-index': 2, // 文字は画像より上に出す
     }).text(
       f.dch.characterList[tf.cnt].leftText
     );
@@ -282,16 +277,13 @@ MEMO 最終的には以下の構成のHTMLが生成される。
       fromRight: f.defaultPosition[tf.characterId].width - f.defaultPosition[tf.characterId].widthCenter - tf.halfOfBoxWidth + f.dch.displacedPxToRight
     }
     // キャラ画像表示
-    const $characterImg = $('<img>');
-    $characterImg.attr({
+    const $characterImg = $('<img>').attr({
       'src': './data/fgimage/chara/' + tf.characterId + '/' + f.dch.characterList[tf.cnt].fileName,
-      'class': tf.imageName
+      'class': 'statusBoxCharaImg ' + tf.imageName
     }).css({
-      'position': 'relative',
       'top': tf.imageTop,
       'left': tf.imageLeft,
       'width': f.defaultPosition[tf.characterId].width,
-      'z-index': 1,
       'clip-path': 'inset(0px ' + clipPx.fromRight + 'px 0px ' + clipPx.fromLeft + 'px)'
     });
     // キャラ画像のimg要素をboxの子要素として追加する

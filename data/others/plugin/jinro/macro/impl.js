@@ -184,12 +184,7 @@ function createInfoContainer(characterObjects, characterId, boxWidth) {
   const $infoContainer = $('<div>').attr({
     'class': 'infoContainer'
   }).css({
-    'position': 'absolute',
     'width': boxWidth + 'px', // 1box分の幅を設定する
-    'display': 'flex',
-    'flex-direction': 'column',
-    'bottom': '0',
-    'z-index': 3, // キャラ画像、キャラ名よりも上
   });
 
   // 役職情報、死因情報
@@ -238,7 +233,7 @@ function createParticipantsInfoBoxes(characterObjects, characterId) {
 function createRoleInfoBox(characterObject, totalLineNumber) {
 
   const $roleInfoBox = $('<div>').attr({
-    'class': 'infoBox participantsInfo'
+    'class': 'infoBox roleInfoBox participantsInfo'
   }).css(
     getCssObjectForRoleInfoBox(characterObject, totalLineNumber)
   );
@@ -295,13 +290,7 @@ function getCssObjectForRoleInfoBox(characterObject, totalLineNumber) {
     // TODO 共通視点で役職確定済みなら、その役職の色を入れる
   }
 
-  const cssObject = Object.assign({
-      'position': 'relative',
-      'display': 'flex',
-      //'justify-content': 'center',
-      //'align-items': 'center',
-      //'flex-direction': 'row'
-    },
+  const cssObject = Object.assign(
     getCssHeightForInfoLine(totalLineNumber),
     getCssBGColor(color)
   );
@@ -356,12 +345,7 @@ function getRoleIconImgObject(roleId) {
   $roleIconImg = $('<img>');
   $roleIconImg.attr({
     'src': './data/image/role/icon_' + roleId + '.png',
-    'class': 'roleIcon_' + roleId
-  }).css({
-    'position': 'relative',
-    'display': 'inline-block',
-    'max-height': '100%',
-    'width': 'auto'
+    'class': 'roleIconImg role_' + roleId
   });
 
   return $roleIconImg;
@@ -380,7 +364,7 @@ function createDeathInfoBox(characterObject, totalLineNumber) {
   
   // 生死問わずBoxは生成する
   const $deathInfoBox = $('<div>').attr({
-    'class': 'infoBox participantsInfo'
+    'class': 'infoBox deathInfoBox participantsInfo'
   }).css(
     cssObject
   ).text(
@@ -477,7 +461,7 @@ function createRoleHistoryInfoBoxes(characterObjects, targetId, roleId) {
 function createRoleHistoryInfoBox(roleCharacterObject, targetId, roleId, totalLineNumber) {
 
   const $roleHistoryInfoBox = $('<div>').attr({
-    'class': 'infoBox ' + roleId + 'HistoryInfo'
+    'class': 'infoBox roleHistoryInfoBox ' + roleId + 'HistoryInfo'
   });
 
   const cssObject = getCssHeightForInfoLine(totalLineNumber);
@@ -492,14 +476,6 @@ function createRoleHistoryInfoBox(roleCharacterObject, targetId, roleId, totalLi
       Object.assign(cssObject, getCssBGColor('white'));
     }
   }
-
-  Object.assign(cssObject, {
-    'position': 'relative',
-    'display': 'flex',
-    'justify-content': 'center',
-    'align-items': 'center',
-    'flex-direction': 'row'
-  });
 
   $roleHistoryInfoBox.css(
     cssObject
@@ -524,10 +500,6 @@ function getDetailForRoleHistoryInfoBox(roleCharacterObject, day, actionObject) 
   const $characterImg = $('<img>').attr({
     'src': './data/image/sdchara/' + roleCharacterObject.characterId + '.png',
     'class': 'sdCharaImg sd_' + roleCharacterObject.characterId
-  }).css({
-    'position': 'relative',
-    'display': 'inline-block',
-    'height': '100%',
   });
 
   // フキダシとその中身

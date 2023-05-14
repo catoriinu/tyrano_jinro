@@ -160,11 +160,12 @@ input:checked + label {
     height: 551px;/* .mainのheight - .windowのheight = 571pxだと思っていたが実測551pxでぴったりだった */
 }
 
-.dchStatusBox {
-    
+.statusBox {
+    position: relative;
 }
 
-.dchStatusBoxVerticalText {
+.statusBoxVerticalText {
+    position: absolute;
     writing-mode: vertical-lr; /* 文字列を垂直方向に、左から右に配置する */
     text-orientation: upright; /* 文字列を常に垂直に表示する */
     font-family: にくまるフォント;
@@ -173,9 +174,66 @@ input:checked + label {
     /* text-shadow: $.generateTextShadowStrokeCSS('2px #FFFFFF'), /* tyrano/libs.jsの縁取り用メソッドを借用するので、ここでは設定せずに処理内で呼び出す */
     margin-left: -7px;
     margin-top: 5px;
+    z-index: 2; /* 文字は画像より上に出す*/
+}
+
+.statusBoxCharaImg {
+    position: relative;
+    z-index: 1; /* 画像は文字より下に出す*/
 }
 
 
+.infoContainer {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    bottom: 0;
+    z-index: 3; /* キャラ画像、キャラ名よりも上 */
+}
+
+.roleInfoBox {
+    position: relative;
+    display: flex;
+    /* 以下は処理内で動的に設定する
+    height: 80px;
+    background-color: rgba(247, 247, 247, 0.9); /* #f7f7f7
+    color: rgba(36, 36, 36, 0.9); /* #242424
+    */
+}
+
+.deathInfoBox {
+    /* 以下は処理内で動的に設定する
+    height: 80px;
+    background-color: rgba(36, 36, 36, 0.9); /* #242424
+    color: rgba(247, 247, 247, 0.9); /* #f7f7f7
+    */
+}
+
+.roleIconImg {
+    position: relative;
+    display: inline-block;
+    max-height: 100%;
+    width: auto;
+}
+
+.roleHistoryInfoBox {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    /* 以下は処理内で動的に設定する
+    height: 80px;
+    background-color: rgba(247, 247, 247, 0.9); /* #f7f7f7
+    color: rgba(36, 36, 36, 0.9); /* #242424
+    */
+}
+
+.sdCharaImg {
+    position: relative;
+    display: inline-block;
+    height: 100%;
+}
 
 .balloonTop {
     position: relative;
