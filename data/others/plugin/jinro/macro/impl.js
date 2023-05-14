@@ -338,9 +338,10 @@ function findObjectFromHistoryByTargetId(historyObject, searchTargetId) {
 
 function createRoleHistoryInfoBoxes($infoContainer, characterObjects, targetId, roleId) {
 
-  // その役職をCO済みのキャラクターID配列を取得する
-  const COCharacterList = Object.keys(characterObjects).filter(key => characterObjects[key].CORoleId === roleId);
-  // TODO プレイヤーがその役職なら、未COでも追加する
+  // その役職をCO済みのキャラクターID配列を取得する。ただしプレイヤーがその役職なら、未COでも取得する
+  const COCharacterList = Object.keys(characterObjects).filter(
+    cId => (characterObjects[cId].CORoleId === roleId || (characterObjects[cId].isPlayer && characterObjects[cId].role.roleId === roleId))
+  );
 
   for (let lineNum = 1; lineNum <= COCharacterList.length; lineNum++) {
 
@@ -359,18 +360,29 @@ function createRoleHistoryInfoBox(roleCharacterObject, targetId, roleId, lineNum
 
   const cssObject = getCssHeightForInfoLine(totalLineNumber);
 
-  Object.assign(cssObject, getCssDisplayNone());
-  //Object.assign(cssObject);
+  const [$characterImg, $baloonLeft] = getDetailForRoleHistoryInfoBox(roleCharacterObject, targetId, roleId);
+  
+  if ($characterImg instanceof jQuery) {
+    $characterImg.appendTo($roleHistoryInfoBox);
+    $baloonLeft.appendTo($roleHistoryInfoBox);
+    Object.assign(cssObject, getCssBGColor('white'));
+  }
 
-  const text = getDetailForRoleHistoryInfoBox(roleCharacterObject, targetId, roleId);
+  Object.assign(cssObject, {
+    'position': 'relative',
+    'display': 'flex',
+    'justify-content': 'center',
+    'align-items': 'center',
+    'flex-direction': 'row'
+  });
 
   $roleHistoryInfoBox.attr({
     'class': 'infoBox line' + lineNum + ' ' + roleId + 'HistoryInfo'
   }).css(
     cssObject
-  ).text(
-    text
   );
+  // 初期状態では非表示
+  $roleHistoryInfoBox.hide();
 
   return $roleHistoryInfoBox;
 }
@@ -381,8 +393,8 @@ function getCssDisplayNone() {
 
 function getDetailForRoleHistoryInfoBox(roleCharacterObject, targetId, roleId) {
 
-  // 仮にテキストだけとする
-  let text = '';
+  let $characterImg = {};
+  let $baloonLeft = {}
 
   const roleHistoryObject = getRoleHistoryObject(roleCharacterObject, roleId);
 
@@ -393,10 +405,25 @@ function getDetailForRoleHistoryInfoBox(roleCharacterObject, targetId, roleId) {
     // そのアクションが公開情報である、または（未公開情報であっても）その役職のキャラがプレイヤーなら表示対象とする
     if (actionObject.isPublic || roleCharacterObject.isPlayer) {
       let result = actionObject.result ? '●' : '○';
-      text = roleCharacterObject.name + ' ' + day  + ':' + result;
+      let text = day + '日目' + result;
+
+      $characterImg = $('<img>');
+      $characterImg.attr({
+        'src': './data/image/sdchara/' + roleCharacterObject.characterId + '.png',
+        'class': 'sd_' + roleCharacterObject.characterId
+      }).css({
+        'position': 'relative',
+        'display': 'inline-block',
+        'height': '100%',
+      });
+
+      // フキダシ
+      $baloonLeft = $('<div>').addClass('balloonLeft');
+      $baloonLeft.html($baloonLeft.html() + text);
     }
   }
-  return text;
+
+  return [$characterImg, $baloonLeft];
 }
 
 function getRoleHistoryObject(characterObject, roleId) {
@@ -409,14 +436,4 @@ function getRoleHistoryObject(characterObject, roleId) {
     return characterObject.fakeRole.fortuneTellingHistory;
   }
   return {};
-}
-
-
-
-// 切り替えトリガーでやるべきか、表示時に作っておくべきか。
-// まずは表示時に作っておく方式でやってみる。
-function showFortuneTellingHistory() {
-  // 占い師COしているキャラ数を取得する
-  // 3以上なら、その$infoContainerの中に、<dev class="infoBox line3">要素が存在するか確認し、しなければ追加する
-  // 
 }
