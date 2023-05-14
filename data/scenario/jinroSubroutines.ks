@@ -297,36 +297,8 @@ MEMO 最終的には以下の構成のHTMLが生成される。
     // キャラ画像のimg要素をboxの子要素として追加する
     $characterImg.appendTo($statusBox);
 
-    // キャラ情報コンテナ表示
-    const $infoContainer = $('<div>');
-    $infoContainer.attr({
-      'class': 'infoContainer'
-    }).css({
-      'position': 'absolute',
-      'width': tf.boxWidth + 'px', // 1box分の幅を設定する
-      'display': 'flex',
-      'flex-direction': 'column',
-      'bottom': '0',
-      'z-index': 3,
-    });
-
-
-    // 役職情報表示
-    // PCは、自分の役職を常時表示する
-    // NPCは、CO済み役職がある場合に表示する（未COでも要素は生成し、スペースを確保する）
-    const $infoBoxLine1 = createRoleInfoBox(f.characterObjects[tf.characterId], 2);
-    $infoBoxLine1.appendTo($infoContainer);
-
-    // 死因情報表示
-    // TODO 夜時間はどうする？
-    const $infoBoxLine2 = createDeathInfoBox(f.characterObjects[tf.characterId], 2);
-    $infoBoxLine2.appendTo($infoContainer);
-
-    // 占い履歴情報を格納（メソッド内部でappendTo($infoContainer)まで実施する）
-    createRoleHistoryInfoBoxes($infoContainer, f.characterObjects, tf.characterId, ROLE_ID_FORTUNE_TELLER);
-    // 初期状態hide（display: none）で、占い履歴、最新の日の投票履歴のdev要素も生成しておく
-    // ボタンで切り替えるのは、hide-showだけにする
-
+    // キャラ情報コンテナ取得。中身の情報はメソッド内で格納済み
+    const $infoContainer = createInfoContainer(f.characterObjects, tf.characterId, tf.boxWidth);
     $infoContainer.appendTo($statusBox);
 
     // 1キャラ分のboxを.dchStatusContainerの子要素として追加する
