@@ -472,7 +472,7 @@ function createRoleHistoryInfoBox(roleCharacterObject, targetId, roleId, totalLi
   if (day !== null) {
     // そのアクションが公開情報である、または（未公開情報であっても）その役職のキャラがプレイヤーなら表示対象とする
     if (actionObject.isPublic || roleCharacterObject.isPlayer) {
-      $roleHistoryInfoBox.append(getDetailForRoleHistoryInfoBox(roleCharacterObject, day, actionObject))
+      $roleHistoryInfoBox.append(getDetailForRoleHistoryInfoBox(roleCharacterObject, day, actionObject));
       Object.assign(cssObject, getCssBGColor('white'));
     }
   }

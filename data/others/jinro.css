@@ -194,6 +194,7 @@ input:checked + label {
 .roleInfoBox {
     position: relative;
     display: flex;
+    justify-content: center;
     /* 以下は処理内で動的に設定する
     height: 80px;
     background-color: rgba(247, 247, 247, 0.9); /* #f7f7f7
@@ -211,9 +212,11 @@ input:checked + label {
 
 .roleIconImg {
     position: relative;
-    display: inline-block;
+    display: block;
     max-height: 100%;
     width: auto;
+    max-width: 100%;
+    object-fit: contain;
 }
 
 .roleHistoryInfoBox {
@@ -237,14 +240,15 @@ input:checked + label {
 
 .balloonTop {
     position: relative;
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin: 10px 5px 2px 5px;/* 横方向の中央揃えの微調整 */
     padding: 2px 10px;
     background: #FFFFFF;
     border: solid 3px #28332a;
     box-sizing: border-box;
     border-radius: 15px;
-    max-width: 100%;
 }
   
 .balloonTop:before {
