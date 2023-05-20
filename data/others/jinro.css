@@ -86,8 +86,8 @@
     background-color: rgba(240,240,240,1);
     border:solid 3px rgba(0,0,0,0.82);
     width: 1262px;
-    height: 149px;
-    padding: 7px;
+    height: 124px;
+    padding: 10px 7px;
     border-radius: 20px 20px 20px 20px / 20px 20px 20px 20px;
 }
 
@@ -157,7 +157,7 @@ input:checked + label {
 .dchStatusContainer {
     display: flex;
     flex-direction: row;
-    height: 551px;/* .mainのheight - .windowのheight = 571pxだと思っていたが実測551pxでぴったりだった */
+    height: 570px;
 }
 
 .statusBox {
