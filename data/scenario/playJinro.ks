@@ -106,9 +106,9 @@
 
   ; 占い師COすることができる役職・CO状態であれば。COできなければジャンプ
   [j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
-  [jump target="*noCO" cond="tf.canCOFortuneTellerStatus == 0"]
+  [jump target="*noCO" cond="f.canCOFortuneTellerStatus == 0"]
 
-    [m_askFortuneTellerCO canCOFortuneTellerStatus="&tf.canCOFortuneTellerStatus"]
+    [m_askFortuneTellerCO canCOFortuneTellerStatus="&f.canCOFortuneTellerStatus"]
 
     ; メニューボタン非表示
     [j_clearFixButton menu="true"]
@@ -140,19 +140,23 @@
     ; [jump target="*FortuneTellerCO" cond="f.selectedButtonId == 'FortuneTellerCO'"]
     *FortuneTellerCO
 
-    [if exp="tf.canCOFortuneTellerStatus == 1"]
+    [if exp="f.canCOFortuneTellerStatus == 1"]
       ; 占い未COかつ、真占いCOをすると決めた場合
       ; 前日の分までの占い結果を、メッセージなしでCOしたことにする
       [j_COFortuneTellingUntilTheLastDay fortuneTellerId="&f.playerCharacterId"]
+      ; キャラクターオブジェクトにCOした役職IDを格納する
+      [eval exp="f.characterObjects[f.playerCharacterId].CORoleId = ROLE_ID_FORTUNE_TELLER"]
 
-    [elsif exp="tf.canCOFortuneTellerStatus == 3"]
+    [elsif exp="f.canCOFortuneTellerStatus == 3"]
       ; 占い未COかつ、占い騙りをすると決めた場合
       ; 騙り役職オブジェクトを取得する
       [j_assignmentFakeRole characterId="&f.characterObjects[f.playerCharacterId].characterId" roleId="fortuneTeller"]
       ; 騙り占いサブルーチン実行。初日から騙り占い結果を入れていく(f.fakeFortuneTelledDayはデフォルトのままでよい)
       [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingCOMultipleDaysForPC"]
+      ; キャラクターオブジェクトにCOした役職IDを格納する
+      [eval exp="f.characterObjects[f.playerCharacterId].CORoleId = ROLE_ID_FORTUNE_TELLER"]
 
-    [elsif exp="tf.canCOFortuneTellerStatus == 4"]
+    [elsif exp="f.canCOFortuneTellerStatus == 4"]
       ; 騙り占いCO済みの場合
       ; 騙り占いサブルーチン実行。前日分のみ騙り占い結果を入れる
       [eval exp="f.fakeFortuneTelledDay = f.day - 1"]
@@ -166,9 +170,8 @@
     [j_COFortuneTelling fortuneTellerId="&f.playerCharacterId"]
 
     ; 初回CO時のみの処理
-    [if exp="tf.canCOFortuneTellerStatus == 1 || tf.canCOFortuneTellerStatus == 3"]
-      ; キャラクターオブジェクトにCOした役職IDを格納する
-      [eval exp="f.characterObjects[f.playerCharacterId].CORoleId = ROLE_ID_FORTUNE_TELLER"]
+    ; TODO この処理、j_COFortuneTellingの前に持っていっても問題ないか？
+    [if exp="f.canCOFortuneTellerStatus == 1 || f.canCOFortuneTellerStatus == 3"]
 
       ; 共通および各キャラの視点オブジェクトを更新する
       [j_cloneRolePerspectiveForCO characterId="&f.characterObjects[f.playerCharacterId].characterId" CORoleId="fortuneTeller"]
@@ -232,18 +235,22 @@
 
   [j_setCanCOFortuneTellerStatus characterId="&f.COCandidateId"]
 
-  [if exp="tf.canCOFortuneTellerStatus == 1"]
+  [if exp="f.canCOFortuneTellerStatus == 1"]
     ; 占い未COかつ、真占いCOをすると決めた場合
     ; 前日の分までの占い結果を、メッセージなしでCOしたことにする
     [j_COFortuneTellingUntilTheLastDay fortuneTellerId="&f.COCandidateId"]
+    ; キャラクターオブジェクトにCOした役職IDを格納する
+    [eval exp="f.characterObjects[f.COCandidateId].CORoleId = ROLE_ID_FORTUNE_TELLER"]
 
-  [elsif exp="tf.canCOFortuneTellerStatus == 3"]
+  [elsif exp="f.canCOFortuneTellerStatus == 3"]
     ; 占い騙りがまだで、今からCOする場合
     ; 騙り役職オブジェクトを取得し、騙り占いサブルーチンで昨夜までの分を占ってからCOする
     [j_assignmentFakeRole characterId="&f.COCandidateId" roleId="fortuneTeller"]
     [j_fakeFortuneTellingCOMultipleDays fortuneTellerId="&f.COCandidateId"]
+    ; キャラクターオブジェクトにCOした役職IDを格納する
+    [eval exp="f.characterObjects[f.COCandidateId].CORoleId = ROLE_ID_FORTUNE_TELLER"]
 
-  [elsif exp="tf.canCOFortuneTellerStatus == 4"]
+  [elsif exp="f.canCOFortuneTellerStatus == 4"]
     ; 騙り占いCO済みの場合
     ; 騙り占いサブルーチン実行。前日分のみ騙り占い結果を入れる
     [eval exp="tf.fakeFortuneTelledDay = f.day - 1"]
@@ -257,9 +264,8 @@
   [j_COFortuneTelling fortuneTellerId="&f.COCandidateId"]
 
   ; 初回CO時のみの処理
-  [if exp="tf.canCOFortuneTellerStatus == 1 || tf.canCOFortuneTellerStatus == 3"]
-    ; キャラクターオブジェクトにCOした役職IDを格納する
-    [eval exp="f.characterObjects[f.COCandidateId].CORoleId = ROLE_ID_FORTUNE_TELLER"]
+  ; TODO この処理、j_COFortuneTellingの前に持っていっても問題ないか？
+  [if exp="f.canCOFortuneTellerStatus == 1 || f.canCOFortuneTellerStatus == 3"]
 
     ; 共通および各キャラの視点オブジェクトを更新する
     [j_cloneRolePerspectiveForCO characterId="&f.COCandidateId" CORoleId="fortuneTeller"]
@@ -444,7 +450,7 @@
 
 ; 真占い師であれば
 [j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
-[if exp="tf.canCOFortuneTellerStatus == 1 || tf.canCOFortuneTellerStatus == 2"]
+[if exp="f.canCOFortuneTellerStatus == 1 || f.canCOFortuneTellerStatus == 2"]
 
   [m_askFortuneTellingTarget isFortuneTeller="true"]
 

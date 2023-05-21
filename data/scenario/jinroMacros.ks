@@ -361,12 +361,7 @@
     f.actionObject = tmpFortuneTellingHistory[day];
     // 占いCOによる信頼度増減を行う
     updateReliabirityForAction(f.characterObjects, f.actionObject);
-  [endscript]
 
-  ; メッセージ出力（mp.noNeedMessageがtrueなら表示しない）
-  [m_COFortuneTelling cond="!(('noNeedMessage' in mp) && (mp.noNeedMessage === 'true' || mp.noNeedMessage === true))"]
-
-  [iscript]
     // 真占い師でも騙り占い師でも、表の視点オブジェクトを更新する
     // ・CO済みということは対外的な真実であるから ・CO済みであれば占い師としての思考は表の視点を使うから
     try {
@@ -385,10 +380,13 @@
       // 自分自身は嘘がつける役職（TODO:「嘘をつかない役職配列」をメソッドで取り出せるようにする）だったということで確定する。
       updateCommonPerspective(mp.fortuneTellerId, [ROLE_ID_VILLAGER, ROLE_ID_FORTUNE_TELLER]);
     }
+
+    // 今日のCOが終わったキャラはisDoneTodaysCOをtrueにする
+    f.characterObjects[mp.fortuneTellerId].isDoneTodaysCO = true;
   [endscript]
 
-  ; 今日のCOが終わったキャラはisDoneTodaysCOをtrueにする
-  [eval exp="f.characterObjects[mp.fortuneTellerId].isDoneTodaysCO = true"]
+  ; メッセージ出力（mp.noNeedMessageがtrueなら表示しない）
+  [m_COFortuneTelling cond="!(('noNeedMessage' in mp) && (mp.noNeedMessage === 'true' || mp.noNeedMessage === true))"]
 
 [endmacro]
 
@@ -487,32 +485,32 @@
 [endmacro]
 
 
-; 占い師COすることができる役職・CO状態かを判定し、tf.canCOFortuneTellerStatusに結果を入れる。内訳はコード内のコメント参照
+; 占い師COすることができる役職・CO状態かを判定し、f.canCOFortuneTellerStatusに結果を入れる。内訳はコード内のコメント参照
 ; 定数の並び順が昇順ではないのは、「if文は肯定形にする」と「未COに+1したらCO済みとする」の2つを優先したため。
 ; @param characterId 判定対象のキャラクターID。必須。
 [macro name="j_setCanCOFortuneTellerStatus"]
   [iscript]
 
     ; 0: 占い師CO不可の役職、またはCO状態
-    tf.canCOFortuneTellerStatus = 0;
+    f.canCOFortuneTellerStatus = 0;
     if (f.characterObjects[mp.characterId].role.roleId == ROLE_ID_FORTUNE_TELLER) {
       if (f.characterObjects[mp.characterId].CORoleId == ROLE_ID_FORTUNE_TELLER) {
         ; 2: 真占い師であり、CO済み
-        tf.canCOFortuneTellerStatus = 2;
+        f.canCOFortuneTellerStatus = 2;
 
       } else {
         ; 1: 真占い師で、未CO
-        tf.canCOFortuneTellerStatus = 1;
+        f.canCOFortuneTellerStatus = 1;
       }
       
     } else if (f.characterObjects[mp.characterId].role.roleId == ROLE_ID_WEREWOLF || f.characterObjects[mp.characterId].role.roleId == ROLE_ID_MADMAN) {
       if (f.characterObjects[mp.characterId].CORoleId == ROLE_ID_FORTUNE_TELLER) {
         ; 4: 騙り占い師としてCO済み
-        tf.canCOFortuneTellerStatus = 4;
+        f.canCOFortuneTellerStatus = 4;
 
       } else if (f.characterObjects[mp.characterId].CORoleId == '') {
         ; 3: 騙り占い師としてCO可能な役職で、未CO
-        tf.canCOFortuneTellerStatus = 3;
+        f.canCOFortuneTellerStatus = 3;
       }
       ; 占い師以外の役職としてCO済みなら、占い師COは不可
     }
