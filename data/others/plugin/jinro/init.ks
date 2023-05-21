@@ -7,4 +7,5 @@
 [loadjs storage="plugin/jinro/first/discussion.js"]
 ; ゲーム内のマクロから呼び出す実体メソッドを実装したファイルも読み込む
 [loadjs storage="plugin/jinro/macro/impl.js"]
+[loadjs storage="plugin/jinro/macro/status.js"]
 [return ]
