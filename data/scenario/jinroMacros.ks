@@ -805,6 +805,17 @@
   ; 投票結果を表示していたレイヤーを解放
   [freeimage layer="1" time="400" wait="true"]
 
+  ; 開票オブジェクトの処理。ステータス画面の投票履歴情報の制御用
+  [iscript]
+    if (f.day in f.openedVote) {
+      // 2回目以降の開票なら、開票回数をインクリメント
+      f.openedVote[f.day] += 1;
+    } else {
+      // その日の初回開票なら、開票日の値に1を入れる
+      f.openedVote[f.day] = 1;
+    }
+  [endscript]
+
   ; ステータス、メニューボタン再表示とメッセージウィンドウを表示
   [j_displayFixButton status="true" menu="true"]
   [layopt layer="message0" visible="true"]

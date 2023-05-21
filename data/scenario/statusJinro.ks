@@ -16,17 +16,10 @@
             <!--<input type="radio" name="display" id="radioKnight" value="knight" /><label class="radioLabel" for="radioKnight">護衛履歴</label>-->
         </div>
 
-        <div class="survivor">
-            <!--<input type="checkbox" id="survivor" /><label class="checkLabel" for="survivor">生存者のみ</label>-->
-            <!-- 名前表示/詳細表示（CO役職、死因など表示→占い結果と同じ位置でいいのでは？）-->
-        </div>
-
-        <div class="counterForVoteHistory">
-            <div class="counter">
-                <button type="button" class="minusButton">-</button>
-                <span class="value">1</span><span>日目</span>
-                <button type="button" class="plusButton">+</button>
-            </div>
+        <div class="openedVoteDaycounter" style="display: none;"> <!-- 初期状態では非表示 -->
+            <button type="button" class="minusButton">-</button>
+            <span class="value">1</span><span>日目</span>
+            <button type="button" class="plusButton">+</button>
         </div>
     </div>
     <div class="dchStatusContainer">
@@ -46,59 +39,70 @@
 
 [iscript]
     $(document).ready(function() {
-        // ステータス画面の初期状態設定
-        // 1行目のラジオボタンは「住人一覧」に設定され、2行目は「生存者のみ」チェックボックスを表示するので、それら以外の要素は非表示にする
-        $(".counterForVoteHistory").hide();
-
         // ラジオボタンをクリックした時の処理
         $('input[type="radio"]').click(function() {
+            // 「住人一覧」をクリックしたら情報を表示。それ以外の場合は非表示
             if ($(this).val() === "participants") {
-                // 「住人一覧」をクリックした場合「生存者のみ」チェックボックスを表示する
-                $('.survivor').show();
                 $('.participantsInfo').show();
             } else {
-                // それ以外の場合は非表示にする
-                $('.survivor').hide();
                 $('.participantsInfo').hide();
             }
 
+            // 「投票履歴」をクリックしたら情報とカウンターを表示。それ以外の場合は非表示
             if ($(this).val() === "voteHistory") {
-                // 「投票履歴」をクリックした場合、カウンターを表示する
-                $(".counterForVoteHistory").show();
-                $(".voteHistoryInfo").show();
+                $(".openedVoteDaycounter").show();
+                // 最後に表示していた開票日の情報を表示する。ステータス画面を開いた直後なら1。1以外に変えて別ボタンに移って再度表示したときは最後に表示していた開票日
+                changeDisplayVoteDayHistory(parseInt($('.value').text()));
             } else {
-                // それ以外の場合は非表示にする
-                $(".counterForVoteHistory").hide();
+                $(".openedVoteDaycounter").hide();
                 $(".voteHistoryInfo").hide();
             }
 
+            // 「占い履歴」をクリックしたら情報を表示。それ以外の場合は非表示
             if ($(this).val() === "fortuneTellingHistory") {
-                // 「占い履歴」をクリックした場合、占い履歴情報を表示する
                 $(".fortuneTellerHistoryInfo").show();
             } else {
-                // それ以外の場合は非表示にする
                 $(".fortuneTellerHistoryInfo").hide();
             }
         });
     });
     // 「投票履歴」のカウンターの処理
-    $('.counter').each(function() {
-        const minusButton = $(this).find('.minusButton');
-        const plusButton = $(this).find('.plusButton');
-        const value = $(this).find('.value');
+    $('.openedVoteDaycounter').each(function() {
+        const $minusButton = $(this).find('.minusButton');
+        const $plusButton = $(this).find('.plusButton');
+        const $value = $(this).find('.value');
 
-        minusButton.on('click', function() {
-            let num = parseInt(value.text());
-            if (num > 1) {
-                value.text(num - 1);
+        // 開票オブジェクトのキーの最大値、すなわち表示可能な最新の開票日を取得
+        const maxDay = Math.max(...Object.keys(f.openedVote));
+
+        $minusButton.on('click', function() {
+            let nowDay = parseInt($value.text());
+            // 最低値は1まで
+            if (nowDay > 1) {
+                changeDisplayVoteDayHistory((nowDay - 1), nowDay, $value);
             }
         });
 
-        plusButton.on('click', function() {
-            let num = parseInt(value.text());
-            value.text(num + 1);
+        $plusButton.on('click', function() {
+            let nowDay = parseInt($value.text());
+            // 最大値は最新の開票日まで
+            if (nowDay < maxDay) {
+                changeDisplayVoteDayHistory((nowDay + 1), nowDay, $value);
+            }
         });
     });
+    // 表示する開票日を変更
+    function changeDisplayVoteDayHistory(displayDay, nowDay = null, $value = {}) {
+        if (nowDay !== null) {
+            $('.voteDay' + nowDay).hide();
+        }
+
+        $('.voteDay' + displayDay).show();
+        
+        if ($value instanceof jQuery) {
+            $value.text(displayDay);
+        }
+    }
 [endscript]
 
 
