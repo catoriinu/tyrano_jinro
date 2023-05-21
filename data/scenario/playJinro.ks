@@ -37,6 +37,12 @@
 #
 人狼ゲームの幕開けです……！[p]
 
+; TODO あとで消す。playselistプラグインのテスト用
+;[add_playselist storage="megaten.ogg" loop="false" volume="40" sprite_time="" interval="450"]
+;[add_playselist storage="kirakira4.ogg" loop="false" volume="40" sprite_time=""]
+;[playselist]
+;[p]
+
 [clearstack]
 *day0_nightPhase
 

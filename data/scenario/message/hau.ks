@@ -38,7 +38,7 @@
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
 [playse storage="chara/hau/008_雨晴はう（ノーマル）_僕が占ったのはXで…(1).ogg" loop="false" sprite_time="50-20000"]
 [endif]
-
+;x
 [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
 [call target="changeIdToCallName"]
 
@@ -59,7 +59,7 @@
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
 [playse storage="chara/hau/017_雨晴はう（ノーマル）_僕が占ったのはXで…(1).ogg" loop="false" sprite_time="50-20000"]
 [endif]
-
+;x
 [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
 [call target="changeIdToCallName"]
 
@@ -106,7 +106,7 @@
 [elsif exp="tf.selectedCharacterId == CHARACTER_ID_RITSU"]
 [playse storage="chara/hau/018_雨晴はう（ノーマル）_Xはきっと大丈夫で….ogg" loop="false" sprite_time="50-20000"]
 [endif]
-
+;x
 [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
 [call target="changeIdToCallName"]
 
@@ -128,7 +128,7 @@
 ; シーン：「疑う」アクションの実行対象になった時
 *doAction_reaction_suspect
 [playse storage="chara/hau/020_雨晴はう（ノーマル）_どうせ僕なんて、疑….ogg" loop="false" sprite_time="50-20000"]
-
+;x
 どうせ僕なんて、疑われても仕方ないですよね……。[p]
 [stopse]
 [return]
@@ -136,7 +136,7 @@
 ; シーン：「信じる」アクションの実行対象になった時
 *doAction_reaction_trust
 [playse storage="chara/hau/021_雨晴はう（ノーマル）_ありがとうございま….ogg" loop="false" sprite_time="50-20000"]
-
+;x
 ありがとうございます。[r]
 僕も精一杯サポートしますね！[p]
 [stopse]

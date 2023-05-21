@@ -59,7 +59,7 @@
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
 
 [endif]
-
+;x
 [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
 [call target="changeIdToCallName"]
 
@@ -84,7 +84,7 @@
 [elsif exp="tf.selectedCharacterId == CHARACTER_ID_RITSU"]
 
 [endif]
-
+;x
 [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
 [call target="changeIdToCallName"]
 
@@ -106,7 +106,7 @@
 [elsif exp="tf.selectedCharacterId == CHARACTER_ID_RITSU"]
 
 [endif]
-
+;o
 [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
 [call target="changeIdToCallName"]
 
@@ -137,7 +137,7 @@
 ; シーン：「信じる」アクションの実行対象になった時
 *doAction_reaction_trust
 [playse storage="chara/ritsu/021_波音リツ（ノーマル）_ふふ、嬉しいことを….ogg" loop="false" sprite_time="50-20000"]
-
+;o
 ふふ、嬉しいことを言ってくれるじゃない。[p]
 [stopse]
 [return]
@@ -152,7 +152,7 @@
 ; シーン：投票により処刑対象に決まったときの反応
 *executed
 [playse storage="chara/ritsu/023_波音リツ（ノーマル）_安価は絶対……。あ….ogg" loop="false" sprite_time="50-20000"]
-
+;o
 安価は絶対……。あたしは潔く去るわ。[p]
 [stopse]
 [return]

@@ -441,6 +441,16 @@ function pushElement(array, element) {
 }
 
 
+
+/**
+ * chara/{characterId}.ksで設定した、そのキャラクターのイメージカラーのコードを取得する
+ * @param {string} characterId 
+ * @returns {string} 16進数カラーコード 例:'#ffffff'
+ */
+function getBgColorFromCharacterId(characterId) {
+  return TYRANO.kag.stat.f.color.character[characterId];
+}
+
 /**
  * オブジェクトをディープコピーするための関数;
  * 第一引数はコピーさせたいオブジェクトを渡す;
