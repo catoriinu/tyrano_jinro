@@ -231,7 +231,9 @@ MEMO 最終的には以下の構成のHTMLが生成される。
     // ティラノの変数にNumber型の0を入れて初期化しようとしても、キーを定義できずundefinedになる。そのため必ず余白分の値を入れること
     tf.boxLeft = (tf.boxWidth * tf.cnt) + 3;
     // キャラクター画像の左側からの表示位置。そのキャラのwidthCenterの位置がboxの中央に来るようにした後、f.dch.displacedPxToRightの分だけ右へずらす
-    tf.imageLeft = (tf.boxWidth * (tf.cnt + 1)) - tf.halfOfBoxWidth - f.defaultPosition[tf.characterId].widthCenter + f.dch.displacedPxToRight;
+    //tf.imageLeft = (tf.boxWidth * (tf.cnt + 1)) - tf.halfOfBoxWidth - f.defaultPosition[tf.characterId].widthCenter + f.dch.displacedPxToRight;
+    // MEMO $characterImgのpositionを、absoluteからrelativeに変更したことで、(tf.cnt + 1))が不要になった
+    tf.imageLeft = tf.boxWidth - tf.halfOfBoxWidth - f.defaultPosition[tf.characterId].widthCenter + f.dch.displacedPxToRight;
     // キャラクター画像の上側からの表示位置。通常の立ち絵表示時の高さよりもf.dch.displacedPxToTopの分だけ下にずらして表示する（※基本的にはf.dch.displacedPxToTopには負の数を入れ、上にずらすほうが見栄えが良い）
     tf.imageTop = f.defaultPosition[tf.characterId].top + f.dch.displacedPxToTop;
     // キャラクター画像のクラス名。のちほどキャラ画像のimg要素をbox内に移動させるためのセレクタになる。
@@ -251,22 +253,18 @@ MEMO 最終的には以下の構成のHTMLが生成される。
     let classNum = 'dch_' + tf.cnt;
 
     // キャラを並べるためおよびこれ以下の処理を行うために、Flexboxである.dchStatusContainerに1キャラ分のdiv要素を追加する
-    const $statusBox = $('<div>');
-    $statusBox.attr({
-      'class': 'dchStatusBox ' + classNum
+    const $statusBox = $('<div>').attr({
+      'class': 'statusBox ' + classNum
     }).css({
       'width': tf.boxWidth + 'px', // 1box分の幅を設定する
-      'background-image': 'linear-gradient(to bottom, ' + tf.bgColor + ' 5%, rgba(0, 0, 0, 1) 130%' // boxに背景色をつける。現在のCSSは、画面の上部が背景色で、下部に行くに従って黒にグラデーションするというもの。
+      'background-image': 'linear-gradient(to bottom, ' + tf.bgColor + ' 5%, rgba(0, 0, 0, 1) 130%', // boxに背景色をつける。現在のCSSは、画面の上部が背景色で、下部に行くに従って黒にグラデーションするというもの。
     });
 
-    const $statusBoxVerticalText = $('<p>');
-    $statusBoxVerticalText.attr({
-      'class': 'dchStatusBoxVerticalText ' + classNum + 'VerticalText'
+    const $statusBoxVerticalText = $('<p>').attr({
+      'class': 'statusBoxVerticalText ' + classNum + 'VerticalText'
     }).css({
        // tyrano/libs.jsの縁取り用メソッドを借用する（[ptext edge="2px 0xFFFFFF"]で使っているメソッドと同じ。渡す引数の指定方法も同じ）
       'text-shadow': $.generateTextShadowStrokeCSS('2px #FFFFFF'),
-      'position': 'absolute',
-      'z-index': 2, // 文字は画像より上に出す
     }).text(
       f.dch.characterList[tf.cnt].leftText
     );
@@ -279,20 +277,21 @@ MEMO 最終的には以下の構成のHTMLが生成される。
       fromRight: f.defaultPosition[tf.characterId].width - f.defaultPosition[tf.characterId].widthCenter - tf.halfOfBoxWidth + f.dch.displacedPxToRight
     }
     // キャラ画像表示
-    const $characterImg = $('<img>');
-    $characterImg.attr({
+    const $characterImg = $('<img>').attr({
       'src': './data/fgimage/chara/' + tf.characterId + '/' + f.dch.characterList[tf.cnt].fileName,
-      'class': tf.imageName
+      'class': 'statusBoxCharaImg ' + tf.imageName
     }).css({
-      'position': 'absolute',
       'top': tf.imageTop,
       'left': tf.imageLeft,
       'width': f.defaultPosition[tf.characterId].width,
-      'z-index': 1,
       'clip-path': 'inset(0px ' + clipPx.fromRight + 'px 0px ' + clipPx.fromLeft + 'px)'
     });
     // キャラ画像のimg要素をboxの子要素として追加する
     $characterImg.appendTo($statusBox);
+
+    // キャラ情報コンテナ取得。中身の情報はメソッド内で格納済み
+    const $infoContainer = createInfoContainer(f.characterObjects, tf.characterId, tf.boxWidth);
+    $infoContainer.appendTo($statusBox);
 
     // 1キャラ分のboxを.dchStatusContainerの子要素として追加する
     $statusBox.appendTo('.dchStatusContainer');

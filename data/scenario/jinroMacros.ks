@@ -84,13 +84,13 @@
     if (f.characterObjects[mp.fortuneTellerId].role.roleId == ROLE_ID_FORTUNE_TELLER) {
       f.characterObjects[mp.fortuneTellerId].role.rolePerspective = organizePerspective(
         f.characterObjects[mp.fortuneTellerId].role.rolePerspective,
-        todayResult.action.targetId,
-        getRoleIdsForOrganizePerspective(todayResult.action.result)
+        todayResult.targetId,
+        getRoleIdsForOrganizePerspective(todayResult.result)
       );
     }
 
     // メッセージ出力用に占いのアクションオブジェクトを格納
-    f.actionObject = todayResult.action;
+    f.actionObject = todayResult;
 
     // 全占い結果履歴オブジェクトに占い結果格納
     // TODO メニュー画面用。メニュー画面を後回しにしているうちは一旦コメントアウト
@@ -355,10 +355,10 @@
 
     // 取得する日を決定する。引数があればその日の、なければ最新の日の履歴を取得する。
     const day = ('day' in mp) ? parseInt(mp.day) : Object.keys(tmpFortuneTellingHistory).length - 1;
-    // その占い履歴をCO済みにする
-    tmpFortuneTellingHistory[day].doneCO = true;
+    // その占い履歴を公開（CO済み）に更新する
+    tmpFortuneTellingHistory[day].isPublic = true;
     // 信頼度増減とメッセージ出力用にアクションオブジェクトを格納
-    f.actionObject = tmpFortuneTellingHistory[day].action;
+    f.actionObject = tmpFortuneTellingHistory[day];
     // 占いCOによる信頼度増減を行う
     updateReliabirityForAction(f.characterObjects, f.actionObject);
   [endscript]
@@ -754,12 +754,12 @@
         }
 
         for (let day of Object.keys(fortuneTellingHistory)) {
-          // 「その日にCO済みなら（doneCO）」の判定が必要。履歴表示時にfalseなら表示しないようにしないと、夜の時点で開いたときに未COの履歴も表示されてしまう。
+          // 「その日にCO済みなら」の判定が必要。履歴表示時にfalseなら表示しないようにしないと、夜の時点で開いたときに未COの履歴も表示されてしまう。
           // ただしプレイヤーの占い履歴は未COでも表示する（占い師CO自体をしていないなら表示しない TODO：役職未COと分かるようにすれば、表示してもいいかも）
-          if (cId != f.playerCharacterId && !fortuneTellingHistory[day].doneCO) continue;
+          if (cId != f.playerCharacterId && !fortuneTellingHistory[day].isPublic) continue;
           
-          let targetId = fortuneTellingHistory[day].action.targetId;
-          let result = fortuneTellingHistory[day].action.result ? '●' : '○';
+          let targetId = fortuneTellingHistory[day].targetId;
+          let result = fortuneTellingHistory[day].result ? '●' : '○';
           tf.allFortuneTellerCOText += f.characterObjects[targetId].name + result;
         }
         tf.allFortuneTellerCOText += '<br>';
@@ -804,6 +804,17 @@
   [p]
   ; 投票結果を表示していたレイヤーを解放
   [freeimage layer="1" time="400" wait="true"]
+
+  ; 開票オブジェクトの処理。ステータス画面の投票履歴情報の制御用
+  [iscript]
+    if (f.day in f.openedVote) {
+      // 2回目以降の開票なら、開票回数をインクリメント
+      f.openedVote[f.day] += 1;
+    } else {
+      // その日の初回開票なら、開票日の値に1を入れる
+      f.openedVote[f.day] = 1;
+    }
+  [endscript]
 
   ; ステータス、メニューボタン再表示とメッセージウィンドウを表示
   [j_displayFixButton status="true" menu="true"]
@@ -927,7 +938,7 @@
     f.dch = new DisplayCharactersHorizontally(
       tmpCharacterList,
       20, // キャラクター画像の表示位置を中央より右へずらす。leftTextの文字を表示するスペースを作るため
-      50, // キャラクター画像の表示位置を中央より上へずらす。メニューボタンは非表示にしているので、干渉しない分上げておく
+      -100, // キャラクター画像の表示位置を中央より上へずらす。メニューボタンは非表示にしているので、干渉しない分上げておく
     );
   [endscript]
 [endmacro]

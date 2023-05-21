@@ -49,6 +49,9 @@ function prepareGameMain() {
   // キャラクターオブジェクト配列をティラノのキャラクターオブジェクト変数に格納する
   TYRANO.kag.stat.f.characterObjects = characterObjects;
 
+  // TODO 投票履歴オブジェクトの初期化
+  // 開票オブジェクトの初期化 {"開票日": その日の開票回数, ...}
+  TYRANO.kag.stat.f.openedVote = {};
   // 噛み先履歴オブジェクトの初期化
   TYRANO.kag.stat.f.bitingHistory = {};
   // 処刑履歴オブジェクトの初期化
