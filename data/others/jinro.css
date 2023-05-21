@@ -191,7 +191,7 @@ input:checked + label {
     z-index: 3; /* キャラ画像、キャラ名よりも上 */
 }
 
-.roleInfoBox {
+.roleInfoBox, .voteHistoryInfoBox {
     position: relative;
     display: flex;
     justify-content: center;
@@ -203,6 +203,9 @@ input:checked + label {
 }
 
 .deathInfoBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     /* 以下は処理内で動的に設定する
     height: 80px;
     background-color: rgba(36, 36, 36, 0.9); /* #242424
@@ -210,7 +213,7 @@ input:checked + label {
     */
 }
 
-.roleIconImg {
+.roleIconImg, .sdCharaImg {
     position: relative;
     display: block;
     max-height: 100%;
@@ -230,12 +233,6 @@ input:checked + label {
     background-color: rgba(247, 247, 247, 0.9); /* #f7f7f7
     color: rgba(36, 36, 36, 0.9); /* #242424
     */
-}
-
-.sdCharaImg {
-    position: relative;
-    display: inline-block;
-    height: 100%;
 }
 
 .balloonTop {

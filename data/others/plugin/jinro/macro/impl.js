@@ -191,6 +191,7 @@ function createInfoContainer(characterObjects, characterId, boxWidth) {
   $infoContainer.append(createParticipantsInfoBoxes(characterObjects, characterId));
 
   // 投票情報
+  $infoContainer.append(createVoteHistoryInfoBoxes(characterObjects, characterId));
 
   // 占い履歴情報
   $infoContainer.append(createRoleHistoryInfoBoxes(characterObjects, characterId, ROLE_ID_FORTUNE_TELLER));
@@ -342,12 +343,10 @@ function getCssBGColor(color) {
 
 // 役職アイコンのimg要素を表示するためのJQueryオブジェクトを取得する
 function getRoleIconImgObject(roleId) {
-  $roleIconImg = $('<img>');
-  $roleIconImg.attr({
+  $roleIconImg = $('<img>').attr({
     'src': './data/image/role/icon_' + roleId + '.png',
     'class': 'roleIconImg role_' + roleId
   });
-
   return $roleIconImg;
 }
 
@@ -423,7 +422,66 @@ function findObjectFromHistoryByTargetId(historyObject, searchTargetId) {
 
 
 /**
- * 役職履歴（「占い履歴」や霊能履歴）として表示する情報ボックスを一括生成する
+ * 「投票履歴」として表示する情報ボックスを一括生成する
+ * @param {*} characterObjects 
+ * @param {*} characterId 
+ * @returns 
+ */
+function createVoteHistoryInfoBoxes(characterObjects, characterId) {
+
+  const voteHistory = characterObjects[characterId].voteHistory;
+  let voteHistoryInfoBoxes = [];
+  // 一日ごとにループを回す
+  for (let day of Object.keys(voteHistory)) {
+    console.log(characterId + day);
+    voteHistoryInfoBoxes = voteHistoryInfoBoxes.concat(createVoteDayInfoBoxes(day, voteHistory[day]));
+  }
+  // TODO 被投票数は表示する？するならどうやって？
+
+  return voteHistoryInfoBoxes;
+}
+
+
+function createVoteDayInfoBoxes(day, voteHistoryList) {
+
+  const voteDayInfoBoxes = [];
+  const cssObject = Object.assign(
+    getCssHeightForInfoLine(voteHistoryList.length),
+    getCssBGColor('white')
+  );
+  for (let i = 0; i < voteHistoryList.length; i++) {
+    const $voteInfoBox = $('<div>').attr({
+      'class': 'infoBox voteHistoryInfoBox voteHistoryInfo voteDay' + day + ' voteCount' + (i+1)
+    }).css(
+      cssObject
+    );
+    // 上向きフキダシ用のクラスを作る
+    const $balloonTop = $('<div>').addClass('balloonTop');
+    // フキダシの中にキャラクターアイコン画像を入れる
+    $balloonTop.append(getSdCharaIconImgObject(voteHistoryList[i]));
+    // 投票履歴ボックスの中にフキダシを入れる
+    $voteInfoBox.append($balloonTop);
+
+    // 初期状態では非表示
+    $voteInfoBox.hide();
+    voteDayInfoBoxes.push($voteInfoBox);
+  }
+  return voteDayInfoBoxes;
+}
+
+
+// SDキャラアイコンのimg要素を表示するためのJQueryオブジェクトを取得する
+function getSdCharaIconImgObject(characterId) {
+  const $characterImg = $('<img>').attr({
+    'src': './data/image/sdchara/' + characterId + '.png',
+    'class': 'sdCharaImg sd_' + characterId
+  });
+  return $characterImg;
+}
+
+
+/**
+ * 役職履歴（「占い履歴」や「霊能履歴」）として表示する情報ボックスを一括生成する
  * @param {*} characterObjects 
  * @param {*} targetId 
  * @param {*} roleId 
@@ -497,10 +555,7 @@ function createRoleHistoryInfoBox(roleCharacterObject, targetId, roleId, totalLi
 function getDetailForRoleHistoryInfoBox(roleCharacterObject, day, actionObject) {
 
   // キャラクター画像
-  const $characterImg = $('<img>').attr({
-    'src': './data/image/sdchara/' + roleCharacterObject.characterId + '.png',
-    'class': 'sdCharaImg sd_' + roleCharacterObject.characterId
-  });
+  const $characterImg = getSdCharaIconImgObject(roleCharacterObject.characterId);
 
   // フキダシとその中身
   const $baloonLeft = $('<div>').addClass('balloonLeft');

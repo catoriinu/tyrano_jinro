@@ -27,12 +27,6 @@
                 <span class="value">1</span><span>日目</span>
                 <button type="button" class="plusButton">+</button>
             </div>
-
-            <div class="counter">
-                <button type="button" class="minusButton">-</button>
-                <span class="value">1</span><span>回目</span>
-                <button type="button" class="plusButton">+</button>
-            </div>
         </div>
     </div>
     <div class="dchStatusContainer">
@@ -71,9 +65,11 @@
             if ($(this).val() === "voteHistory") {
                 // 「投票履歴」をクリックした場合、カウンターを表示する
                 $(".counterForVoteHistory").show();
+                $(".voteHistoryInfo").show();
             } else {
                 // それ以外の場合は非表示にする
                 $(".counterForVoteHistory").hide();
+                $(".voteHistoryInfo").hide();
             }
 
             if ($(this).val() === "fortuneTellingHistory") {
