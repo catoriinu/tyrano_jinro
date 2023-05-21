@@ -102,14 +102,10 @@ input:checked + label {
 .radioLabel,.checkLabel {
     position: relative;
     display: inline-block;
-    margin: 10px 10px; /* ボックス外側の余白を指定する */
-    /* width: 120px; ボックスの横幅を指定する */
-    text-align: center; /* テキストのセンタリングを指定する */
-    /* line-height: 22px; /* 行の高さを指定する */
+    margin: 10px 12px; /* ボックス外側の余白を指定する */
+    text-align: center;
     background-color: #CCFFC7;
-    cursor: pointer; /* マウスカーソルの形（リンクカーソル）を指定する */
-    /* border: 3px solid #87AD8E;/* ボックスの境界線を実線で指定する */
-    /* border-radius: 5px; 角丸を指定する */
+    cursor: pointer;
     padding: 1px 15px 3px 14px;
     border-radius: 1.5em;
     border: none;
@@ -129,29 +125,46 @@ input:checked + label {
     border: 3px solid #87AD8E;
     transition: .15s ease-out;
 }
-
 .radioLabel:hover,.checkLabel:hover {
     background-color: #69876E;
 }
-
 .radioLabel:hover::after,.checkLabel:hover::after {
     border: 1px solid #4C614F;
 }
 
 
-
 .openedVoteDaycounter {
     display: inline-block;
+    padding: 5px 12px;
 }
 .openedVoteDaycounter button {
+    position: relative;
     border-radius: 50%;
     background-color: #CCFFC7;
     width: 30px;
     height: 30px;
+    padding: 3px;
     font-size: 24px;
     line-height: 1;
     border: none;
     cursor: pointer;
+}
+.openedVoteDaycounter button::after {
+    position: absolute;
+    content: "";
+    background-color: none;
+    top: -6px;
+    right: -6px;
+    bottom: -6px;
+    left: -6px;
+    border: 3px solid #87AD8E;
+    border-radius: 1.5em;
+}
+.openedVoteDaycounter button:hover {
+    background-color: #69876E;
+}
+.openedVoteDaycounter button:hover::after {
+    border: 1px solid #4C614F;
 }
 
 .dchStatusContainer {
