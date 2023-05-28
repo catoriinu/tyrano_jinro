@@ -382,8 +382,12 @@
 [endif]
 
 ; 処刑セリフと処刑処理（TODO 今はこの順番だが、処刑ごとの演出がどうなるかによっては逆にしてもいい）
-[m_executed characterId="&f.electedIdList[0]"]
 [j_execution characterId="&f.electedIdList[0]"]
+[m_executed characterId="&f.electedIdList[0]"]
+; 処刑メッセージ
+[m_changeFrameWithId]
+#
+[emb exp="f.characterObjects[f.electedIdList[0]].name + 'は追放されました。'"][p]
 
 ; 処刑後の反応（TODO 誰が発言するかを決定するマクロ等が必要）
 [if exp="f.characterObjects.ai.isAlive"]

@@ -2,8 +2,12 @@
 [cm]
 [clearfix]
 
-; ステータス画面から戻るときに復元すべきボタン状況を保存しておく
-[j_saveFixButton buf="status"]
+; ステータス画面から戻るときに復元すべきボタン状況を保存しておく。
+; これはsleepgameをしてステータス画面を開いた瞬間に一度だけ行うこと。
+; （ステータス画面→メニュー画面→2度目のステータス画面の方では行わない。awakegameするときに復元するのは、あくまで最初に開いた瞬間の状態なので）
+[j_saveFixButton buf="status" cond="!('doneSaveButton' in f) || !f.doneSaveButton"]
+[eval exp="f.doneSaveButton = true"]
+
 ; [clearfix]でfixボタンが全て消えてしまっているので、ボタン表示フラグを一旦全てfalseにしたうえで、必要なボタンを再表示する
 [j_clearFixButton]
 [j_displayFixButton menu="true" backlog="true" status="nofix_click"]
@@ -147,5 +151,6 @@
 [j_loadFixButton buf="status"]
 ; ステータスボタンをノーマル状態に明示的に上書きする（メニュー画面を一度開いていた場合は'nofix'が入ったままのため）
 [j_displayFixButton status="true"]
+[eval exp="f.doneSaveButton = false"]
 [awakegame]
 [s]

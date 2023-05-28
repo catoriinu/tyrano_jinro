@@ -26,6 +26,7 @@
 
 *returnTitleFromStatus
 [j_clearFixButton]
+[eval exp="f.doneSaveButton = false"]
 [breakgame]
 [m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
