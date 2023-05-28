@@ -793,6 +793,7 @@
 ; 各キャラの投票先を集計し、投票結果画面として出力する
 [macro name="j_openVote"]
   ; 全ボタンとメッセージウィンドウを消去
+  [j_saveFixButton buf="openVote"]
   [j_clearFixButton]
   [layopt layer="message0" visible="false"]
 
@@ -814,8 +815,8 @@
     }
   [endscript]
 
-  ; ステータス、バックログボタン再表示とメッセージウィンドウを表示
-  [j_displayFixButton status="true" backlog="true"]
+  ; ボタン復元とメッセージウィンドウを表示
+  [j_loadFixButton buf="openVote"]
   [layopt layer="message0" visible="true"]
 [endmacro]
 
@@ -872,6 +873,7 @@
 ; キャラクター紹介画面を出力する
 [macro name="j_introductionCharacters"]
   ; 全ボタンを消去
+  [j_saveFixButton buf="intro"]
   [j_clearFixButton]
 
   ; キャラクタ－画像を表示
@@ -881,8 +883,8 @@
   ; キャラクター画像を表示していたレイヤーを解放
   [freeimage layer="1" time="400" wait="true"]
 
-  ; ステータス、バックログボタン再表示
-  [j_displayFixButton status="true" backlog="true"]
+  ; ボタン復元
+  [j_loadFixButton buf="intro"]
 [endmacro]
 
 
@@ -1108,7 +1110,7 @@
 [endmacro]
 
 
-; 保存済みのixレイヤーのボタンの表示ステータスを読み込み、復元するマクロ
+; 保存済みのTixレイヤーのボタンの表示ステータスを読み込み、復元するマクロ
 ; [j_saveFixButton]は実行済みでf.saveButtonは存在している前提とする。
 ; @param buf 必須。保存バッファ。任意のキー名を指定すること。保存済みのキー名から復元する。キーが存在しない場合はエラー（未考慮）
 [macro name="j_loadFixButton"]
@@ -1121,9 +1123,11 @@
       let buttonStatus = loadButton[button];
 
       if (buttonStatus === null) {
+        // 保存時の状態がnullなら、表示するかは無視し、消去は実行する
         tf.tmpDisplayButton[button] = 'ignore';
-        tf.tmpClearButton[button] = buttonStatus;
+        tf.tmpClearButton[button] = 'true';
       } else {
+        // 保存時の状況が表示中なら、当時の表示状態に復元し、消去は無視する
         tf.tmpDisplayButton[button] = buttonStatus;
         tf.tmpClearButton[button] = 'ignore';
       }

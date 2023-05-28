@@ -275,7 +275,7 @@
 [clearstack]
 
 ; アクションボタン表示
-[j_displayFixButton action="true"]
+[j_displayFixButton action="true" cond="f.characterObjects[f.playerCharacterId].isAlive"]
 
 [m_changeFrameWithId]
 #
@@ -305,7 +305,7 @@
 [clearstack]
 
 ; アクションボタン非表示
-[j_clearFixButton action="true"]
+[j_clearFixButton action="true" cond="f.characterObjects[f.playerCharacterId].isAlive"]
 
 [m_changeFrameWithId]
 #
