@@ -112,7 +112,7 @@ function getCssObjectForRoleInfoBox(characterObject, totalLineNumber) {
       color = 'white';
       if (characterObject.isContradicted) {
         // ただし破綻済みの場合は黒にする（TODO ことができるようにしておくが、プレイヤーに有利になりすぎるので有効化しない）
-        color = 'black';
+        // color = 'black';
       }
     }
     // TODO 共通視点で役職確定済みなら、その役職の色を入れる
