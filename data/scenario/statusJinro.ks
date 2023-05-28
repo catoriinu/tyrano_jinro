@@ -1,9 +1,12 @@
 *statusJinroMain
 [cm]
 [clearfix]
-;[bg storage="black.png" time="100" wait="true"]
-; TODO:メッセージ枠、名前表示テキストを消去し、awakeするときには再表示する
-;[html_show type="status"]
+
+; ステータス画面から戻るときに復元すべきボタン状況を保存しておく
+[j_saveFixButton buf="status"]
+; [clearfix]でfixボタンが全て消えてしまっているので、ボタン表示フラグを一旦全てfalseにしたうえで、必要なボタンを再表示する
+[j_clearFixButton]
+[j_displayFixButton menu="true" backlog="true" status="nofix_click"]
 
 [html]
 <div class="main">
@@ -132,32 +135,17 @@
     }
 [endscript]
 
-
-;[ptext layer="1" x="400" y="100" text="現在のCO状況" color="white" size="60"]
-
-; 占い師のCO状況表示
-;[ptext layer="1" x="200" y="200" text="占い師" color="white" size="40"]
-;[j_getAllFortuneTellerCOText]
-;[ptext layer="1" x="240" y="250" text="&tf.allFortuneTellerCOText" color="white" size="40"]
-
-;[glink color="blue" size="28" x="300" y="500" width="500" text="元の画面に戻る" target="*awake"]
-[button graphic="button/button_status_click.png" target="*awake" x="1143" y="23" width="114" height="103" enterimg="button/button_status_hover.png"]
-
-  ; キャラクタ－画像を表示
-  [j_setDchForStatus]
-  [call storage="jinroSubroutines.ks" target="*displayCharactersHorizontallyForStatus"]
-
-
-; バックログボタン表示
-[button graphic="button/button_backlog_normal.png" x="1005" y="23" width="114" height="103" fix="true" role="backlog" name="button_j_fix,button_j_backlog" enterimg="button/button_backlog_hover.png"]
+; キャラクタ－画像を表示
+[j_setDchForStatus]
+[call storage="jinroSubroutines.ks" target="*displayCharactersHorizontallyForStatus"]
 [s]
 
 
 *awake
-; TODO:背景は元の画像に戻す。または人狼メニュー画面のbgはbgではなくレイヤー深めの画像を使うだけにするか。
-;[bg storage="living_day_nc238325.jpg" time="100" wait="true"]
-
-; バックログボタンを非表示にする
-[clearfix name="button_j_backlog"]
+; ボタンの画像の表示状況は[awakegame]することで復元されるが、f.displaingButton内の変数は復元されないので、変数の復元のために以下を行う
+; ステータス画面表示時に保存しておいた状態を復元する（メニューボタンの状態も消去される）
+[j_loadFixButton buf="status"]
+; ステータスボタンをノーマル状態に明示的に上書きする（メニュー画面を一度開いていた場合は'nofix'が入ったままのため）
+[j_displayFixButton status="true"]
 [awakegame]
 [s]

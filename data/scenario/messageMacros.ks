@@ -201,6 +201,35 @@
 [endmacro]
 
 
+; シーン：現在のラウンド数と次のNPCのアクションを表示するシステムメッセージ
+[macro name="m_displayRoundAndNextActionInDiscussionPhase"]
+  [m_changeFrameWithId]
+  #
+  ; TODO 画面上のどこかに常に、あるいはメニュー画面内に表示しておけるとベスト
+  ～ラウンド[emb exp="f.doActionCount"]/[emb exp="sf.j_development.maxDoActionCount"]～[r]
+
+  ; ここはバックログに記録しない。プレイヤーがアクション実行すると、実際にはアクションしなかったことになる可能性があるため
+  [nolog]
+
+    [if exp="f.doActionCandidateId != ''"]
+    ～[emb exp="f.characterObjects[f.npcActionObject.characterId].name"]が話そうとしています
+      ; 開発者用設定：独裁者モードなら、アクション実行者のアクション内容をメッセージに表示する
+      [if exp="sf.j_development.dictatorMode"]
+        [iscript]
+          tf.tmpDoActionMessage = ((f.npcActionObject.actionId == ACTION_TRUST) ? '信じる' : (f.npcActionObject.actionId == ACTION_SUSPECT) ? '疑う' : '？');
+        [endscript]
+        （[emb exp="f.characterObjects[f.npcActionObject.targetId].name"]に[emb exp="tf.tmpDoActionMessage"]）
+      [endif]
+    [else]
+    ～誰も話そうとしていないようです
+    [endif]
+    ～[p]
+
+  ; ここまでログを記録しない
+  [endnolog]
+[endmacro]
+
+
 ; ～ここから個人用設定あり～
 
 ; メッセージフレームを、発言者の位置に合わせて切り替える

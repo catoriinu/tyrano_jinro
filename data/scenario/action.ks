@@ -9,8 +9,9 @@
   // 第2階層のキャラクターボタンの色を変えるかの判定に使うのは、前回選択したキャラクターIDとする。f.selectedCharacterIdはアクションボタン処理中に書き換わってしまうため使えない。
   f.originalSelectedCharacterId = ('targetId' in f.pcActionObject) ? f.pcActionObject.targetId : '';
 [endscript]
-; ボタン非表示
-[j_clearFixButton action="true" menu="true"]
+; アクションボタンとステータスボタンを非表示（バックログボタンは押せて良いので残す）
+; アクションボタン自体がrole="sleepgame"のボタン（復元時に元のメッセージを表示したいため）のため、そこから更にfix属性であるステータスボタンは押せないため無効化しておく
+[j_clearFixButton action="true" status="true"]
 
 *firstLayer
 ; 第1階層のボタンを表示
@@ -50,8 +51,9 @@
 [endscript]
 
 *end
-; ボタン再表示
-[j_displayFixButton action="true" menu="true"]
+; アクションボタンとステータスボタンを再表示
+[j_displayFixButton action="true" status="true"]
+
 [awakegame]
 [return]
 

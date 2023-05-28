@@ -1,9 +1,6 @@
 ; PCの占いサブルーチン
 *fortuneTellingForPC
 
-  ; ボタン非表示
-  [j_clearFixButton menu="true"]
-
   ; 占い候補のキャラクターID配列を取得、ボタンオブジェクトに格納
   [eval exp="tf.candidateCharacterIds = f.characterObjects[f.playerCharacterId].role.getCandidateCharacterIds(f.playerCharacterId)"]
   [j_setCharacterToButtonObjects characterIds="&tf.candidateCharacterIds"]
@@ -13,9 +10,6 @@
 
   ; 占い実行。占い結果をf.actionObjectに格納する
   [j_fortuneTelling fortuneTellerId="&f.playerCharacterId" characterId="&f.selectedButtonId"]
-
-  ; ボタン再表示
-  [j_displayFixButton menu="true"]
 
 [return]
 
@@ -76,9 +70,6 @@
 ; @param f.fakeFortuneTelledDay 騙り占いを実行する開始日。指定する場合は、サブルーチン実行前に格納しておくこと。
 *fakeFortuneTellingCOMultipleDaysForPC
 
-  ; ボタン非表示
-  [j_clearFixButton menu="true"]
-
   ; 騙り占いを行う最新の日の日付（＝前日）を入れる。
   [eval exp="f.lastDay = f.day - 1"]
   ; サブルーチン実行前に開始日が指定されていればそれを、されていなければ0（=初日）を入れる
@@ -106,7 +97,5 @@
 
   ; 次にこのサブルーチンを呼び出したときのために初期化
   [eval exp="f.fakeFortuneTelledDay = 0"]
-  ; ボタン再表示
-  [j_displayFixButton menu="true"]
 
 [return]

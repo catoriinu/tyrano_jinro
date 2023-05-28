@@ -29,8 +29,8 @@
 ; ゲーム準備js読み込み
 [loadjs storage="plugin/jinro/macro/prepareGame.js"]
 
-; ステータス、メニューボタン表示
-[j_displayFixButton status="true" menu="true"]
+; ステータス、バックログボタン表示
+[j_displayFixButton status="true" backlog="true"]
 
 [playse storage="dodon.ogg" loop="false" volume="50" sprite_time="50-20000"]
 [m_changeFrameWithId]
@@ -83,10 +83,6 @@
 [m_changeFrameWithId]
 #
 ～COフェイズ～[p]
-; [button name="action" fix="true" graphic="button/action_leave.png" enterimg="button/action_enter.png" x=50 y=220 storage="action.ks" target="*start" auto_next="false"]
-; [button name="j_button" fix="true" hint="ほげ" x=300 y=220 storage="action.ks" target="*start" auto_next="false"]
-; ミニストップ[p]
-
 ; 1) PCからCOがあるか確認する。
 ;    CO確認する必要なし                  →選択肢表示せず、2)へ
 ;    COする                             →CO実行。その後2)へ
@@ -110,9 +106,6 @@
 
     [m_askFortuneTellerCO canCOFortuneTellerStatus="&f.canCOFortuneTellerStatus"]
 
-    ; メニューボタン非表示
-    [j_clearFixButton menu="true"]
-
     ; COするしないボタン表示
     [iscript]
       f.buttonObjects = [];
@@ -130,9 +123,6 @@
       ));
     [endscript]
     [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
-
-    ; メニューボタン再表示
-    [j_displayFixButton menu="true"]
 
     ; 「何もしない」ならジャンプする
     [jump target="*noCO" cond="f.selectedButtonId == 'noCO'"]
@@ -296,32 +286,11 @@
 [jump target="*votePhase" cond="f.doActionCount >= sf.j_development.maxDoActionCount"]
 [eval exp="f.doActionCount++"]
 
-[m_changeFrameWithId]
-#
-; TODO 画面上のどこかに常に、あるいはメニュー画面内に表示しておけるとベスト
-～ラウンド[emb exp="f.doActionCount"]/[emb exp="sf.j_development.maxDoActionCount"]～[r]
 ; NPCのアクション実行者がいるか、いるならアクションとその対象を格納する
 [j_decideDoActionByNPC]
 
-; ここはバックログに記録しない。プレイヤーがアクション実行すると、実際にはアクションしなかったことになる可能性があるため
-[nolog]
-
-  [if exp="f.doActionCandidateId != ''"]
-  ～[emb exp="f.characterObjects[f.npcActionObject.characterId].name"]が話そうとしています
-    ; 開発者用設定：独裁者モードなら、アクション実行者のアクション内容をメッセージに表示する
-    [if exp="sf.j_development.dictatorMode"]
-      [iscript]
-        tf.tmpDoActionMessage = ((f.npcActionObject.actionId == ACTION_TRUST) ? '信じる' : (f.npcActionObject.actionId == ACTION_SUSPECT) ? '疑う' : '？');
-      [endscript]
-      （[emb exp="f.characterObjects[f.npcActionObject.targetId].name"]に[emb exp="tf.tmpDoActionMessage"]）
-    [endif]
-  [else]
-  ～誰も話そうとしていないようです
-  [endif]
-  ～[p]
-
-; ここまでログを記録しない
-[endnolog]
+; 現在のラウンド数と次のNPCのアクションを表示する
+[m_displayRoundAndNextActionInDiscussionPhase]
 
 ; アクション実行
 [j_setDoActionObject]
@@ -470,9 +439,6 @@
 
   [if exp="f.isBiteEnd != true"]
 
-    ; メニューボタン非表示
-    [j_clearFixButton menu="true"]
-
     [m_chooseWhoToBite characterId="&f.playerCharacterId"]
 
     [iscript]
@@ -490,9 +456,6 @@
     [j_setCharacterToButtonObjects characterIds="&tf.candidateCharacterIds"]
     [eval exp="tf.doSlideInCharacter = true"]
     [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
-
-    ; メニューボタン再表示
-    [j_displayFixButton menu="true"]
 
     ; 噛み実行
     [j_biting biterId="&f.playerCharacterId" characterId="&f.selectedButtonId"]

@@ -814,8 +814,8 @@
     }
   [endscript]
 
-  ; ステータス、メニューボタン再表示とメッセージウィンドウを表示
-  [j_displayFixButton status="true" menu="true"]
+  ; ステータス、バックログボタン再表示とメッセージウィンドウを表示
+  [j_displayFixButton status="true" backlog="true"]
   [layopt layer="message0" visible="true"]
 [endmacro]
 
@@ -881,8 +881,8 @@
   ; キャラクター画像を表示していたレイヤーを解放
   [freeimage layer="1" time="400" wait="true"]
 
-  ; ステータス、メニューボタン再表示
-  [j_displayFixButton status="true" menu="true"]
+  ; ステータス、バックログボタン再表示
+  [j_displayFixButton status="true" backlog="true"]
 [endmacro]
 
 
@@ -971,25 +971,43 @@
 ; Fixレイヤーのボタンを表示する。表示中のボタンは指定されても再表示はしない。
 ; ボタンの消去は[j_clearFixButton]で行うこと。
 ; 以下のマクロ変数を全て省略すると、全てのボタンを表示する。
-; @param action アクションボタンを表示する（※"false"を渡すとtrue判定になるので注意）
-; @param menu メニューボタンを表示する（※"false"を渡すとtrue判定になるので注意）
-; @param status ステータスボタンを表示する（※"false"を渡すとtrue判定になるので注意）
+; @param action アクションボタンを表示する
+; @param menu メニューボタンを表示する
+; @param backlog バックログボタンを表示する
+; @param status ステータスボタンを表示する
+; ※引数に'ignore'を設定すると、引数を指定しなかった場合と同様にそのボタンには何もしない。'ignore'以外を渡すと通常のボタンを表示する
+; ※以下は特殊なボタンを表示したい場合に設定する引数
+; status="nofix": fix属性ではないかつrole="sleepgame"指定もしないステータスボタン
+; status="nofix_click": fix属性ではないかつrole="sleepgame"指定もしないステータスボタンで、クリック済み画像を表示する
 [macro name="j_displayFixButton"]
 
   [iscript]
     // 初回のみ、ボタンの表示ステータスを管理するオブジェクトを生成
     if (!('displaingButton' in f)) {
       f.displaingButton = {
-        action: false,
-        menu: false,
-        status: false
+        action: null,
+        menu: null,
+        backlog: null,
+        status: null
       };
     };
-    // 一つもマクロ変数に指定されていないなら、全て表示する。一つでも指定されているならマクロ変数通りとする。
-    if (!(('action' in mp) || ('menu' in mp) || ('status' in mp))) {
-      mp.action = true;
-      mp.menu = true;
-      mp.status = true;
+
+    for (let button in mp) {
+      if (mp[button] === 'ignore') {
+        // 'ignore'が渡されてきた場合、引数を指定しなかった場合と同様にそのボタンには何もしない
+        mp[button] = null;
+      } else if (mp[button] !== 'nofix' && mp[button] !== 'nofix_click') {
+        // 'nofix','nofix_click'以外の値が渡されてきた場合、全て'normal'に変換する
+        mp[button] = 'normal';
+      }
+    }
+
+    // 一つも引数に指定されていないなら、全て表示する。一つでも指定されているなら引数通りとする。
+    if (!(('action' in mp) || ('menu' in mp) || ('backlog' in mp) || ('status' in mp))) {
+      mp.action = 'normal';
+      mp.menu = 'normal';
+      mp.backlog = 'normal';
+      mp.status = 'normal';
     }
     console.log('表示');
     console.log(mp);
@@ -997,17 +1015,38 @@
 
   [if exp="!f.displaingButton.action && mp.action"]
     [button graphic="button/button_action_normal.png" storage="action.ks" target="*start" x="23" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_action" enterimg="button/button_action_hover.png"]
-    [eval exp="f.displaingButton.action = true"]
+    [eval exp="f.displaingButton.action = mp.action"]
   [endif]
 
   [if exp="!f.displaingButton.menu && mp.menu"]
-    [button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="1005" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
-    [eval exp="f.displaingButton.menu = true"]
+    ; ステータス画面→メニュー画面に遷移する用。ステータス画面自体がrole="sleepgame"で遷移する画面なので、そこから遷移するためのボタンにはfix属性やrole="sleepgame"を指定しない。
+    [button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMainFromStatus" x="867" y="23" width="114" height="103" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
+    ; 通常画面→メニュー画面に遷移する用。
+    ;[button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="867" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
+    [eval exp="f.displaingButton.menu = mp.menu"]
+  [endif]
+
+  [if exp="!f.displaingButton.backlog && mp.backlog"]
+    [button graphic="button/button_backlog_normal.png" x="1009" y="23" width="114" height="103" fix="true" role="backlog" name="button_j_fix,button_j_backlog" enterimg="button/button_backlog_hover.png"]
+    [eval exp="f.displaingButton.backlog = mp.backlog"]
+  [endif]
+
+
+  ; status引数が渡されておりそれが表示中のボタンと異なる種類なら、この後ボタンを入れ替える前準備としてボタンとフラグを消去する
+  [if exp="('status' in mp) && mp.status !== null && f.displaingButton.status !== null && f.displaingButton.status !== mp.status"]
+    [clearfix name="button_j_status"]
+    [eval exp="f.displaingButton.status = null"]
   [endif]
 
   [if exp="!f.displaingButton.status && mp.status"]
-    [button graphic="button/button_status_normal.png" storage="statusJinro.ks" target="*statusJinroMain" x="1143" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_status" enterimg="button/button_status_hover.png"]
-    [eval exp="f.displaingButton.status = true"]
+    ; 通常画面→ステータス画面への遷移
+    [button cond="mp.status === 'normal'" graphic="button/button_status_normal.png" storage="statusJinro.ks" target="*statusJinroMain" x="1143" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_status" enterimg="button/button_status_hover.png"]
+    ; sleepgame中の画面（メニュー画面、アクション選択中）→ステータス画面への遷移
+    [button cond="mp.status === 'nofix'" graphic="button/button_status_normal.png" storage="statusJinro.ks" target="*statusJinroMain" x="1143" y="23" width="114" height="103" name="button_j_fix,button_j_status" enterimg="button/button_status_hover.png"]
+    ; ステータス画面→元の画面へ戻る遷移
+    [button cond="mp.status === 'nofix_click'" graphic="button/button_status_click.png" storage="statusJinro.ks" target="*awake" x="1143" y="23" width="114" height="103" enterimg="button/button_status_hover.png"]
+
+    [eval exp="f.displaingButton.status = mp.status"]
   [endif]
 [endmacro]
 
@@ -1017,14 +1056,16 @@
 ; 以下のマクロ変数を全て省略すると、全てのボタンを消去する。
 ; @param action アクションボタンを消去する（※"false"を渡すとtrue判定になるので注意）
 ; @param menu メニューボタンを消去する（※"false"を渡すとtrue判定になるので注意）
+; @param backlog バックログボタンを消去する（※"false"を渡すとtrue判定になるので注意）
 ; @param status ステータスボタンを消去する（※"false"を渡すとtrue判定になるので注意）
 [macro name="j_clearFixButton"]
   [iscript]
     // [j_displayFixButton]は実行済みでf.displaingButtonは存在している前提とする。
     // 一つもマクロ変数に指定されていないなら、全て消去する。一つでも指定されているならマクロ変数通りとする。
-    if (!(('action' in mp) || ('menu' in mp) || ('status' in mp))) {
+    if (!(('action' in mp) || ('menu' in mp) || ('backlog' in mp) || ('status' in mp))) {
       mp.action = true;
       mp.menu = true;
+      mp.backlog = true;
       mp.status = true;
     }
     console.log('消去');
@@ -1033,18 +1074,63 @@
 
   [if exp="f.displaingButton.action && mp.action"]
     [clearfix name="button_j_action"]
-    [eval exp="f.displaingButton.action = false"]
+    [eval exp="f.displaingButton.action = null"]
   [endif]
 
   [if exp="f.displaingButton.menu && mp.menu"]
     [clearfix name="button_j_menu"]
-    [eval exp="f.displaingButton.menu = false"]
+    [eval exp="f.displaingButton.menu = null"]
+  [endif]
+
+  [if exp="f.displaingButton.backlog && mp.backlog"]
+    [clearfix name="button_j_backlog"]
+    [eval exp="f.displaingButton.backlog = null"]
   [endif]
 
   [if exp="f.displaingButton.status && mp.status"]
     [clearfix name="button_j_status"]
-    [eval exp="f.displaingButton.status = false"]
+    [eval exp="f.displaingButton.status = null"]
   [endif]
+[endmacro]
+
+
+; 現在のFixレイヤーのボタンの表示ステータスを保存しておくマクロ
+; [j_displayFixButton]は実行済みでf.displaingButtonは存在している前提とする。
+; @param buf 必須。保存バッファ。任意のキー名を指定すること。保存済みのキー名と重複した場合は上書きする
+[macro name="j_saveFixButton"]
+  [iscript]
+    // 初回のみ、ボタンの表示ステータスを保存するオブジェクトを生成
+    if (!('saveButton' in f)) {
+      f.saveButton = {};
+    };
+    f.saveButton[mp.buf] = clone(f.displaingButton);
+  [endscript]
+[endmacro]
+
+
+; 保存済みのixレイヤーのボタンの表示ステータスを読み込み、復元するマクロ
+; [j_saveFixButton]は実行済みでf.saveButtonは存在している前提とする。
+; @param buf 必須。保存バッファ。任意のキー名を指定すること。保存済みのキー名から復元する。キーが存在しない場合はエラー（未考慮）
+[macro name="j_loadFixButton"]
+  [iscript]
+    tf.tmpDisplayButton = {};
+    tf.tmpClearButton = {};
+    const loadButton = f.saveButton[mp.buf];
+
+    for (let button of Object.keys(loadButton)) {
+      let buttonStatus = loadButton[button];
+
+      if (buttonStatus === null) {
+        tf.tmpDisplayButton[button] = 'ignore';
+        tf.tmpClearButton[button] = buttonStatus;
+      } else {
+        tf.tmpDisplayButton[button] = buttonStatus;
+        tf.tmpClearButton[button] = 'ignore';
+      }
+    }
+  [endscript]
+  [j_clearFixButton action="&tf.tmpClearButton.action" menu="&tf.tmpClearButton.menu" backlog="&tf.tmpClearButton.backlog" status="&tf.tmpClearButton.status"]
+  [j_displayFixButton action="&tf.tmpDisplayButton.action" menu="&tf.tmpDisplayButton.menu" backlog="&tf.tmpDisplayButton.backlog" status="&tf.tmpDisplayButton.status"]
 [endmacro]
 
 
