@@ -2,20 +2,21 @@
 
 ; 呼び方サブルーチン
 ; 事前にtf.characterIdToCallにcharacterIdを入れてから、このサブルーチンを呼び出す
-; このmessageサブルーチンのキャラクターが、tf.characterIdToCallのキャラクターを呼ぶ際の二人称を出力する
+; このmessageサブルーチンのキャラクターが、tf.characterIdToCallのキャラクターを呼ぶ際の二人称をtf.calledCharacterNameに格納する
 ; キャラクターごとの差異をなくすため、自分自身のIDが渡された場合は一人称を入れる
 *changeIdToCallName
-  [if exp="tf.characterIdToCall == CHARACTER_ID_ZUNDAMON"]
-    僕
-  [elsif exp="tf.characterIdToCall == CHARACTER_ID_METAN"]
-    めたん
-  [elsif exp="tf.characterIdToCall == CHARACTER_ID_TSUMUGI"]
-    つむぎ
-  [elsif exp="tf.characterIdToCall == CHARACTER_ID_HAU"]
-    はう
-  [elsif exp="tf.characterIdToCall == CHARACTER_ID_RITSU"]
-    リツ
-  [endif]
+  [iscript]
+    tf.calledCharacterName = (function(characterId) {
+      const calledCharacterNameObject = {
+        [CHARACTER_ID_ZUNDAMON]: '僕',
+        [CHARACTER_ID_METAN]:    'めたん',
+        [CHARACTER_ID_TSUMUGI]:  'つむぎ',
+        [CHARACTER_ID_HAU]:      'はう',
+        [CHARACTER_ID_RITSU]:    'リツ',
+      }
+      return calledCharacterNameObject[characterId];
+  }(tf.characterIdToCall));
+  [endscript]
 [return]
 
 ; noticeRole_{roleId}
@@ -23,7 +24,7 @@
 ; 備考：PCのみ想定
 *noticeRole_villager
 [playse storage="chara/zundamon/001_ずんだもん（ノーマル）_僕は村人なのだ。悪….ogg" loop="false" sprite_time="50-20000"]
-
+;x
 僕は村人なのだ。[r]
 悪い人狼を見つけて平和な村にするのだ。[p]
 [stopse]
@@ -39,7 +40,7 @@
 
 *noticeRole_werewolf
 [playse storage="chara/zundamon/003_ずんだもん（ノーマル）_僕は人狼……。みん….ogg" loop="false" sprite_time="50-20000"]
-
+;x
 僕は人狼……。[r]
 みんな僕がおいしく食べてやるのだ！[p]
 [stopse]
@@ -47,7 +48,7 @@
 
 *noticeRole_madman
 [playse storage="chara/zundamon/004_ずんだもん（ノーマル）_僕は狂人なのだ……….ogg" loop="false" sprite_time="50-20000"]
-
+;x
 僕は狂人なのだ……。[r]
 僕がご主人の野望を手助けするのだ！[p]
 [stopse]
@@ -72,7 +73,9 @@
 [endif]
 
 [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
-発見なのだ！[call target="changeIdToCallName"]が人狼だったのだ！[p]
+[call target="changeIdToCallName"]
+
+発見なのだ！[emb exp="tf.calledCharacterName"]が人狼だったのだ！[p]
 [stopse]
 [return]
 
@@ -90,7 +93,9 @@
 [endif]
 
 [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
-[call target="changeIdToCallName"]は人狼じゃなかったのだ。[p]
+[call target="changeIdToCallName"]
+
+[emb exp="tf.calledCharacterName"]は人狼じゃなかったのだ。[p]
 [stopse]
 [return]
 
@@ -110,9 +115,11 @@
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
 [playse storage="chara/zundamon/024_ずんだもん（ノーマル）_昨日はXを占ったの…(1).ogg" loop="false" sprite_time="50-20000"]
 [endif]
-
+;x
 [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
-昨日は[call target="changeIdToCallName"]を占ったのだ。[r]
+[call target="changeIdToCallName"]
+
+昨日は[emb exp="tf.calledCharacterName"]を占ったのだ。[r]
 結果は人狼だったのだ！[p]
 [stopse]
 [return]
@@ -129,9 +136,11 @@
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
 [playse storage="chara/zundamon/030_ずんだもん（ノーマル）_昨日はXを占ったの…(1).ogg" loop="false" sprite_time="50-20000"]
 [endif]
-
+;x
 [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
-昨日は[call target="changeIdToCallName"]を占ったのだ。[r]
+[call target="changeIdToCallName"]
+
+昨日は[emb exp="tf.calledCharacterName"]を占ったのだ。[r]
 結果は人狼じゃなかったのだ。[p]
 [stopse]
 [return]
@@ -154,7 +163,9 @@
 [endif]
 
 [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
-もしかして[call target="changeIdToCallName"]が人狼なのだ……？[r]
+[call target="changeIdToCallName"]
+
+もしかして[emb exp="tf.calledCharacterName"]が人狼なのだ……？[r]
 そんな気がするのだ。[p]
 [stopse]
 [return]
@@ -174,16 +185,20 @@
 [endif]
 
 [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
-僕は[call target="changeIdToCallName"]を信じてるのだ。[r]
+[call target="changeIdToCallName"]
+
+僕は[emb exp="tf.calledCharacterName"]を信じてるのだ。[r]
 きっと人狼じゃないのだ！[p]
 [stopse]
 [return]
 
 ; シーン：「聞き出す」アクション実行時
 *doAction_ask
-  [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
-  [call target="changeIdToCallName"]にちょっと質問なのだ。[r]
-  今の状況をどう思うのだ？[p]
+[eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+[call target="changeIdToCallName"]
+
+[emb exp="tf.calledCharacterName"]にちょっと質問なのだ。[r]
+今の状況をどう思うのだ？[p]
 [return]
 
 
@@ -191,7 +206,7 @@
 ; シーン：「疑う」アクションの実行対象になった時
 *doAction_reaction_suspect
 [playse storage="chara/zundamon/060_ずんだもん（ノーマル）_ぼ、僕は人狼じゃな….ogg" loop="false" sprite_time="50-20000"]
-
+;x
 ぼ、僕は人狼じゃないのだっ！[p]
 [stopse]
 [return]
@@ -199,7 +214,7 @@
 ; シーン：「信じる」アクションの実行対象になった時
 *doAction_reaction_trust
 [playse storage="chara/zundamon/063_ずんだもん（ノーマル）_信じてくれてありが….ogg" loop="false" sprite_time="50-20000"]
-
+;x
 信じてくれてありがとうなのだ！[p]
 [stopse]
 [return]
@@ -225,7 +240,7 @@
 ; シーン：投票により処刑対象に決まったときの反応
 *executed
 [playse storage="chara/zundamon/068_ずんだもん（ノーマル）_なんでなのだ！僕は….ogg" loop="false" sprite_time="50-20000"]
-
+;x
 なんでなのだ！僕は悪くないのだ！[p]
 [stopse]
 [return]

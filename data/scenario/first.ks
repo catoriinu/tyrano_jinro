@@ -1,6 +1,6 @@
 ;一番最初に呼び出されるファイル
 
-[title name="人狼テスト"]
+[title name="ボイボ人狼 ver.0.8.0"]
 
 [stop_keyconfig]
 
@@ -16,10 +16,7 @@
 [eval exp="f.color = {}"]
 [loadcss file="./data/others/jinro.css"]
 
-; 開発モードか？ TODO:公開前にはOFFにすること！
-[eval exp="f.developmentMode = false"]
-; ヒントモードか？ TODO:公開前にはOFFにすること！
-[eval exp="f.hintMode = false"]
+[plugin name="playselist"] 
 
 ; デフォルトフォントの設定
 [deffont size=32 color="0x28332a" face=MPLUSRounded][resetfont]

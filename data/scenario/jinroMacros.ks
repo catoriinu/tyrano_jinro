@@ -29,19 +29,16 @@
 
 
 ; 勝利陣営がいるかを判定し、勝利陣営がいた場合、指定されたラベルにジャンプする（storage, targetともに必須）
-; ex: [j_judgeWinnerCampAndJump storage="playJinro.ks" target="*gameOver"]
-[macro name="j_judgeWinnerCampAndJump"]
+; ex: [j_judgeWinnerFactionAndJump storage="playJinro.ks" target="*gameOver"]
+[macro name="j_judgeWinnerFactionAndJump"]
   [m_changeFrameWithId]
   #
   勝敗判定中……[p]
   [iscript]
-    tf.winnerCamp = judgeWinnerCamp(f.characterObjects);
-    if (f.developmentMode) {
-      //alert('勝利陣営: ' + tf.winnerCamp);
-    }
+    tf.winnerFaction = judgeWinnerFaction(f.characterObjects);
   [endscript]
 
-  [if exp="tf.winnerCamp != null"]
+  [if exp="tf.winnerFaction != null"]
     [jump *]
   [endif]
 [endmacro]
@@ -87,13 +84,13 @@
     if (f.characterObjects[mp.fortuneTellerId].role.roleId == ROLE_ID_FORTUNE_TELLER) {
       f.characterObjects[mp.fortuneTellerId].role.rolePerspective = organizePerspective(
         f.characterObjects[mp.fortuneTellerId].role.rolePerspective,
-        todayResult.action.targetId,
-        getRoleIdsForOrganizePerspective(todayResult.action.result)
+        todayResult.targetId,
+        getRoleIdsForOrganizePerspective(todayResult.result)
       );
     }
 
     // メッセージ出力用に占いのアクションオブジェクトを格納
-    f.actionObject = todayResult.action;
+    f.actionObject = todayResult;
 
     // 全占い結果履歴オブジェクトに占い結果格納
     // TODO メニュー画面用。メニュー画面を後回しにしているうちは一旦コメントアウト
@@ -104,11 +101,6 @@
     }
     f.allFortuneTellingHistoryObject[mp.fortuneTellerId][day] = todayResult;
     */
-    if (f.developmentMode) {
-      let resultMassage = todayResult.action.result ? '人　狼' : '村　人';
-      //alert(f.characterObjects[mp.fortuneTellerId].name + 'は'
-      // + f.characterObjects[todayResult.characterId].name + 'を占いました。\n結果　【' + resultMassage + '】');
-    }
   [endscript]
 [endmacro]
 
@@ -363,18 +355,13 @@
 
     // 取得する日を決定する。引数があればその日の、なければ最新の日の履歴を取得する。
     const day = ('day' in mp) ? parseInt(mp.day) : Object.keys(tmpFortuneTellingHistory).length - 1;
-    // その占い履歴をCO済みにする
-    tmpFortuneTellingHistory[day].doneCO = true;
+    // その占い履歴を公開（CO済み）に更新する
+    tmpFortuneTellingHistory[day].isPublic = true;
     // 信頼度増減とメッセージ出力用にアクションオブジェクトを格納
-    f.actionObject = tmpFortuneTellingHistory[day].action;
+    f.actionObject = tmpFortuneTellingHistory[day];
     // 占いCOによる信頼度増減を行う
     updateReliabirityForAction(f.characterObjects, f.actionObject);
-  [endscript]
 
-  ; メッセージ出力（mp.noNeedMessageがtrueなら表示しない）
-  [m_COFortuneTelling cond="!(('noNeedMessage' in mp) && (mp.noNeedMessage === 'true' || mp.noNeedMessage === true))"]
-
-  [iscript]
     // 真占い師でも騙り占い師でも、表の視点オブジェクトを更新する
     // ・CO済みということは対外的な真実であるから ・CO済みであれば占い師としての思考は表の視点を使うから
     try {
@@ -385,9 +372,6 @@
       );
     } catch (error) {
       console.log(mp.fortuneTellerId + 'は、破綻した占い結果のCOをしてしまいました!');
-      if (f.developmentMode) {
-        alert(mp.fortuneTellerId + 'は、破綻した占い結果のCOをしてしまいました!');
-      }
       // 破綻フラグを立てる
       TYRANO.kag.stat.f.characterObjects[mp.fortuneTellerId].isContradicted = true;
       // 視点オブジェクトが破綻してしまったので、共通視点オブジェクトを入れておく
@@ -396,10 +380,13 @@
       // 自分自身は嘘がつける役職（TODO:「嘘をつかない役職配列」をメソッドで取り出せるようにする）だったということで確定する。
       updateCommonPerspective(mp.fortuneTellerId, [ROLE_ID_VILLAGER, ROLE_ID_FORTUNE_TELLER]);
     }
+
+    // 今日のCOが終わったキャラはisDoneTodaysCOをtrueにする
+    f.characterObjects[mp.fortuneTellerId].isDoneTodaysCO = true;
   [endscript]
 
-  ; 今日のCOが終わったキャラはisDoneTodaysCOをtrueにする
-  [eval exp="f.characterObjects[mp.fortuneTellerId].isDoneTodaysCO = true"]
+  ; メッセージ出力（mp.noNeedMessageがtrueなら表示しない）
+  [m_COFortuneTelling cond="!(('noNeedMessage' in mp) && (mp.noNeedMessage === 'true' || mp.noNeedMessage === true))"]
 
 [endmacro]
 
@@ -408,35 +395,40 @@
 ; @param characterIds CO候補となるキャラクターID配列（NPCかつ生存者を想定）。必須
 [macro name="j_decideCOCandidateId"]
   [iscript]
-    ; TODO:直前（PC、NPCどちらも）のCOの内容によって、各キャラ内のCOしたい度が変動するようにする
+    // TODO:直前（PC、NPCどちらも）のCOの内容によって、各キャラ内のCOしたい度が変動するようにする
+    // TODO:現状、占い師の役職COと占い結果COしか考慮していない。他の役職を追加するときには要修正
 
-    ; キャラクターID配列を回してCOできる役職かつisDoneTodaysCOがfalseであれば、isCOMyRoll()を噛ませる。
     let maxProbability = 0;
     let COCandidateIdArray = [];
     f.COCandidateId = '';
     for (let i = 0; i < mp.characterIds.length; i++) {
-      if (f.characterObjects[mp.characterIds[i]].role.allowCO && !f.characterObjects[mp.characterIds[i]].isDoneTodaysCO) {
-        console.log('キャラクターID: ' + mp.characterIds[i]);
-        let [probability, isCO] = isCOMyRoll(mp.characterIds[i]);
-        ; COしたい、かつCO確率が現在保存中の最大の確率以上であれば、キャラクターIDをCO候補配列に格納する
-        ; TODO 怪しい。「CO確率が現在保存中の最大の確率以上」をするなら、「格納」ではなく「上書き」では？そうしないのであれば、isCOだけ見ればよくないか？
-        if (isCO && probability >= maxProbability) {
-          COCandidateIdArray.push(mp.characterIds[i]);
-          maxProbability = probability;
-        }
+
+      // 今日、CO済みのキャラは対象外
+      if (f.characterObjects[mp.characterIds[i]].isDoneTodaysCO) continue;
+
+      let probability = 0;
+      let isCO = false;
+      if (f.characterObjects[mp.characterIds[i]].CORoleId != '') {
+        // 既に役職CO済みの場合、必ず結果COしたいとする
+        [probability, isCO] = [1, true]
+      } else if (f.characterObjects[mp.characterIds[i]].role.allowCO) {
+        // 役職COできる役職で未COの場合、そのキャラの性格からCO確率を取得する
+        [probability, isCO] = isCOMyRoll(mp.characterIds[i]);
+      }
+
+      // COしたい、かつCO確率が現在保存中の最大の確率以上であれば、キャラクターIDをCO候補配列に格納する
+      if (isCO && probability >= maxProbability) {
+        COCandidateIdArray.push(mp.characterIds[i]);
+        maxProbability = probability;
       }
     }
-    ; CO候補配列に候補が1人ならその対象を、複数ならランダムで、COするキャラクターIDに決定する。0人の場合は空文字を返す。
+
+    // CO候補配列に候補が1人ならその対象を、複数ならランダムで、COするキャラクターIDに決定する。0人の場合は空文字を格納する。
     if (COCandidateIdArray.length == 1) {
       f.COCandidateId = COCandidateIdArray[0];
     } else if (COCandidateIdArray.length >= 2) {
       f.COCandidateId = getRandomElement(COCandidateIdArray);
     }
-    
-    if (f.developmentMode) {
-      //alert('CO判定結果 キャラクターID:' + f.COCandidateId + ' maxProbability:' + maxProbability);
-    }
-    
   [endscript]
 [endmacro]
 
@@ -493,32 +485,32 @@
 [endmacro]
 
 
-; 占い師COすることができる役職・CO状態かを判定し、tf.canCOFortuneTellerStatusに結果を入れる。内訳はコード内のコメント参照
+; 占い師COすることができる役職・CO状態かを判定し、f.canCOFortuneTellerStatusに結果を入れる。内訳はコード内のコメント参照
 ; 定数の並び順が昇順ではないのは、「if文は肯定形にする」と「未COに+1したらCO済みとする」の2つを優先したため。
 ; @param characterId 判定対象のキャラクターID。必須。
 [macro name="j_setCanCOFortuneTellerStatus"]
   [iscript]
 
     ; 0: 占い師CO不可の役職、またはCO状態
-    tf.canCOFortuneTellerStatus = 0;
+    f.canCOFortuneTellerStatus = 0;
     if (f.characterObjects[mp.characterId].role.roleId == ROLE_ID_FORTUNE_TELLER) {
       if (f.characterObjects[mp.characterId].CORoleId == ROLE_ID_FORTUNE_TELLER) {
         ; 2: 真占い師であり、CO済み
-        tf.canCOFortuneTellerStatus = 2;
+        f.canCOFortuneTellerStatus = 2;
 
       } else {
         ; 1: 真占い師で、未CO
-        tf.canCOFortuneTellerStatus = 1;
+        f.canCOFortuneTellerStatus = 1;
       }
       
     } else if (f.characterObjects[mp.characterId].role.roleId == ROLE_ID_WEREWOLF || f.characterObjects[mp.characterId].role.roleId == ROLE_ID_MADMAN) {
       if (f.characterObjects[mp.characterId].CORoleId == ROLE_ID_FORTUNE_TELLER) {
         ; 4: 騙り占い師としてCO済み
-        tf.canCOFortuneTellerStatus = 4;
+        f.canCOFortuneTellerStatus = 4;
 
       } else if (f.characterObjects[mp.characterId].CORoleId == '') {
         ; 3: 騙り占い師としてCO可能な役職で、未CO
-        tf.canCOFortuneTellerStatus = 3;
+        f.canCOFortuneTellerStatus = 3;
       }
       ; 占い師以外の役職としてCO済みなら、占い師COは不可
     }
@@ -527,15 +519,15 @@
 
 
 ; ボタンオブジェクトf.buttonObjectsに、アクションボタン用オブジェクトを詰める
-; @param disableActionIdList f.actionButtonList定数に定義されている中で、ボタン表示したくないアクションIDのリスト（未使用）
+; @param disableActionIdList f.actionButtonList定数に定義されている中で、ボタン表示したくないアクションIDのリスト
 [macro name="j_setActionToButtonObjects"]
   [iscript]
-    // tf.disableActionIdList = Array.isArray(mp.disableActionIdList) ? mp.disableActionIdList : [];
+    tf.disableActionIdList = Array.isArray(mp.disableActionIdList) ? mp.disableActionIdList : [];
     f.buttonObjects = [];
 
     for (let aId of Object.keys(f.actionButtonList)) {
       // ボタン表示したくないアクションIDはf.buttonObjectsに格納しない
-      // if (tf.disableActionIdList.includes(f.actionButtonList[i])) continue;
+      if (tf.disableActionIdList.includes(aId)) continue;
 
       // 選択中のアクションIDのボタンは選択中の色に変える
       const addClasses = [];
@@ -661,23 +653,21 @@
 
   ; 実行するアクションとその対象を決定する
   [iscript]
-    // 論理的な判断をするか感情的な判断をするか、論理力をもとに判定する
+    // 論理的な判断をするか感情的な判断をするか、論理力をもとに決める
     // MEMO ここで仲間度を用いないのは、仲間度のみに限定すると中途半端な対象しか選択されないため。
     // 論理力の低いキャラでも論理的な判断（＝そのキャラ視点における人狼ゲーム的な正解）で発言するチャンスを設けることで、プレイヤーを悩ませられると思う。
-    const [probability, isLogicalDecision] = [1, true];
-    // TODO randomDecide(f.characterObjects[f.doActionCandidateId].personality.logical);
+    const [probability, isLogicalDecision] = randomDecide(f.characterObjects[f.doActionCandidateId].personality.logical);
 
     // 実行するアクションを決める
-    // TODO アクションID定数に置換する
     // MEMO 選ばれるアクションは一旦ランダムとする。何らかの基準で比重を変えたい場合はここを修正する。
-    const actionId = getRandomElement(['suspect', 'trust']);
+    const actionId = getRandomElement([ACTION_SUSPECT, ACTION_TRUST]);
 
     // アクションの対象を決める
-    // TODO アクションID定数の中にmax,minを持っていてもいいかも
+    // TODO アクションID定数の中にmax,minを持っていた方が、アクションを増やしやすいかも
     let needsMax = true;
-    if (actionId == 'suspect') {
+    if (actionId == ACTION_SUSPECT) {
       needsMax = false;
-    } else if (actionId == 'trust') {
+    } else if (actionId == ACTION_TRUST) {
       needsMax = true;
     } else {
       alert('未定義のactionIdです');
@@ -689,7 +679,10 @@
     let targetCharacterId = '';
     if (isLogicalDecision) {
       // 論理的な判断
-      // perspectiveをもとに仲間度を決める（役職騙り中の人狼や狂人は騙り役職としての視点オブジェクトで判定する。発言は嘘をつくため）
+
+      // 同陣営判定の対象となる役職は、CO中の役職（COがなければ村人）とする
+      const roleId = (f.characterObjects[f.doActionCandidateId].CORoleId == '') ? ROLE_ID_VILLAGER : f.characterObjects[f.doActionCandidateId].CORoleId;
+      // perspectiveをもとに同陣営割合を出して対象を決める（役職騙り中の人狼や狂人は騙り役職としての視点オブジェクトで判定する。発言は嘘をつくため）
       targetCharacterId = getCharacterIdBySameFactionPerspective(
         f.characterObjects[f.doActionCandidateId],
         f.characterObjects[f.doActionCandidateId].perspective,
@@ -698,7 +691,8 @@
       );
     } else {
       // 感情的な判断
-      // TODO targetCharacterId = getCharacterIdByReliability(f.doActionCandidateId, needsMax);
+      // 信頼度をもとに対象を決める
+      targetCharacterId = getCharacterIdByReliability(f.characterObjects[f.doActionCandidateId], needsMax);
     }
     console.log('actionId:' + actionId);
 
@@ -715,9 +709,6 @@
 ; @param actionObject アクションオブジェクト {characterId:アクション実行するキャラクターID, actionId:実行するアクションID, targetId:アクション対象のキャラクターID} 必須
 [macro name="j_doAction"]
   ; アクションボタン用変数の初期化（PCからのボタン先行入力を受け付けられるように消す。セリフとリアクションにはマクロ変数を渡すのでこのタイミングで消して問題ない）
-  ; TODO:多分いらないので2行コメントアウト。しばらく問題が起きなければ削除する
-  ; [eval exp="f.selectedActionId = ''"]
-  ; [eval exp="f.selectedCharacterId = ''"]
   [eval exp="f.doActionObject = {}"]
   [eval exp="f.pcActionObject = {}"]
   [eval exp="f.npcActionObject = {}"]
@@ -730,6 +721,10 @@
     updateReliabirityForAction(f.characterObjects, mp.actionObject);
     // アクション実行者の主張力を下げて、同日中は再発言しにくくする
     f.characterObjects[mp.actionObject.characterId].personality.assertiveness.current -= f.characterObjects[mp.actionObject.characterId].personality.assertiveness.decrease;
+
+    // アクション実行履歴オブジェクトに、アクションオブジェクトを保存する
+    let timeStr = getTimeStr();
+    f.doActionHistory[f.day][timeStr].push(mp.actionObject);
   [endscript]
 
   ; リアクションのセリフ表示
@@ -740,22 +735,30 @@
 ; 人狼メニュー画面に表示するための全占い師のCO状況テキストを生成する
 ; TODO 作り直す
 [macro name="j_getAllFortuneTellerCOText"]
-  ; TODO:これを表示したあと、2日目にプレイヤーが占う時にバグる。
-  ; getCharacterObjectsFromCharacterIds()で、for (let k of Object.keys(characterObjects)) {の際にUncaught TypeError: Cannot convert undefined or null to object
-  ; おそらくcharacterObjectsがnullになっている。人狼メニュー画面から戻った時にcharacterObjectsが初期化されるor読み込めない状態になっている？
   [iscript]
     tf.allFortuneTellerCOText = '';
-    for (let cId of Object.keys(f.allFortuneTellingHistoryObject)) {
-      ; そのcIdが占い師CO済みなら表示する TODO:べきだが、現在はテスト用に無効化
-      if (f.characterObjects[cId].CORoleId == ROLE_ID_FORTUNE_TELLER) {}
-      if (true) {
+
+    for (let cId of Object.keys(f.characterObjects)) {
+      // 占い師CO済みのキャラクターか
+      if (f.characterObjects[cId].CORoleId == ROLE_ID_FORTUNE_TELLER) {
         tf.allFortuneTellerCOText += f.characterObjects[cId].name + ' : ';
-        for (let day of Object.keys(f.allFortuneTellingHistoryObject[cId])) {
-          ; TODO:「その日にCO済みなら（doneCO）」の判定が必要。履歴表示時にfalseなら表示しないようにしないと、未COの履歴も表示されてしまう。
-          ; 「ただしプレイヤーの占い履歴は未COでも表示する」があるとよさそう。
-          let tmpResult = f.allFortuneTellingHistoryObject[cId][day].result ? '●' : '○';
-          let tmpCharacterId = f.allFortuneTellingHistoryObject[cId][day].characterId;
-          tf.allFortuneTellerCOText += f.characterObjects[tmpCharacterId].name + tmpResult;
+
+        // 真偽を確認し、占い履歴オブジェクトを取得する
+        let fortuneTellingHistory = {}
+        if (f.characterObjects[cId].role.roleId == ROLE_ID_FORTUNE_TELLER) {
+          fortuneTellingHistory = f.characterObjects[cId].role.fortuneTellingHistory;
+        } else {
+          fortuneTellingHistory = f.characterObjects[cId].fakeRole.fortuneTellingHistory;
+        }
+
+        for (let day of Object.keys(fortuneTellingHistory)) {
+          // 「その日にCO済みなら」の判定が必要。履歴表示時にfalseなら表示しないようにしないと、夜の時点で開いたときに未COの履歴も表示されてしまう。
+          // ただしプレイヤーの占い履歴は未COでも表示する（占い師CO自体をしていないなら表示しない TODO：役職未COと分かるようにすれば、表示してもいいかも）
+          if (cId != f.playerCharacterId && !fortuneTellingHistory[day].isPublic) continue;
+          
+          let targetId = fortuneTellingHistory[day].targetId;
+          let result = fortuneTellingHistory[day].result ? '●' : '○';
+          tf.allFortuneTellerCOText += f.characterObjects[targetId].name + result;
         }
         tf.allFortuneTellerCOText += '<br>';
       }
@@ -779,8 +782,8 @@
   [iscript]
     countVote(f.characterObjects, f.day);
   [endscript]
-  ; 開発モードならPCの選択したキャラを処刑する
-  [if exp="f.developmentMode"]
+  ; 開発者用設定：独裁者モードならPCの選択したキャラを処刑する
+  [if exp="sf.j_development.dictatorMode"]
     [eval exp="f.electedIdList = [f.selectedButtonId]"]
     [eval exp="f.doExecute = true"]
   [endif]
@@ -790,6 +793,7 @@
 ; 各キャラの投票先を集計し、投票結果画面として出力する
 [macro name="j_openVote"]
   ; 全ボタンとメッセージウィンドウを消去
+  [j_saveFixButton buf="openVote"]
   [j_clearFixButton]
   [layopt layer="message0" visible="false"]
 
@@ -800,13 +804,27 @@
   ; 投票結果を表示していたレイヤーを解放
   [freeimage layer="1" time="400" wait="true"]
 
-  ; ステータス、メニューボタン再表示とメッセージウィンドウを表示
-  [j_displayFixButton status="true" menu="true"]
+  ; 開票オブジェクトの処理。ステータス画面の投票履歴情報の制御用
+  [iscript]
+    if (f.day in f.openedVote) {
+      // 2回目以降の開票なら、開票回数をインクリメント
+      f.openedVote[f.day] += 1;
+    } else {
+      // その日の初回開票なら、開票日の値に1を入れる
+      f.openedVote[f.day] = 1;
+    }
+  [endscript]
+
+  ; ボタン復元とメッセージウィンドウを表示
+  [j_loadFixButton buf="openVote"]
   [layopt layer="message0" visible="true"]
 [endmacro]
 
 
 [macro name="j_setDchForOpenVote"]
+  ; バックログ用変数を初期化する
+  [eval exp="tf.voteBacklog = ''"]
+
   [iscript]
     let tmpCharacterList = [];
     for (let i = 0; i < f.voteResultObjects.length; i++) {
@@ -824,10 +842,19 @@
       tmpCharacterList.push(new DisplayCharactersHorizontallySingle(
         cId,
         'normal.png',
-        f.voteResultObjects[i].targetId,
+        getBgColorFromCharacterId(f.voteResultObjects[i].targetId),
         votedCountText,
         '→' + f.characterObjects[f.voteResultObjects[i].targetId].name
       ))
+
+      // 投票数の先頭が'★'ではない場合、' 'を追加する（行頭を揃えるため）
+      if (votedCountText.charAt(0) != '★') { 
+        votedCountText = '　' + votedCountText;
+      }
+      // 最後以外の要素の行末に、<br>を追加する（最後以外は改行するため）
+      let br = (i == (f.voteResultObjects.length - 1)) ? '' : '<br>';
+      // 必要な文字列を連結してバックログ用変数に格納する
+      tf.voteBacklog += (votedCountText + ' ' + f.characterObjects[cId].name + '→' + f.characterObjects[f.voteResultObjects[i].targetId].name + br);
     }
 
     f.dch = new DisplayCharactersHorizontally(
@@ -836,12 +863,17 @@
       -100, // キャラクター画像の表示位置を中央より上へずらす。メニューボタンは非表示にしているので、干渉しない分上げておく
     );
   [endscript]
+
+  ; バックログ用変数が初期状態でなければ、バックログに記録する
+  ; [iscript]内の処理が始まるより前に、この[pushlog]が先読みされて実行されてしまうので、その時点ではログ出力しないように初期状態なら実行しないようにcond条件を設定している
+  [pushlog text="&tf.voteBacklog" cond="tf.voteBacklog != ''"]
 [endmacro]
 
 
 ; キャラクター紹介画面を出力する
 [macro name="j_introductionCharacters"]
   ; 全ボタンを消去
+  [j_saveFixButton buf="intro"]
   [j_clearFixButton]
 
   ; キャラクタ－画像を表示
@@ -851,8 +883,8 @@
   ; キャラクター画像を表示していたレイヤーを解放
   [freeimage layer="1" time="400" wait="true"]
 
-  ; ステータス、メニューボタン再表示
-  [j_displayFixButton status="true" menu="true"]
+  ; ボタン復元
+  [j_loadFixButton buf="intro"]
 [endmacro]
 
 
@@ -864,7 +896,7 @@
       tmpCharacterList.push(new DisplayCharactersHorizontallySingle(
         cId,
         'normal.png',
-        cId,
+        getBgColorFromCharacterId(cId),
         '',
         f.characterObjects[cId].name
       ))
@@ -876,6 +908,55 @@
       -100, // キャラクター画像の表示位置を中央より上へずらす。メニューボタンは非表示にしているので、干渉しない分上げておく
     );
   [endscript]
+[endmacro]
+
+
+
+[macro name="j_setDchForStatus"]
+  ; メモ：夜の場合は夜時間開始時のオブジェクト（f.characterObjectsHistory[f.day]）のほうがいい？isAlive判定など。どちらの方が自然か検討する。
+  [iscript]
+    let tmpCharacterList = [];
+    for (let i = 0; i < f.participantsIdList.length; i++) {
+      let cId = f.participantsIdList[i];
+
+      let bgColor = getBgColorFromCharacterId(cId);
+      let fileName = 'normal.png';
+      if (!f.characterObjects[cId].isAlive) {
+        bgColor = '#000000';
+        // fileName = '退場済用の表情差分';
+      }
+
+      tmpCharacterList.push(new DisplayCharactersHorizontallySingle(
+        cId,
+        fileName,
+        bgColor,
+        '',
+        f.characterObjects[cId].name
+      ))
+    }
+
+    f.dch = new DisplayCharactersHorizontally(
+      tmpCharacterList,
+      20, // キャラクター画像の表示位置を中央より右へずらす。leftTextの文字を表示するスペースを作るため
+      -100, // キャラクター画像の表示位置を中央より上へずらす。メニューボタンは非表示にしているので、干渉しない分上げておく
+    );
+  [endscript]
+[endmacro]
+
+
+; ゲーム終了時のプレイヤーの勝敗結果（または引き分け）によって、再生する効果音を鳴らし分ける
+; @param winnerFaction 勝利陣営。必須
+[macro name="j_playSePlayerResult"]
+  [if exp="mp.winnerFaction == FACTION_DRAW_BY_REVOTE"]
+    ; 引き分け
+    [playse storage="megaten.ogg" loop="false" volume="40" sprite_time="50-20000"]
+  [elsif exp="f.characterObjects[f.playerCharacterId].role.faction == mp.winnerFaction"]
+    ; 勝利
+    [playse storage="kirakira4.ogg" loop="false" volume="40" sprite_time="50-20000"]
+  [else]
+    ; 敗北
+    [playse storage="chiin1.ogg" loop="false" volume="40" sprite_time="50-20000"]
+  [endif]
 [endmacro]
 
 
@@ -892,25 +973,43 @@
 ; Fixレイヤーのボタンを表示する。表示中のボタンは指定されても再表示はしない。
 ; ボタンの消去は[j_clearFixButton]で行うこと。
 ; 以下のマクロ変数を全て省略すると、全てのボタンを表示する。
-; @param action アクションボタンを表示する（※"false"を渡すとtrue判定になるので注意）
-; @param menu メニューボタンを表示する（※"false"を渡すとtrue判定になるので注意）
-; @param status ステータスボタンを表示する（※"false"を渡すとtrue判定になるので注意）
+; @param action アクションボタンを表示する
+; @param menu メニューボタンを表示する
+; @param backlog バックログボタンを表示する
+; @param status ステータスボタンを表示する
+; ※引数に'ignore'を設定すると、引数を指定しなかった場合と同様にそのボタンには何もしない。'ignore'以外を渡すと通常のボタンを表示する
+; ※以下は特殊なボタンを表示したい場合に設定する引数
+; status="nofix": fix属性ではないかつrole="sleepgame"指定もしないステータスボタン
+; status="nofix_click": fix属性ではないかつrole="sleepgame"指定もしないステータスボタンで、クリック済み画像を表示する
 [macro name="j_displayFixButton"]
 
   [iscript]
     // 初回のみ、ボタンの表示ステータスを管理するオブジェクトを生成
     if (!('displaingButton' in f)) {
       f.displaingButton = {
-        action: false,
-        menu: false,
-        status: false
+        action: null,
+        menu: null,
+        backlog: null,
+        status: null
       };
     };
-    // 一つもマクロ変数に指定されていないなら、全て表示する。一つでも指定されているならマクロ変数通りとする。
-    if (!(('action' in mp) || ('menu' in mp) || ('status' in mp))) {
-      mp.action = true;
-      mp.menu = true;
-      mp.status = true;
+
+    for (let button in mp) {
+      if (mp[button] === 'ignore') {
+        // 'ignore'が渡されてきた場合、引数を指定しなかった場合と同様にそのボタンには何もしない
+        mp[button] = null;
+      } else if (mp[button] !== 'nofix' && mp[button] !== 'nofix_click') {
+        // 'nofix','nofix_click'以外の値が渡されてきた場合、全て'normal'に変換する
+        mp[button] = 'normal';
+      }
+    }
+
+    // 一つも引数に指定されていないなら、全て表示する。一つでも指定されているなら引数通りとする。
+    if (!(('action' in mp) || ('menu' in mp) || ('backlog' in mp) || ('status' in mp))) {
+      mp.action = 'normal';
+      mp.menu = 'normal';
+      mp.backlog = 'normal';
+      mp.status = 'normal';
     }
     console.log('表示');
     console.log(mp);
@@ -918,17 +1017,38 @@
 
   [if exp="!f.displaingButton.action && mp.action"]
     [button graphic="button/button_action_normal.png" storage="action.ks" target="*start" x="23" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_action" enterimg="button/button_action_hover.png"]
-    [eval exp="f.displaingButton.action = true"]
+    [eval exp="f.displaingButton.action = mp.action"]
   [endif]
 
   [if exp="!f.displaingButton.menu && mp.menu"]
-    [button graphic="button/button_menu_normal.png" x="1143" y="23" width="114" height="103" fix="true" role="menu" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
-    [eval exp="f.displaingButton.menu = true"]
+    ; ステータス画面→メニュー画面に遷移する用。ステータス画面自体がrole="sleepgame"で遷移する画面なので、そこから遷移するためのボタンにはfix属性やrole="sleepgame"を指定しない。
+    [button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMainFromStatus" x="867" y="23" width="114" height="103" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
+    ; 通常画面→メニュー画面に遷移する用。
+    ;[button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="867" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
+    [eval exp="f.displaingButton.menu = mp.menu"]
+  [endif]
+
+  [if exp="!f.displaingButton.backlog && mp.backlog"]
+    [button graphic="button/button_backlog_normal.png" x="1009" y="23" width="114" height="103" fix="true" role="backlog" name="button_j_fix,button_j_backlog" enterimg="button/button_backlog_hover.png"]
+    [eval exp="f.displaingButton.backlog = mp.backlog"]
+  [endif]
+
+
+  ; status引数が渡されておりそれが表示中のボタンと異なる種類なら、この後ボタンを入れ替える前準備としてボタンとフラグを消去する
+  [if exp="('status' in mp) && mp.status !== null && f.displaingButton.status !== null && f.displaingButton.status !== mp.status"]
+    [clearfix name="button_j_status"]
+    [eval exp="f.displaingButton.status = null"]
   [endif]
 
   [if exp="!f.displaingButton.status && mp.status"]
-    [button graphic="button/button_status_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="1005" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_status" enterimg="button/button_status_hover.png"]
-    [eval exp="f.displaingButton.status = true"]
+    ; 通常画面→ステータス画面への遷移
+    [button cond="mp.status === 'normal'" graphic="button/button_status_normal.png" storage="statusJinro.ks" target="*statusJinroMain" x="1143" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_status" enterimg="button/button_status_hover.png"]
+    ; sleepgame中の画面（メニュー画面、アクション選択中）→ステータス画面への遷移
+    [button cond="mp.status === 'nofix'" graphic="button/button_status_normal.png" storage="statusJinro.ks" target="*statusJinroMain" x="1143" y="23" width="114" height="103" name="button_j_fix,button_j_status" enterimg="button/button_status_hover.png"]
+    ; ステータス画面→元の画面へ戻る遷移
+    [button cond="mp.status === 'nofix_click'" graphic="button/button_status_click.png" storage="statusJinro.ks" target="*awake" x="1143" y="23" width="114" height="103" enterimg="button/button_status_hover.png"]
+
+    [eval exp="f.displaingButton.status = mp.status"]
   [endif]
 [endmacro]
 
@@ -938,14 +1058,16 @@
 ; 以下のマクロ変数を全て省略すると、全てのボタンを消去する。
 ; @param action アクションボタンを消去する（※"false"を渡すとtrue判定になるので注意）
 ; @param menu メニューボタンを消去する（※"false"を渡すとtrue判定になるので注意）
+; @param backlog バックログボタンを消去する（※"false"を渡すとtrue判定になるので注意）
 ; @param status ステータスボタンを消去する（※"false"を渡すとtrue判定になるので注意）
 [macro name="j_clearFixButton"]
   [iscript]
     // [j_displayFixButton]は実行済みでf.displaingButtonは存在している前提とする。
     // 一つもマクロ変数に指定されていないなら、全て消去する。一つでも指定されているならマクロ変数通りとする。
-    if (!(('action' in mp) || ('menu' in mp) || ('status' in mp))) {
+    if (!(('action' in mp) || ('menu' in mp) || ('backlog' in mp) || ('status' in mp))) {
       mp.action = true;
       mp.menu = true;
+      mp.backlog = true;
       mp.status = true;
     }
     console.log('消去');
@@ -954,24 +1076,71 @@
 
   [if exp="f.displaingButton.action && mp.action"]
     [clearfix name="button_j_action"]
-    [eval exp="f.displaingButton.action = false"]
+    [eval exp="f.displaingButton.action = null"]
   [endif]
 
   [if exp="f.displaingButton.menu && mp.menu"]
     [clearfix name="button_j_menu"]
-    [eval exp="f.displaingButton.menu = false"]
+    [eval exp="f.displaingButton.menu = null"]
+  [endif]
+
+  [if exp="f.displaingButton.backlog && mp.backlog"]
+    [clearfix name="button_j_backlog"]
+    [eval exp="f.displaingButton.backlog = null"]
   [endif]
 
   [if exp="f.displaingButton.status && mp.status"]
     [clearfix name="button_j_status"]
-    [eval exp="f.displaingButton.status = false"]
+    [eval exp="f.displaingButton.status = null"]
   [endif]
+[endmacro]
+
+
+; 現在のFixレイヤーのボタンの表示ステータスを保存しておくマクロ
+; [j_displayFixButton]は実行済みでf.displaingButtonは存在している前提とする。
+; @param buf 必須。保存バッファ。任意のキー名を指定すること。保存済みのキー名と重複した場合は上書きする
+[macro name="j_saveFixButton"]
+  [iscript]
+    // 初回のみ、ボタンの表示ステータスを保存するオブジェクトを生成
+    if (!('saveButton' in f)) {
+      f.saveButton = {};
+    };
+    f.saveButton[mp.buf] = clone(f.displaingButton);
+  [endscript]
+[endmacro]
+
+
+; 保存済みのTixレイヤーのボタンの表示ステータスを読み込み、復元するマクロ
+; [j_saveFixButton]は実行済みでf.saveButtonは存在している前提とする。
+; @param buf 必須。保存バッファ。任意のキー名を指定すること。保存済みのキー名から復元する。キーが存在しない場合はエラー（未考慮）
+[macro name="j_loadFixButton"]
+  [iscript]
+    tf.tmpDisplayButton = {};
+    tf.tmpClearButton = {};
+    const loadButton = f.saveButton[mp.buf];
+
+    for (let button of Object.keys(loadButton)) {
+      let buttonStatus = loadButton[button];
+
+      if (buttonStatus === null) {
+        // 保存時の状態がnullなら、表示するかは無視し、消去は実行する
+        tf.tmpDisplayButton[button] = 'ignore';
+        tf.tmpClearButton[button] = 'true';
+      } else {
+        // 保存時の状況が表示中なら、当時の表示状態に復元し、消去は無視する
+        tf.tmpDisplayButton[button] = buttonStatus;
+        tf.tmpClearButton[button] = 'ignore';
+      }
+    }
+  [endscript]
+  [j_clearFixButton action="&tf.tmpClearButton.action" menu="&tf.tmpClearButton.menu" backlog="&tf.tmpClearButton.backlog" status="&tf.tmpClearButton.status"]
+  [j_displayFixButton action="&tf.tmpDisplayButton.action" menu="&tf.tmpDisplayButton.menu" backlog="&tf.tmpDisplayButton.backlog" status="&tf.tmpDisplayButton.status"]
 [endmacro]
 
 
 ; 時間を夜から昼に進める
 [macro name="j_turnIntoDaytime"]
-
+  [fadeoutbgm time="200"]
 
   ; PC,NPCを退場させる
   [m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
@@ -989,8 +1158,10 @@
 
   [bg storage="black.png" time="1000" wait="true" effect="fadeInDown"]
 
+  [playse storage="shock1.ogg" loop="false" volume="50" sprite_time="50-20000"]
   [emb exp="f.day + '日目の朝を迎えました。'"][l][r]
   [if exp="typeof f.bitingObjectLastNight === 'undefined'"]
+    [playse storage="shock1.ogg" loop="false" volume="50" sprite_time="50-20000"]
     ; 昨夜の襲撃結果が取得できなかった（＝初日犠牲者のいない1日目昼）場合
     ; TODO 人狼の人数を可変で出力する
     ; FIXME 役職の内訳を表示してもいいかも。
@@ -998,9 +1169,9 @@
     [j_introductionCharacters]
 
   [elsif exp="f.bitingObjectLastNight.result"]
+    [playse storage="shock1.ogg" loop="false" volume="40" sprite_time="50-20000"]
     ; 昨夜の襲撃結果が襲撃成功の場合
     ; キャラを登場させ、メッセージ表示
-    ; TODO とりあえず楽なので通常のポジションに登場させているが、襲撃死の演出を作ったら例えば画面中央に画像として表示させるだけとかにしたい
     [m_changeCharacter characterId="&f.bitingObjectLastNight.targetId" face="normal"]
     [emb exp="f.characterObjects[f.bitingObjectLastNight.targetId].name + 'は無残な姿で発見されました……。'"][p]
 
@@ -1016,6 +1187,7 @@
 
   [endif]
 
+  [playbgm storage="nc282335.ogg" loop="true" volume="12" restart="false"]
   [bg storage="living_day_nc238325.jpg" time="1000" wait="true" effect="fadeInUp"]
 
   ; PCが生存していれば再度画面に登場させる
@@ -1042,7 +1214,7 @@
 
 ; jsonをローカルに保存する
 ; 参考　@link https://ameblo.jp/personwritep/entry-12495099049.html
-[macro name=j_saveJson]
+[macro name="j_saveJson"]
   [iscript]
     ; cloneメソッドでコピーし、元の変数に影響ないようにする
     ; sf.system、tf.systemのオブジェクトは、人狼ゲーム側で入れたデータではないので除いておく
@@ -1065,11 +1237,13 @@
     let a=document.createElement("a");
     a.href=URL.createObjectURL(blob);
     document.body.appendChild(a); // Firefoxで必要
-    a.download='all_variables.json';
+    let now = new Date().toLocaleString().replace(/\/|:|\s/g, '');
+    a.download='jinro_all_variables_' + now + '.json';
     a.click();
     document.body.removeChild(a); // Firefoxで必要
     URL.revokeObjectURL(a.href);
   [endscript]
 [endmacro]
+
 
 [return]

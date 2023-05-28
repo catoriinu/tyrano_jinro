@@ -2,20 +2,21 @@
 
 ; 呼び方サブルーチン
 ; 事前にtf.characterIdToCallにcharacterIdを入れてから、このサブルーチンを呼び出す
-; このmessageサブルーチンのキャラクターが、tf.characterIdToCallのキャラクターを呼ぶ際の二人称を出力する
+; このmessageサブルーチンのキャラクターが、tf.characterIdToCallのキャラクターを呼ぶ際の二人称をtf.calledCharacterNameに格納する
 ; キャラクターごとの差異をなくすため、自分自身のIDが渡された場合は一人称を入れる
 *changeIdToCallName
-  [if exp="tf.characterIdToCall == CHARACTER_ID_ZUNDAMON"]
-    ずんだもん
-  [elsif exp="tf.characterIdToCall == CHARACTER_ID_METAN"]
-    めたん
-  [elsif exp="tf.characterIdToCall == CHARACTER_ID_TSUMUGI"]
-    つむぎ
-  [elsif exp="tf.characterIdToCall == CHARACTER_ID_HAU"]
-    はう
-  [elsif exp="tf.characterIdToCall == CHARACTER_ID_RITSU"]
-    あたし
-  [endif]
+  [iscript]
+    tf.calledCharacterName = (function(characterId) {
+      const calledCharacterNameObject = {
+        [CHARACTER_ID_ZUNDAMON]: 'ずんだもん',
+        [CHARACTER_ID_METAN]:    'めたん',
+        [CHARACTER_ID_TSUMUGI]:  'つむぎ',
+        [CHARACTER_ID_HAU]:      'はう',
+        [CHARACTER_ID_RITSU]:    'あたし',
+      }
+      return calledCharacterNameObject[characterId];
+  }(tf.characterIdToCall));
+  [endscript]
 [return]
 
 ; COFortuneTelling_{result}
@@ -39,7 +40,9 @@
 [endif]
 
 [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
-[call target="changeIdToCallName"]。アンタ人狼ね？[r]
+[call target="changeIdToCallName"]
+
+[emb exp="tf.calledCharacterName"]。アンタ人狼ね？[r]
 さあ、祭りを始めましょうか。[p]
 [stopse]
 [return]
@@ -56,9 +59,11 @@
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
 
 [endif]
-
+;x
 [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
-[call target="changeIdToCallName"]。アンタは人狼じゃないらしいわね。[r]
+[call target="changeIdToCallName"]
+
+[emb exp="tf.calledCharacterName"]。アンタは人狼じゃないらしいわね。[r]
 住民としてこの村を盛り上げてちょうだい。[p]
 [stopse]
 [return]
@@ -79,9 +84,11 @@
 [elsif exp="tf.selectedCharacterId == CHARACTER_ID_RITSU"]
 
 [endif]
-
+;x
 [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
-[call target="changeIdToCallName"]はどうせ人狼でしょうね。[r]
+[call target="changeIdToCallName"]
+
+[emb exp="tf.calledCharacterName"]はどうせ人狼でしょうね。[r]
 まあ根拠はないけれど。[p]
 [stopse]
 [return]
@@ -99,17 +106,21 @@
 [elsif exp="tf.selectedCharacterId == CHARACTER_ID_RITSU"]
 
 [endif]
-
+;o
 [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
-こう見えてもあたしは[call target="changeIdToCallName"]に期待してるの。[r]
+[call target="changeIdToCallName"]
+
+こう見えてもあたしは[emb exp="tf.calledCharacterName"]に期待してるの。[r]
 だからがっかりさせないでほしいわね。[p]
 [stopse]
 [return]
 
 ; シーン：「聞き出す」アクション実行時
 *doAction_ask
-  [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
-  [call target="changeIdToCallName"]、三行で説明よろしく。[p]
+[eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+[call target="changeIdToCallName"]
+
+[emb exp="tf.calledCharacterName"]、三行で説明よろしく。[p]
 [return]
 
 
@@ -126,7 +137,7 @@
 ; シーン：「信じる」アクションの実行対象になった時
 *doAction_reaction_trust
 [playse storage="chara/ritsu/021_波音リツ（ノーマル）_ふふ、嬉しいことを….ogg" loop="false" sprite_time="50-20000"]
-
+;o
 ふふ、嬉しいことを言ってくれるじゃない。[p]
 [stopse]
 [return]
@@ -141,7 +152,7 @@
 ; シーン：投票により処刑対象に決まったときの反応
 *executed
 [playse storage="chara/ritsu/023_波音リツ（ノーマル）_安価は絶対……。あ….ogg" loop="false" sprite_time="50-20000"]
-
+;o
 安価は絶対……。あたしは潔く去るわ。[p]
 [stopse]
 [return]

@@ -32,18 +32,18 @@ function getVillagersRoleIdList() {
   // この中で、ゲーム変数を読み込んだりロジックを書くなどして返却値を決めること
 
   let villagersRoleIdList = [
-    ROLE_ID_WEREWOLF,
-    ROLE_ID_VILLAGER,
-    ROLE_ID_MADMAN,
     ROLE_ID_FORTUNE_TELLER,
+    ROLE_ID_WEREWOLF,
+    ROLE_ID_MADMAN,
+    ROLE_ID_VILLAGER,
     ROLE_ID_VILLAGER,
   ];
 
-  // シャッフルしてから返却する
-  if (TYRANO.kag.stat.f.developmentMode) {
-    // TODO テスト用にそのまま返却
+  if (!TYRANO.kag.variable.sf.j_development.doShuffle) {
+    // 開発者用設定：役職シャッフルが固定なら上記の通り返却する
     return villagersRoleIdList;
   }
+  // シャッフルしてから返却する
   return shuffleElements(villagersRoleIdList);
 
 }
@@ -125,20 +125,20 @@ function roleAssignment(roleId) {
  * @param {Array} characterObjects キャラクターオブジェクトの配列
  * @return {String|null} 勝利した陣営の定数　いなければnull
  */
-function judgeWinnerCamp(characterObjects) {
+function judgeWinnerFaction(characterObjects) {
   // 生存者のオブジェクトを取得する
   const survivorObjects = getSurvivorObjects(characterObjects);
 
   // 勝利陣営判定を行う
-  let winnerCamp = null;
+  let winnerFaction = null;
   if (isWinWerewolves(survivorObjects)) {
     // 人狼陣営が勝利条件を満たした場合
-    winnerCamp = CAMP_WEREWOLVES;
+    winnerFaction = FACTION_WEREWOLVES;
   } else if (isWinVillagers(survivorObjects)) {
     // 村人陣営が勝利条件を満たした場合
-    winnerCamp = CAMP_VILLAGERS;
+    winnerFaction = FACTION_VILLAGERS;
   }
-  return winnerCamp;
+  return winnerFaction;
 }
 
 
@@ -185,10 +185,7 @@ function isWinWerewolves(survivorObjects) {
   // 人狼が、生存者数の半数以上であれば、人狼陣営の勝利
   const survivorsCount = survivorObjects.length;
   const werewolvesCount = getIsWerewolvesObjects(survivorObjects).length;
-  if (TYRANO.kag.stat.f.developmentMode) {
-    console.log('生存者数:' + survivorsCount + '名 うち人狼の数:' + werewolvesCount + '名');
-    //alert('生存者数:' + survivorsCount + '名 うち人狼の数:' + werewolvesCount + '名');
-  }
+  console.log('生存者数:' + survivorsCount + '名 うち人狼の数:' + werewolvesCount + '名');
   return werewolvesCount >= Math.ceil(survivorsCount / 2);
 }
 
@@ -309,6 +306,13 @@ function daytimeInitialize() {
   TYRANO.kag.stat.f.npcActionObject = {};
   TYRANO.kag.stat.f.doActionObject = {};
 
+  // アクション実行履歴オブジェクトに今日の昼用の配列を生成する
+  TYRANO.kag.stat.f.doActionHistory = initializeDoActionHistoryForNow(
+    TYRANO.kag.stat.f.doActionHistory,
+    TYRANO.kag.stat.f.day,
+    TYRANO.kag.stat.f.isDaytime
+  )
+
   // アクション実行回数を初期化する
   TYRANO.kag.stat.f.doActionCount = 0;
 
@@ -328,10 +332,18 @@ function daytimeInitialize() {
 
 /**
  * 夜時間開始時用の初期化を行う
+ * TODO 0日目の夜にもこれを呼ぶべき
  */
 function nightInitialize() {
   // 時間を夜に進める
   TYRANO.kag.stat.f.isDaytime = false;
+
+  // アクション実行履歴オブジェクトに今日の夜用の配列を生成する
+  TYRANO.kag.stat.f.doActionHistory = initializeDoActionHistoryForNow(
+    TYRANO.kag.stat.f.doActionHistory,
+    TYRANO.kag.stat.f.day,
+    TYRANO.kag.stat.f.isDaytime
+  )
 
   // 噛み実行済みフラグを最初に初期化しておく。噛んだ後、立てること。人狼が2人以上いたときに、噛み実行済みならスキップするため。
   TYRANO.kag.stat.f.isBiteEnd = false;
@@ -357,6 +369,24 @@ function nightInitialize() {
   TYRANO.kag.stat.f.characterObjectsHistory[TYRANO.kag.stat.f.day] = clone(TYRANO.kag.stat.f.characterObjects)
 }
 
+
+function initializeDoActionHistoryForNow(doActionHistory, day, isDaytime) {
+
+  const timeStr = getTimeStr(isDaytime);
+
+  if (day in doActionHistory) {
+    doActionHistory[day][timeStr] = [];
+  } else {
+    doActionHistory[day] = {
+      [timeStr]: []
+    }
+  }
+  return doActionHistory;
+}
+
+function getTimeStr(isDaytime = TYRANO.kag.stat.f.isDaytime) {
+  return isDaytime ? 'daytime' : 'night';
+}
 
 
 /**
@@ -410,6 +440,16 @@ function pushElement(array, element) {
   return array;
 }
 
+
+
+/**
+ * chara/{characterId}.ksで設定した、そのキャラクターのイメージカラーのコードを取得する
+ * @param {string} characterId 
+ * @returns {string} 16進数カラーコード 例:'#ffffff'
+ */
+function getBgColorFromCharacterId(characterId) {
+  return TYRANO.kag.stat.f.color.character[characterId];
+}
 
 /**
  * オブジェクトをディープコピーするための関数;

@@ -2,20 +2,21 @@
 
 ; 呼び方サブルーチン
 ; 事前にtf.characterIdToCallにcharacterIdを入れてから、このサブルーチンを呼び出す
-; このmessageサブルーチンのキャラクターが、tf.characterIdToCallのキャラクターを呼ぶ際の二人称を出力する
+; このmessageサブルーチンのキャラクターが、tf.characterIdToCallのキャラクターを呼ぶ際の二人称をtf.calledCharacterNameに格納する
 ; キャラクターごとの差異をなくすため、自分自身のIDが渡された場合は一人称を入れる
 *changeIdToCallName
-  [if exp="tf.characterIdToCall == CHARACTER_ID_ZUNDAMON"]
-    ずんだもん先輩
-  [elsif exp="tf.characterIdToCall == CHARACTER_ID_METAN"]
-    めたん先輩
-  [elsif exp="tf.characterIdToCall == CHARACTER_ID_TSUMUGI"]
-    あーし
-  [elsif exp="tf.characterIdToCall == CHARACTER_ID_HAU"]
-    はうちゃん
-  [elsif exp="tf.characterIdToCall == CHARACTER_ID_RITSU"]
-    りっちゃん
-  [endif]
+  [iscript]
+    tf.calledCharacterName = (function(characterId) {
+      const calledCharacterNameObject = {
+        [CHARACTER_ID_ZUNDAMON]: 'ずんだもん先輩',
+        [CHARACTER_ID_METAN]:    'めたん先輩',
+        [CHARACTER_ID_TSUMUGI]:  'あーし',
+        [CHARACTER_ID_HAU]:      'はうちゃん',
+        [CHARACTER_ID_RITSU]:    'りっちゃん',
+      }
+      return calledCharacterNameObject[characterId];
+  }(tf.characterIdToCall));
+  [endscript]
 [return]
 
 ; COFortuneTelling_{result}
@@ -37,9 +38,11 @@
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
 [playse storage="chara/tsumugi/008_春日部つむぎ（ノーマル）_あーしの占いだと、…(1).ogg" loop="false" sprite_time="50-20000"]
 [endif]
-
+;x
 [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
-あーしの占いだと、[call target="changeIdToCallName"]は人狼だったんだよねー。[r]
+[call target="changeIdToCallName"]
+
+あーしの占いだと、[emb exp="tf.calledCharacterName"]は人狼だったんだよねー。[r]
 隠し通せると思った？残念だったね。[p]
 [stopse]
 [return]
@@ -56,9 +59,11 @@
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
 [playse storage="chara/tsumugi/017_春日部つむぎ（ノーマル）_あーしの占いだと、…(1).ogg" loop="false" sprite_time="50-20000"]
 [endif]
-
+;x
 [eval exp="tf.characterIdToCall = f.actionObject.targetId"]
-あーしの占いだと、[call target="changeIdToCallName"]は人狼じゃなかったよ。[r]
+[call target="changeIdToCallName"]
+
+あーしの占いだと、[emb exp="tf.calledCharacterName"]は人狼じゃなかったよ。[r]
 友達になれるかなあ？[p]
 [stopse]
 [return]
@@ -79,9 +84,11 @@
 [elsif exp="tf.selectedCharacterId == CHARACTER_ID_RITSU"]
 [playse storage="chara/tsumugi/014_春日部つむぎ（ノーマル）_Xってもしかしなく….ogg" loop="false" sprite_time="50-20000"]
 [endif]
-
+;x
 [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
-[call target="changeIdToCallName"]ってもしかしなくても人狼だよね？[r]
+[call target="changeIdToCallName"]
+
+[emb exp="tf.calledCharacterName"]ってもしかしなくても人狼だよね？[r]
 ちょっとヤバい感じするし。[p]
 [stopse]
 [return]
@@ -101,15 +108,19 @@
 [endif]
 
 [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
-あーしは[call target="changeIdToCallName"]を味方だと思ってるよ。[r]
-だから[call target="changeIdToCallName"]もあーしのこと、信じてほしいな……なんてね。[p]
+[call target="changeIdToCallName"]
+
+あーしは[emb exp="tf.calledCharacterName"]を味方だと思ってるよ。[r]
+だから[emb exp="tf.calledCharacterName"]もあーしのこと、信じてほしいな……なんてね。[p]
 [stopse]
 [return]
 
 ; シーン：「聞き出す」アクション実行時
 *doAction_ask
-  [eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
-  あのさ、[call target="changeIdToCallName"]の考えも聞いてみたいなー。[p]
+[eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+[call target="changeIdToCallName"]
+
+あのさ、[emb exp="tf.calledCharacterName"]の考えも聞いてみたいなー。[p]
 [return]
 
 
@@ -141,7 +152,7 @@
 ; シーン：投票により処刑対象に決まったときの反応
 *executed
 [playse storage="chara/tsumugi/023_春日部つむぎ（ノーマル）_うそ、あーし選ばれ….ogg" loop="false" sprite_time="50-20000"]
-
+;x
 うそ。あーし選ばれちゃったの？[r]
 そんなに怪しかったのかな……[p]
 [stopse]

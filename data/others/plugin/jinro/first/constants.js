@@ -34,20 +34,18 @@ const ROLE_ID_TO_NAME = {
 }
 
 // 陣営
-const CAMP_VILLAGERS  = 'villagers'; // 村人陣営
-const CAMP_WEREWOLVES = 'werewolves'; // 人狼陣営
-const CAMP_DRAW_BY_REVOTE = 'drawByRevote'; // 再投票による引き分け
+const FACTION_VILLAGERS  = 'villagers'; // 村人陣営
+const FACTION_WEREWOLVES = 'werewolves'; // 人狼陣営
+const FACTION_DRAW_BY_REVOTE = 'drawByRevote'; // 再投票による引き分け
 
 // 役職IDと役職陣営の対応オブジェクト
-// TODO:全体的にCAMP→FACTIONに置換する
-// TODO:role.campもこの定数を利用して入れるようにしたい
 const ROLE_ID_TO_FACTION = {
-    [ROLE_ID_VILLAGER]: CAMP_VILLAGERS,
-    [ROLE_ID_WEREWOLF]: CAMP_WEREWOLVES,
-    [ROLE_ID_FORTUNE_TELLER]: CAMP_VILLAGERS,
-    [ROLE_ID_MADMAN]: CAMP_WEREWOLVES,
-    [ROLE_ID_PHYCHIC]: CAMP_VILLAGERS,
-    [ROLE_ID_HUNTER]: CAMP_VILLAGERS,
+    [ROLE_ID_VILLAGER]: FACTION_VILLAGERS,
+    [ROLE_ID_WEREWOLF]: FACTION_WEREWOLVES,
+    [ROLE_ID_FORTUNE_TELLER]: FACTION_VILLAGERS,
+    [ROLE_ID_MADMAN]: FACTION_WEREWOLVES,
+    [ROLE_ID_PHYCHIC]: FACTION_VILLAGERS,
+    [ROLE_ID_HUNTER]: FACTION_VILLAGERS,
     [ROLE_ID_FOX]: 'TODO',
 }
 
@@ -87,3 +85,14 @@ const CLASS_GLINK_BLACK = 'btn_voivo_black'; // glinkのname用。黒色のテ�
 const BUTTON_RANGE_Y_UPPER = -30 // 上限
 const BUTTON_RANGE_Y_LOWER = 505 // 下限
 const BUTTON_MARGIN_HEIGHT = 30 // ボタンの上下の余白
+
+// 開発者用設定のシステム変数設定
+// 初回起動時のみ、デフォルト設定値を入れる
+if (!('j_development' in TYRANO.kag.variable.sf)) {
+  TYRANO.kag.variable.sf.j_development = {
+    dictatorMode: false,
+    doShuffle: true,
+    maxDoActionCount: MAX_DO_ACTION_COUNT,
+    thinking: 'default'
+  }
+}

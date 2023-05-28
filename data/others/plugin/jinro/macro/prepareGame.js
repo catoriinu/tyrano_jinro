@@ -4,17 +4,14 @@
  */
 function prepareGameMain() {
 
-  // 今回の参加者のキャラクターIDと、配役される役職IDを取得する
-  // TODO selectStage.ksを経由して事前に取得するように完全移行できたら、この判定は不要になる
-  if (typeof TYRANO.kag.stat.f.participantsIdList == 'undefined') {
-    // 参加者のキャラクターID配列
-    TYRANO.kag.stat.f.participantsIdList = getParticipantsIdList();
-    // 参加している役職ID配列
+  // 今回の参加者のキャラクターID配列と、配役される役職ID配列を取得する
+  TYRANO.kag.stat.f.participantsIdList = getParticipantsIdList();
+  // TODO 役職選択画面で役職を選択済みなら、既に配列に値が入っているのでここでは役職を割り当てない
+  if (!TYRANO.kag.stat.f.isSelectedMyRole) {
     TYRANO.kag.stat.f.villagersRoleIdList = getVillagersRoleIdList();
   }
   
   // 参加者数と役職数が等しいことをチェックしてから先に進む
-  // TODO 配列が入っていることの確認もしたほうがいいかも
   if (TYRANO.kag.stat.f.participantsIdList.length != TYRANO.kag.stat.f.villagersRoleIdList.length) {
     alert('参加者数(' + participantsIdList.length + ')と役職数(' + TYRANO.kag.stat.f.villagersRoleIdList.length + ')が合っていません！');
   }
@@ -30,6 +27,17 @@ function prepareGameMain() {
       characterObjects[characterId].isPlayer = true;
       TYRANO.kag.stat.f.playerCharacterId = characterId
     }
+
+    // 開発者モード：「NPCの思考方針」によるlogicalの上書き処理。logicalを上書きすることで仲間度の算出結果が変わる。
+    // 「性格準拠」の場合、何もしない（最初にcontinueすることを明示しておく）
+    if (TYRANO.kag.variable.sf.j_development.thinking == 'default') continue
+    if (TYRANO.kag.variable.sf.j_development.thinking == 'logical') {
+      // 「論理的」の場合、全キャラクターのlogicalを0.9999に上書きする（1だと仲間度の計算に全く信頼度が反映されなくなってしまうため）
+      characterObjects[characterId].personality.logical = 0.9999;
+    } else if (TYRANO.kag.variable.sf.j_development.thinking == 'emotional') {
+      // 「感情的」の場合、全キャラクターのlogicalを0.0001に上書きする（0だと仲間度の計算に全く同陣営割合が反映されなくなってしまうため）
+      characterObjects[characterId].personality.logical = 0.0001;
+    }
   }
   // 共通の視点オブジェクトをティラノ変数に、各キャラの視点オブジェクトを各自のcharacterObject.perspectiveに格納する
   setDefaultPerspective(characterObjects, TYRANO.kag.stat.f.participantsIdList, TYRANO.kag.stat.f.villagersRoleIdList);
@@ -41,6 +49,9 @@ function prepareGameMain() {
   // キャラクターオブジェクト配列をティラノのキャラクターオブジェクト変数に格納する
   TYRANO.kag.stat.f.characterObjects = characterObjects;
 
+  // TODO 投票履歴オブジェクトの初期化
+  // 開票オブジェクトの初期化 {"開票日": その日の開票回数, ...}
+  TYRANO.kag.stat.f.openedVote = {};
   // 噛み先履歴オブジェクトの初期化
   TYRANO.kag.stat.f.bitingHistory = {};
   // 処刑履歴オブジェクトの初期化
@@ -48,6 +59,9 @@ function prepareGameMain() {
 
   // 全占い結果履歴オブジェクトの初期化
   TYRANO.kag.stat.f.allFortuneTellingHistoryObject = {};
+
+  // アクション履歴オブジェクトの初期化
+  TYRANO.kag.stat.f.doActionHistory = {};
 
   // 発話者の名前オブジェクト。ksファイル内で、# &f.speaker['名前'] の形式で使う。
   TYRANO.kag.stat.f.speaker = setSpeakersName(characterObjects);
@@ -109,16 +123,17 @@ function TestObj () {
 /**
  * 発話者の名前オブジェクトに、表示名を格納していく
  * @param {Array} characterObjects キャラクターオブジェクト配列
- * @return {Array} 発話者の名前オブジェクト keyがname、valueが表示名（開発モードかヒントモードの場合、後ろに役職名を追加する）
+ * @return {Array} 発話者の名前オブジェクト [{name: 表示名},...]
  */
 function setSpeakersName(characterObjects) {
   const speaker = {}
   for (let k of Object.keys(characterObjects)) {
     let tmpName = characterObjects[k].name;
-    console.log(tmpName);
-    if (TYRANO.kag.stat.f.developmentMode || TYRANO.kag.stat.f.hintMode) {
+    // 開発者用設定：独裁者モードなら後ろに役職名を追加する
+    if (TYRANO.kag.variable.sf.j_development.dictatorMode) {
       tmpName += '（' + ROLE_ID_TO_NAME[characterObjects[k].role.roleId] + '）';
     }
+    console.log(tmpName);
     speaker[characterObjects[k].name] = tmpName;
   }
   return speaker;
@@ -164,7 +179,7 @@ function setDefaultPerspective(characterObjects, participantsIdList, villagersRo
     characterObjects[characterId].perspective = organizePerspective(
       commonPerspective,
       characterId,
-      TYRANO.kag.stat.f.uniqueRoleIdList.filter(rId => (rId != ROLE_ID_VILLAGER)) // TODO：COなしなら村人を入れておくが、それで破綻する可能性もあるかもしれない。その場合共通視点を入れるようにしたほうがいいかも
+      TYRANO.kag.stat.f.uniqueRoleIdList.filter(rId => (rId != ROLE_ID_VILLAGER)) // COなしのうちは村人を入れておく
     );
 
     characterObjects[characterId].role.rolePerspective = organizePerspective(

@@ -189,13 +189,44 @@
 
 
 ; シーン：ゲームの勝敗判定結果を表示するシステムメッセージ
-; @param winnerCamp 勝利陣営。必須
-[macro name="m_displayGameOverAndWinnerCamp"]
+; @param winnerFaction 勝利陣営。必須
+[macro name="m_displayGameOverAndWinnerFaction"]
   [m_changeFrameWithId]
   #
   [eval exp="tf.messageStorage = './message/system.ks'"]
-  [eval exp="tf.messageTarget = '*displayGameOverAndWinnerCamp_' + mp.winnerCamp"]
+  [eval exp="tf.messageTarget = '*displayGameOverAndWinnerFaction_' + mp.winnerFaction"]
+  ゲームが終了しました。[p]
+  [j_playSePlayerResult winnerFaction="&mp.winnerFaction"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+[endmacro]
+
+
+; シーン：現在のラウンド数と次のNPCのアクションを表示するシステムメッセージ
+[macro name="m_displayRoundAndNextActionInDiscussionPhase"]
+  [m_changeFrameWithId]
+  #
+  ; TODO 画面上のどこかに常に、あるいはメニュー画面内に表示しておけるとベスト
+  ～ラウンド[emb exp="f.doActionCount"]/[emb exp="sf.j_development.maxDoActionCount"]～[r]
+
+  ; ここはバックログに記録しない。プレイヤーがアクション実行すると、実際にはアクションしなかったことになる可能性があるため
+  [nolog]
+
+    [if exp="f.doActionCandidateId != ''"]
+    ～[emb exp="f.characterObjects[f.npcActionObject.characterId].name"]が話そうとしています
+      ; 開発者用設定：独裁者モードなら、アクション実行者のアクション内容をメッセージに表示する
+      [if exp="sf.j_development.dictatorMode"]
+        [iscript]
+          tf.tmpDoActionMessage = ((f.npcActionObject.actionId == ACTION_TRUST) ? '信じる' : (f.npcActionObject.actionId == ACTION_SUSPECT) ? '疑う' : '？');
+        [endscript]
+        （[emb exp="f.characterObjects[f.npcActionObject.targetId].name"]に[emb exp="tf.tmpDoActionMessage"]）
+      [endif]
+    [else]
+    ～誰も話そうとしていないようです
+    [endif]
+    ～[p]
+
+  ; ここまでログを記録しない
+  [endnolog]
 [endmacro]
 
 
@@ -289,7 +320,6 @@
 
 ; 退場マクロ
 ; 現在登場しているキャラを退場させる
-; TODO 襲撃死時とPCの処刑時の呼び出しで、フェードアウトしない。NPCの処刑時はする。ここというより、呼び出し元の処理順が問題かも。
 ; @param characterId 退場させたいキャラのキャラクターID。必須。
 [macro name="m_exitCharacter"]
 

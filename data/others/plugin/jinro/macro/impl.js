@@ -91,7 +91,6 @@ function enterCharacter(characterId, face, side) {
  * 　jsでティラノタグを呼び出し実行すると、ページ送りが行われてしまうことに注意すること。
  * 退場マクロ
  * 現在登場しているキャラを退場させる
- * TODO 襲撃死時とPCの処刑時の呼び出しで、フェードアウトしない。NPCの処刑時はする。ここというより、呼び出し元の処理順が問題かも。
  * @param characterId 退場させたいキャラのキャラクターID。必須。
  */
 function exitCharacter(characterId) {
@@ -153,14 +152,14 @@ function DisplayCharactersHorizontally(characterList = [], displacedPxToRight = 
  * 生成したオブジェクトは、DisplayCharactersHorizontallyオブジェクトのcharacterList配列の値として格納すること
  * @param {String} characterId キャラクターID
  * @param {String} fileName 表示する画像のファイルパス。拡張子も必要。最終的には[image storage="chara/{characterId}/{fileName}"]形式で渡される。
- * @param {String} bgColorCharacterId 背景色にしたいイメージカラーを持つキャラクターID
+ * @param {String} bgColor 背景色のカラーコード
  * @param {String} topText box上部に横書きで表示するテキスト。表示不要なら引数不要
  * @param {String} leftText box左部に縦書きで表示するテキスト。表示不要なら引数不要
  */
-function DisplayCharactersHorizontallySingle(characterId, fileName, bgColorCharacterId, topText = '', leftText = '') {
+function DisplayCharactersHorizontallySingle(characterId, fileName, bgColor, topText = '', leftText = '') {
   this.characterId = characterId;
   this.fileName = fileName;
-  this.bgColorCharacterId = bgColorCharacterId;
+  this.bgColor = bgColor;
   this.topText = topText;
   this.leftText = leftText;
 }

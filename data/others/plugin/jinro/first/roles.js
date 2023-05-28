@@ -2,15 +2,15 @@
  * @classdec 役職の基底クラス。個別の役職クラスに継承され、コンストラクタから呼び出される。
  * @prop {stirng} roleId 役職ID
  * @prop {String} roleName 役職名
- * @prop {Number} camp 陣営。どの陣営が勝利したときに、自身の役職が勝利になるのか（※勝利陣営判定とは別） 0:村人陣営 1:人狼陣営
+ * @prop {String} faction 陣営。どの陣営が勝利したときに、自身の役職が勝利になるのか（※勝利陣営判定とは別）
  * @prop {Boolean} isWerewolves 人狼か。勝利陣営判定時に人狼陣営として扱うか。また、占い・霊能結果で人狼判定が出るかにも利用する。
  * @prop {Boolean} allowCO 村役職COすることができる役職か。false=ない場合、CO候補者判定の対象外にする。
  * @prop {Object} rolePerspective その役職の視点オブジェクト。本人の思考はこちらを元にする。ただし騙り時、fakeRole.rolePerspectiveは利用しないので空オブジェクトのままとなる。
  */
-function Role(roleId, roleName, camp, isWerewolves, allowCO) {
+function Role(roleId, roleName, isWerewolves, allowCO) {
   this.roleId = roleId;
   this.roleName = roleName;
-  this.camp = camp;
+  this.faction = ROLE_ID_TO_FACTION[roleId];
   this.isWerewolves = isWerewolves;
   this.allowCO = allowCO;
   this.rolePerspective = {};
@@ -21,7 +21,7 @@ function Role(roleId, roleName, camp, isWerewolves, allowCO) {
  * @classdec 村人クラス（個別の役職クラス）
  */
 function Villager() {
-  return new Role (ROLE_ID_VILLAGER, '村人', 0, false, false);
+  return new Role (ROLE_ID_VILLAGER, '村人', false, false);
 }
 
 
@@ -31,7 +31,7 @@ function Villager() {
 function FortuneTeller() {
   
   // 基底クラスのインスタンス取得
-  const roleObject = new Role (ROLE_ID_FORTUNE_TELLER, '占い師', 0, false, true);
+  const roleObject = new Role (ROLE_ID_FORTUNE_TELLER, '占い師', false, true);
 
   // 個別の役職クラスに必要なプロパティ、関数を取得
   roleObject.fortuneTellingHistory = {}; 
@@ -64,15 +64,13 @@ function FortuneTeller() {
     console.log('result : ' + result);
     
     // 指定された日（デフォルトは今日）の占い結果をアクションオブジェクトに保存＆返却する
-    const todayResult = {
-      action: new Action(
-        fortuneTellerId,
-        ACTION_FORTUNE_TELLING,
-        targetCharacterId,
-        result
-      ),
-      doneCO: false
-    }
+    const todayResult = new Action(
+      fortuneTellerId,
+      ACTION_FORTUNE_TELLING,
+      targetCharacterId,
+      result,
+      false
+    )
 
     this.fortuneTellingHistory[day] = todayResult;
     
@@ -81,7 +79,7 @@ function FortuneTeller() {
   
   /**
    * 占い先を決定する（NPC用）
-   * TODO もし占い候補がいなければ（全員占い済みなら）、自分以外の生存者からランダムで選ぶ。
+   * TODO もし占い候補がいなければ（全員占い済みなら）占わないことができるようにする。翌朝COもしないようにする。
    * @param {Object} fortuneTellerOjbect 占い実行者（真占い師または騙りの占い師）のキャラクターオブジェクト
    * @param {Number} day 占い実行日（過去の日付で占ったことにしたいときに指定）
    * @return {Array} [占い先のキャラクターID, ※偽装占い結果] ※偽装占い結果は偽占い師の場合にboolean(t:●/f:○)で返却する。真占い師の場合null固定。
@@ -93,7 +91,7 @@ function FortuneTeller() {
     
     // 現在の視点からCO可能な、合法報告生成
     // 真占い師、騙り占い師のどちらであってもキャラクターオブジェクト直下のperspectiveを元にしてよい
-    // FIXME:「昨夜襲撃されたキャラを●と報告する」が破綻扱いになっていない。ここというよりは呼び出し元でキャッチすべきことだけど。
+    // TODO:「昨夜襲撃されたキャラを●と報告する」という破綻があり得る。（キャラの論理力によって）破綻するCOをしないようにしてもいいかも。
     const regalAnnouncements = generateRegalAnnouncements(candidateIdList, fortuneTellerObject.perspective);
     
     // 合法報告の生成結果から、占い先を考慮し返却する
@@ -112,10 +110,8 @@ function FortuneTeller() {
     
     // 占い対象外のキャラクターIDを配列化する
     // そのキャラの占い履歴内のアクションオブジェクトの中からtargetIdキーの値を抽出して配列化
-    const notTargetIds = getValuesFromObjectArray(
-      getValuesFromObjectArray(Object.values(this.fortuneTellingHistory), 'action'),
-      'targetId'
-    );
+    const notTargetIds = Object.values(this.fortuneTellingHistory).map(actionObject => actionObject.targetId).filter(Boolean);
+
     // そこに占い実行者自身も追加
     notTargetIds.push(fortuneTellerId);
 
@@ -173,7 +169,7 @@ function FortuneTeller() {
  */
 function Werewolf() {
   // 基底クラスのインスタンス取得
-  const roleObject = new Role (ROLE_ID_WEREWOLF, '人狼', 1, true, true);
+  const roleObject = new Role (ROLE_ID_WEREWOLF, '人狼', true, true);
 
   // 個別の役職クラスに必要なプロパティ、関数を取得
   /**
@@ -227,5 +223,5 @@ function Werewolf() {
  * @classdec 狂人クラス（個別の役職クラス）
  */
 function Madman() {
-  return new Role (ROLE_ID_MADMAN, '狂人', 1, false, true);
+  return new Role (ROLE_ID_MADMAN, '狂人', false, true);
 }
