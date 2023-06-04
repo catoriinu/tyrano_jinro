@@ -6,7 +6,8 @@ data/fgimage/
 data/image/
 data/others/3d/
 data/others/fonts/
-data/others/*.js
+data/others/test.js
+data/others/testjs.js
 data/others/plugin/for/
 data/others/plugin/jinro/memo/*.drawio
 data/scenario/cg.ks
@@ -24,3 +25,5 @@ readme.txt
 studio_config.json
 test.json
 workspace.code-workspace
+preview.css
+preview.html

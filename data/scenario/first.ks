@@ -18,6 +18,10 @@
 
 [plugin name="playselist"] 
 
+; ボイボ人狼用初期化
+[call storage="theater/macros.ks"]
+[loadjs storage="theaterScripts.js"]
+
 ; デフォルトフォントの設定
 [deffont size=32 color="0x28332a" face=MPLUSRounded][resetfont]
 
