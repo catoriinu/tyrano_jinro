@@ -26,7 +26,7 @@ function Personality(name, active, hungry, egoistic, logical, assertiveness, rol
 /**
  * @classdec テスト用の性格クラス
  */
-function Tester() {
+function Personality_tester() {
   return new Personality (
     'テスト用の性格', // name
     0.7, // active
@@ -136,4 +136,20 @@ function Doll() {
       love: 0.8
     }
   );
+}
+
+
+/**
+ * 性格クラスを取得する。引数には、キャラクターIDまたは性格クラス名そのものを渡されることを想定。
+ * @param {string} name 性格クラス名。その名前の性格クラスが定義されていればそれを、なければテスト用の性格クラスを返却する。
+ * @returns {Personality} 性格クラス
+ */
+function getPersonality(name = 'tester') {
+  // 名前被りを避けるために接頭辞を付ける
+  const personalityFunctionName = 'Personality_' + name;
+  if (typeof window[personalityFunctionName] === 'function') {
+    return new window[personalityFunctionName]();
+  }
+  // 未定義ならテスト用の性格を返却する
+  return new Personality_tester();
 }

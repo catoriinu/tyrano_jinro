@@ -13,6 +13,15 @@ const CHARACTER_ID_TSUMUGI  = 'tsumugi'; // 春日部つむぎ
 const CHARACTER_ID_HAU      = 'hau'; // 雨晴はう
 const CHARACTER_ID_RITSU    = 'ritsu'; // 波音リツ
 
+// 登場する全てのキャラクターIDと名前、およびその基本的な序列
+const PARTICIPANTS_LIST = [
+  {characterId: CHARACTER_ID_ZUNDAMON, name: 'ずんだもん'},
+  {characterId: CHARACTER_ID_METAN,    name: '四国めたん'},
+  {characterId: CHARACTER_ID_TSUMUGI,  name: '春日部つむぎ'},
+  {characterId: CHARACTER_ID_HAU,      name: '雨晴はう'},
+  {characterId: CHARACTER_ID_RITSU,    name: '波音リツ'},
+];
+
 // 役職ID
 const ROLE_ID_VILLAGER       = 'villager'; // 村人
 const ROLE_ID_WEREWOLF       = 'werewolf'; // 人狼
