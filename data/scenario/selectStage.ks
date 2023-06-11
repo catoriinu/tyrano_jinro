@@ -13,25 +13,8 @@
 
 
 *test
-
-[iscript]
-  ; 村の参加キャラクターを決める（要素0番目がPCキャラとなる）
-  ; TODO このメソッドは脱却して、画面の入力や選択したステージによって決められるようにしたい
-  f.participantsIdList = getParticipantsIdList();
-
-  ; 村の全役職を決める
-  ; TODO 今は完全に動作確認用。改めてロジックを考えること。
-  ; TODO このメソッドは脱却して、画面の入力や選択したステージによって決められるようにしたい
-  let tmpRoleIdList = getVillagersRoleIdList();
-  
-  ; 0番目がボタンで選択したPCの役職、それ以降がNPCの役職になるようにする。
-  tmpRoleIdList.splice(tmpRoleIdList.indexOf(tf.pcRoleId), 1);
-  f.villagersRoleIdList = [tf.pcRoleId].concat(tmpRoleIdList);
-
-  // TODO 役職選択画面（selectStage）関連の初期化処理
-  // 役職選択済みフラグを立てる
-  f.isSelectedMyRole = true;
-[endscript]
+[j_regesterParticipant characterId="&CHARACTER_ID_ZUNDAMON" roleId="&tf.pcRoleId" isplayer="true"]
+[j_prepareJinroGame participantsNumber="5"]
 
 ; メッセージ削除してゲーム開始
 [freeimage layer="1" ]

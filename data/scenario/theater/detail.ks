@@ -52,18 +52,9 @@
 [endnowait]
 [layopt layer="message0" visible="true"]
 
-[iscript]
-  let participantObjectList = [
-    new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_VILLAGER),
-    new Participant(CHARACTER_ID_METAN, ROLE_ID_FORTUNE_TELLER)
-  ];
-
-  const villagersRoleIdList = getVillagersRoleIdList(5, participantObjectList);
-  participantObjectList = fillAndSortParticipantObjectList(5, participantObjectList);
-
-  initializeCharacterObjectsForJinro(villagersRoleIdList, participantObjectList);
-  initializeTyranoValiableForJinro();
-[endscript]
+[j_regesterParticipant characterId="&CHARACTER_ID_ZUNDAMON" roleId="&ROLE_ID_VILLAGER" isplayer="true"]
+[j_regesterParticipant characterId="&CHARACTER_ID_METAN" roleId="&ROLE_ID_FORTUNE_TELLER"]
+[j_prepareJinroGame participantsNumber="5"]
 
 [jump storage="playJinro.ks"]
 

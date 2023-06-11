@@ -2,6 +2,50 @@
 ;first.ksでサブルーチンとして読み込んでおくこと
 
 
+; 参加者登録マクロ
+; 登録をした後はすぐにj_prepareJinroGameを実行すること
+; @param characterId キャラクターID。必須
+; @param roleId 役職ID。指定しない場合、役職はランダムに決定される
+; @param personalityName 性格名。指定しない場合、キャラクターのデフォルトの性格になる
+; @param isPlayer プレイヤーキャラクターかどうか。指定した時点で、他のキャラの登録は初期化される ※キーを指定した時点でtrue扱いになるので注意
+[macro name="j_regesterParticipant"]
+  [iscript]
+    // 初回呼び出し、あるいはisPlayerを指定された場合、tmpParticipant配列を初期化
+    if (!(('tmpParticipantObjectList' in tf) && Array.isArray(tf.tmpParticipantObjectList)) || ('isPlayer' in mp)) {
+      tf.tmpParticipantObjectList = [];
+    };
+
+    const characterId = mp.characterId;
+    const roleId = ('roleId' in mp) ? mp.roleId : null;
+    const personalityName = ('personalityName' in mp) ? mp.personalityName : null;
+    tf.tmpParticipantObjectList.push(new Participant(characterId, roleId, personalityName));
+  [endscript]
+[endmacro]
+
+
+; 人狼ゲーム準備マクロ
+; 事前に最低でも1人（プレイヤー）以上はj_regesterParticipantで（または直接tf.tmpParticipantObjectListに）参加者を登録しておくこと
+; @param participantsNumber 参加者の総人数
+[macro name="j_prepareJinroGame"]
+  [iscript]
+    // 参加者の人数はマクロの引数を優先する。もし未定義なら登録済みの参加者の数とする（未初期化だった場合はエラーになるはずだが考慮しない）
+    const participantsNumber = ('participantsNumber' in mp) ? parseInt(mp.participantsNumber) : tf.tmpParticipantObjectList.length;
+    // 登録済みの参加者オブジェクト配列を一時変数からcloneする
+    let participantObjectList = clone(tf.tmpParticipantObjectList);
+
+    const villagersRoleIdList = getVillagersRoleIdList(participantsNumber, participantObjectList);
+    participantObjectList = fillAndSortParticipantObjectList(participantsNumber, participantObjectList);
+
+    // キャラクターオブジェクト生成と各種変数の初期化
+    initializeCharacterObjectsForJinro(villagersRoleIdList, participantObjectList);
+    initializeTyranoValiableForJinro();
+
+    // 登録が済んだらティラノの一時変数は初期化しておく
+    tf.tmpParticipantObjectList = [];
+  [endscript]
+[endmacro]
+
+
 ; 処刑マクロ
 [macro name="j_execution"]
   [iscript]
