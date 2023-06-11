@@ -13,7 +13,7 @@
 
 
 *test
-[j_regesterParticipant characterId="&CHARACTER_ID_ZUNDAMON" roleId="&tf.pcRoleId" isplayer="true"]
+[j_registerParticipant characterId="&CHARACTER_ID_ZUNDAMON" roleId="&tf.pcRoleId" isplayer="true"]
 [j_prepareJinroGame participantsNumber="5"]
 
 ; メッセージ削除してゲーム開始

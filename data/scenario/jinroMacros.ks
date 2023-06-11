@@ -8,7 +8,7 @@
 ; @param roleId 役職ID。指定しない場合、役職はランダムに決定される
 ; @param personalityName 性格名。指定しない場合、キャラクターのデフォルトの性格になる
 ; @param isPlayer プレイヤーキャラクターかどうか。指定した時点で、他のキャラの登録は初期化される ※キーを指定した時点でtrue扱いになるので注意
-[macro name="j_regesterParticipant"]
+[macro name="j_registerParticipant"]
   [iscript]
     // 初回呼び出し、あるいはisPlayerを指定された場合、tmpParticipant配列を初期化
     if (!(('tmpParticipantObjectList' in tf) && Array.isArray(tf.tmpParticipantObjectList)) || ('isPlayer' in mp)) {
@@ -24,7 +24,7 @@
 
 
 ; 人狼ゲーム準備マクロ
-; 事前に最低でも1人（プレイヤー）以上はj_regesterParticipantで（または直接tf.tmpParticipantObjectListに）参加者を登録しておくこと
+; 事前に最低でも1人（プレイヤー）以上はj_registerParticipantで（または直接tf.tmpParticipantObjectListに）参加者を登録しておくこと
 ; @param participantsNumber 参加者の総人数
 [macro name="j_prepareJinroGame"]
   [iscript]

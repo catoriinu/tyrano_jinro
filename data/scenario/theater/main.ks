@@ -123,7 +123,7 @@
 
 *showDetail
 
-; LOCKED確認
+; TODO: THEATER_LOCKEDなら詳細を表示させないで戻す
 
 ; シアター詳細モジュール表示
 [jump storage="theater/detail.ks" target="*start"]

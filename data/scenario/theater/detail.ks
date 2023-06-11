@@ -52,9 +52,8 @@
 [endnowait]
 [layopt layer="message0" visible="true"]
 
-[j_regesterParticipant characterId="&CHARACTER_ID_ZUNDAMON" roleId="&ROLE_ID_VILLAGER" isplayer="true"]
-[j_regesterParticipant characterId="&CHARACTER_ID_METAN" roleId="&ROLE_ID_FORTUNE_TELLER"]
-[j_prepareJinroGame participantsNumber="5"]
+[registerSituationParticipants]
+[j_prepareJinroGame participantsNumber="&f.theaterList[f.theaterDetailNum].situationParticipantsNumber"]
 
 [jump storage="playJinro.ks"]
 
