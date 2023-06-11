@@ -1,30 +1,4 @@
 /**
- * 参加するキャラクターID配列を返却する
- * @return {Array} キャラクターID配列 
- */
-function getParticipantsIdList () {
-  // 呼び出し元が何も考えず呼び出せるよう、引数はとらない方針
-  // この中で、ゲーム変数を読み込んだりロジックを書くなどして返却値を決めること
-  let participantsIdList = [
-    CHARACTER_ID_ZUNDAMON,
-    CHARACTER_ID_METAN,
-    CHARACTER_ID_TSUMUGI,
-    CHARACTER_ID_HAU,
-    CHARACTER_ID_RITSU,
-  ];
-  // let participantsIdList = [
-  //   CHARACTER_ID_AI,
-  //   CHARACTER_ID_HIYORI,
-  //   CHARACTER_ID_FUTABA,
-  //   CHARACTER_ID_MIKI,
-  //   CHARACTER_ID_DUMMY,
-  // ];
-  return participantsIdList;
-}
-
-
-
-/**
  * ダステンフェルドの手法で、配列の要素をランダムな順番にシャッフルする
  * 引用：{@link https://qiita.com/pure-adachi/items/77fdf665ff6e5ea22128}
  * @param {Array} targetArray シャッフル対象の配列
@@ -36,38 +10,6 @@ function shuffleElements(targetArray) {
     [targetArray[k], targetArray[i - 1]] = [targetArray[i - 1], targetArray[k]];
   }
   return targetArray;
-}
-
-
-/**
- * キャラクターIDからキャラクターデータオブジェクトを生成し、返却する
- * @param {String} characterId キャラクターID
- * @return {Object} キャラクターデータオブジェクト
- */
-function createCharacterData(characterId) {
-  switch (characterId) {
-    case CHARACTER_ID_AI:
-      return new AiData();
-    case CHARACTER_ID_HIYORI:
-      return new HiyoriData();
-    case CHARACTER_ID_FUTABA:
-      return new FutabaData();
-    case CHARACTER_ID_MIKI:
-      return new MikiData();
-    case CHARACTER_ID_ZUNDAMON:
-      return new ZundamonData();
-    case CHARACTER_ID_METAN:
-      return new MetanData();
-    case CHARACTER_ID_TSUMUGI:
-      return new TsumugiData();
-    case CHARACTER_ID_HAU:
-      return new HauData();
-    case CHARACTER_ID_RITSU:
-      return new RitsuData();
-    case CHARACTER_ID_YU:
-    default:
-      return new DummyData();
-  }
 }
 
 
@@ -425,6 +367,7 @@ function pushElement(array, element) {
 function getBgColorFromCharacterId(characterId) {
   return TYRANO.kag.stat.f.color.character[characterId];
 }
+
 
 /**
  * オブジェクトをディープコピーするための関数;
