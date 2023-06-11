@@ -104,19 +104,6 @@ function prepareGameMain() {
   // ※いわゆる初日占いや初日襲撃ありにする場合は、夜から始めるようにした上でシナリオを修正すること）
   TYRANO.kag.stat.f.day = 0;
   TYRANO.kag.stat.f.isDaytime = false;
-
-  // 変数テスト用
-  TYRANO.kag.stat.f.hogeObject = new TestObj();
-  TYRANO.kag.stat.f.piyoArray = ['pika', 'chu'];
-}
-
-
-function TestObj () {
-    this.string = "majide?"
-    this.propaty = {key:true};
-    this.funcTest = function () {
-       return 'funcTest';
-    }
 }
 
 

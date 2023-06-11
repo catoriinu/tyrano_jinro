@@ -22,7 +22,7 @@
 [if exp="('cantSituationPlay' in f.theaterList[f.theaterDetailNum])"]
   [ptext layer="1" text="&f.theaterList[f.theaterDetailNum].cantSituationPlay" face="MPLUSRounded" size="30" x="180" y="480" width="920" align="center"]
 [else]
-  [glink color="&tf.buttonColor" size="26" width="450" x="412.9" y="480" text="このシチュエーションでプレイする" target="*returnMain"]
+  [glink color="&tf.buttonColor" size="26" width="450" x="412.9" y="480" text="このシチュエーションでプレイする" target="*startSituationPlay"]
 [endif]
 
 ; 「解決編を見る」ボタンまたは解放条件
@@ -40,4 +40,31 @@
 [freeimage layer="1"]
 [layopt layer="message0" visible="true"]
 [jump storage="theater/main.ks" target="*hideDetail"]
+[s]
+
+
+
+*startSituationPlay
+[free_filter layer="0"]
+[freeimage layer="1"]
+[freeimage layer="0"]
+[stopbgm]
+[endnowait]
+[layopt layer="message0" visible="true"]
+
+[iscript]
+  let participantObjectList = [
+    new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_VILLAGER),
+    new Participant(CHARACTER_ID_METAN, ROLE_ID_FORTUNE_TELLER)
+  ];
+
+  const villagersRoleIdList = getVillagersRoleIdList(5, participantObjectList);
+  participantObjectList = fillAndSortParticipantObjectList(5, participantObjectList);
+
+  initializeCharacterObjectsForJinro(villagersRoleIdList, participantObjectList);
+  initializeTyranoValiableForJinro();
+[endscript]
+
+[jump storage="playJinro.ks"]
+
 [s]

@@ -23,31 +23,6 @@ function getParticipantsIdList () {
 }
 
 
-/**
- * 配役される役職ID配列を返却する
- * @return {Array} 役職ID配列 
- */
-function getVillagersRoleIdList() {
-  // 呼び出し元が何も考えず呼び出せるよう、引数はとらない方針
-  // この中で、ゲーム変数を読み込んだりロジックを書くなどして返却値を決めること
-
-  let villagersRoleIdList = [
-    ROLE_ID_FORTUNE_TELLER,
-    ROLE_ID_WEREWOLF,
-    ROLE_ID_MADMAN,
-    ROLE_ID_VILLAGER,
-    ROLE_ID_VILLAGER,
-  ];
-
-  if (!TYRANO.kag.variable.sf.j_development.doShuffle) {
-    // 開発者用設定：役職シャッフルが固定なら上記の通り返却する
-    return villagersRoleIdList;
-  }
-  // シャッフルしてから返却する
-  return shuffleElements(villagersRoleIdList);
-
-}
-
 
 /**
  * ダステンフェルドの手法で、配列の要素をランダムな順番にシャッフルする

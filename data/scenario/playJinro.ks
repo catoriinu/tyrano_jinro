@@ -27,7 +27,7 @@
 [call storage="./chara/common.ks" target="*registerAllCharacters"]
 
 ; ゲーム準備js読み込み
-[loadjs storage="plugin/jinro/macro/prepareGame.js"]
+; [loadjs storage="plugin/jinro/macro/prepareGame.js"]
 
 ; ステータス、バックログボタン表示
 [j_displayFixButton status="true" backlog="true"]
