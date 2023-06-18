@@ -369,6 +369,16 @@ function getBgColorFromCharacterId(characterId) {
 }
 
 
+function getNameByCharacterId(characterId) {
+  const participant = PARTICIPANTS_LIST.find(participant => participant.characterId === characterId);
+  return participant ? participant.name : '';
+}
+
+function getCharacterIdByName(name) {
+  const participant = PARTICIPANTS_LIST.find(participant => participant.name === name);
+  return participant ? participant.characterId : '';
+}
+
 /**
  * オブジェクトをディープコピーするための関数;
  * 第一引数はコピーさせたいオブジェクトを渡す;

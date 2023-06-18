@@ -20,9 +20,6 @@
 [position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="210" page="fore"]
 [position layer="message0" frame="message_window_none.png"]
 
-;メッセージウィンドウの表示
-[layopt layer="message0" visible="true"]
-
 
 ; シアター枠画像
 [image storage="theater/theater_rectangle.png" layer="0" name="theater1" x="12" y="6"]
@@ -46,6 +43,10 @@
 [image storage="&f.theaterList[7].thumbnail" layer="0" left="498.5" top="274" width="200" height="112.5" name="thumbnail"]
 [image storage="&f.theaterList[8].thumbnail" layer="0" left="735.5" top="274" width="200" height="112.5" name="thumbnail"]
 
+[iscript]
+if (!('quickShowDetail' in f)) {f.quickShowDetail = false}
+[endscript]
+
 ; シアタータイトル文字（全角24文字まで）
 [ptext layer="0" text="&f.theaterList[1].title" face="MPLUSRounded" size="24" x="29" y="136" width="200"]
 [ptext layer="0" text="&f.theaterList[2].title" face="MPLUSRounded" size="24" x="264" y="136" width="200"]
@@ -59,24 +60,34 @@
 
 [layopt visible="true" layer="0"]
 
-; クリッカブル領域は戻ってくるたびに必要
-*ret
-[clickable width="210" height="234" x="20" y="14" color="0x333333" opacity="0" mouseopacity="40" target="*detail_1"]
-[clickable width="210" height="234" x="257" y="14" color="0x333333" opacity="0" mouseopacity="40" target="*detail_2"]
-[clickable width="210" height="234" x="494" y="14" color="0x333333" opacity="0" mouseopacity="40" target="*detail_3"]
-[clickable width="210" height="234" x="731" y="14" color="0x333333" opacity="0" mouseopacity="40" target="*detail_4"]
+; クリッカブル領域はメイン画面を表示するたびに必要。ただしquickShowDetailが立っているときはすぐに詳細画面を表示してしまうので、領域は表示しない
+*setClickable
+[if exp="!f.quickShowDetail"]
 
-[clickable width="210" height="234" x="20" y="268" color="0x333333" opacity="0" mouseopacity="40" target="*detail_5"]
-[clickable width="210" height="234" x="257" y="268" color="0x333333" opacity="0" mouseopacity="40" target="*detail_6"]
-[clickable width="210" height="234" x="494" y="268" color="0x333333" opacity="0" mouseopacity="40" target="*detail_7"]
-[clickable width="210" height="234" x="731" y="268" color="0x333333" opacity="0" mouseopacity="40" target="*detail_8"]
+  [clickable width="210" height="234" x="20" y="14" color="0x333333" opacity="0" mouseopacity="40" target="*detail_1"]
+  [clickable width="210" height="234" x="257" y="14" color="0x333333" opacity="0" mouseopacity="40" target="*detail_2"]
+  [clickable width="210" height="234" x="494" y="14" color="0x333333" opacity="0" mouseopacity="40" target="*detail_3"]
+  [clickable width="210" height="234" x="731" y="14" color="0x333333" opacity="0" mouseopacity="40" target="*detail_4"]
 
-; ボタン類
-[eval exp="tf.buttonColor = CLASS_GLINK_DEFAULT"]
-[glink color="&tf.buttonColor" size="30" width="270" x="975" y="438" text="タイトルに戻る" target="*returnTitle"]
+  [clickable width="210" height="234" x="20" y="268" color="0x333333" opacity="0" mouseopacity="40" target="*detail_5"]
+  [clickable width="210" height="234" x="257" y="268" color="0x333333" opacity="0" mouseopacity="40" target="*detail_6"]
+  [clickable width="210" height="234" x="494" y="268" color="0x333333" opacity="0" mouseopacity="40" target="*detail_7"]
+  [clickable width="210" height="234" x="731" y="268" color="0x333333" opacity="0" mouseopacity="40" target="*detail_8"]
 
-視聴したいシアターを選択してください。[r]
-人狼ゲームで特定の条件を満たすと解決編が解放されます。
+  ; ボタン類
+  [eval exp="tf.buttonColor = CLASS_GLINK_DEFAULT"]
+  [glink color="&tf.buttonColor" size="30" width="270" x="975" y="438" text="タイトルに戻る" target="*returnTitle"]
+
+  ;メッセージウィンドウの表示
+  [layopt layer="message0" visible="true"]
+
+  視聴したいシアターを選択してください。[r]
+  人狼ゲームで特定の条件を満たすと解決編が解放されます。
+
+[else]
+  [eval exp="tf.detailTarget = '*detail_' + f.theaterDetailNum"]
+  [jump target="&tf.detailTarget"]
+[endif]
 [s]
 
 
@@ -122,16 +133,17 @@
 
 
 *showDetail
+[eval exp="f.quickShowDetail = false"]
 
-; TODO: THEATER_LOCKEDなら詳細を表示させないで戻す
+; そのシアターが解放済みなら、シアター詳細モジュール表示
+[jump storage="theater/detail.ks" target="*start" cond="sf.theaterProgress[f.theaterListPage][f.theaterDetailNum].intro !== THEATER_LOCKED"]
 
-; シアター詳細モジュール表示
-[jump storage="theater/detail.ks" target="*start"]
-[s]
+; そのシアターが未解放なら、詳細を表示させないで戻す
+未解放のシアターのため選択できません。[p]
 
 *hideDetail
 ; シアター詳細モジュール非表示（モジュールから戻ってくるためのラベル）
-[jump target="*ret"]
+[jump target="*setClickable"]
 [s]
 
 

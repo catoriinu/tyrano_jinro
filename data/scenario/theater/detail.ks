@@ -16,7 +16,7 @@
 [clickable width="1280" height="55" x="0" y="665" target="*returnMain"]
 
 ; 「導入編を見る」ボタン
-[glink color="&tf.buttonColor" size="26" width="300" x="487" y="395" text="導入編を見る" target="*returnMain"]
+[glink color="&tf.buttonColor" size="26" width="300" x="487" y="395" text="導入編を見る" target="*startIntro"]
 
 ; 「このシチュエーションでプレイする」ボタンまたはプレイできない理由
 [if exp="('cantSituationPlay' in f.theaterList[f.theaterDetailNum])"]
@@ -29,19 +29,34 @@
 [if exp="sf.theaterProgress[f.theaterListPage][f.theaterDetailNum].end == THEATER_LOCKED"]
   [ptext layer="1" text="&f.theaterList[f.theaterDetailNum].unlockCondition" face="MPLUSRounded" size="30" x="180" y="555" width="920" align="center"]
 [else]
-  [glink color="&tf.buttonColor" size="26" width="300" x="487" y="565" text="解決編を見る" target="*returnMain"]
+  [glink color="&tf.buttonColor" size="26" width="300" x="487" y="565" text="解決編を見る" target="*startOutro"]
 [endif]
 
 [s]
 
 
-*returnMain
+*startIntro
 [free_filter layer="0"]
 [freeimage layer="1"]
+[freeimage layer="0"]
+[stopbgm]
+[endnowait]
 [layopt layer="message0" visible="true"]
-[jump storage="theater/main.ks" target="*hideDetail"]
+
+[jump storage="&f.theaterList[f.theaterDetailNum].introStorage"]
 [s]
 
+
+*startOutro
+[free_filter layer="0"]
+[freeimage layer="1"]
+[freeimage layer="0"]
+[stopbgm]
+[endnowait]
+[layopt layer="message0" visible="true"]
+
+[jump storage="&f.theaterList[f.theaterDetailNum].outroStorage"]
+[s]
 
 
 *startSituationPlay
@@ -56,5 +71,12 @@
 [j_prepareJinroGame participantsNumber="&f.theaterList[f.theaterDetailNum].situationParticipantsNumber"]
 
 [jump storage="playJinro.ks"]
+[s]
 
+
+*returnMain
+[free_filter layer="0"]
+[freeimage layer="1"]
+[layopt layer="message0" visible="true"]
+[jump storage="theater/main.ks" target="*hideDetail"]
 [s]

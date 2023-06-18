@@ -14,7 +14,10 @@
         situationParticipantsNumber: 5,
         situationParticipants: [
           new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_WEREWOLF),
-        ]
+          new Participant(CHARACTER_ID_METAN, ROLE_ID_MADMAN),
+        ],
+        introStorage: 'theater/page01/01-1_darega.ks',
+        outroStorage: 'theater/page01/01-2_darega.ks',
       },
       2: {
         title: 'わたくしの千里眼―サウザンドアイ―に死角なし！',
@@ -24,7 +27,9 @@
         situationParticipants: [
           new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_VILLAGER),
           new Participant(CHARACTER_ID_METAN, ROLE_ID_FORTUNE_TELLER),
-        ]
+        ],
+        introStorage: '',
+        outroStorage: '',
       },
       3: {
         title: 'ずんだカレーを布教するのだ！',
@@ -34,7 +39,9 @@
         situationParticipants: [
           new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_MADMAN),
           new Participant(CHARACTER_ID_TSUMUGI, ROLE_ID_WEREWOLF),
-        ]
+        ],
+        introStorage: '',
+        outroStorage: '',
       },
       4: {
         title: '入れれば入れる程幸せになれるもの',
@@ -44,7 +51,9 @@
         situationParticipants: [
           new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_FORTUNE_TELLER),
           new Participant(CHARACTER_ID_HAU, ROLE_ID_WEREWOLF),
-        ]
+        ],
+        introStorage: '',
+        outroStorage: '',
       },
       5: {
         title: '欠陥住宅？',
@@ -54,7 +63,9 @@
         situationParticipants: [
           new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_FORTUNE_TELLER),
           new Participant(CHARACTER_ID_RITSU, ROLE_ID_WEREWOLF),
-        ]
+        ],
+        introStorage: '',
+        outroStorage: '',
       },
       6: {
         title: 'ボイボ寮の噂話#1',
@@ -64,7 +75,9 @@
         situationParticipantsNumber: 5,
         situationParticipants: [
           new Participant(CHARACTER_ID_ZUNDAMON),
-        ]
+        ],
+        introStorage: '',
+        outroStorage: '',
       },
       7: {
         title: '寮長争奪決定戦',
@@ -74,7 +87,9 @@
         situationParticipantsNumber: 5,
         situationParticipants: [
           new Participant(CHARACTER_ID_ZUNDAMON),
-        ]
+        ],
+        introStorage: '',
+        outroStorage: '',
       },
       8: {
         title: '誰が人狼ゲームを始めたのだ？',
@@ -84,11 +99,22 @@
         situationParticipantsNumber: 5,
         situationParticipants: [
           new Participant(CHARACTER_ID_ZUNDAMON),
-        ]
+        ],
+        introStorage: '',
+        outroStorage: '',
       },
     }
   }
-  // TODO intro: THEATER_LOCKEDならサムネを「？」画像に入れ替える
+
+  // 導入編が未解放のシアターは、タイトルとサムネイルを上書きする
+  console.log(f.theaterList);
+  for (let i = 1; i < (Object.keys(f.theaterList).length + 1); i++) {
+    console.log(i);
+    if (sf.theaterProgress[mp.page][i].intro == THEATER_LOCKED) {
+      f.theaterList[i].title = '？？？？？';
+      f.theaterList[i].thumbnail = 'theater/TVStaticColor01_10.png';
+    }
+  }
 [endscript]
 [endmacro]
 

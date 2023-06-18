@@ -344,3 +344,45 @@
 
   *end_m_exitCharacter
 [endmacro]
+
+
+; 
+; @param characterId 発言者のキャラクターID。指定しない場合はnameが必須になる。
+; @param name 発言者のキャラクター名。characterIdが指定されている場合そちらが優先。
+; @param face 発言者のface。指定がなければそのまま。
+; @param side 発言者が登場する位置。指定がなければそのまま。
+[macro name="m_changeCharacterFrameName"]
+
+  [iscript]
+    // マクロの引数を一時変数に保持しておく。別マクロを呼ぶ際にmpが上書きされ、戻ってきたときに参照できなくなるため
+    tf.ccfn = clone(mp);
+
+    if (!('name' in tf.ccfn) && !('name' in tf.ccfn)) {
+      alert('characterId, nameともに未指定です');
+    }
+
+    // マクロの引数にcharacterIdが未指定なら、nameをもとに取得してくる
+    if (!('characterId' in tf.ccfn)) {
+      tf.ccfn.characterId = getCharacterIdByName(tf.ccfn.name);
+    }
+
+    // マクロの引数にnameが未指定なら、characterIdをもとに取得してくる
+    if (!('name' in tf.ccfn)) {
+      tf.ccfn.name = getNameByCharacterId(tf.ccfn.characterId);
+    }
+    // 発言者表示の#に、f.speaker（＝人狼ゲーム中の発言者名格納変数。独裁者モードの場合、発言者の役職を追加表示できる）を使えるかを判定する。
+    if (('speaker' in f) && (tf.ccfn.name in f.speaker)) {
+      // TODO 人狼ゲーム終了時やタイトル画面表示時などに初期化しておかないと、前の人狼ゲーム時の役職が表示されそう
+      tf.ccfn.speaker = f.speaker[tf.ccfn.name];
+    } else {
+      // 使えない場合はnameをそのまま表示する
+      tf.ccfn.speaker = tf.ccfn.name;
+    }
+
+  [endscript]
+
+  [m_changeCharacter characterId="&tf.ccfn.characterId"]
+  [m_changeFrameWithId characterId="&tf.ccfn.characterId"]
+  # &tf.ccfn.speaker
+
+[endmacro]
