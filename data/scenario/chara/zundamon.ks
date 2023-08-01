@@ -27,6 +27,6 @@
   ; だいたいtf.characterIdを参照してくれるが、storageとjnameには正確な文字列を入れること
   [chara_new name="&tf.characterId" storage="chara/zundamon/normal.png" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" jname="ずんだもん" reflect="true"]
   [chara_face name="&tf.characterId" face="normal" storage="chara/zundamon/normal.png"]
-  [chara_face name="&tf.characterId" face="deny" storage="chara/zundamon/必死に否定.png"]
+  [chara_face name="&tf.characterId" face="deny" storage="chara/zundamon/deny.png"]
   [chara_show name="&tf.characterId" face="normal" time="0" wait="true" left="&f.defaultPosition[tf.characterId].left" top="&f.defaultPosition[tf.characterId].top"]
 [return]
