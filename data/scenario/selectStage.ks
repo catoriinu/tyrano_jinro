@@ -14,7 +14,7 @@
 
 *test
 [j_registerParticipant characterId="&CHARACTER_ID_ZUNDAMON" roleId="&tf.pcRoleId" isplayer="true"]
-[j_prepareJinroGame participantsNumber="5"]
+[j_prepareJinroGame participantsNumber="5" preload="true"]
 
 ; メッセージ削除してゲーム開始
 [freeimage layer="1" ]
