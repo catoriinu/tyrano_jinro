@@ -163,3 +163,85 @@ function DisplayCharactersHorizontallySingle(characterId, fileName, bgColor, top
   this.topText = topText;
   this.leftText = leftText;
 }
+
+
+
+
+// messageの各キャラクターから呼び出される
+
+/**
+ * TODO
+ * @param {*} actionObject 
+ * @returns _{占い結果}_{ターゲットへの感情}_{ターゲットの生死}
+ */
+function getLabelForCOFortuneTelling(actionObject) {
+  let characterId = actionObject.characterId;
+  let targetId = actionObject.targetId;
+
+  let resultLabel = '_';
+  let feelingLabel = '_';
+  let aliveLabel = '_';
+
+  if (actionObject.result === true) {
+    resultLabel += 'true';
+    feelingLabel += getFeelingLabel(characterId, targetId);
+    aliveLabel += 'alive';
+  } else {
+    resultLabel += 'false';
+    // 感情によって変える
+    feelingLabel += getFeelingLabel(characterId, targetId);
+    if (!TYRANO.kag.stat.f.characterObjects[targetId].isAlive) {
+      // NOTE: 本来は「前日襲撃死した相手なら」が正しいが、単純にするために「発言時点で死亡済みなら」判定する。もし問題が発生したら直すこと。
+      aliveLabel += 'died';
+    } else {
+      aliveLabel += 'alive';
+    }
+  }
+
+  return resultLabel + feelingLabel + aliveLabel;
+}
+
+
+
+/**
+ * 
+ * @param {*} actionObject 
+ * @returns _{アクションID}_{判断基準}
+ */
+function getLabelForDoAction(actionObject) {
+  let actionLabel = '_' + actionObject.actionId;
+  let decisionLabel = '_' + actionObject.decision;
+
+  return actionLabel + decisionLabel;
+}
+
+
+
+/**
+ * 
+ * @param {*} actionObject 
+ * @returns _{アクションID}_{ターゲットへの感情}
+ */
+function getLabelForDoActionReaction(actionObject) {
+  let characterId = actionObject.characterId;
+  let actionId = actionObject.actionId;
+  let targetId = actionObject.targetId;
+
+  let actionLabel = '_' + actionId;
+  let feelingLabel = '_' + getFeelingLabel(targetId, characterId); // リアクションなので、対象者から実行者への感情を取得する
+
+  return actionLabel + feelingLabel;
+}
+
+
+function getFeelingLabel(characterId, targetId) {
+  let characterObject = TYRANO.kag.stat.f.characterObjects[characterId];
+
+  let sameFactionPossivility = calcSameFactionPossivility(
+    characterObject,
+    characterObject.perspective, // 発言は嘘をつくため、perspectiveを渡す
+    [targetId]
+  );
+
+  return getFeeling(characterObject, sameFactionPossivility[targetId]);
+}

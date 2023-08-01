@@ -26,6 +26,7 @@
 ; 人狼ゲーム準備マクロ
 ; 事前に最低でも1人（プレイヤー）以上はj_registerParticipantで（または直接tf.tmpParticipantObjectListに）参加者を登録しておくこと
 ; @param participantsNumber 参加者の総人数
+; @param preload 人狼ゲームで使用するファイルをpreloadするか。デフォルト=false(しない)
 [macro name="j_prepareJinroGame"]
   [iscript]
     // 参加者の人数はマクロの引数を優先する。もし未定義なら登録済みの参加者の数とする（未初期化だった場合はエラーになるはずだが考慮しない）
@@ -43,6 +44,10 @@
     // 登録が済んだらティラノの一時変数は初期化しておく
     tf.tmpParticipantObjectList = [];
   [endscript]
+
+  [if exp="('preload' in mp) && (mp.preload === 'true' || mp.preload === true)"]
+    [call storage="message/utility.ks" target="preloadVoice"]
+  [endif]
 [endmacro]
 
 
@@ -513,7 +518,8 @@
 [macro name="j_cutin1"]
 
     ;[image layer="1" x="0" y="150" width="1280" height="200" time="700" wait="false" storage="cutin.gif" name="cutin"]
-    [playse storage="シャキーン1.ogg" volume="40"]
+    ; ボイスとのスロットの競合を避けるためにbuf="1"を指定
+    [playse storage="シャキーン1.ogg" volume="40" buf="1"]
     ;[image layer="1" x="-1000" y="160" height="180" visible="true" reflect="true" storage="00_angry_eye.png" name="00"]
     ;[anim name="00" left=100 time=700]
     ;[wait time=700]
@@ -694,6 +700,7 @@
     // MEMO ここで仲間度を用いないのは、仲間度のみに限定すると中途半端な対象しか選択されないため。
     // 論理力の低いキャラでも論理的な判断（＝そのキャラ視点における人狼ゲーム的な正解）で発言するチャンスを設けることで、プレイヤーを悩ませられると思う。
     const [probability, isLogicalDecision] = randomDecide(f.characterObjects[f.doActionCandidateId].personality.logical);
+    const decision = isLogicalDecision ? DECISION_LOGICAL : DECISION_EMOTIONAL;
 
     // 実行するアクションを決める
     // MEMO 選ばれるアクションは一旦ランダムとする。何らかの基準で比重を変えたい場合はここを修正する。
@@ -714,7 +721,7 @@
     const roleId = (f.characterObjects[f.doActionCandidateId].CORoleId == '') ? ROLE_ID_VILLAGER : f.characterObjects[f.doActionCandidateId].CORoleId;
 
     let targetCharacterId = '';
-    if (isLogicalDecision) {
+    if (decision == DECISION_LOGICAL) {
       // 論理的な判断
 
       // 同陣営判定の対象となる役職は、CO中の役職（COがなければ村人）とする
@@ -735,6 +742,7 @@
 
     // ここまでに決定した情報を、NPCのアクションオブジェクトに格納する
     f.npcActionObject = new Action(f.doActionCandidateId, actionId, targetCharacterId);
+    f.npcActionObject.decision = decision;
   [endscript]
 
   *end_j_decideDoActionByNPC
@@ -745,27 +753,35 @@
 ; 事前に[j_setDoActionObject]の実行が必要
 ; @param actionObject アクションオブジェクト {characterId:アクション実行するキャラクターID, actionId:実行するアクションID, targetId:アクション対象のキャラクターID} 必須
 [macro name="j_doAction"]
-  ; アクションボタン用変数の初期化（PCからのボタン先行入力を受け付けられるように消す。セリフとリアクションにはマクロ変数を渡すのでこのタイミングで消して問題ない）
-  [eval exp="f.doActionObject = {}"]
-  [eval exp="f.pcActionObject = {}"]
-  [eval exp="f.npcActionObject = {}"]
-
-  ; セリフ表示
-  [m_doAction characterId="&mp.actionObject.characterId" targetCharacterId="&mp.actionObject.targetId" actionId="&mp.actionObject.actionId"]
-
   [iscript]
+    // アクションボタン用変数の初期化（PCからのボタン先行入力を受け付けられるように消す。セリフとリアクションにはマクロ変数をcloneしたオブジェクト渡すのでこのタイミングで消して問題ない）
+    f.doActionObject = {};
+    f.pcActionObject = {};
+    f.npcActionObject = {};
+
+    f.actionObject = clone(mp.actionObject);
+
+    // アクション実行者がプレイヤーの場合、ここで判断基準IDを入れる
+    if (f.actionObject.characterId == f.playerCharacterId) {
+      // TODO 信じる：表の視点で同陣営割合が50%以上なら論理的な判断　疑う：表の視点で同陣営割合が50%未満なら論理的な判断
+      f.actionObject.decision = DECISION_LOGICAL; //DECISION_EMOTIONAL;
+    }
+
     // 全員の信頼度増減
-    updateReliabirityForAction(f.characterObjects, mp.actionObject);
+    updateReliabirityForAction(f.characterObjects, f.actionObject);
     // アクション実行者の主張力を下げて、同日中は再発言しにくくする
-    f.characterObjects[mp.actionObject.characterId].personality.assertiveness.current -= f.characterObjects[mp.actionObject.characterId].personality.assertiveness.decrease;
+    f.characterObjects[f.actionObject.characterId].personality.assertiveness.current -= f.characterObjects[f.actionObject.characterId].personality.assertiveness.decrease;
 
     // アクション実行履歴オブジェクトに、アクションオブジェクトを保存する
     let timeStr = getTimeStr();
-    f.doActionHistory[f.day][timeStr].push(mp.actionObject);
+    f.doActionHistory[f.day][timeStr].push(f.actionObject);
   [endscript]
 
+  ; セリフ表示
+  [m_doAction actionObject="&f.actionObject"]
+
   ; リアクションのセリフ表示
-  [m_doAction_reaction characterId="&mp.actionObject.targetId" actionId="&mp.actionObject.actionId"]
+  [m_doAction_reaction actionObject="&f.actionObject"]
 [endmacro]
 
 

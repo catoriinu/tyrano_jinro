@@ -581,13 +581,15 @@ function Button (id, text, side = 'center', color = '', addClasses = [], target 
  * @param {String} targetId アクションの対象者のキャラクターID（対象をとらないアクションなら不要）
  * @param {Boolean} result アクションの結果。意味はアクションによって異なる。（占い=t:●/f:○, 処刑・襲撃=t:死亡/f:死亡せず）
  * @param {Boolean} isPublic 公開されたアクションか（例：占い=t:CO済み/f:未CO）
+ * @param {String} decision そのアクションを実行した判断基準（任意）
  */
-function Action (characterId = '', actionId, targetId = '', result = null, isPublic = false) {
+function Action (characterId = '', actionId, targetId = '', result = null, isPublic = false, decision = '') {
   this.characterId = characterId;
   this.actionId = actionId;
   this.targetId = targetId;
   this.result = result;
   this.isPublic = isPublic;
+  this.decision = decision;
 }
 
 
@@ -1179,7 +1181,7 @@ function getFeeling(characterObject, sameFactionPossivility) {
   } else if (sameFactionPossivility > characterObject.personality.feelingBorder.love) {
     return FEELING_LOVE;
   } else {
-    return FEELING_NORMAL;
+    return FEELING_NEUTRAL;
   }
 }
 
@@ -1318,7 +1320,11 @@ function getCharacterIdByReliability(characterObject, needsMax) {
   } else if (targetCharacterIdList.length >= 2) {
     // 候補が複数なら、候補の中で最も仲間度が高い（低い）キャラクターを候補とする
     // 基本的には、同陣営割合の差の影響で仲間度にも差が出る。ただしlogicalが0の場合だけは差が出ないことに注意。
-    let sameFactionPossivility = calcSameFactionPossivility(characterObject, perspective, targetCharacterIdList);
+    let sameFactionPossivility = calcSameFactionPossivility(
+      characterObject,
+      characterObject[characterObject.characterId].perspective, // 発言は嘘をつくため、perspectiveを渡す
+      targetCharacterIdList
+    );
     console.log('★Reliability sameFactionPossivility:');
     console.log(sameFactionPossivility);
 
