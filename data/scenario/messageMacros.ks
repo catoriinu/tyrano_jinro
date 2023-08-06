@@ -343,6 +343,19 @@
 [endmacro]
 
 
+; キャラクター表示状態リセットマクロ
+; 左のキャラクターの表情をノーマルに戻し、右のキャラクターを退場させるマクロ
+; フェーズの転換時にリセットするために使う
+; @param characterId 退場させたいキャラのキャラクターID。必須。
+[macro name="m_resetDisplayCharacter"]
+  [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+
+  [if exp="f.displayedCharacter.left.isDisplay"]
+    [m_changeCharacter characterId="&f.displayedCharacter.left.characterId" face="normal"]
+  [endif]
+[endmacro]
+
+
 ; 
 ; @param characterId 発言者のキャラクターID。指定しない場合はnameが必須になる。
 ; @param name 発言者のキャラクター名。characterIdが指定されている場合そちらが優先。

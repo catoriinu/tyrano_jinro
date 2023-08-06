@@ -34,12 +34,6 @@
 #
 人狼ゲームの幕開けです……！[p]
 
-; TODO あとで消す。playselistプラグインのテスト用
-;[add_playselist storage="megaten.ogg" loop="false" volume="40" sprite_time="" interval="450"]
-;[add_playselist storage="kirakira4.ogg" loop="false" volume="40" sprite_time=""]
-;[playselist]
-;[p]
-
 [clearstack]
 *day0_nightPhase
 
@@ -274,6 +268,7 @@
 ; アクションボタン表示
 [j_displayFixButton action="true" cond="f.characterObjects[f.playerCharacterId].isAlive"]
 
+[m_resetDisplayCharacter]
 [m_changeFrameWithId]
 #
 ～議論フェイズ～[p]
@@ -304,6 +299,7 @@
 ; アクションボタン非表示
 [j_clearFixButton action="true" cond="f.characterObjects[f.playerCharacterId].isAlive"]
 
+[m_resetDisplayCharacter]
 [m_changeFrameWithId]
 #
 ～投票フェイズ～[p]
