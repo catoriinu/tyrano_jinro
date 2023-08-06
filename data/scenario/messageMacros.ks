@@ -13,11 +13,14 @@
 ; シーン：初日、役職を告知されたときの反応
 ; @param characterId 発言者のキャラクターID。必須
 ; @param roleId 発言者の役職ID。必須
-; @param face 発言者の表情。（TODO）
 [macro name="m_noticeRole"]
-  [m_changeCharacter characterId="&mp.characterId" face="normal"]
-  [m_changeFrameWithId characterId="&mp.characterId"]
-  # &f.speaker[f.characterObjects[mp.characterId].name]
+  [iscript]
+    // 発言者名を表示するためだけにアクションオブジェクトを作成する
+    f.actionObject = new Action(mp.characterId);
+  [endscript]
+;  [m_changeCharacter characterId="&mp.characterId" face="normal"]
+;  [m_changeFrameWithId characterId="&mp.characterId"]
+;  # &f.speaker[f.characterObjects[mp.characterId].name]
   [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
   [eval exp="tf.messageTarget = '*noticeRole_' + mp.roleId"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
@@ -27,9 +30,6 @@
 ; シーン：真占い師で、占い実行結果を知ったときの反応
 ; 事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 [macro name="m_announcedFortuneTellingResult"]
-  [m_changeCharacter characterId="&f.actionObject.characterId" face="normal"]
-  [m_changeFrameWithId characterId="&f.actionObject.characterId"]
-  # &f.speaker[f.characterObjects[f.actionObject.characterId].name]
   [eval exp="tf.messageStorage = './message/' + f.actionObject.characterId + '.ks'"]
   [eval exp="tf.messageTarget = '*announcedFortuneTellingResult_' + f.actionObject.result"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
@@ -62,10 +62,7 @@
 
 
 ; シーン：アクション実行時のセリフ
-; @param characterId 発言者のキャラクターID。必須
-; @param face 発言者の表情。（TODO）
-; @param targetCharacterId アクション対象のキャラクターID。必須
-; @param actionId 実行するアクションID。必須。
+; 事前にf.actionObjectにアクションオブジェクトを格納しておくこと
 [macro name="m_doAction"]
   [iscript]
     tf.targetLabel = getLabelForDoAction(f.actionObject);
@@ -79,11 +76,7 @@
 
 
 ; シーン：アクション実行対象になった時のセリフ
-; 事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
-; @param characterId 発言者（＝アクション実行対象）のキャラクターID。必須
-; @param face 発言者の表情。（TODO）
-; @param targetCharacterId 返答相手（＝元々のアクション実行者）のキャラクターID。（TODO）
-; @param actionId 実行されたアクションID。必須。
+; 事前にf.actionObjectにアクションオブジェクトを格納しておくこと
 [macro name="m_doAction_reaction"]
   [iscript]
     tf.targetLabel = getLabelForDoActionReaction(f.actionObject);
@@ -98,11 +91,12 @@
 
 ; シーン：人狼で、誰を噛むか選ぶときのセリフ
 ; @param characterId 発言者のキャラクターID。必須
-; @param face 発言者の表情。（TODO）
 [macro name="m_chooseWhoToBite"]
-  [m_changeCharacter characterId="&mp.characterId" face="normal"]
-  [m_changeFrameWithId characterId="&mp.characterId"]
-  # &f.speaker[f.characterObjects[mp.characterId].name]
+  [iscript]
+    // 発言者名を表示するためだけにアクションオブジェクトを作成する
+    f.actionObject = new Action(mp.characterId);
+  [endscript]
+
   [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
   [eval exp="tf.messageTarget = '*chooseWhoToBite'"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
@@ -111,11 +105,12 @@
 
 ; シーン：投票により処刑対象に決まったときの反応
 ; @param characterId 発言者のキャラクターID。必須
-; @param face 発言者の表情。（TODO）
 [macro name="m_executed"]
-  [m_changeCharacter characterId="&mp.characterId" face="normal"]
-  [m_changeFrameWithId characterId="&mp.characterId"]
-  # &f.speaker[f.characterObjects[mp.characterId].name]
+  [iscript]
+    // 発言者名を表示するためだけにアクションオブジェクトを作成する
+    f.actionObject = new Action(mp.characterId);
+  [endscript]
+
   [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
   [eval exp="tf.messageTarget = '*executed'"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]

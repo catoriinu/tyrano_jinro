@@ -26,6 +26,12 @@
   ; キャラクターの登録
   ; だいたいtf.characterIdを参照してくれるが、storageとjnameには正確な文字列を入れること
   [chara_new name="&tf.characterId" storage="chara/tsumugi/normal.png" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" jname="春日部つむぎ"]
+  [chara_face name="&tf.characterId" face="excited" storage="chara/tsumugi/excited.png"]
+  [chara_face name="&tf.characterId" face="happy" storage="chara/tsumugi/happy.png"]
   [chara_face name="&tf.characterId" face="normal" storage="chara/tsumugi/normal.png"]
+  [chara_face name="&tf.characterId" face="regretful" storage="chara/tsumugi/regretful.png"]
+  [chara_face name="&tf.characterId" face="sad" storage="chara/tsumugi/sad.png"]
+  [chara_face name="&tf.characterId" face="smug" storage="chara/tsumugi/smug.png"]
+  [chara_face name="&tf.characterId" face="wrysmile" storage="chara/tsumugi/wrysmile.png"]
   [chara_show name="&tf.characterId" face="normal" time="0" wait="true" left="&f.defaultPosition[tf.characterId].left" top="&f.defaultPosition[tf.characterId].top"]
 [return]

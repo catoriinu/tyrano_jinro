@@ -25,6 +25,7 @@
 ; シーン：前日の占い結果をCOするときのセリフ
 ; NOTE:事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 *COFortuneTelling_true_neutral_alive
+[eval exp="tf.face = 'normal'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_positive"]
@@ -38,6 +39,7 @@
 
 
 *COFortuneTelling_true_love_alive
+[eval exp="tf.face = 'troubled'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_negative"]
@@ -51,6 +53,7 @@
 
 
 *COFortuneTelling_true_hate_alive
+[eval exp="tf.face = 'scorn'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_positive"]
@@ -64,6 +67,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *COFortuneTelling_false_neutral_alive
+[eval exp="tf.face = 'normal'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_positive"]
@@ -77,6 +81,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *COFortuneTelling_false_love_alive
+[eval exp="tf.face = 'laughing'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_positive"]
@@ -90,6 +95,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *COFortuneTelling_false_hate_alive
+[eval exp="tf.face = 'scorn'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -103,6 +109,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *COFortuneTelling_false_neutral_died
+[eval exp="tf.face = 'normal'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -116,6 +123,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *COFortuneTelling_false_love_died
+[eval exp="tf.face = 'angry'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -129,6 +137,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *COFortuneTelling_false_hate_died
+[eval exp="tf.face = 'astonished'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -209,6 +218,7 @@ NGリストにぶち込んでやるわ。[p]
 ; シーン：「疑う」アクション実行時
 ; NOTE:事前にf.actionObjectにアクションオブジェクトを格納しておくこと
 *doAction_suspect_logical
+[eval exp="tf.face = 'scorn'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 [add_playselist storage="chara/ritsu/030_波音リツ（ノーマル）_X、人狼はアンタよ！.mp3"]
@@ -231,6 +241,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *doAction_suspect_emotional
+[eval exp="tf.face = 'normal'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 [add_playselist storage="chara/ritsu/026_波音リツ（ノーマル）_Xはどうせ人狼でし….mp3"]
@@ -253,6 +264,7 @@ NGリストにぶち込んでやるわ。[p]
 
 ; シーン：「信じる」アクション実行時
 *doAction_trust_logical
+[eval exp="tf.face = 'laughing'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 [add_playselist storage="chara/ritsu/039_波音リツ（ノーマル）_Xはあたしの仲間よ。.mp3"]
@@ -275,6 +287,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *doAction_trust_emotional
+[eval exp="tf.face = 'normal'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 [add_playselist storage="chara/ritsu/035_波音リツ（ノーマル）_こう見えてもあたし….mp3"]
@@ -309,6 +322,7 @@ NGリストにぶち込んでやるわ。[p]
 ; ※targetIdの方がこのサブルーチンのキャラクターであること
 ; シーン：「疑う」アクションの実行対象になった時
 *doAction_reaction_suspect_neutral
+[eval exp="tf.face = 'astonished'"]
 [eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
@@ -322,6 +336,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *doAction_reaction_suspect_love
+[eval exp="tf.face = 'troubled'"]
 [eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
@@ -334,6 +349,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *doAction_reaction_suspect_hate
+[eval exp="tf.face = 'scorn'"]
 [eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
@@ -347,6 +363,7 @@ NGリストにぶち込んでやるわ。[p]
 
 ; シーン：「信じる」アクションの実行対象になった時
 *doAction_reaction_trust_neutral
+[eval exp="tf.face = 'normal'"]
 [eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
@@ -359,6 +376,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *doAction_reaction_trust_love
+[eval exp="tf.face = 'laughing'"]
 [eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
@@ -371,6 +389,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *doAction_reaction_trust_hate
+[eval exp="tf.face = 'blank'"]
 [eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
@@ -391,6 +410,8 @@ NGリストにぶち込んでやるわ。[p]
 ; executed
 ; シーン：投票により処刑対象に決まったときの反応
 *executed
+[eval exp="tf.face = 'astonished'"]
+[call storage="./message/utility.ks" target="prepareMessage"]
 [add_playselist storage="chara/ritsu/052_波音リツ（ノーマル）_安価は絶対……。あ….mp3"]
 [playselist]
 

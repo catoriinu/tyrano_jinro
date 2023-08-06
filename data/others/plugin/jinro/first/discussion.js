@@ -583,7 +583,7 @@ function Button (id, text, side = 'center', color = '', addClasses = [], target 
  * @param {Boolean} isPublic 公開されたアクションか（例：占い=t:CO済み/f:未CO）
  * @param {String} decision そのアクションを実行した判断基準（任意）
  */
-function Action (characterId = '', actionId, targetId = '', result = null, isPublic = false, decision = '') {
+function Action (characterId = '', actionId = '', targetId = '', result = null, isPublic = false, decision = '') {
   this.characterId = characterId;
   this.actionId = actionId;
   this.targetId = targetId;
@@ -1322,7 +1322,7 @@ function getCharacterIdByReliability(characterObject, needsMax) {
     // 基本的には、同陣営割合の差の影響で仲間度にも差が出る。ただしlogicalが0の場合だけは差が出ないことに注意。
     let sameFactionPossivility = calcSameFactionPossivility(
       characterObject,
-      characterObject[characterObject.characterId].perspective, // 発言は嘘をつくため、perspectiveを渡す
+      characterObject.perspective, // 発言は嘘をつくため、perspectiveを渡す
       targetCharacterIdList
     );
     console.log('★Reliability sameFactionPossivility:');
