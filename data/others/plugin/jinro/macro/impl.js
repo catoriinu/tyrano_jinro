@@ -165,14 +165,10 @@ function DisplayCharactersHorizontallySingle(characterId, fileName, bgColor, top
 }
 
 
-
-
-// messageの各キャラクターから呼び出される
-
 /**
- * TODO
- * @param {*} actionObject 
- * @returns _{占い結果}_{ターゲットへの感情}_{ターゲットの生死}
+ * [m_COFortuneTelling]からのジャンプ先のtargetに指定するラベルを判定、返却する。
+ * @param {Object} actionObject アクションオブジェクト
+ * @returns {String} _{占い結果}_{ターゲットへの感情}_{ターゲットの生死}
  */
 function getLabelForCOFortuneTelling(actionObject) {
   let characterId = actionObject.characterId;
@@ -183,12 +179,15 @@ function getLabelForCOFortuneTelling(actionObject) {
   let aliveLabel = '_';
 
   if (actionObject.result === true) {
+    // 占い結果が●(=人狼)の場合
     resultLabel += 'true';
     feelingLabel += getFeelingLabel(characterId, targetId);
     aliveLabel += 'alive';
+    // NOTE: 本来はここでも生死判定したほうがいい。しかし人狼数が1人の場合に「●判定を出した相手が昨夜襲撃死していた」という占い結果をCOしたら即破綻となる。
+    // 作業量削減のためセリフパターンを作成していないので、一旦alive固定にする。
   } else {
+    // 占い結果が○(=人狼ではない)の場合
     resultLabel += 'false';
-    // 感情によって変える
     feelingLabel += getFeelingLabel(characterId, targetId);
     if (!TYRANO.kag.stat.f.characterObjects[targetId].isAlive) {
       // NOTE: 本来は「前日襲撃死した相手なら」が正しいが、単純にするために「発言時点で死亡済みなら」判定する。もし問題が発生したら直すこと。
@@ -202,11 +201,10 @@ function getLabelForCOFortuneTelling(actionObject) {
 }
 
 
-
 /**
- * 
- * @param {*} actionObject 
- * @returns _{アクションID}_{判断基準}
+ * [m_doAction]からのジャンプ先のtargetに指定するラベルを判定、返却する。
+ * @param {Object} actionObject アクションオブジェクト
+ * @returns {String} _{アクションID}_{判断基準}
  */
 function getLabelForDoAction(actionObject) {
   let actionLabel = '_' + actionObject.actionId;
@@ -216,11 +214,10 @@ function getLabelForDoAction(actionObject) {
 }
 
 
-
 /**
- * 
- * @param {*} actionObject 
- * @returns _{アクションID}_{ターゲットへの感情}
+ * [m_doAction_reaction]からのジャンプ先のtargetに指定するラベルを判定、返却する。
+ * @param {Object} actionObject アクションオブジェクト targetIdにリアクションの発言者、characterIdが元々の発言者。つまり呼び元は何も考えずアクションオブジェクトを渡せばよい。
+ * @returns _{アクションID}_{対象者への感情}
  */
 function getLabelForDoActionReaction(actionObject) {
   let characterId = actionObject.characterId;
@@ -234,6 +231,12 @@ function getLabelForDoActionReaction(actionObject) {
 }
 
 
+/**
+ * characterIdのキャラクターが抱いている、対象者への感情を取得する
+ * @param {String} characterId キャラクターID
+ * @param {String} targetId 対象者のキャラクターID
+ * @returns {String} {対象者への感情}
+ */
 function getFeelingLabel(characterId, targetId) {
   let characterObject = TYRANO.kag.stat.f.characterObjects[characterId];
 

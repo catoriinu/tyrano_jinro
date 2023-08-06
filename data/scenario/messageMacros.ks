@@ -18,9 +18,7 @@
     // 発言者名を表示するためだけにアクションオブジェクトを作成する
     f.actionObject = new Action(mp.characterId);
   [endscript]
-;  [m_changeCharacter characterId="&mp.characterId" face="normal"]
-;  [m_changeFrameWithId characterId="&mp.characterId"]
-;  # &f.speaker[f.characterObjects[mp.characterId].name]
+
   [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
   [eval exp="tf.messageTarget = '*noticeRole_' + mp.roleId"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
