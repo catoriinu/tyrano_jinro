@@ -74,8 +74,8 @@ function Personality_tester() {
       },
     },
     { // feelingBorder {hate:仲間度がこれ未満ならhate状態, love:仲間度がこれ超過ならlove状態}
-      hate: 0.2,
-      love: 0.8
+      hate: 0.3,
+      love: 0.7
     }
   );
 }

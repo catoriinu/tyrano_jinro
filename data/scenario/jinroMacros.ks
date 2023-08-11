@@ -519,7 +519,7 @@
 
     ;[image layer="1" x="0" y="150" width="1280" height="200" time="700" wait="false" storage="cutin.gif" name="cutin"]
     ; ボイスとのスロットの競合を避けるためにbuf="1"を指定
-    [playse storage="シャキーン1.ogg" volume="40" buf="1"]
+    [playse storage="シャキーン1.ogg" volume="35" buf="1"]
     ;[image layer="1" x="-1000" y="160" height="180" visible="true" reflect="true" storage="00_angry_eye.png" name="00"]
     ;[anim name="00" left=100 time=700]
     ;[wait time=700]
@@ -1002,13 +1002,13 @@
 [macro name="j_playSePlayerResult"]
   [if exp="mp.winnerFaction == FACTION_DRAW_BY_REVOTE"]
     ; 引き分け
-    [playse storage="megaten.ogg" loop="false" volume="40" sprite_time="50-20000"]
+    [playse storage="megaten.ogg" loop="false" volume="35" sprite_time="50-20000"]
   [elsif exp="f.characterObjects[f.playerCharacterId].role.faction == mp.winnerFaction"]
     ; 勝利
-    [playse storage="kirakira4.ogg" loop="false" volume="40" sprite_time="50-20000"]
+    [playse storage="kirakira4.ogg" loop="false" volume="35" sprite_time="50-20000"]
   [else]
     ; 敗北
-    [playse storage="chiin1.ogg" loop="false" volume="40" sprite_time="50-20000"]
+    [playse storage="chiin1.ogg" loop="false" volume="35" sprite_time="50-20000"]
   [endif]
 [endmacro]
 
@@ -1211,10 +1211,10 @@
 
   [bg storage="black.png" time="1000" wait="true" effect="fadeInDown"]
 
-  [playse storage="shock1.ogg" loop="false" volume="50" sprite_time="50-20000"]
+  [playse storage="shock1.ogg" loop="false" volume="30" sprite_time="50-20000"]
   [emb exp="f.day + '日目の朝を迎えました。'"][l][r]
   [if exp="typeof f.bitingObjectLastNight === 'undefined'"]
-    [playse storage="shock1.ogg" loop="false" volume="50" sprite_time="50-20000"]
+    [playse storage="shock1.ogg" loop="false" volume="30" sprite_time="50-20000"]
     ; 昨夜の襲撃結果が取得できなかった（＝初日犠牲者のいない1日目昼）場合
     ; TODO 人狼の人数を可変で出力する
     ; FIXME 役職の内訳を表示してもいいかも。
@@ -1222,7 +1222,7 @@
     [j_introductionCharacters]
 
   [elsif exp="f.bitingObjectLastNight.result"]
-    [playse storage="shock1.ogg" loop="false" volume="40" sprite_time="50-20000"]
+    [playse storage="shock1.ogg" loop="false" volume="30" sprite_time="50-20000"]
     ; 昨夜の襲撃結果が襲撃成功の場合
     ; キャラを登場させ、メッセージ表示
     [m_changeCharacter characterId="&f.bitingObjectLastNight.targetId" face="normal"]
@@ -1240,7 +1240,7 @@
 
   [endif]
 
-  [playbgm storage="nc282335.ogg" loop="true" volume="12" restart="false"]
+  [playbgm storage="nc282335.ogg" loop="true" volume="11" restart="false"]
   [bg storage="living_day_nc238325.jpg" time="1000" wait="true" effect="fadeInUp"]
 
   ; PCが生存していれば再度画面に登場させる
