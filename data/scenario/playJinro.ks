@@ -290,6 +290,7 @@
   [j_doAction actionObject="&f.doActionObject"]
 [endif]
 
+[m_resetDisplayCharacter]
 ; 議論フェイズを繰り返す
 [jump target="*startDiscussionLoop"]
 

@@ -894,7 +894,7 @@ function updateReliabirityForSucpect(characterObjects, cId, actionObject) {
     const feelingForTarget = getFeeling(characterObjects[cId], sameFactionPossivility[actionObject.targetId]);
 
     if (feelingForCharacter == FEELING_HATE && feelingForTarget != FEELING_HATE) {
-      console.log(actionObject.characterId + 'への感情がhateである、かつ' + actionObject.targetId + 'への感情がhateではないなら、' + actionObject.characterId + 'への信頼度を上げる');
+      console.log(actionObject.characterId + 'への感情がhateである、かつ' + actionObject.targetId + 'への感情がhateではないなら、' + actionObject.targetId + 'への信頼度を上げる');
       // 疑ったキャラへの感情がhateである、かつ疑われたキャラへの感情がhateではないなら
       // 疑われたキャラへの信頼度を上げる
       characterObjects[cId].reliability[actionObject.targetId] = calcUpdatedReliability(

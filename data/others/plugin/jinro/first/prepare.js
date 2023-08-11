@@ -21,10 +21,10 @@ function Participant(characterId, roleId = null, personalityName = null) {
  */
 function getVillagersRoleIdList(participantsNumber, participantObjectList = []) {
   let villagersRoleIdList = [
-    ROLE_ID_FORTUNE_TELLER,
     ROLE_ID_WEREWOLF,
     ROLE_ID_MADMAN,
     ROLE_ID_VILLAGER,
+    ROLE_ID_FORTUNE_TELLER,
     ROLE_ID_VILLAGER,
   ];
   return villagersRoleIdList;
