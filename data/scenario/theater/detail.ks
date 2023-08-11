@@ -68,7 +68,7 @@
 [layopt layer="message0" visible="true"]
 
 [registerSituationParticipants]
-[j_prepareJinroGame participantsNumber="&f.theaterList[f.theaterDetailNum].situationParticipantsNumber"]
+[j_prepareJinroGame participantsNumber="&f.theaterList[f.theaterDetailNum].situationParticipantsNumber" preload="true"]
 
 [jump storage="playJinro.ks"]
 [s]

@@ -13,11 +13,12 @@
 ; シーン：初日、役職を告知されたときの反応
 ; @param characterId 発言者のキャラクターID。必須
 ; @param roleId 発言者の役職ID。必須
-; @param face 発言者の表情。（TODO）
 [macro name="m_noticeRole"]
-  [m_changeCharacter characterId="&mp.characterId" face="normal"]
-  [m_changeFrameWithId characterId="&mp.characterId"]
-  # &f.speaker[f.characterObjects[mp.characterId].name]
+  [iscript]
+    // 発言者名を表示するためだけにアクションオブジェクトを作成する
+    f.actionObject = new Action(mp.characterId);
+  [endscript]
+
   [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
   [eval exp="tf.messageTarget = '*noticeRole_' + mp.roleId"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
@@ -27,9 +28,6 @@
 ; シーン：真占い師で、占い実行結果を知ったときの反応
 ; 事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 [macro name="m_announcedFortuneTellingResult"]
-  [m_changeCharacter characterId="&f.actionObject.characterId" face="normal"]
-  [m_changeFrameWithId characterId="&f.actionObject.characterId"]
-  # &f.speaker[f.characterObjects[f.actionObject.characterId].name]
   [eval exp="tf.messageStorage = './message/' + f.actionObject.characterId + '.ks'"]
   [eval exp="tf.messageTarget = '*announcedFortuneTellingResult_' + f.actionObject.result"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
@@ -50,57 +48,53 @@
 ; シーン：前日の占い結果をCOするときのセリフ
 ; 事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 [macro name="m_COFortuneTelling"]
-  [m_changeCharacter characterId="&f.actionObject.characterId" face="normal"]
-  [m_changeFrameWithId characterId="&f.actionObject.characterId"]
-  # &f.speaker[f.characterObjects[f.actionObject.characterId].name]
+  [iscript]
+    tf.targetLabel = getLabelForCOFortuneTelling(f.actionObject);
+    console.log(tf.targetLabel);
+  [endscript]
+
   [eval exp="tf.messageStorage = './message/' + f.actionObject.characterId + '.ks'"]
-  [eval exp="tf.messageTarget = '*COFortuneTelling_' + f.actionObject.result"]
+  [eval exp="tf.messageTarget = '*COFortuneTelling' + tf.targetLabel"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
 [endmacro]
 
 
 ; シーン：アクション実行時のセリフ
-; @param characterId 発言者のキャラクターID。必須
-; @param face 発言者の表情。（TODO）
-; @param targetCharacterId アクション対象のキャラクターID。必須
-; @param actionId 実行するアクションID。必須。
+; 事前にf.actionObjectにアクションオブジェクトを格納しておくこと
 [macro name="m_doAction"]
-  [m_changeCharacter characterId="&mp.characterId" face="normal"]
-  [m_changeFrameWithId characterId="&mp.characterId"]
-  # &f.speaker[f.characterObjects[mp.characterId].name]
-  [eval exp="tf.selectedCharacterId = mp.targetCharacterId"]
-  [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
-  [eval exp="tf.messageTarget = '*doAction_' + mp.actionId"]
+  [iscript]
+    tf.targetLabel = getLabelForDoAction(f.actionObject);
+    console.log(tf.targetLabel);
+  [endscript]
+
+  [eval exp="tf.messageStorage = './message/' + f.actionObject.characterId + '.ks'"]
+  [eval exp="tf.messageTarget = '*doAction' + tf.targetLabel"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
 [endmacro]
 
 
 ; シーン：アクション実行対象になった時のセリフ
-; @param characterId 発言者（＝アクション実行対象）のキャラクターID。必須
-; @param face 発言者の表情。（TODO）
-; @param targetCharacterId 返答相手（＝元々のアクション実行者）のキャラクターID。（TODO）
-; @param actionId 実行されたアクションID。必須。
+; 事前にf.actionObjectにアクションオブジェクトを格納しておくこと
 [macro name="m_doAction_reaction"]
-  ; TODO love:信頼度がとても高いとき hate:信頼度がとても低いとき newtral:それ以外 の三段階のリアクションができると嬉しい
-  ;　(「とても」としているのは、よほど極端な状況でない限り、人狼で露骨な反応はしないはずのため。ただ、顔に出やすい性格のキャラは条件をゆるくすると面白いかも）
-  ; （上記の判定を信頼度でやるべきか、仲間度でやるべきかは要考慮）
-  [m_changeCharacter characterId="&mp.characterId" face="normal"]
-  [m_changeFrameWithId characterId="&mp.characterId"]
-  # &f.speaker[f.characterObjects[mp.characterId].name]
-  ; [eval exp="tf.targetCharacterId = mp.targetCharacterId"]
-  [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
-  [eval exp="tf.messageTarget = '*doAction_reaction_' + mp.actionId"]
+  [iscript]
+    tf.targetLabel = getLabelForDoActionReaction(f.actionObject);
+    console.log(tf.targetLabel);
+  [endscript]
+
+  [eval exp="tf.messageStorage = './message/' + f.actionObject.targetId + '.ks'"]
+  [eval exp="tf.messageTarget = '*doAction_reaction' + tf.targetLabel"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
 [endmacro]
 
 
 ; シーン：人狼で、誰を噛むか選ぶときのセリフ
 ; @param characterId 発言者のキャラクターID。必須
-; @param face 発言者の表情。（TODO）
 [macro name="m_chooseWhoToBite"]
-  [m_changeCharacter characterId="&mp.characterId" face="normal"]
-  [m_changeFrameWithId characterId="&mp.characterId"]
-  # &f.speaker[f.characterObjects[mp.characterId].name]
+  [iscript]
+    // 発言者名を表示するためだけにアクションオブジェクトを作成する
+    f.actionObject = new Action(mp.characterId);
+  [endscript]
+
   [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
   [eval exp="tf.messageTarget = '*chooseWhoToBite'"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
@@ -109,11 +103,12 @@
 
 ; シーン：投票により処刑対象に決まったときの反応
 ; @param characterId 発言者のキャラクターID。必須
-; @param face 発言者の表情。（TODO）
 [macro name="m_executed"]
-  [m_changeCharacter characterId="&mp.characterId" face="normal"]
-  [m_changeFrameWithId characterId="&mp.characterId"]
-  # &f.speaker[f.characterObjects[mp.characterId].name]
+  [iscript]
+    // 発言者名を表示するためだけにアクションオブジェクトを作成する
+    f.actionObject = new Action(mp.characterId);
+  [endscript]
+
   [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
   [eval exp="tf.messageTarget = '*executed'"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
@@ -343,6 +338,19 @@
   [eval exp="f.displayedCharacter[tf.side] = new DisplayedCharacterSingle()"]
 
   *end_m_exitCharacter
+[endmacro]
+
+
+; キャラクター表示状態リセットマクロ
+; 左のキャラクターの表情をノーマルに戻し、右のキャラクターを退場させるマクロ
+; フェーズの転換時にリセットするために使う
+; @param characterId 退場させたいキャラのキャラクターID。必須。
+[macro name="m_resetDisplayCharacter"]
+  [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+
+  [if exp="f.displayedCharacter.left.isDisplay"]
+    [m_changeCharacter characterId="&f.displayedCharacter.left.characterId" face="normal"]
+  [endif]
 [endmacro]
 
 

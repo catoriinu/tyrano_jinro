@@ -70,7 +70,7 @@ const ARITHMETIC_MULTIPLICATION = 'multiplication'; // 現在の値に乗算す�
 
 // 感情
 const FEELING_HATE = 'hate';
-const FEELING_NORMAL = 'normal';
+const FEELING_NEUTRAL = 'neutral';
 const FEELING_LOVE = 'love';
 
 // アクション名
@@ -82,6 +82,10 @@ const ACTION_FORTUNE_TELLING = 'fortuneTelling'; // 占う
 const ACTION_VOTE = 'vote'; // 投票
 const ACTION_EXECUTE = 'execute'; // 処刑。投票による吊り・追放（死亡処理アクション）
 const ACTION_BITE = 'bite'; // 襲撃。人狼による噛み（死亡処理アクション）
+
+// 判断基準
+const DECISION_LOGICAL = 'logical'; // 論理的な判断
+const DECISION_EMOTIONAL = 'emotional'; // 感情的な判断
 
 // CSSのclass要素名（glinkのnameやcolorに設定するなど）
 const CLASS_GLINK_DEFAULT = 'btn_voivo'; // glinkのcolor用。ゲーム内で基本となるボタンのテーマ

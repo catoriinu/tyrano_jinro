@@ -36,9 +36,12 @@
 ;                 デフォルト=0ミリ秒。ただし、最悪で100ミリ秒のインターバルが発生する可能性あり。
 ;                 詳細はimpl.jsのPlaySeObserverオブジェクト内のloopTimeのコメント参照。
 ;
-; 以下は[playse]には存在するが、本マクロで登録するにあたって注意事項がある引数
-; @param loop "true"を指定したSEを再生し始めると、同じスロット（buf）で新しい効果音を再生するか、[stopse]するまで止まらないため。
-; @param sprite_time sprite_timeを指定し、かつその終了時間が実際のSEの再生時間よりも長い場合、
+; 以下は[playse]にも存在するが、本マクロで登録するにあたって注意事項がある引数
+; @param storage 注意。再生する音声ファイルは事前に[preload]で読み込んでおくことを強く推奨する。
+;                [playselist]した際に「Decoding audio data failed.」というHowler.jsのエラーが出て、再生失敗しやすいため。
+;                特にエラーになりやすいのは最初にaddしたファイル（逆に一番最後のファイルはエラーになりにくい）
+; @param loop 非推奨。明示的に"true"を指定したSEを再生し始めると、同じスロット（buf）で新しい効果音を再生するか、[stopse]するまで止まらないため。
+; @param sprite_time 注意。sprite_timeを指定し、かつその終了時間が実際のSEの再生時間よりも長い場合、
 ;                    そのSEが再生完了したと判定されるのは、sprite_timeの終了時間の方となる
 ; @param stop（通常はタグの引数としては指定できない）
 ;             [playselist]実行時に自動的に、プレイリストの最後のSEのみfalse（nextOrderする）、それ以外のSEはtrue（nextOrderしない）で固定される
