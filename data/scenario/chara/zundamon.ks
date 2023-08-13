@@ -26,7 +26,14 @@
   ; キャラクターの登録
   ; だいたいtf.characterIdを参照してくれるが、storageとjnameには正確な文字列を入れること
   [chara_new name="&tf.characterId" storage="chara/zundamon/normal.png" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" jname="ずんだもん" reflect="true"]
+  [chara_face name="&tf.characterId" face="deny" storage="chara/zundamon/deny.png"]
+  [chara_face name="&tf.characterId" face="happy" storage="chara/zundamon/happy.png"]
   [chara_face name="&tf.characterId" face="normal" storage="chara/zundamon/normal.png"]
-  [chara_face name="&tf.characterId" face="deny" storage="chara/zundamon/必死に否定.png"]
+  [chara_face name="&tf.characterId" face="panicked" storage="chara/zundamon/panicked.png"]
+  [chara_face name="&tf.characterId" face="proud" storage="chara/zundamon/proud.png"]
+  [chara_face name="&tf.characterId" face="sad" storage="chara/zundamon/sad.png"]
+  [chara_face name="&tf.characterId" face="smug" storage="chara/zundamon/smug.png"]
+  [chara_face name="&tf.characterId" face="surprised" storage="chara/zundamon/surprised.png"]
+  [chara_face name="&tf.characterId" face="troubled" storage="chara/zundamon/troubled.png"]
   [chara_show name="&tf.characterId" face="normal" time="0" wait="true" left="&f.defaultPosition[tf.characterId].left" top="&f.defaultPosition[tf.characterId].top"]
 [return]

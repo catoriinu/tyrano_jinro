@@ -48,6 +48,7 @@
 *input
 [iscript]
   f.pcActionObject = new Action(f.playerCharacterId, f.selectedActionId, f.selectedCharacterId);
+  // MEMO: PCの判断基準IDを格納するのは、発言直前にする。ここではボタン処理のみに注力するため。
 [endscript]
 
 *end

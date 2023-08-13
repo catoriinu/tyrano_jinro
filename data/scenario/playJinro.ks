@@ -26,22 +26,13 @@
 ;このゲームで登場する全キャラクターを宣言、表情登録
 [call storage="./chara/common.ks" target="*registerAllCharacters"]
 
-; ゲーム準備js読み込み
-[loadjs storage="plugin/jinro/macro/prepareGame.js"]
-
 ; ステータス、バックログボタン表示
 [j_displayFixButton status="true" backlog="true"]
 
-[playse storage="dodon.ogg" loop="false" volume="50" sprite_time="50-20000"]
+[playse storage="dodon.ogg" loop="false" volume="40" sprite_time="50-20000"]
 [m_changeFrameWithId]
 #
 人狼ゲームの幕開けです……！[p]
-
-; TODO あとで消す。playselistプラグインのテスト用
-;[add_playselist storage="megaten.ogg" loop="false" volume="40" sprite_time="" interval="450"]
-;[add_playselist storage="kirakira4.ogg" loop="false" volume="40" sprite_time=""]
-;[playselist]
-;[p]
 
 [clearstack]
 *day0_nightPhase
@@ -78,7 +69,7 @@
 *startDaytime
 [j_turnIntoDaytime]
 [clearstack]
-[playbgm storage="nc282335.ogg" loop="true" volume="13" restart="false"]
+[playbgm storage="nc282335.ogg" loop="true" volume="11" restart="false"]
 
 [m_changeFrameWithId]
 #
@@ -277,6 +268,7 @@
 ; アクションボタン表示
 [j_displayFixButton action="true" cond="f.characterObjects[f.playerCharacterId].isAlive"]
 
+[m_resetDisplayCharacter]
 [m_changeFrameWithId]
 #
 ～議論フェイズ～[p]
@@ -298,6 +290,7 @@
   [j_doAction actionObject="&f.doActionObject"]
 [endif]
 
+[m_resetDisplayCharacter]
 ; 議論フェイズを繰り返す
 [jump target="*startDiscussionLoop"]
 
@@ -307,6 +300,7 @@
 ; アクションボタン非表示
 [j_clearFixButton action="true" cond="f.characterObjects[f.playerCharacterId].isAlive"]
 
+[m_resetDisplayCharacter]
 [m_changeFrameWithId]
 #
 ～投票フェイズ～[p]
@@ -382,8 +376,12 @@
 [endif]
 
 ; 処刑セリフと処刑処理（TODO 今はこの順番だが、処刑ごとの演出がどうなるかによっては逆にしてもいい）
-[m_executed characterId="&f.electedIdList[0]"]
 [j_execution characterId="&f.electedIdList[0]"]
+[m_executed characterId="&f.electedIdList[0]"]
+; 処刑メッセージ
+[m_changeFrameWithId]
+#
+[emb exp="f.characterObjects[f.electedIdList[0]].name + 'は追放されました。'"][p]
 
 ; 処刑後の反応（TODO 誰が発言するかを決定するマクロ等が必要）
 [if exp="f.characterObjects.ai.isAlive"]

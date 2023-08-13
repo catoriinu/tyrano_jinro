@@ -12,6 +12,19 @@ const CHARACTER_ID_METAN    = 'metan'; // 四国めたん
 const CHARACTER_ID_TSUMUGI  = 'tsumugi'; // 春日部つむぎ
 const CHARACTER_ID_HAU      = 'hau'; // 雨晴はう
 const CHARACTER_ID_RITSU    = 'ritsu'; // 波音リツ
+const CHARACTER_ID_MOCHIKO  = 'mochiko'; // もち子さん
+const CHARACTER_ID_MIKO     = 'miko'; // 櫻歌ミコ
+
+// 登場する全てのキャラクターIDと名前、およびその基本的な序列
+const PARTICIPANTS_LIST = [
+  {characterId: CHARACTER_ID_ZUNDAMON, name: 'ずんだもん'},
+  {characterId: CHARACTER_ID_METAN,    name: '四国めたん'},
+  {characterId: CHARACTER_ID_TSUMUGI,  name: '春日部つむぎ'},
+  {characterId: CHARACTER_ID_HAU,      name: '雨晴はう'},
+  {characterId: CHARACTER_ID_RITSU,    name: '波音リツ'},
+//  {characterId: CHARACTER_ID_MOCHIKO,  name: 'もち子さん'},
+//  {characterId: CHARACTER_ID_MIKO,     name: '櫻歌ミコ'},
+];
 
 // 役職ID
 const ROLE_ID_VILLAGER       = 'villager'; // 村人
@@ -61,7 +74,7 @@ const ARITHMETIC_MULTIPLICATION = 'multiplication'; // 現在の値に乗算す�
 
 // 感情
 const FEELING_HATE = 'hate';
-const FEELING_NORMAL = 'normal';
+const FEELING_NEUTRAL = 'neutral';
 const FEELING_LOVE = 'love';
 
 // アクション名
@@ -73,6 +86,10 @@ const ACTION_FORTUNE_TELLING = 'fortuneTelling'; // 占う
 const ACTION_VOTE = 'vote'; // 投票
 const ACTION_EXECUTE = 'execute'; // 処刑。投票による吊り・追放（死亡処理アクション）
 const ACTION_BITE = 'bite'; // 襲撃。人狼による噛み（死亡処理アクション）
+
+// 判断基準
+const DECISION_LOGICAL = 'logical'; // 論理的な判断
+const DECISION_EMOTIONAL = 'emotional'; // 感情的な判断
 
 // CSSのclass要素名（glinkのnameやcolorに設定するなど）
 const CLASS_GLINK_DEFAULT = 'btn_voivo'; // glinkのcolor用。ゲーム内で基本となるボタンのテーマ

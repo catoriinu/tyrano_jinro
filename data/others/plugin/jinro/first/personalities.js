@@ -26,17 +26,17 @@ function Personality(name, active, hungry, egoistic, logical, assertiveness, rol
 /**
  * @classdec テスト用の性格クラス
  */
-function Tester() {
+function Personality_tester() {
   return new Personality (
     'テスト用の性格', // name
     0.7, // active
     0.1, // hungry
     0.1, // egoistic
-    0.5, // logical 論理力(0～1)
+    0.7, // logical 論理力(0～1)
     { // assertiveness 主張力（originalとcurrentは同値にすること）
       original: 1,  // 元々の値（毎日currentをoriginalで初期化する）
       current: 1,   // 現在の値（判定処理にはcurrentを用いる）
-      decrease: 0.4 // 減少値（発言一回ごとに減少値分currentを減らす）
+      decrease: 0.3 // 減少値（発言一回ごとに減少値分currentを減らす）
     },
     // COProbability {自身のRoleId : その役職としてCOする可能性}
     {
@@ -74,8 +74,8 @@ function Tester() {
       },
     },
     { // feelingBorder {hate:仲間度がこれ未満ならhate状態, love:仲間度がこれ超過ならlove状態}
-      hate: 0.2,
-      love: 0.8
+      hate: 0.3,
+      love: 0.7
     }
   );
 }
@@ -136,4 +136,20 @@ function Doll() {
       love: 0.8
     }
   );
+}
+
+
+/**
+ * 性格クラスを取得する。引数には、キャラクターIDまたは性格クラス名そのものを渡されることを想定。
+ * @param {string} name 性格クラス名。その名前の性格クラスが定義されていればそれを、なければテスト用の性格クラスを返却する。
+ * @returns {Personality} 性格クラス
+ */
+function getPersonality(name = 'tester') {
+  // 名前被りを避けるために接頭辞を付ける
+  const personalityFunctionName = 'Personality_' + name;
+  if (typeof window[personalityFunctionName] === 'function') {
+    return new window[personalityFunctionName]();
+  }
+  // 未定義ならテスト用の性格を返却する
+  return new Personality_tester();
 }
