@@ -107,8 +107,8 @@
   } else if (mp.page == 99) {
     f.theaterList = {
       1: {
-        title: '製作日誌#2',
-        thumbnail: 'theater/シアターサムネ仮03.png',
+        title: '【ゲーム】ボイボ人狼 #2【絶賛開発中】',
+        thumbnail: 'theater/紹介動画02サムネ.png',
         unlockCondition: '初めから解放されている',
         situationParticipantsNumber: 0,
         situationParticipants: [
