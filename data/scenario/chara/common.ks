@@ -20,6 +20,6 @@
   [call storage="./chara/tsumugi.ks" target="*executeCharaNewAndCharaFace"]
   [call storage="./chara/hau.ks" target="*executeCharaNewAndCharaFace"]
   [call storage="./chara/ritsu.ks" target="*executeCharaNewAndCharaFace"]
-  ;[call storage="./chara/mochiko.ks" target="*executeCharaNewAndCharaFace"]
-  ;[call storage="./chara/miko.ks" target="*executeCharaNewAndCharaFace"]
+  [call storage="./chara/mochiko.ks" target="*executeCharaNewAndCharaFace"]
+  [call storage="./chara/miko.ks" target="*executeCharaNewAndCharaFace"]
 [return]

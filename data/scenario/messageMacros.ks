@@ -389,7 +389,12 @@
 
   [endscript]
 
-  [m_changeCharacter characterId="&tf.ccfn.characterId"]
+  ; マクロの引数にfaceが未指定なら、faceを渡さない=表情はそのままにする。
+  [if exp="'face' in tf.ccfn"]
+    [m_changeCharacter characterId="&tf.ccfn.characterId" face="&tf.ccfn.face"]
+  [else]
+    [m_changeCharacter characterId="&tf.ccfn.characterId"]
+  [endif]
   [m_changeFrameWithId characterId="&tf.ccfn.characterId"]
   # &tf.ccfn.speaker
 

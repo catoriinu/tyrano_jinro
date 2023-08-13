@@ -14,6 +14,9 @@
 
 ; シアター一覧の1ページ目の情報を取得
 [eval exp="f.theaterListPage = 1"]
+
+*loadTheaterList
+[freeimage layer="0"]
 [loadTheaterList page="&f.theaterListPage"]
 
 ;メッセージウィンドウの設定、文字が表示される領域を調整
@@ -77,6 +80,8 @@ if (!('quickShowDetail' in f)) {f.quickShowDetail = false}
   ; ボタン類
   [eval exp="tf.buttonColor = CLASS_GLINK_DEFAULT"]
   [glink color="&tf.buttonColor" size="30" width="270" x="975" y="438" text="タイトルに戻る" target="*returnTitle"]
+;  [glink color="&tf.buttonColor" size="30" width="270" x="975" y="338" text="1期・2期" target="*loadTheaterList" exp="f.theaterListPage = 1"]
+;  [glink color="&tf.buttonColor" size="30" width="270" x="975" y="138" text="もち子ミコ" target="*loadTheaterList" exp="f.theaterListPage = 99"]
 
   ;メッセージウィンドウの表示
   [layopt layer="message0" visible="true"]

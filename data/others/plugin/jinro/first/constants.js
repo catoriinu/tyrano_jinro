@@ -12,6 +12,8 @@ const CHARACTER_ID_METAN    = 'metan'; // 四国めたん
 const CHARACTER_ID_TSUMUGI  = 'tsumugi'; // 春日部つむぎ
 const CHARACTER_ID_HAU      = 'hau'; // 雨晴はう
 const CHARACTER_ID_RITSU    = 'ritsu'; // 波音リツ
+const CHARACTER_ID_MOCHIKO  = 'mochiko'; // もち子さん
+const CHARACTER_ID_MIKO     = 'miko'; // 櫻歌ミコ
 
 // 登場する全てのキャラクターIDと名前、およびその基本的な序列
 const PARTICIPANTS_LIST = [
@@ -20,6 +22,8 @@ const PARTICIPANTS_LIST = [
   {characterId: CHARACTER_ID_TSUMUGI,  name: '春日部つむぎ'},
   {characterId: CHARACTER_ID_HAU,      name: '雨晴はう'},
   {characterId: CHARACTER_ID_RITSU,    name: '波音リツ'},
+//  {characterId: CHARACTER_ID_MOCHIKO,  name: 'もち子さん'},
+//  {characterId: CHARACTER_ID_MIKO,     name: '櫻歌ミコ'},
 ];
 
 // 役職ID

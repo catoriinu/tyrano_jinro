@@ -104,6 +104,84 @@
         outroStorage: '',
       },
     }
+  } else if (mp.page == 99) {
+    f.theaterList = {
+      1: {
+        title: '製作日誌#2',
+        thumbnail: 'theater/シアターサムネ仮03.png',
+        unlockCondition: '初めから解放されている',
+        situationParticipantsNumber: 0,
+        situationParticipants: [
+          new Participant('mochiko'),
+          new Participant('miko'),
+        ],
+        introStorage: 'theater/page99/movie_20230814.ks',
+        outroStorage: 'theater/page99/movie_20230814.ks',
+      },
+      2: {
+        title: '製作日誌#2',
+        thumbnail: 'theater/シアターサムネ仮03.png',
+        unlockCondition: '初めから解放されている',
+        situationParticipantsNumber: 0,
+        situationParticipants: [],
+        introStorage: 'theater/page99/movie_20230814.ks',
+        outroStorage: 'theater/page99/movie_20230814.ks',
+      },
+      3: {
+        title: '製作日誌#2',
+        thumbnail: 'theater/シアターサムネ仮03.png',
+        unlockCondition: '初めから解放されている',
+        situationParticipantsNumber: 0,
+        situationParticipants: [],
+        introStorage: 'theater/page99/movie_20230814.ks',
+        outroStorage: 'theater/page99/movie_20230814.ks',
+      },
+      4: {
+        title: '製作日誌#2',
+        thumbnail: 'theater/シアターサムネ仮03.png',
+        unlockCondition: '初めから解放されている',
+        situationParticipantsNumber: 0,
+        situationParticipants: [],
+        introStorage: 'theater/page99/movie_20230814.ks',
+        outroStorage: 'theater/page99/movie_20230814.ks',
+      },
+      5: {
+        title: '製作日誌#2',
+        thumbnail: 'theater/シアターサムネ仮03.png',
+        unlockCondition: '初めから解放されている',
+        situationParticipantsNumber: 0,
+        situationParticipants: [],
+        introStorage: 'theater/page99/movie_20230814.ks',
+        outroStorage: 'theater/page99/movie_20230814.ks',
+      },
+      6: {
+        title: '製作日誌#2',
+        thumbnail: 'theater/シアターサムネ仮03.png',
+        unlockCondition: '初めから解放されている',
+        situationParticipantsNumber: 0,
+        situationParticipants: [],
+        introStorage: 'theater/page99/movie_20230814.ks',
+        outroStorage: 'theater/page99/movie_20230814.ks',
+      },
+      7: {
+        title: '製作日誌#2',
+        thumbnail: 'theater/シアターサムネ仮03.png',
+        unlockCondition: '初めから解放されている',
+        situationParticipantsNumber: 0,
+        situationParticipants: [],
+        introStorage: 'theater/page99/movie_20230814.ks',
+        outroStorage: 'theater/page99/movie_20230814.ks',
+      },
+      8: {
+        title: '製作日誌#2',
+        thumbnail: 'theater/シアターサムネ仮03.png',
+        unlockCondition: '初めから解放されている',
+        situationParticipantsNumber: 0,
+        situationParticipants: [],
+        introStorage: 'theater/page99/movie_20230814.ks',
+        outroStorage: 'theater/page99/movie_20230814.ks',
+      },
+    }
   }
 
   // 導入編が未解放のシアターは、タイトルとサムネイルを上書きする

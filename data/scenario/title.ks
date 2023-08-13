@@ -19,7 +19,7 @@
 [glink color="&tf.buttonColor" size="30" width="300" x="488" y="480" name="buttonhover" text="プレイ" target="*gamestart"]
 [glink color="&tf.buttonColor" size="30" width="300" x="488" y="590" name="buttonhover" text="カスタムプレイ" target="*selectStage"]
 ; TODO 作成するまでコメントアウト
-;[glink color="&tf.buttonColor" size="30" width="300" x="158" y="540" name="buttonhover" text="シアター" target="*theater"]
+[glink color="&tf.buttonColor" size="30" width="300" x="158" y="540" name="buttonhover" text="シアター" target="*theater"]
 ; TODO 戻るボタンでUncaught TypeError: Cannot read property 'caller' of undefinedになる。使えるようにするまでコメントアウト
 ;[glink color="&tf.buttonColor" size="26" width="300" x="488" y="630" name="&tf.glink_name" text="コンフィグ"  storage="config.ks" ]
 
