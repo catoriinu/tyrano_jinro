@@ -370,7 +370,7 @@
   [else]
     ; 再投票上限を越えた場合は引き分け処理
     投票で決着がつきませんでした。[p]
-    [eval exp="tf.winnerFaction = FACTION_DRAW_BY_REVOTE"]
+    [eval exp="f.winnerFaction = FACTION_DRAW_BY_REVOTE"]
     [jump target="*gameOver"]
   [endif]
 [endif]
@@ -491,7 +491,7 @@ NPCが行動しています……[p]
 
 *gameOver
 [fadeoutbgm time="1000"]
-[m_displayGameOverAndWinnerFaction winnerFaction="&tf.winnerFaction"]
+[m_displayGameOverAndWinnerFaction winnerFaction="&f.winnerFaction"]
 
 [m_changeFrameWithId]
 #

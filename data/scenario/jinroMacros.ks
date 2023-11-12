@@ -77,10 +77,10 @@
   #
   勝敗判定中……[p]
   [iscript]
-    tf.winnerFaction = judgeWinnerFaction(f.characterObjects);
+    f.winnerFaction = judgeWinnerFaction(f.characterObjects);
   [endscript]
 
-  [if exp="tf.winnerFaction != null"]
+  [if exp="f.winnerFaction != null"]
     [jump *]
   [endif]
 [endmacro]
