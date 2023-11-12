@@ -1024,12 +1024,11 @@
     for (let i = 0; i < f.participantsIdList.length; i++) {
       let cId = f.participantsIdList[i];
 
-      //let fileName = '';
-      let fileName = 'normal.png';
+      let fileName = '';
       if (mp.winnerFaction == FACTION_DRAW_BY_REVOTE) {
-        // fileName = '引き分け用の表情差分';
+        fileName = f.statusFace[cId].draw;
       } else if (f.characterObjects[cId].role.faction == mp.winnerFaction){
-        // fileName = '勝利用の表情差分';
+        fileName = f.statusFace[cId].win[mp.winnerFaction];
       } else {
         // 敗北陣営のキャラクターは表示しない
         continue;

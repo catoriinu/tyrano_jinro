@@ -3,11 +3,11 @@
   [eval exp="tf.preloadList = []"]
 
   ; 登場キャラクターのpreloadVoiceサブルーチンを呼び出していく
-  [call storage="message/zundamon.ks" target="preloadVoice"]
-  [call storage="message/metan.ks" target="preloadVoice"]
-  [call storage="message/tsumugi.ks" target="preloadVoice"]
-  [call storage="message/hau.ks" target="preloadVoice"]
-  [call storage="message/ritsu.ks" target="preloadVoice"]
+  [call storage="message/zundamon.ks" target="preloadVoice" cond="f.participantsIdList.includes(CHARACTER_ID_ZUNDAMON)"]
+  [call storage="message/metan.ks" target="preloadVoice" cond="f.participantsIdList.includes(CHARACTER_ID_METAN)"]
+  [call storage="message/tsumugi.ks" target="preloadVoice" cond="f.participantsIdList.includes(CHARACTER_ID_TSUMUGI)"]
+  [call storage="message/hau.ks" target="preloadVoice" cond="f.participantsIdList.includes(CHARACTER_ID_HAU)"]
+  [call storage="message/ritsu.ks" target="preloadVoice" cond="f.participantsIdList.includes(CHARACTER_ID_RITSU)"]
 
   ; まとめてプリロード実行
   [preload storage="&tf.preloadList" single_use="false" name="jinroVoice"]
