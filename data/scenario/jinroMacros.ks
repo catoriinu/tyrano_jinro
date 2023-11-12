@@ -73,9 +73,6 @@
 ; 勝利陣営がいるかを判定し、勝利陣営がいた場合、指定されたラベルにジャンプする（storage, targetともに必須）
 ; ex: [j_judgeWinnerFactionAndJump storage="playJinro.ks" target="*gameOver"]
 [macro name="j_judgeWinnerFactionAndJump"]
-  [m_changeFrameWithId]
-  #
-  勝敗判定中……[p]
   [iscript]
     f.winnerFaction = judgeWinnerFaction(f.characterObjects);
   [endscript]
@@ -964,7 +961,6 @@
 [endmacro]
 
 
-
 [macro name="j_setDchForStatus"]
   ; メモ：夜の場合は夜時間開始時のオブジェクト（f.characterObjectsHistory[f.day]）のほうがいい？isAlive判定など。どちらの方が自然か検討する。
   [iscript]
@@ -978,6 +974,67 @@
         bgColor = '#000000';
         // fileName = '退場済用の表情差分';
       }
+
+      tmpCharacterList.push(new DisplayCharactersHorizontallySingle(
+        cId,
+        fileName,
+        bgColor,
+        '',
+        f.characterObjects[cId].name
+      ))
+    }
+
+    f.dch = new DisplayCharactersHorizontally(
+      tmpCharacterList,
+      20, // キャラクター画像の表示位置を中央より右へずらす。leftTextの文字を表示するスペースを作るため
+      -100, // キャラクター画像の表示位置を中央より上へずらす。メニューボタンは非表示にしているので、干渉しない分上げておく
+    );
+  [endscript]
+[endmacro]
+
+
+; 勝敗結果画面を表示する
+; 事前にf.winnerFactionに勝利陣営を格納しておくこと
+[macro name="j_displayGameOverAndWinnerFaction"]
+
+  [fadeoutbgm time="1000"]
+  ; 全ボタンを消去
+  [j_saveFixButton buf="gameover"]
+  [j_clearFixButton]
+  [m_displayGameOver][p]
+
+  ; 勝利陣営を表示、プレイヤー視点での勝敗結果効果音を鳴らす
+  [j_setDchForWinnerFactionCharacters winnerFaction="&f.winnerFaction"]
+  [call storage="jinroSubroutines.ks" target="*displayCharactersHorizontally"]
+  [j_playSePlayerResult winnerFaction="&f.winnerFaction"]
+  [m_displayWinnerFaction winnerFaction="&f.winnerFaction"]
+
+  ; ボタン復元
+  [j_loadFixButton buf="gameover"]
+  詳細はステータス画面を確認してください。[p]
+
+  ; キャラクター画像を表示していたレイヤーを解放するのは呼び元に任せる
+[endmacro]
+
+
+; @param winnerFaction 勝利陣営。必須
+[macro name="j_setDchForWinnerFactionCharacters"]
+  [iscript]
+    let tmpCharacterList = [];
+    for (let i = 0; i < f.participantsIdList.length; i++) {
+      let cId = f.participantsIdList[i];
+
+      //let fileName = '';
+      let fileName = 'normal.png';
+      if (mp.winnerFaction == FACTION_DRAW_BY_REVOTE) {
+        // fileName = '引き分け用の表情差分';
+      } else if (f.characterObjects[cId].role.faction == mp.winnerFaction){
+        // fileName = '勝利用の表情差分';
+      } else {
+        // 敗北陣営のキャラクターは表示しない
+        continue;
+      }
+      let bgColor = getBgColorFromCharacterId(cId);
 
       tmpCharacterList.push(new DisplayCharactersHorizontallySingle(
         cId,
@@ -1013,6 +1070,7 @@
 [endmacro]
 
 
+; TODO 現状使っていないマクロ。完全に不要になったら消す。
 [macro name="j_displayRoles"]
 役職公開[r]
 ずんだもん：[emb exp="f.characterObjects.zundamon.role.roleName"]、

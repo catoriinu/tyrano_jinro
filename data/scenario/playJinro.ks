@@ -491,13 +491,8 @@ NPCが行動しています……[p]
 
 *gameOver
 [fadeoutbgm time="1000"]
-[m_displayGameOverAndWinnerFaction winnerFaction="&f.winnerFaction"]
+[j_displayGameOverAndWinnerFaction]
 
-[m_changeFrameWithId]
-#
-おわり。[p]
-
-[j_displayRoles]
 タイトルに戻ります。[p]
 
 ; タイトル画面に戻る前に、キャラの退場、メッセージ枠の削除、ボタンの削除を行う
@@ -505,5 +500,7 @@ NPCが行動しています……[p]
 [m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 [layopt layer="message0" visible="false"]
+; 勝利陣営キャラクターのレイヤーを消去する。タイトルロゴが表示しきるのを待つため少し長めのtimeを設定
+[freeimage layer="1" time="700" wait="false"]
 [jump storage="title.ks"]
 [s]
