@@ -368,10 +368,16 @@ function pushElement(array, element) {
 /**
  * chara/{characterId}.ksで設定した、そのキャラクターのイメージカラーのコードを取得する
  * @param {string} characterId 
+ * @param {boolean} isAlive 生存者かフラグ。退場済みと区別したいときのみ渡す。デフォルト:true
  * @returns {string} 16進数カラーコード 例:'#ffffff'
  */
-function getBgColorFromCharacterId(characterId) {
-  return TYRANO.kag.stat.f.color.character[characterId];
+function getBgColorFromCharacterId(characterId, isAlive = true) {
+  if (isAlive) {
+    return TYRANO.kag.stat.f.color.character[characterId];
+  } else {
+    // 退場済みなら黒固定
+    return '#000000';
+  }
 }
 
 

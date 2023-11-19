@@ -289,8 +289,10 @@ MEMO 最終的には以下の構成のHTMLが生成される。
     // キャラ画像のimg要素をboxの子要素として追加する
     $characterImg.appendTo($statusBox);
 
+    // 役職を公開してよいかフラグを取得
+    const shouldOpenRoleInfo = isShouldOpenRoleInfo(f.characterObjects, tf.characterId, f.winnerFaction, f.commonPerspective);
     // キャラ情報コンテナ取得。中身の情報はメソッド内で格納済み
-    const $infoContainer = createInfoContainer(f.characterObjects, tf.characterId, tf.boxWidth);
+    const $infoContainer = createInfoContainer(f.characterObjects, tf.characterId, tf.boxWidth, shouldOpenRoleInfo);
     $infoContainer.appendTo($statusBox);
 
     // 1キャラ分のboxを.dchStatusContainerの子要素として追加する

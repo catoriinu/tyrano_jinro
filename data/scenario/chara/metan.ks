@@ -29,7 +29,7 @@
         [FACTION_VILLAGERS]: 'blank.png', // TODO 笑顔の表情増やしたい
         [FACTION_WEREWOLVES]: 'smug.png',
       },
-      draw: 'tired.png',
+      draw: 'panicked.png',
     };
   [endscript]
 

@@ -962,17 +962,33 @@
 
 
 [macro name="j_setDchForStatus"]
-  ; メモ：夜の場合は夜時間開始時のオブジェクト（f.characterObjectsHistory[f.day]）のほうがいい？isAlive判定など。どちらの方が自然か検討する。
   [iscript]
     let tmpCharacterList = [];
     for (let i = 0; i < f.participantsIdList.length; i++) {
       let cId = f.participantsIdList[i];
 
-      let bgColor = getBgColorFromCharacterId(cId);
-      let fileName = 'normal.png';
-      if (!f.characterObjects[cId].isAlive) {
-        bgColor = '#000000';
-        // fileName = '退場済用の表情差分';
+      let bgColor = '';
+      let fileName = '';
+
+      if (mp.winnerFaction == null) {
+        // 勝利陣営が未確定（ゲーム進行中）に開いた場合
+        // TODO：夜の場合は夜時間開始時のオブジェクト（f.characterObjectsHistory[f.day]）のほうがいい？isAlive判定など。どちらの方が自然か検討する。
+        bgColor = getBgColorFromCharacterId(cId, f.characterObjects[cId].isAlive);
+        if (f.characterObjects[cId].isAlive) {
+          fileName = f.statusFace[cId].alive;
+        } else {
+          fileName = f.statusFace[cId].lose;
+        }
+      } else {
+        // 勝利陣営が確定済み（ゲーム終了後）に開いた場合
+        bgColor = getBgColorFromCharacterId(cId, f.characterObjects[cId].isAlive);
+        if (mp.winnerFaction == FACTION_DRAW_BY_REVOTE) {
+          fileName = f.statusFace[cId].draw;
+        } else if (f.characterObjects[cId].role.faction == mp.winnerFaction){
+          fileName = f.statusFace[cId].win[mp.winnerFaction];
+        } else {
+          fileName = f.statusFace[cId].lose;
+        }
       }
 
       tmpCharacterList.push(new DisplayCharactersHorizontallySingle(
