@@ -1074,13 +1074,13 @@
 [macro name="j_playSePlayerResult"]
   [if exp="mp.winnerFaction == FACTION_DRAW_BY_REVOTE"]
     ; 引き分け
-    [playse storage="megaten.ogg" loop="false" volume="35" sprite_time="50-20000"]
+    [playse storage="megaten.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
   [elsif exp="f.characterObjects[f.playerCharacterId].role.faction == mp.winnerFaction"]
     ; 勝利
-    [playse storage="kirakira4.ogg" loop="false" volume="35" sprite_time="50-20000"]
+    [playse storage="kirakira4.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
   [else]
     ; 敗北
-    [playse storage="chiin1.ogg" loop="false" volume="35" sprite_time="50-20000"]
+    [playse storage="chiin1.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
   [endif]
 [endmacro]
 
@@ -1284,10 +1284,10 @@
 
   [bg storage="black.png" time="1000" wait="true" effect="fadeInDown"]
 
-  [playse storage="shock1.ogg" loop="false" volume="30" sprite_time="50-20000"]
+  [playse storage="shock1.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
   [emb exp="f.day + '日目の朝を迎えました。'"][l][r]
   [if exp="typeof f.bitingObjectLastNight === 'undefined'"]
-    [playse storage="shock1.ogg" loop="false" volume="30" sprite_time="50-20000"]
+    [playse storage="shock1.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
     ; 昨夜の襲撃結果が取得できなかった（＝初日犠牲者のいない1日目昼）場合
     ; TODO 人狼の人数を可変で出力する
     ; FIXME 役職の内訳を表示してもいいかも。
@@ -1295,7 +1295,7 @@
     [j_introductionCharacters]
 
   [elsif exp="f.bitingObjectLastNight.result"]
-    [playse storage="shock1.ogg" loop="false" volume="30" sprite_time="50-20000"]
+    [playse storage="shock1.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
     ; 昨夜の襲撃結果が襲撃成功の場合
     ; キャラを登場させ、メッセージ表示
     [m_changeCharacter characterId="&f.bitingObjectLastNight.targetId" face="normal"]

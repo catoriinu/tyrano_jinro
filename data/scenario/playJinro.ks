@@ -29,7 +29,7 @@
 ; ステータス、バックログボタン表示
 [j_displayFixButton status="true" backlog="true"]
 
-[playse storage="dodon.ogg" loop="false" volume="40" sprite_time="50-20000"]
+[playse storage="dodon.ogg" buf="1" loop="false" volume="40" sprite_time="50-20000"]
 [m_changeFrameWithId]
 #
 人狼ゲームの幕開けです……！[p]

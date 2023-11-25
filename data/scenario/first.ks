@@ -21,9 +21,39 @@
 
 [plugin name="playselist"] 
 
+; さくた氏の「拡張UIパーツプラグイン」
+[plugin name="uiparts_set"]
+
 ; ボイボ人狼用初期化
 [call storage="theater/macros.ks"]
 [loadjs storage="theaterScripts.js"]
+
+; コンフィグ用初期設定
+[iscript]
+// 初回起動時
+if (!('config' in sf)) {
+  console.log("★RESET config★");
+  sf.config = {
+    current_bgm_vol:    TG.config.defaultBgmVolume, // BGM音量
+    current_se_vol:     TG.config.defaultSeVolume, // SE音量
+    current_voice_vol:  TG.config.defaultSeVolume, // VOICE音量 デフォルトではSEと同じ
+    current_ch_speed:   TG.config.chSpeed, // テキスト表示速度
+    current_auto_speed: TG.config.autoSpeed, // オート時のテキスト表示速度 現在未使用
+    mute_bgm:   false,
+    mute_se:    false,
+    mute_voice: false,
+  }
+}
+tf.tmp_bgm_vol = sf.config.mute_bgm ? "0" : String(sf.config.current_bgm_vol);
+tf.tmp_se_vol = sf.config.mute_se ? "0" : String(sf.config.current_se_vol);
+tf.tmp_voice_vol = sf.config.mute_voice ? "0" : String(sf.config.tmp_voice_vol);
+tf.tmp_ch_speed = String(sf.config.current_ch_speed);
+[endscript]
+
+[bgmopt volume="&tf.tmp_bgm_vol"]
+[seopt volume="&tf.tmp_se_vol" buf="1"]
+[seopt volume="&tf.tmp_voice_vol" buf="0"]
+[configdelay speed="&tf.tmp_ch_speed"]
 
 ; デフォルトフォントの設定
 [deffont size=32 color="0x28332a" face=MPLUSRounded][resetfont]

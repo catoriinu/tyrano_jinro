@@ -27,7 +27,7 @@
       lose: 'sad.png',
       win: {
         [FACTION_VILLAGERS]: 'excited.png',
-        [FACTION_WEREWOLVES]: 'scorn.png',
+        [FACTION_WEREWOLVES]: 'smug.png',
       },
       draw: 'wrysmile.png',
     };
