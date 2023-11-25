@@ -1148,14 +1148,14 @@
 
   [if exp="!f.displaingButton.menu && mp.menu"]
     ; ステータス画面→メニュー画面に遷移する用。ステータス画面自体がrole="sleepgame"で遷移する画面なので、そこから遷移するためのボタンにはfix属性やrole="sleepgame"を指定しない。
-    [button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMainFromStatus" x="867" y="23" width="114" height="103" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
+    [button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMainFromStatus" x="868" y="23" width="114" height="103" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
     ; 通常画面→メニュー画面に遷移する用。
-    ;[button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="867" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
+    ;[button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="868" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
     [eval exp="f.displaingButton.menu = mp.menu"]
   [endif]
 
   [if exp="!f.displaingButton.backlog && mp.backlog"]
-    [button graphic="button/button_backlog_normal.png" x="1009" y="23" width="114" height="103" fix="true" role="backlog" name="button_j_fix,button_j_backlog" enterimg="button/button_backlog_hover.png"]
+    [button graphic="button/button_backlog_normal.png" x="1006" y="23" width="114" height="103" fix="true" role="backlog" name="button_j_fix,button_j_backlog" enterimg="button/button_backlog_hover.png"]
     [eval exp="f.displaingButton.backlog = mp.backlog"]
   [endif]
 

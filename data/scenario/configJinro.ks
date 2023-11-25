@@ -79,8 +79,8 @@
 [layopt layer="message1" visible="true"]
 [current layer="message1"]
 
-; 画面右上の「Back」ボタン
-[button fix="true" graphic="&tf.img_path + 'c_btn_back.png'" enterimg="&tf.img_path + 'c_btn_back2.png'" target="*backtitle" x="1160" y="20"]
+; 画面右上の「戻る」ボタン
+[button fix="true" graphic="button/button_return_normal.png" enterimg="button/button_return_hover.png" target="*backtitle" x="1143" y="23" width="114" height="103"]
 
 [jump target="*config_page"]
 
