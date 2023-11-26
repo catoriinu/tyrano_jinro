@@ -42,6 +42,8 @@ if (!('config' in sf)) {
     mute_bgm:   false,
     mute_se:    false,
     mute_voice: false,
+    mark_size: 0, // キャラ名マーカーのサイズ（0ならマーカーを引かない）
+    show_icon: false, // キャラアイコン表示の有無 現在未使用
   }
 }
 tf.tmp_bgm_vol = sf.config.mute_bgm ? "0" : String(sf.config.current_bgm_vol);

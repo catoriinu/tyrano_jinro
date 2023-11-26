@@ -51,6 +51,27 @@
 [endmacro]
 
 
+; キャラの名前を表示するマクロ
+; このマクロでキャラの名前を表示させると、コンフィグのキャラ判別サポート設定を適用することができる
+; @param targetId 表示するキャラのキャラクターID
+; @param targetName 表示するキャラクター名そのもの
+[macro name="j_callName"]
+
+  [iscript]
+    tf.color = f.color.character[mp.targetId];
+    //tf.iconStorage = 'sdchara/' + mp.targetId + '_mini.png'
+  [endscript]
+
+  [mark color="&tf.color" size="&sf.config.mark_size" cond="sf.config.mark_size > 0"]
+  [emb exp="mp.targetName"]
+  [endmark cond="sf.config.mark_size > 0"]
+
+  ;TODO 不具合が解消できるまでj_graphタグは使わない。
+  ; mark,endmarkタグの前後で使うとそこで文字の表示が途切れる問題。元々のgraphタグでは発生しない。
+  ;[j_graph storage="&tf.iconStorage" height="40" width="40" cond="sf.config.show_icon"]
+[endmacro]
+
+
 ; 処刑マクロ
 [macro name="j_execution"]
   [iscript]

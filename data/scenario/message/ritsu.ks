@@ -1,12 +1,12 @@
 ; 波音リツのmessageサブルーチン
 
 ; 呼び方サブルーチン
-; 事前準備：tf.characterIdToCall = キャラクターID
-; このmessageサブルーチンのキャラクターが、tf.characterIdToCallのキャラクターを呼ぶ際の二人称をtf.calledCharacterNameに格納する
+; 事前準備：tf.targetId = キャラクターID
+; このmessageサブルーチンのキャラクターが、tf.targetIdのキャラクターを呼ぶ際の二人称をtf.targetNameに格納する
 ; キャラクターごとの差異をなくすため、自分自身のIDが渡された場合は一人称を入れる
 *changeIdToCallName
   [iscript]
-    tf.calledCharacterName = (function(characterId) {
+    tf.targetName = (function(characterId) {
       const calledCharacterNameObject = {
         [CHARACTER_ID_ZUNDAMON]: 'ずんだもん',
         [CHARACTER_ID_METAN]:    'めたん',
@@ -15,7 +15,7 @@
         [CHARACTER_ID_RITSU]:    'あたし',
       }
       return calledCharacterNameObject[characterId];
-    }(tf.characterIdToCall));
+    }(tf.targetId));
   [endscript]
 [return]
 
@@ -32,7 +32,7 @@
 [add_playselist storage="chara/ritsu/009_波音リツ（ノーマル）_さあ、祭りを始めま….mp3"]
 [playselist]
 
-[emb exp="tf.calledCharacterName"]。アンタ人狼ね？[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]。アンタ人狼ね？[r]
 さあ、祭りを始めましょうか。[p]
 [stopse]
 [return]
@@ -46,7 +46,7 @@
 [add_playselist storage="chara/ritsu/010_波音リツ（ノーマル）_釣られていたのはあ….mp3"]
 [playselist]
 
-[emb exp="tf.calledCharacterName"]。アンタ人狼ね？[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]。アンタ人狼ね？[r]
 釣られていたのはあたしの方だったようね。[p]
 [stopse]
 [return]
@@ -60,7 +60,7 @@
 [add_playselist storage="chara/ritsu/011_波音リツ（ノーマル）_NGリストにぶち込….mp3"]
 [playselist]
 
-[emb exp="tf.calledCharacterName"]。アンタ人狼ね？[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]。アンタ人狼ね？[r]
 NGリストにぶち込んでやるわ。[p]
 [stopse]
 [return]
@@ -74,7 +74,7 @@ NGリストにぶち込んでやるわ。[p]
 [add_playselist storage="chara/ritsu/020_波音リツ（ノーマル）_住民としてこの村を….mp3"]
 [playselist]
 
-[emb exp="tf.calledCharacterName"]は人狼じゃなかったわ。[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったわ。[r]
 住民としてこの村を盛り上げてちょうだい。[p]
 [stopse]
 [return]
@@ -88,7 +88,7 @@ NGリストにぶち込んでやるわ。[p]
 [add_playselist storage="chara/ritsu/021_波音リツ（ノーマル）_アンタの意見は貴重….mp3"]
 [playselist]
 
-[emb exp="tf.calledCharacterName"]は人狼じゃなかったわ。[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったわ。[r]
 アンタの意見は貴重なソースになるわ。[p]
 [stopse]
 [return]
@@ -102,7 +102,7 @@ NGリストにぶち込んでやるわ。[p]
 [add_playselist storage="chara/ritsu/022_波音リツ（ノーマル）_…人狼のエサになる….mp3"]
 [playselist]
 
-[emb exp="tf.calledCharacterName"]は人狼じゃなかったわ。[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったわ。[r]
 …人狼のエサになる準備はOK？[p]
 [stopse]
 [return]
@@ -116,7 +116,7 @@ NGリストにぶち込んでやるわ。[p]
 [add_playselist storage="chara/ritsu/023_波音リツ（ノーマル）_惜しい人をなくした….mp3"]
 [playselist]
 
-[emb exp="tf.calledCharacterName"]は人狼じゃなかったわ。[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったわ。[r]
 惜しい人をなくしたわね。[p]
 [stopse]
 [return]
@@ -130,7 +130,7 @@ NGリストにぶち込んでやるわ。[p]
 [add_playselist storage="chara/ritsu/024_波音リツ（ノーマル）_くっ…絶対に許さん….mp3"]
 [playselist]
 
-[emb exp="tf.calledCharacterName"]は人狼じゃなかったわ。[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったわ。[r]
 くっ…絶対に許さんぞ人狼め！[p]
 [stopse]
 [return]
@@ -144,7 +144,7 @@ NGリストにぶち込んでやるわ。[p]
 [add_playselist storage="chara/ritsu/025_波音リツ（ノーマル）_まああれだけ怪しか….mp3"]
 [playselist]
 
-[emb exp="tf.calledCharacterName"]は人狼じゃなかったわ。[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったわ。[r]
 まああれだけ怪しかったし、残念だけど当然ね。[p]
 [stopse]
 [return]
@@ -234,7 +234,7 @@ NGリストにぶち込んでやるわ。[p]
 [add_playselist storage="chara/ritsu/034_波音リツ（ノーマル）_ねえねえ、言い当て….mp3"]
 [playselist]
 
-[emb exp="tf.calledCharacterName"]、人狼はアンタよ！[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]、人狼はアンタよ！[r]
 ねえねえ、言い当てられて今どんな気持ち？[p]
 [stopse]
 [return]
@@ -256,7 +256,7 @@ NGリストにぶち込んでやるわ。[p]
 [endif]
 [playselist]
 
-[emb exp="tf.calledCharacterName"]はどうせ人狼でしょうね。[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]はどうせ人狼でしょうね。[r]
 まあ根拠はないけれど。[p]
 [stopse]
 [return]
@@ -280,7 +280,7 @@ NGリストにぶち込んでやるわ。[p]
 [add_playselist storage="chara/ritsu/043_波音リツ（ノーマル）_あたしが決めた。今….mp3"]
 [playselist]
 
-[emb exp="tf.calledCharacterName"]はあたしの仲間よ。[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]はあたしの仲間よ。[r]
 あたしが決めた。今決めた。[p]
 [stopse]
 [return]
@@ -302,7 +302,7 @@ NGリストにぶち込んでやるわ。[p]
 [endif]
 [playselist]
 
-こう見えてもあたしは[emb exp="tf.calledCharacterName"]に期待してるの。[r]
+こう見えてもあたしは[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]に期待してるの。[r]
 だからがっかりさせないでほしいわね。[p]
 [stopse]
 [return]
@@ -310,10 +310,10 @@ NGリストにぶち込んでやるわ。[p]
 
 ; シーン：「聞き出す」アクション実行時
 *doAction_ask
-[eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+[eval exp="tf.targetId = tf.selectedCharacterId"]
 [call target="changeIdToCallName"]
 
-[emb exp="tf.calledCharacterName"]、三行で説明よろしく。[p]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]、三行で説明よろしく。[p]
 [return]
 
 

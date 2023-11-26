@@ -1,12 +1,12 @@
 ; 春日部つむぎのmessageサブルーチン
 
 ; 呼び方サブルーチン
-; 事前準備：tf.characterIdToCall = キャラクターID
-; このmessageサブルーチンのキャラクターが、tf.characterIdToCallのキャラクターを呼ぶ際の二人称をtf.calledCharacterNameに格納する
+; 事前準備：tf.targetId = キャラクターID
+; このmessageサブルーチンのキャラクターが、tf.targetIdのキャラクターを呼ぶ際の二人称をtf.targetNameに格納する
 ; キャラクターごとの差異をなくすため、自分自身のIDが渡された場合は一人称を入れる
 *changeIdToCallName
   [iscript]
-    tf.calledCharacterName = (function(characterId) {
+    tf.targetName = (function(characterId) {
       const calledCharacterNameObject = {
         [CHARACTER_ID_ZUNDAMON]: 'ずんだもん先輩',
         [CHARACTER_ID_METAN]:    'めたん先輩',
@@ -15,7 +15,7 @@
         [CHARACTER_ID_RITSU]:    'りっちゃん',
       }
       return calledCharacterNameObject[characterId];
-    }(tf.characterIdToCall));
+    }(tf.targetId));
   [endscript]
 [return]
 
@@ -32,7 +32,7 @@
 [add_playselist storage="chara/tsumugi/009_春日部つむぎ（ノーマル）_隠し通せると思った….mp3"]
 [playselist]
 
-あーしの占いだと、[emb exp="tf.calledCharacterName"]は人狼だったんだよねー。[r]
+あーしの占いだと、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼だったんだよねー。[r]
 隠し通せると思った？残念だったね。[p]
 [stopse]
 [return]
@@ -46,7 +46,7 @@
 [add_playselist storage="chara/tsumugi/010_春日部つむぎ（ノーマル）_友達だと思ってたの….mp3"]
 [playselist]
 
-あーしの占いだと、[emb exp="tf.calledCharacterName"]は人狼だったんだよねー。[r]
+あーしの占いだと、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼だったんだよねー。[r]
 友達だと思ってたのはあーしだけだったんだね。[p]
 [stopse]
 [return]
@@ -60,7 +60,7 @@
 [add_playselist storage="chara/tsumugi/011_春日部つむぎ（ノーマル）_ぶっちゃけ、やっぱ….mp3"]
 [playselist]
 
-あーしの占いだと、[emb exp="tf.calledCharacterName"]は人狼だったんだよねー。[r]
+あーしの占いだと、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼だったんだよねー。[r]
 ぶっちゃけ、やっぱりそっか、って感じかな。[p]
 [stopse]
 [return]
@@ -74,7 +74,7 @@
 [add_playselist storage="chara/tsumugi/020_春日部つむぎ（ノーマル）_友達になってくれる….mp3"]
 [playselist]
 
-あーしの占いだと、[emb exp="tf.calledCharacterName"]は人狼じゃなかったよ。[r]
+あーしの占いだと、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったよ。[r]
 友達になってくれるかな？[p]
 [stopse]
 [return]
@@ -88,7 +88,7 @@
 [add_playselist storage="chara/tsumugi/021_春日部つむぎ（ノーマル）_みんなにもキミのこ….mp3"]
 [playselist]
 
-あーしの占いだと、[emb exp="tf.calledCharacterName"]は人狼じゃなかったよ。[r]
+あーしの占いだと、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったよ。[r]
 みんなにもきみのこと、信じてもらえるように頑張るね！[p]
 [stopse]
 [return]
@@ -102,7 +102,7 @@
 [add_playselist storage="chara/tsumugi/022_春日部つむぎ（ノーマル）_ごめんね、ちょっと….mp3"]
 [playselist]
 
-あーしの占いだと、[emb exp="tf.calledCharacterName"]は人狼じゃなかったよ。[r]
+あーしの占いだと、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったよ。[r]
 ごめんね、ちょっと疑っちゃってたかも…。[p]
 [stopse]
 [return]
@@ -116,7 +116,7 @@
 [add_playselist storage="chara/tsumugi/023_春日部つむぎ（ノーマル）_って言っても、ちょ….mp3"]
 [playselist]
 
-あーしの占いだと、[emb exp="tf.calledCharacterName"]は人狼じゃなかったよ。[r]
+あーしの占いだと、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったよ。[r]
 って言っても、ちょっと遅かったけどね…。[p]
 [stopse]
 [return]
@@ -130,7 +130,7 @@
 [add_playselist storage="chara/tsumugi/024_春日部つむぎ（ノーマル）_こんなのウソだよね….mp3"]
 [playselist]
 
-あーしの占いだと、[emb exp="tf.calledCharacterName"]は人狼じゃなかったよ。[r]
+あーしの占いだと、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったよ。[r]
 こんなのウソだよね？ねえ、早く戻ってきてよ…。[p]
 [stopse]
 [return]
@@ -144,7 +144,7 @@
 [add_playselist storage="chara/tsumugi/025_春日部つむぎ（ノーマル）_こんなことになるな….mp3"]
 [playselist]
 
-あーしの占いだと、[emb exp="tf.calledCharacterName"]は人狼じゃなかったよ。[r]
+あーしの占いだと、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったよ。[r]
 こんなことになるなら、もっと仲良くすればよかったかな。[p]
 [stopse]
 [return]
@@ -235,7 +235,7 @@
 [playselist]
 
 あーし、全部分かっちゃった。[r]
-[emb exp="tf.calledCharacterName"]が人狼なんでしょ？[p]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]が人狼なんでしょ？[p]
 [stopse]
 [return]
 
@@ -257,7 +257,7 @@
 [add_playselist storage="chara/tsumugi/030_春日部つむぎ（ノーマル）_ちょっとヤバい感じ….mp3"]
 [playselist]
 
-[emb exp="tf.calledCharacterName"]ってもしかして人狼？[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]ってもしかして人狼？[r]
 ちょっとヤバい感じするし。[p]
 [stopse]
 [return]
@@ -281,7 +281,7 @@
 [add_playselist storage="chara/tsumugi/045_春日部つむぎ（ノーマル）_これから先も、ずっ….mp3"]
 [playselist]
 
-[emb exp="tf.calledCharacterName"]とあーしは最強の友達だよね。[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]とあーしは最強の友達だよね。[r]
 これから先も、ずっと！[p]
 [stopse]
 [return]
@@ -304,7 +304,7 @@
 [add_playselist storage="chara/tsumugi/040_春日部つむぎ（ノーマル）_できたらきみもあー….mp3"]
 [playselist]
 
-あーしは[emb exp="tf.calledCharacterName"]を味方だと思ってるよ。[r]
+あーしは[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]を味方だと思ってるよ。[r]
 できたらきみもあーしのこと、信じてほしいな。[p]
 [stopse]
 [return]
@@ -312,10 +312,10 @@
 
 ; シーン：「聞き出す」アクション実行時
 *doAction_ask
-[eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+[eval exp="tf.targetId = tf.selectedCharacterId"]
 [call target="changeIdToCallName"]
 
-あのさ、[emb exp="tf.calledCharacterName"]の考えも聞いてみたいなー。[p]
+あのさ、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]の考えも聞いてみたいなー。[p]
 [return]
 
 

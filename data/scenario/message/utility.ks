@@ -31,11 +31,11 @@
     // 自分のキャラクターID、対象キャラクターの呼び方を取得するための一時変数を設定
     if (!('reaction' in tf) || tf.reaction !== true) {
       tf.characterId = f.actionObject.characterId;
-      tf.characterIdToCall = f.actionObject.targetId;
+      tf.targetId = f.actionObject.targetId;
     } else {
       // リアクションをする時は、格納される変数を逆にする
       tf.characterId = f.actionObject.targetId;
-      tf.characterIdToCall = f.actionObject.characterId;
+      tf.targetId = f.actionObject.characterId;
     }
     tf.reaction = false;
 
@@ -43,8 +43,11 @@
     tf.messageStorage = './message/' + tf.characterId + '.ks';
   [endscript]
 
+  ; 呼び方をtf.targetNameに格納する
+  [call storage="&tf.messageStorage" target="changeIdToCallName"]
+
+  ; メッセージ処理開始
   [m_changeCharacter characterId="&tf.characterId" face="&tf.tmpFace"]
   [m_changeFrameWithId characterId="&tf.characterId"]
   # &f.speaker[f.characterObjects[tf.characterId].name]
-  [call storage="&tf.messageStorage" target="changeIdToCallName"]
 [return]
