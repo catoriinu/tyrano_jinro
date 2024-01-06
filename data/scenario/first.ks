@@ -26,6 +26,8 @@
 
 ; ボイボ人狼用初期化
 [call storage="theater/macros.ks"]
+[loadjs storage="situations/Situation.js"]
+[loadjs storage="situations/page01.js"]
 [loadjs storage="theaterScripts.js"]
 
 ; コンフィグ用初期設定

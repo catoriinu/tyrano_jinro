@@ -80,8 +80,8 @@ if (!('quickShowDetail' in f)) {f.quickShowDetail = false}
   ; ボタン類
   [eval exp="tf.buttonColor = CLASS_GLINK_DEFAULT"]
   [glink color="&tf.buttonColor" size="30" width="270" x="975" y="438" text="タイトルに戻る" target="*returnTitle"]
-;  [glink color="&tf.buttonColor" size="30" width="270" x="975" y="338" text="1期・2期" target="*loadTheaterList" exp="f.theaterListPage = 1"]
-;  [glink color="&tf.buttonColor" size="30" width="270" x="975" y="138" text="もち子ミコ" target="*loadTheaterList" exp="f.theaterListPage = 99"]
+  [glink color="&tf.buttonColor" size="30" width="270" x="975" y="338" text="1期・2期" target="*loadTheaterList" exp="f.theaterListPage = 1"]
+  ;[glink color="&tf.buttonColor" size="30" width="270" x="975" y="38" text="もち子ミコ" target="*loadTheaterList" exp="f.theaterListPage = 99"]
 
   ;メッセージウィンドウの表示
   [layopt layer="message0" visible="true"]
@@ -141,7 +141,9 @@ if (!('quickShowDetail' in f)) {f.quickShowDetail = false}
 [eval exp="f.quickShowDetail = false"]
 
 ; そのシアターが解放済みなら、シアター詳細モジュール表示
-[jump storage="theater/detail.ks" target="*start" cond="sf.theaterProgress[f.theaterListPage][f.theaterDetailNum].intro !== THEATER_LOCKED"]
+;[jump storage="theater/detail.ks" target="*start" cond="!isIntroProgressLocked(sf.theater[f.theaterListPage][f.theaterDetailNum])"]
+; TODO こちらはテスト用。実際には↑を有効化すること
+[jump storage="theater/detail.ks" target="*start" cond="!isIntroProgressLocked(f.theaterList[f.theaterDetailNum])"]
 
 ; そのシアターが未解放なら、詳細を表示させないで戻す
 未解放のシアターのため選択できません。[p]

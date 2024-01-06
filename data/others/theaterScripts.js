@@ -3,17 +3,17 @@
 const THEATER_LOCKED = 0;   // 未解放
 const THEATER_UNLOCKED = 1; // 解放済みで未視聴
 const THEATER_WATCHED = 2;  // 視聴済み
-if (!('theaterProgress' in TYRANO.kag.variable.sf)) {
-  TYRANO.kag.variable.sf.theaterProgress = {
+if (!('theater' in TYRANO.kag.variable.sf)) {
+  TYRANO.kag.variable.sf.theater = {
     1: { // 1期・2期
-      1: {intro: THEATER_WATCHED, end: THEATER_WATCHED}, // シアター自体が解放されるのがオープニング完了後のため、ここは初期状態から視聴済みにしておく
-      2: {intro: THEATER_UNLOCKED, end: THEATER_LOCKED},
-      3: {intro: THEATER_UNLOCKED, end: THEATER_LOCKED},
-      4: {intro: THEATER_UNLOCKED, end: THEATER_LOCKED},
-      5: {intro: THEATER_UNLOCKED, end: THEATER_LOCKED},
-      6: {intro: THEATER_UNLOCKED, end: THEATER_LOCKED},
-      7: {intro: THEATER_UNLOCKED, end: THEATER_LOCKED},
-      8: {intro: THEATER_LOCKED, end: THEATER_LOCKED}
+      1: getSituationPage01_01(),
+      2: getSituationPage01_02(),
+      3: getSituationPage01_03(),
+      4: getSituationPage01_04(),
+      5: getSituationPage01_05(),
+      6: getSituationPage01_06(),
+      7: getSituationPage01_07(),
+      8: getSituationPage01_08(),
     },
     99: { // もち子ミコ
       1: {intro: THEATER_WATCHED, end: THEATER_WATCHED},
@@ -26,4 +26,30 @@ if (!('theaterProgress' in TYRANO.kag.variable.sf)) {
       8: {intro: THEATER_LOCKED, end: THEATER_LOCKED}
     }
   };
+}
+
+
+function setSituationsForAchievement(keys = []) {
+  const situations = [];
+
+  if (keys.includes('page01')) {
+    situations.push(
+      getSituationPage01_01(),
+      getSituationPage01_02(),
+      getSituationPage01_03(),
+      getSituationPage01_04(),
+      getSituationPage01_05(),
+      getSituationPage01_06(),
+      getSituationPage01_07(),
+      getSituationPage01_08(),
+    );
+  }
+
+  TYRANO.kag.variable.sf.situationsForAchievement = situations;
+}
+
+
+
+function checkAchievementCondition() {
+
 }

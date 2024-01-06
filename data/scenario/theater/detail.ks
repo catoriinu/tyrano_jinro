@@ -19,14 +19,16 @@
 [glink color="&tf.buttonColor" size="26" width="300" x="487" y="395" text="導入編を見る" target="*startIntro"]
 
 ; 「このシチュエーションでプレイする」ボタンまたはプレイできない理由
-[if exp="('cantSituationPlay' in f.theaterList[f.theaterDetailNum])"]
-  [ptext layer="1" text="&f.theaterList[f.theaterDetailNum].cantSituationPlay" face="MPLUSRounded" size="30" x="180" y="480" width="920" align="center"]
-[else]
+[if exp="f.theaterList[f.theaterDetailNum].cantSituationPlay === null"]
   [glink color="&tf.buttonColor" size="26" width="450" x="412.9" y="480" text="このシチュエーションでプレイする" target="*startSituationPlay"]
+[else]
+  [ptext layer="1" text="&f.theaterList[f.theaterDetailNum].cantSituationPlay" face="MPLUSRounded" size="30" x="180" y="480" width="920" align="center"]
 [endif]
 
 ; 「解決編を見る」ボタンまたは解放条件
-[if exp="sf.theaterProgress[f.theaterListPage][f.theaterDetailNum].end == THEATER_LOCKED"]
+;[if exp="isIntroProgressLocked(sf.theater[f.theaterListPage][f.theaterDetailNum])"]
+; TODO こちらはテスト用。実際には↑を有効化すること
+[if exp="isIntroProgressLocked(f.theaterList[f.theaterDetailNum])"]
   [ptext layer="1" text="&f.theaterList[f.theaterDetailNum].unlockCondition" face="MPLUSRounded" size="30" x="180" y="555" width="920" align="center"]
 [else]
   [glink color="&tf.buttonColor" size="26" width="300" x="487" y="565" text="解決編を見る" target="*startOutro"]
