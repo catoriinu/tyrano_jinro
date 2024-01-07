@@ -26,9 +26,9 @@
 [endif]
 
 ; 「解決編を見る」ボタンまたは解放条件
-;[if exp="isIntroProgressLocked(sf.theater[f.theaterListPage][f.theaterDetailNum])"]
+;[if exp="isOutroProgressLocked(sf.theater[f.theaterListPage][f.theaterDetailNum])"]
 ; TODO こちらはテスト用。実際には↑を有効化すること
-[if exp="isIntroProgressLocked(f.theaterList[f.theaterDetailNum])"]
+[if exp="isOutroProgressLocked(f.theaterList[f.theaterDetailNum])"]
   [ptext layer="1" text="&f.theaterList[f.theaterDetailNum].unlockCondition" face="MPLUSRounded" size="30" x="180" y="555" width="920" align="center"]
 [else]
   [glink color="&tf.buttonColor" size="26" width="300" x="487" y="565" text="解決編を見る" target="*startOutro"]

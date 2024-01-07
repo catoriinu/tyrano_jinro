@@ -6,7 +6,11 @@ function getSituationPage01_01() {
         null,
         'theater/page01/01-1_darega.ks',
         'theater/page01/01-2_darega.ks',
-        {},
+        new AchievementCondition(
+            null,
+            null,
+            null,
+        ),
         5,
         [
             new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_WEREWOLF),
@@ -23,7 +27,18 @@ function getSituationPage01_02() {
         null,
         '',
         '',
-        {},
+        new AchievementCondition(
+            true,
+            null,
+            {
+                [CHARACTER_ID_ZUNDAMON]: {
+                    roleIds: [ROLE_ID_VILLAGER]
+                },
+                [CHARACTER_ID_METAN]: {
+                    roleIds: [ROLE_ID_FORTUNE_TELLER]
+                },
+            },
+        ),
         5,
         [
             new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_VILLAGER),
@@ -41,7 +56,18 @@ function getSituationPage01_03() {
         null,
         '',
         '',
-        {},
+        new AchievementCondition(
+            true,
+            null,
+            {
+                [CHARACTER_ID_ZUNDAMON]: {
+                    roleIds: [ROLE_ID_MADMAN]
+                },
+                [CHARACTER_ID_TSUMUGI]: {
+                    roleIds: [ROLE_ID_WEREWOLF]
+                },
+            },
+        ),
         5,
         [
             new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_MADMAN),
@@ -58,7 +84,18 @@ function getSituationPage01_04() {
         null,
         '',
         '',
-        {},
+        new AchievementCondition(
+            true,
+            null,
+            {
+                [CHARACTER_ID_ZUNDAMON]: {
+                    roleIds: [ROLE_ID_FORTUNE_TELLER]
+                },
+                [CHARACTER_ID_HAU]: {
+                    roleIds: [ROLE_ID_WEREWOLF]
+                },
+            },
+        ),
         5,
         [
             new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_FORTUNE_TELLER),
@@ -75,7 +112,19 @@ function getSituationPage01_05() {
         null,
         '',
         '',
-        {},
+        new AchievementCondition(
+            true,
+            null,
+            {
+                [CHARACTER_ID_ZUNDAMON]: {
+                    roleIds: [ROLE_ID_FORTUNE_TELLER]
+                },
+                [CHARACTER_ID_RITSU]: {
+                    roleIds: [ROLE_ID_WEREWOLF]
+                },
+            },
+            null,
+        ),
         5,
         [
             new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_FORTUNE_TELLER),
@@ -88,11 +137,24 @@ function getSituationPage01_06() {
     return new Situation(
         'ボイボ寮の噂話#1',
         'theater/シアターサムネ仮01.png',
-        '【解放条件】<br>ずんだもんが投票で追放された状態でゲームに勝利する',
+        '【解放条件】<br>ずんだもんと春日部つむぎが人狼陣営かつ退場した状態で敗北する',
         '特定のシチュエーションではないためプレイできません',
         '',
         '',
-        {},
+        new AchievementCondition(
+            false,
+            FACTION_VILLAGERS,
+            {
+                [CHARACTER_ID_ZUNDAMON]: {
+                    roleIds: [ROLE_ID_WEREWOLF, ROLE_ID_MADMAN],
+                    isAlive: false,
+                },
+                [CHARACTER_ID_TSUMUGI]: {
+                    roleIds: [ROLE_ID_WEREWOLF, ROLE_ID_MADMAN],
+                    isAlive: false,
+                },
+            },
+        ),
         5,
         [
             new Participant(CHARACTER_ID_ZUNDAMON),
@@ -108,7 +170,11 @@ function getSituationPage01_07() {
         '特定のシチュエーションではないためプレイできません',
         '',
         '',
-        {},
+        new AchievementCondition(
+            null,
+            FACTION_DRAW_BY_REVOTE,
+            null,
+        ),
         5,
         [
             new Participant(CHARACTER_ID_ZUNDAMON),
@@ -124,7 +190,11 @@ function getSituationPage01_08() {
         '特定のシチュエーションではないためプレイできません',
         '',
         '',
-        {},
+        new AchievementCondition(
+            true,
+            null,
+            null,
+        ),
         5,
         [
             new Participant(CHARACTER_ID_ZUNDAMON),

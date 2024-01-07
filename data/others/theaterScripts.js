@@ -3,6 +3,8 @@
 const THEATER_LOCKED = 0;   // 未解放
 const THEATER_UNLOCKED = 1; // 解放済みで未視聴
 const THEATER_WATCHED = 2;  // 視聴済み
+
+// delete TYRANO.kag.variable.sf.theater;
 if (!('theater' in TYRANO.kag.variable.sf)) {
   TYRANO.kag.variable.sf.theater = {
     1: { // 1期・2期

@@ -6,7 +6,7 @@
  * @param {String|null} cantSituationPlay 「このシチュエーションでプレイする」ボタンを表示できない理由（シアター画面表示用）。表示してよいならnullを渡すこと
  * @param {String} introStorage 「導入編を見る」ボタンからジャンプするシナリオファイル（シアター画面表示用）。scenarioフォルダからの相対パス
  * @param {String} outroStorage 「解決編を見る」ボタンからジャンプするシナリオファイル（シアター画面表示用）。scenarioフォルダからの相対パス
- * @param {AchievementCondition} achievementCondition 
+ * @param {AchievementCondition} achievementCondition 解放条件オブジェクト。このシチュエーションの解決編を解放するための条件を格納する。
  * @param {Number} situationParticipantsNumber このシチュエーションでプレイするときの参加者の人数
  * @param {Array} situationParticipants このシチュエーションでプレイするとき固定で参加する参加者とその役職。Participantオブジェクトを格納した配列形式
 */
@@ -60,3 +60,6 @@ function isIntroProgressLocked(situation) {
     return (situation.introProgress === THEATER_LOCKED);
 }
 
+function isOutroProgressLocked(situation) {
+    return (situation.outroProgress === THEATER_LOCKED);
+}
