@@ -1093,10 +1093,10 @@
 ; ゲーム終了時のプレイヤーの勝敗結果（または引き分け）によって、再生する効果音を鳴らし分ける
 ; @param winnerFaction 勝利陣営。必須
 [macro name="j_playSePlayerResult"]
-  [if exp="mp.winnerFaction == FACTION_DRAW_BY_REVOTE"]
+  [if exp="isResultDraw(mp.winnerFaction)"]
     ; 引き分け
     [playse storage="megaten.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
-  [elsif exp="f.characterObjects[f.playerCharacterId].role.faction == mp.winnerFaction"]
+  [elsif exp="isResultPlayersWin(mp.winnerFaction, f.characterObjects[f.playerCharacterId].role.faction)"]
     ; 勝利
     [playse storage="kirakira4.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
   [else]

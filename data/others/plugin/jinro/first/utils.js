@@ -60,6 +60,29 @@ function judgeWinnerFaction(characterObjects) {
 
 
 /**
+ * ゲームの結果が引き分けか
+ * MEMO 引き分け扱いになる陣営定数が増えた場合ここにも追加すること
+ * @param {String} winnerFaction 勝利した陣営定数
+ * @returns true:引き分け / false:引き分けではない
+ */
+function isResultDraw(winnerFaction) {
+  return [FACTION_DRAW_BY_REVOTE].includes(winnerFaction);
+}
+
+
+/**
+ * ゲームの結果がプレイヤーの勝利か
+ * 引き分けの判定が必要な場合はisResultDraw()で別途判定すること
+ * @param {String} winnerFaction 勝利した陣営定数
+ * @param {String} playerFaction プレイヤーの陣営
+ * @returns true:プレイヤーの勝利 / false:プレイヤーの勝利ではない
+ */
+function isResultPlayersWin(winnerFaction, playerFaction) {
+  return (winnerFaction === playerFaction);
+}
+
+
+/**
  * 「生存者か」プロパティをもとに、該当するキャラクターオブジェクトだけを返却する
  * @param {Array} characterObjects キャラクターオブジェクトの配列
  * @param {Boolean} [searchFlg=true] 検索値 true（デフォルト）:生存者 false:死亡済み

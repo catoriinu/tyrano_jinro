@@ -26,7 +26,9 @@
 
 ; ボイボ人狼用初期化
 [call storage="theater/macros.ks"]
+[call storage="achievement/macros.ks"]
 [loadjs storage="situations/Situation.js"]
+[loadjs storage="situations/CharacterCondition.js"]
 [loadjs storage="situations/AchievementCondition.js"]
 [loadjs storage="situations/page01.js"]
 [loadjs storage="theaterScripts.js"]

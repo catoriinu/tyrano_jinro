@@ -31,12 +31,8 @@ function getSituationPage01_02() {
             true,
             null,
             {
-                [CHARACTER_ID_ZUNDAMON]: {
-                    roleIds: [ROLE_ID_VILLAGER]
-                },
-                [CHARACTER_ID_METAN]: {
-                    roleIds: [ROLE_ID_FORTUNE_TELLER]
-                },
+                [CHARACTER_ID_ZUNDAMON]: new CharacterCondition( [ROLE_ID_VILLAGER], null),
+                [CHARACTER_ID_METAN]: new CharacterCondition( [ROLE_ID_FORTUNE_TELLER], null),
             },
         ),
         5,
@@ -60,12 +56,8 @@ function getSituationPage01_03() {
             true,
             null,
             {
-                [CHARACTER_ID_ZUNDAMON]: {
-                    roleIds: [ROLE_ID_MADMAN]
-                },
-                [CHARACTER_ID_TSUMUGI]: {
-                    roleIds: [ROLE_ID_WEREWOLF]
-                },
+                [CHARACTER_ID_ZUNDAMON]: new CharacterCondition( [ROLE_ID_MADMAN], null),
+                [CHARACTER_ID_TSUMUGI]: new CharacterCondition( [ROLE_ID_WEREWOLF], null),
             },
         ),
         5,
@@ -88,12 +80,8 @@ function getSituationPage01_04() {
             true,
             null,
             {
-                [CHARACTER_ID_ZUNDAMON]: {
-                    roleIds: [ROLE_ID_FORTUNE_TELLER]
-                },
-                [CHARACTER_ID_HAU]: {
-                    roleIds: [ROLE_ID_WEREWOLF]
-                },
+                [CHARACTER_ID_ZUNDAMON]: new CharacterCondition( [ROLE_ID_FORTUNE_TELLER], null),
+                [CHARACTER_ID_HAU]: new CharacterCondition( [ROLE_ID_WEREWOLF], null),
             },
         ),
         5,
@@ -116,12 +104,8 @@ function getSituationPage01_05() {
             true,
             null,
             {
-                [CHARACTER_ID_ZUNDAMON]: {
-                    roleIds: [ROLE_ID_FORTUNE_TELLER]
-                },
-                [CHARACTER_ID_RITSU]: {
-                    roleIds: [ROLE_ID_WEREWOLF]
-                },
+                [CHARACTER_ID_ZUNDAMON]: new CharacterCondition( [ROLE_ID_FORTUNE_TELLER], null),
+                [CHARACTER_ID_RITSU]: new CharacterCondition( [ROLE_ID_WEREWOLF], null),
             },
             null,
         ),
@@ -145,14 +129,8 @@ function getSituationPage01_06() {
             false,
             FACTION_VILLAGERS,
             {
-                [CHARACTER_ID_ZUNDAMON]: {
-                    roleIds: [ROLE_ID_WEREWOLF, ROLE_ID_MADMAN],
-                    isAlive: false,
-                },
-                [CHARACTER_ID_TSUMUGI]: {
-                    roleIds: [ROLE_ID_WEREWOLF, ROLE_ID_MADMAN],
-                    isAlive: false,
-                },
+                [CHARACTER_ID_ZUNDAMON]: new CharacterCondition( [ROLE_ID_WEREWOLF, ROLE_ID_MADMAN], false),
+                [CHARACTER_ID_TSUMUGI]: new CharacterCondition( [ROLE_ID_WEREWOLF, ROLE_ID_MADMAN], false),
             },
         ),
         5,
