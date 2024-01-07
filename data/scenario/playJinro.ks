@@ -493,6 +493,8 @@ NPCが行動しています……[p]
 [fadeoutbgm time="1000"]
 [j_displayGameOverAndWinnerFaction]
 [a_convertResultToAchievementCondition]
+[a_checkAchievedConditions]
+[a_displayAchievedSituations]
 
 タイトルに戻ります。[p]
 

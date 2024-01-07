@@ -4,7 +4,8 @@ const THEATER_LOCKED = 0;   // 未解放
 const THEATER_UNLOCKED = 1; // 解放済みで未視聴
 const THEATER_WATCHED = 2;  // 視聴済み
 
-// delete TYRANO.kag.variable.sf.theater;
+// TODO テスト用に起動ごとにシステム変数theaterを初期化する
+delete TYRANO.kag.variable.sf.theater;
 if (!('theater' in TYRANO.kag.variable.sf)) {
   TYRANO.kag.variable.sf.theater = {
     1: { // 1期・2期
@@ -29,6 +30,11 @@ if (!('theater' in TYRANO.kag.variable.sf)) {
     }
   };
 }
+// TODO テスト用
+for (let situationKey of Object.keys(TYRANO.kag.variable.sf.theater["1"])) {
+  updateIntroProgress(TYRANO.kag.variable.sf.theater["1"][situationKey], THEATER_UNLOCKED);
+  updateOutroProgress(TYRANO.kag.variable.sf.theater["1"][situationKey], THEATER_LOCKED);
+}
 
 
 function setSituationsForAchievement(keys = []) {
@@ -48,10 +54,4 @@ function setSituationsForAchievement(keys = []) {
   }
 
   TYRANO.kag.variable.sf.situationsForAchievement = situations;
-}
-
-
-
-function checkAchievementCondition() {
-
 }

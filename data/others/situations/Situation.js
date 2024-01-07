@@ -63,3 +63,9 @@ function isIntroProgressLocked(situation) {
 function isOutroProgressLocked(situation) {
     return (situation.outroProgress === THEATER_LOCKED);
 }
+
+
+function needCheckAchievementCondition(situation) {
+    // 導入編が解放済み、かつ解決編がロック中である
+    return (!isIntroProgressLocked(situation) && isOutroProgressLocked(situation));
+}
