@@ -36,13 +36,19 @@ function Situation(
 }
 
 
-function updateIntroProgress(situation, progress) {
-    situation.introProgress = progress;
+function updateIntroProgress(situation, progress, isForce = false) {
+    // 強制フラグが立っていない限り、解放状況が前に戻るような更新はしない
+    if (isForce || situation.introProgress < progress) {
+        situation.introProgress = progress;
+    }
     return situation;
 }
 
-function updateOutroProgress(situation, progress) {
-    situation.outroProgress = progress;
+function updateOutroProgress(situation, progress, isForce = false) {
+    // 強制フラグが立っていない限り、解放状況が前に戻るような更新はしない
+    if (isForce || situation.outroProgress < progress) {
+        situation.outroProgress = progress;
+    }
     return situation;
 }
 

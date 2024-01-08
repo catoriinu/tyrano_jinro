@@ -81,7 +81,7 @@
 [endnowait]
 [layopt layer="message0" visible="true"]
 
-[registerSituationParticipants]
+[t_registerSituationParticipants]
 [j_prepareJinroGame participantsNumber="&f.detailSituation.situationParticipantsNumber" preload="true"]
 
 [jump storage="playJinro.ks"]

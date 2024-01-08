@@ -89,9 +89,8 @@
 
   // TODO テスト用に解放状況を書き換える
   for (let i = 1; i < (Object.keys(f.theaterList).length + 1); i++) {
-    console.log(i);
-    updateIntroProgress(f.theaterList[i], THEATER_UNLOCKED);
-    updateOutroProgress(f.theaterList[i], THEATER_UNLOCKED);
+    //updateIntroProgress(f.theaterList[i], THEATER_UNLOCKED);
+    //updateOutroProgress(f.theaterList[i], THEATER_UNLOCKED);
   }
 
   // 導入編が未解放のシアターは、タイトルとサムネイルを上書きする
@@ -109,10 +108,25 @@
 
 ; 現在選択中のシアター詳細に紐づいているシチュエーションの参加者オブジェクト配列を一時変数に登録する
 ; シアター詳細画面では、j_registerParticipantの代わりにこのマクロで登録すること
-[macro name="registerSituationParticipants"]
+[macro name="t_registerSituationParticipants"]
   [iscript]
     tf.tmpParticipantObjectList = clone(f.theaterList[f.theaterDetailNum].situationParticipants);
   [endscript]
 [endmacro]
 
-[return]
+
+; @param pageKey
+; @param situationKey
+[macro name="t_watchIntroProgress"]
+  [iscript]
+    sf.theater[mp.pageKey][mp.situationKey] = updateIntroProgress(sf.theater[mp.pageKey][mp.situationKey], THEATER_WATCHED);
+  [endscript]
+[endmacro]
+
+; @param pageKey
+; @param situationKey
+[macro name="t_watchOutroProgress"]
+  [iscript]
+    sf.theater[mp.pageKey][mp.situationKey] = updateOutroProgress(sf.theater[mp.pageKey][mp.situationKey], THEATER_WATCHED);
+  [endscript]
+[endmacro]

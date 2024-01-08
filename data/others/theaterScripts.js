@@ -32,8 +32,8 @@ if (!('theater' in TYRANO.kag.variable.sf)) {
 }
 // TODO テスト用
 for (let situationKey of Object.keys(TYRANO.kag.variable.sf.theater["1"])) {
-  updateIntroProgress(TYRANO.kag.variable.sf.theater["1"][situationKey], THEATER_UNLOCKED);
-  updateOutroProgress(TYRANO.kag.variable.sf.theater["1"][situationKey], THEATER_LOCKED);
+  updateIntroProgress(TYRANO.kag.variable.sf.theater["1"][situationKey], THEATER_UNLOCKED, true);
+  updateOutroProgress(TYRANO.kag.variable.sf.theater["1"][situationKey], THEATER_LOCKED, true);
 }
 
 
