@@ -20,7 +20,7 @@
 [clickable width="1280" height="55" x="0" y="665" target="*returnMain"]
 
 ; 「導入編を見る」ボタン
-[glink color="&tf.buttonColor" size="26" width="300" x="487" y="395" text="導入編を見る" target="*startIntro"]
+[glink color="&tf.buttonColor" size="26" width="300" x="488" y="395" text="導入編を見る" target="*startIntro"]
 
 ; 「このシチュエーションでプレイする」ボタンまたはプレイできない理由
 [if exp="f.detailSituation.cantSituationPlay === null"]
@@ -33,9 +33,13 @@
 ;[if exp="isOutroProgressLocked(sf.theater[f.theaterListPage][f.theaterDetailNum])"]
 ; TODO こちらはテスト用。実際には↑を有効化すること
 [if exp="isOutroProgressLocked(f.detailSituation)"]
+  ; 解決編がロック中の場合、解放条件を表示する
   [ptext layer="1" page="back" text="&f.detailSituation.unlockCondition" face="MPLUSRounded" size="30" x="180" y="555" width="920" align="center"]
+[elsif exp="isIntroProgressUnlocked(f.detailSituation)"]
+  ; 解決編の解放条件は達成済みだが導入編を未視聴の場合、誘導テキストを表示する
+  [ptext layer="1" page="back" text="解決編は導入編を見ると解放されます" face="MPLUSRounded" size="30" x="180" y="555" width="920" align="center"]
 [else]
-  [glink color="&tf.buttonColor" size="26" width="300" x="487" y="565" text="解決編を見る" target="*startOutro"]
+  [glink color="&tf.buttonColor" size="26" width="300" x="488" y="565" text="解決編を見る" target="*startOutro"]
 [endif]
 
 [trans layer="1" time="0"]

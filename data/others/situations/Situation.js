@@ -60,10 +60,17 @@ function isIntroProgressLocked(situation) {
     return (situation.introProgress === THEATER_LOCKED);
 }
 
+function isIntroProgressUnlocked(situation) {
+    return (situation.introProgress === THEATER_UNLOCKED);
+}
+
+function isIntroProgressWatched(situation) {
+    return (situation.introProgress === THEATER_WATCHED);
+}
+
 function isOutroProgressLocked(situation) {
     return (situation.outroProgress === THEATER_LOCKED);
 }
-
 
 function needCheckAchievementCondition(situation) {
     // 導入編が解放済み、かつ解決編がロック中である

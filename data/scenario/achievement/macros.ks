@@ -45,14 +45,35 @@
 [endmacro]
 
 
+; 達成済みシチュエーションを画面上に表示する
 [macro name="a_displayAchievedSituations"]
-  [iscript]
-    console.log('★★★f.achievedSituations');
-    console.log(f.achievedSituations);
-    for (let i = 0; i < f.achievedSituations.length; i++) {
-      const situation = f.achievedSituations[i];
-      console.log(situation);
-      alert('『' + situation.title + '』の解決編が解放されました！');
-    }
-  [endscript]
+
+  ; 達成済みシチュエーションがない場合、なにもせず終了する
+  [if exp="f.achievedSituations.length < 1"]
+    [jump target="*end_a_displayAchievedSituations"]
+  [endif]
+
+  ; 表示開始前の準備
+  [layopt layer="message0" visible="false"]
+  [filter layer="0" blur="10"]
+  [filter layer="base" blur="5"]
+
+  [eval exp="tf.cnt = 0"]
+  *loopstart
+    ; 表示する
+    [eval exp="f.detailSituation = f.achievedSituations[tf.cnt]"]
+    [call storage="achievement/achieveSituation.ks"]
+
+    ; 達成済みシチュエーションがまだある場合のみループ継続
+    [eval exp="tf.cnt++"]
+    [jump target="*loopstart" cond="tf.cnt < f.achievedSituations.length"]
+    [jump target="*loopend"]
+  *loopend
+
+  ; 表示終了後の後片付け
+  [free_filter layer="0"]
+  [free_filter layer="base"]
+  [layopt layer="message0" visible="true"]
+
+  *end_a_displayAchievedSituations
 [endmacro]
