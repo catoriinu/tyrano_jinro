@@ -33,6 +33,9 @@
 [loadjs storage="situations/page01.js"]
 [loadjs storage="theaterScripts.js"]
 
+; キーフレーム定義読み込み
+[call storage="keyframe.ks"]
+
 ; コンフィグ用初期設定
 [iscript]
 // 初回起動時
