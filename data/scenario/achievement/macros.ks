@@ -54,6 +54,8 @@
   [endif]
 
   ; 表示開始前の準備
+  [j_saveFixButton buf="achieved"]
+  [j_clearFixButton]
   [layopt layer="message0" visible="false"]
   [filter layer="0" blur="10"]
   [filter layer="base" blur="5"]
@@ -74,6 +76,7 @@
   [free_filter layer="0"]
   [free_filter layer="base"]
   [layopt layer="message0" visible="true"]
+  [j_loadFixButton buf="achieved"]
 
   *end_a_displayAchievedSituations
 [endmacro]
