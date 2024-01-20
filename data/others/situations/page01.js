@@ -1,7 +1,7 @@
 function getSituationPage01_01() {
     return new Situation(
         '誰がずんだもちを食べたのだ？',
-        'theater/シアターサムネ仮03.png',
+        'theater/p01_01_darega.png',
         '初めから解放されている',
         null,
         'theater/page01/01-1_darega.ks',
@@ -22,7 +22,7 @@ function getSituationPage01_01() {
 function getSituationPage01_02() {
     return new Situation(
         'わたくしの千里眼―サウザンドアイ―に死角なし！',
-        'theater/シアターサムネ仮01.png',
+        'theater/p01_02_watakushino.png',
         '【解放条件】<br>ずんだもん：村人、四国めたん：占い師でゲームに勝利する',
         null,
         '',
@@ -47,7 +47,7 @@ function getSituationPage01_02() {
 function getSituationPage01_03() {
     return new Situation(
         'ずんだカレーを布教するのだ！',
-        'theater/シアターサムネ仮01.png',
+        'theater/p01_03_zundacurry.png',
         '【解放条件】<br>ずんだもん：狂人、春日部つむぎ：人狼でゲームに勝利する',
         null,
         '',
@@ -71,7 +71,7 @@ function getSituationPage01_03() {
 function getSituationPage01_04() {
     return new Situation(
         '入れれば入れる程幸せになれるもの',
-        'theater/シアターサムネ仮02.png',
+        'theater/p01_04_irereba.png',
         '【解放条件】<br>ずんだもん：占い師、雨晴はう：人狼でゲームに勝利する',
         null,
         '',
@@ -95,7 +95,7 @@ function getSituationPage01_04() {
 function getSituationPage01_05() {
     return new Situation(
         '欠陥住宅？',
-        'theater/シアターサムネ仮01.png',
+        'theater/p01_05_kekkan.png',
         '【解放条件】<br>ずんだもん：占い師、波音リツ：人狼でゲームに勝利する',
         null,
         '',
@@ -120,7 +120,7 @@ function getSituationPage01_05() {
 function getSituationPage01_06() {
     return new Situation(
         'ボイボ寮の噂話#1',
-        'theater/シアターサムネ仮01.png',
+        'theater/01_06_uwasa1.png',
         '【解放条件】<br>ずんだもんと春日部つむぎが人狼陣営かつ退場した状態で敗北する',
         '特定のシチュエーションではないためプレイできません',
         '',
