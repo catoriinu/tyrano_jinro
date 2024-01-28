@@ -471,7 +471,7 @@
       if (f.characterObjects[mp.characterIds[i]].CORoleId != '') {
         // 既に役職CO済みの場合、必ず結果COしたいとする
         [probability, isCO] = [1, true]
-      } else if (f.characterObjects[mp.characterIds[i]].role.allowCO) {
+      } else if (f.characterObjects[mp.characterIds[i]].role.allowCORoles.length >= 1) {
         // 役職COできる役職で未COの場合、そのキャラの性格からCO確率を取得する
         [probability, isCO] = isCOMyRoll(mp.characterIds[i]);
       }
@@ -499,7 +499,10 @@
     tf.isNeedToAskPCWantToCO = false;
     // 以下の条件を満たした場合、PCがCOしたいかを確認する必要があると判定する
     // 生存している && COできる役職か && 今日は未COか
-    if (f.characterObjects[f.playerCharacterId].isAlive && f.characterObjects[f.playerCharacterId].role.allowCO && !f.characterObjects[f.playerCharacterId].isDoneTodaysCO) {
+    if (f.characterObjects[f.playerCharacterId].isAlive
+      && f.characterObjects[f.playerCharacterId].role.allowCORoles.length >= 1
+      && !f.characterObjects[f.playerCharacterId].isDoneTodaysCO
+    ) {
       tf.isNeedToAskPCWantToCO = true;
     }
   [endscript]
@@ -551,11 +554,12 @@
 ; @param characterId 判定対象のキャラクターID。必須。
 [macro name="j_setCanCOFortuneTellerStatus"]
   [iscript]
+    const characterObject = f.characterObjects[mp.characterId];
 
     ; 0: 占い師CO不可の役職、またはCO状態
     f.canCOFortuneTellerStatus = 0;
-    if (f.characterObjects[mp.characterId].role.roleId == ROLE_ID_FORTUNE_TELLER) {
-      if (f.characterObjects[mp.characterId].CORoleId == ROLE_ID_FORTUNE_TELLER) {
+    if (characterObject.role.roleId == ROLE_ID_FORTUNE_TELLER) {
+      if (characterObject.CORoleId == ROLE_ID_FORTUNE_TELLER) {
         ; 2: 真占い師であり、CO済み
         f.canCOFortuneTellerStatus = 2;
 
@@ -563,19 +567,77 @@
         ; 1: 真占い師で、未CO
         f.canCOFortuneTellerStatus = 1;
       }
-      
-    } else if (f.characterObjects[mp.characterId].role.roleId == ROLE_ID_WEREWOLF || f.characterObjects[mp.characterId].role.roleId == ROLE_ID_MADMAN) {
-      if (f.characterObjects[mp.characterId].CORoleId == ROLE_ID_FORTUNE_TELLER) {
+
+    } else if (characterObject.role.roleId == ROLE_ID_WEREWOLF || characterObject.role.roleId == ROLE_ID_MADMAN) {
+      if (characterObject.CORoleId == ROLE_ID_FORTUNE_TELLER) {
         ; 4: 騙り占い師としてCO済み
         f.canCOFortuneTellerStatus = 4;
 
-      } else if (f.characterObjects[mp.characterId].CORoleId == '') {
+      } else if (characterObject.CORoleId == '') {
         ; 3: 騙り占い師としてCO可能な役職で、未CO
         f.canCOFortuneTellerStatus = 3;
       }
       ; 占い師以外の役職としてCO済みなら、占い師COは不可
     }
   [endscript]
+[endmacro]
+
+
+; @param characterId 判定対象のキャラクターID。必須。
+[macro name="j_setCORoleToButtonObjects"]
+  [iscript]
+    const characterObject = f.characterObjects[f.playerCharacterId];
+    f.buttonObjects = [];
+
+    ; 占い師、騙り占い師COする
+    if (characterObject.role.allowCORoles.includes(ROLE_ID_FORTUNE_TELLER)) {
+      let id = '';
+      if (characterObject.role.roleId === ROLE_ID_FORTUNE_TELLER) {
+        id = 'FortuneTellerCO';
+        text = '占い師COする';
+      } else {
+        id = 'fakeFortuneTellerCO';
+        text = '騙り占い師COする';
+      }
+      f.buttonObjects.push(new Button(
+        id,
+        text,
+        'center',
+        CLASS_GLINK_DEFAULT
+      ));
+    }
+
+    ; 役職COしない
+    f.buttonObjects.push(new Button(
+      'noCO',
+      '役職COしない',
+      'center',
+      CLASS_GLINK_DEFAULT
+    ));
+  [endscript]
+
+[endmacro]
+
+
+; @param characterId 判定対象のキャラクターID。必須。
+[macro name="j_setFrotuneTellerResultCOToButtonObjects"]
+  ; COするしないボタン表示
+  [iscript]
+    f.buttonObjects = [];
+    f.buttonObjects.push(new Button(
+      'FortuneTellerCO',
+      '占い結果COする',
+      'center',
+      CLASS_GLINK_DEFAULT
+    ));
+    f.buttonObjects.push(new Button(
+      'noCO',
+      '何もしない',
+      'center',
+      CLASS_GLINK_DEFAULT
+    ));
+  [endscript]
+  [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 [endmacro]
 
 

@@ -85,88 +85,16 @@
 ;    CO候補者がいない && 1)でCO確認する必要なし→COフェイズ終了
 ;    CO候補者がいない && 1)でPCがCOしなかった  →1)へ
 
+; NPCにCO候補者がいるフラグを初期化する
+[eval exp="f.notExistCOCandidateNPC = false"]
+
 *COPhasePlayer
 
-; PCがCOしたいかを確認する必要があるか。必要がなければジャンプ
-[j_setIsNeedToAskPCWantToCO]
-[jump target="*COPhaseNPC" cond="!tf.isNeedToAskPCWantToCO"]
+[call storage="./jinroSubroutines.ks" target="*COPhasePlayer"]
 
-  ; 占い師COすることができる役職・CO状態であれば。COできなければジャンプ
-  [j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
-  [jump target="*noCO" cond="f.canCOFortuneTellerStatus == 0"]
-
-    [m_askFortuneTellerCO canCOFortuneTellerStatus="&f.canCOFortuneTellerStatus"]
-
-    ; COするしないボタン表示
-    [iscript]
-      f.buttonObjects = [];
-      f.buttonObjects.push(new Button(
-        'FortuneTellerCO',
-        '占いCOする',
-        'center',
-        CLASS_GLINK_DEFAULT
-      ));
-      f.buttonObjects.push(new Button(
-        'noCO',
-        '何もしない',
-        'center',
-        CLASS_GLINK_DEFAULT
-      ));
-    [endscript]
-    [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
-
-    ; 「何もしない」ならジャンプする
-    [jump target="*noCO" cond="f.selectedButtonId == 'noCO'"]
-    ; 「占いCOする」ならジャンプ……しなくてもすぐ下なので何もしない。COできる役職が増えたら増やす
-    ; [jump target="*FortuneTellerCO" cond="f.selectedButtonId == 'FortuneTellerCO'"]
-    *FortuneTellerCO
-
-    [if exp="f.canCOFortuneTellerStatus == 1"]
-      ; 占い未COかつ、真占いCOをすると決めた場合
-      ; 前日の分までの占い結果を、メッセージなしでCOしたことにする
-      [j_COFortuneTellingUntilTheLastDay fortuneTellerId="&f.playerCharacterId"]
-      ; キャラクターオブジェクトにCOした役職IDを格納する
-      [eval exp="f.characterObjects[f.playerCharacterId].CORoleId = ROLE_ID_FORTUNE_TELLER"]
-
-    [elsif exp="f.canCOFortuneTellerStatus == 3"]
-      ; 占い未COかつ、占い騙りをすると決めた場合
-      ; 騙り役職オブジェクトを取得する
-      [j_assignmentFakeRole characterId="&f.characterObjects[f.playerCharacterId].characterId" roleId="fortuneTeller"]
-      ; 騙り占いサブルーチン実行。初日から騙り占い結果を入れていく(f.fakeFortuneTelledDayはデフォルトのままでよい)
-      [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingCOMultipleDaysForPC"]
-      ; キャラクターオブジェクトにCOした役職IDを格納する
-      [eval exp="f.characterObjects[f.playerCharacterId].CORoleId = ROLE_ID_FORTUNE_TELLER"]
-
-    [elsif exp="f.canCOFortuneTellerStatus == 4"]
-      ; 騙り占いCO済みの場合
-      ; 騙り占いサブルーチン実行。前日分のみ騙り占い結果を入れる
-      [eval exp="f.fakeFortuneTelledDay = f.day - 1"]
-      [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingCOMultipleDaysForPC"]
-    [endif]
-
-    ; 占いカットイン発生
-    [j_cutin1]
-
-    ; 指定した占い師のCOを実行する（メッセージは当日分のみ表示）
-    [j_COFortuneTelling fortuneTellerId="&f.playerCharacterId"]
-
-    ; 初回CO時のみの処理
-    ; TODO この処理、j_COFortuneTellingの前に持っていっても問題ないか？
-    [if exp="f.canCOFortuneTellerStatus == 1 || f.canCOFortuneTellerStatus == 3"]
-
-      ; 共通および各キャラの視点オブジェクトを更新する
-      [j_cloneRolePerspectiveForCO characterId="&f.characterObjects[f.playerCharacterId].characterId" CORoleId="fortuneTeller"]
-      [eval exp="tf.tmpZeroRoleIds = [ROLE_ID_VILLAGER]"]
-      [j_updateCommonPerspective characterId="&f.characterObjects[f.playerCharacterId].characterId" zeroRoleIds="&tf.tmpZeroRoleIds"]
-    [endif]
-    [jump target="*COPhaseNPC"]
-
-  ; COなし
-  *noCO
-
-  ; f.notExistCOCandidateNPCがtrueなら、COフェイズ終了(NPCにCO候補者がいないため、これ以上COする者はいないとする)
-  [jump target="*discussionPhase" cond="f.notExistCOCandidateNPC"]
-  ; f.notExistCOCandidateNPCがfalseなら、COフェイズ継続(まだNPCにCO候補者がいるので、NPCのCOを確認する)
+; f.notExistCOCandidateNPCがtrueなら、COフェイズ終了(NPCにCO候補者がいないため、これ以上COする者はいないとする)
+[jump target="*discussionPhase" cond="f.notExistCOCandidateNPC"]
+; f.notExistCOCandidateNPCがfalseなら、COフェイズ継続(まだNPCにCO候補者がいるので、NPCのCOを確認する)
 
 *COPhaseNPC
 ; NPC（占い師、人狼、狂人）による占いCOフェイズ
@@ -203,7 +131,7 @@
 
   [j_setIsNeedToAskPCWantToCO]
   [if exp="!tf.isNeedToAskPCWantToCO"]
-    ; COフェイズ終了(PCはco確認する必要がない状態のため、これ以上COする者はいないとする)
+    ; COフェイズ終了(PCはCO確認する必要がない状態のため、これ以上COする者はいないとする)
     [jump target="*discussionPhase"]
   [else]
     ; COフェイズ継続(NPCにCO者がいないことを受けて、PCのCOを確認する)
