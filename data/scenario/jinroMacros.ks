@@ -320,18 +320,25 @@
 ; 偽役職オブジェクトを取得するマクロ（人外による役職COを想定。なお、ギドラや撤回COは想定していない）
 ; @param characterId COするキャラクターのキャラクターID
 ; @param roleId COする役職の役職ID
-[macro name=j_assignmentFakeRole]
+[macro name="j_assignmentFakeRole"]
   [iscript]
-    f.characterObjects[mp.characterId].fakeRole = roleAssignment(mp.roleId);
+    console.log(f.characterObjects[mp.characterId].fakeRole);
+    console.log(typeof f.characterObjects[mp.characterId].fakeRole);
 
-    ; 今までの表の視点を破棄。現在の共通視点から新しく騙り役職についた状態での表の視点を上書きする。
-    ; ちなみに、fakeRole.rolePerspectiveは利用しないので空オブジェクトのままとなるので注意。
-    ; TODO ここで破綻することもありうる。対策を。
-    f.characterObjects[mp.characterId].perspective = organizePerspective (
-      f.commonPerspective,
-      mp.characterId,
-      f.uniqueRoleIdList.filter(rId => (rId != mp.roleId))
-    );
+    if (f.characterObjects[mp.characterId].fakeRole) {
+      f.characterObjects[mp.characterId].fakeRole = roleAssignment(mp.roleId);
+
+      // 今までの表の視点を破棄。現在の共通視点から新しく騙り役職についた状態での表の視点を上書きする。
+      // ちなみに、fakeRole.rolePerspectiveは利用しないので空オブジェクトのままとなるので注意。
+      // TODO ここで破綻することもありうる。対策を。
+      f.characterObjects[mp.characterId].perspective = organizePerspective (
+        f.commonPerspective,
+        mp.characterId,
+        f.uniqueRoleIdList.filter(rId => (rId != mp.roleId))
+      );
+    }
+    console.log(f.characterObjects[mp.characterId].fakeRole);
+    console.log(typeof f.characterObjects[mp.characterId].fakeRole);
   [endscript]
 [endmacro]
 
@@ -523,6 +530,7 @@
 
 ; 役職側の視点オブジェクトを表の視点オブジェクトにcloneする。
 ; 真役職CO時に利用。騙りCOには使わないこと。騙りCOの際は、j_assignmentFakeRoleマクロで表の視点を作成しているため。
+; TODO j_COFortuneTellingUntilTheLastDayの中に移動させたい
 ; @param characterId COするキャラクターID。必須。
 ; @param CORoleId COする役職ID。roleに格納されていることが前提。必須。
 [macro name=j_cloneRolePerspectiveForCO]
@@ -1418,6 +1426,38 @@
   恐ろしい夜がやってきました。[p]
 
 [endmacro]
+
+
+
+; @param buf 必須。保存バッファ。任意のキー名を指定すること。保存済みのキー名と重複した場合は上書きする
+[macro name="j_backupJinroObjects"]
+  [iscript]
+    // 初回のみ、ボタンの表示ステータスを保存するオブジェクトを生成
+    if (!('backupJinroObjects' in f)) {
+      f.backupJinroObjects = {};
+    };
+    f.backupJinroObjects[mp.buf] = {
+      characterObjects: clone(f.characterObjects),
+      commonPerspective: clone(f.commonPerspective)
+    };
+  [endscript]
+[endmacro]
+
+; @param buf 必須。保存バッファ。任意のキー名を指定すること。保存済みのキー名から復元する。キーが存在しない場合はエラー（未考慮）
+[macro name="j_restoreJinroObjects"]
+  [iscript]
+    f.characterObjects = clone(f.backupJinroObjects[mp.buf].characterObjects);
+    f.commonPerspective = clone(f.backupJinroObjects[mp.buf].commonPerspective);
+  [endscript]
+[endmacro]
+
+; @param buf 必須。保存バッファ。任意のキー名を指定すること。
+[macro name="j_initializeBackupJinroObjects"]
+  [iscript]
+    f.backupJinroObjects = {};
+  [endscript]
+[endmacro]
+
 
 
 

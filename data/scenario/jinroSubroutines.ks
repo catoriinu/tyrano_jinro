@@ -346,7 +346,7 @@ MEMO 最終的には以下の構成のHTMLが生成される。
         ; 騙り占い師
         ; 騙り占いサブルーチン実行。前日分のみ騙り占い結果を入れる
         ; TODO 「結果COしない」ボタンを追加する
-        [eval exp="f.fakeFortuneTelledDay = f.day - 1"]
+        [eval exp="f.fakeFortuneTellingStartDay = f.day - 1"]
         [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingCOMultipleDaysForPC"]
         ; TODO もっといい格納タイミングを検討する
         [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'noCO'"]
@@ -359,36 +359,8 @@ MEMO 最終的には以下の構成のHTMLが生成される。
   [else]
     ; PCが未COの場合
     ; 役職COボタンを表示する
-    [j_setCORoleToButtonObjects]
-    [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
-
-    ; 占い師CO、騙り占い師CO
-    [if exp="f.selectedButtonId === 'FortuneTellerCO' || f.selectedButtonId === 'fakeFortuneTellerCO'"]
-      [eval exp="f.playerCORoleId = ROLE_ID_FORTUNE_TELLER"]
-
-      [if exp="f.selectedButtonId === 'FortuneTellerCO'"]
-        ; 占い師CO
-        ; 前日の分までの占い結果を、メッセージなしでCOしたことにする
-        [j_COFortuneTellingUntilTheLastDay fortuneTellerId="&f.playerCharacterId"]
-        ; TODO もっといい格納タイミングを検討する
-        [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'noCO'"]
-
-      [elsif exp="f.selectedButtonId === 'fakeFortuneTellerCO'"]
-        ; 騙り占い師CO
-        ; 騙り役職オブジェクトを取得する
-        [j_assignmentFakeRole characterId="&f.playerCharacterId" roleId="&f.playerCORoleId"]
-        ; 騙り占いサブルーチン実行。初日から騙り占い結果を入れていく(f.fakeFortuneTelledDayはデフォルトのままでよい)
-        ; TODO 0日目には「役職COしない」、それ以降には「前日を入力し直す」ボタンを追加する
-        [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingCOMultipleDaysForPC"]
-        ; TODO もっといい格納タイミングを検討する
-        [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'noCO'"]
-
-      [endif]
-
-    ; NOTE:役職が増えたときはここにelsifで増やしていく
-    [endif]
-
-
+    [call storage="./askCORole.ks" target="*startAskCORole"]
+ 
     ; 役職COする場合（ここに来るルートでresultCORoleIdに役職IDが格納済みなら、PCが未COかつ役職COしたいと確定する）
     [if exp="f.resultCORoleId !== ''"]
       ; キャラクターオブジェクトにCOした役職IDを格納する
