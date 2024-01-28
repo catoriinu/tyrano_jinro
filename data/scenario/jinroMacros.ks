@@ -322,9 +322,6 @@
 ; @param roleId COする役職の役職ID
 [macro name="j_assignmentFakeRole"]
   [iscript]
-    console.log(f.characterObjects[mp.characterId].fakeRole);
-    console.log(typeof f.characterObjects[mp.characterId].fakeRole);
-
     if (f.characterObjects[mp.characterId].fakeRole) {
       f.characterObjects[mp.characterId].fakeRole = roleAssignment(mp.roleId);
 
@@ -337,8 +334,6 @@
         f.uniqueRoleIdList.filter(rId => (rId != mp.roleId))
       );
     }
-    console.log(f.characterObjects[mp.characterId].fakeRole);
-    console.log(typeof f.characterObjects[mp.characterId].fakeRole);
   [endscript]
 [endmacro]
 
@@ -617,7 +612,7 @@
 
     ; 役職COしない
     f.buttonObjects.push(new Button(
-      'noCO',
+      'cancel',
       '役職COしない',
       'center',
       CLASS_GLINK_DEFAULT

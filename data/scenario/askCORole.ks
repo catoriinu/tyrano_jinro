@@ -1,9 +1,9 @@
-; TODO 「一つ前に戻る」でstartAskCORoleに戻れない
 ; TODO 2日目に0,1日目分をCOしたとき、（ゲーム終了時に占い履歴を確認したら）0日目の占い履歴が表示されていなかった
-; TODO uhdefined isPublicのエラーが出る
 ; TODO 選択した「人狼だった」「人狼ではなかった」に色をつけておきたい
 
 *startAskCORole
+  [eval exp="f.askCOOnceMore = false"]
+
   ; 役職COするか？→バックアップしてから選択肢を出す
   ; 「騙り占い師COする」→騙り占い師のオブジェクトを取得して、fakeFortuneTellerCOに進む
   ; （「騙り霊能者COする」）
@@ -18,19 +18,19 @@
     ; 前日の分までの占い結果を、メッセージなしでCOしたことにする
     [j_COFortuneTellingUntilTheLastDay fortuneTellerId="&f.playerCharacterId"]
     ; TODO もっといい格納タイミングを検討する
-    [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'noCO'"]
+    [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'cancel'"]
 
   [elsif exp="f.selectedButtonId === 'fakeFortuneTellerCO'"]
     ; 「騙り占い師COする」
     [eval exp="f.playerCORoleId = ROLE_ID_FORTUNE_TELLER"]
     [call target="*askFakeFortuneTellingResultMultipleDays"]
     ; TODO もっといい格納タイミングを検討する
-    [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'noCO'"]
+    [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'cancel'"]
 
   [endif]
 
-  ; 結果COの選択肢で「一つ前に戻る」で戻ってきた場合、もう一度役職COするかを確認する
-  [jump target="*startAskCORole" cond="tf.noNeedToCO === true"]
+  ; 結果COの選択肢で「一つ前に戻る」で戻ってきた場合、役職COするかの選択肢をもう一度出す
+  [jump target="*startAskCORole" cond="f.askCOOnceMore === true"]
 
 [return]
 
@@ -38,8 +38,6 @@
 
 *askFakeFortuneTellingResultMultipleDays
 
-  ; 「一つ前に戻る」で結果COしないことに決めたかを判定する変数
-  [eval exp="tf.noNeedToCO = false"]
   ; 騙り占いを行う最新の日の日付（＝前日）を入れる。
   [eval exp="f.lastDay = f.day - 1"]
   ; サブルーチン実行前に開始日が指定されていればそれを、されていなければ0（=初日）を入れる
@@ -56,16 +54,14 @@
     ;「一つ前に戻る」を選んだときにロールバックできるよう、バックアップをとっておく
     [j_backupJinroObjects buf="&f.fakeFortuneTelledDay"]
 
-    [eval exp="console.log('★★★')"]
     ; 騙り役職COなら（まだ騙り役職オブジェクトを取得していないなら）騙り役職オブジェクトを取得する。この処理はバックアップより後で行うこと。
     [j_assignmentFakeRole characterId="&f.playerCharacterId" roleId="&f.playerCORoleId"]
-    [eval exp="console.log(f.characterObjects[f.playerCharacterId])"]
 
     ; PCの騙り占いサブルーチンをループ実行していく
     [call target="*start"]
 
     ; 「一つ前に戻る」
-    [jump target="*askFakeFortuneTellingResultMultipleDays_previousDay" cond="f.pcActionObject === {}"]
+    [jump target="*askFakeFortuneTellingResultMultipleDays_previousDay" cond="f.pcActionObject === null"]
 
     ; 騙り占い実行。占い結果をf.actionObjectに格納する
     [j_fortuneTelling fortuneTellerId="&f.pcActionObject.characterId" day="&f.fakeFortuneTelledDay" characterId="&f.pcActionObject.targetId" result="&f.pcActionObject.result"]
@@ -91,14 +87,14 @@
 
 *askFakeFortuneTellingResultMultipleDays_previousDay
   ; バックアップから復元してから、CO対象日を一日戻す
-  [j_restoreJinroObjects buf="f.fakeFortuneTelledDay"]
+  [j_restoreJinroObjects buf="&f.fakeFortuneTelledDay"]
   [eval exp="f.fakeFortuneTelledDay--"]
 
   ; CO対象日が開始日以降（つまり戻れる日がある）なら、一日前の入力に戻る
   [jump target="*askFakeFortuneTellingResultMultipleDays_loopstart" cond="f.fakeFortuneTelledDay >= f.fakeFortuneTellingStartDay"]
 
-  ; CO対象日が開始日より過去になったら「結果COしない」扱いとして終了
-  [eval exp="tf.noNeedToCO = true"]
+  ; CO対象日が開始日より過去になったら「結果COしない」扱いとして終了。ここから戻ったときだけ、もう一度役職COするかの選択肢を出す。
+  [eval exp="f.askCOOnceMore = true"]
   [jump target="*askFakeFortuneTellingResultMultipleDays_loopend"]
 [s]
 
@@ -159,7 +155,7 @@
 [s]
 
 *cancel
-[eval exp="f.pcActionObject = {}"]
+[eval exp="f.pcActionObject = null"]
 [jump target="*end"]
 
 *input
@@ -203,11 +199,11 @@
       [CLASS_GLINK_WHITE]
     ));
     f.buttonObjects.push(new Button(
-      'previous',
+      'cancel',
       '一つ前に戻る', // TODO 役職CO時ではなく結果CO時は「結果COしない」に変える
       'left',
       CLASS_GLINK_DEFAULT,
-      //['previous']
+      ['cancel']
     ));
   [endscript]
   [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
