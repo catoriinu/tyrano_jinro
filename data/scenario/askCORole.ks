@@ -1,4 +1,7 @@
 ; TODO 2日目に0,1日目分をCOしたとき、（ゲーム終了時に占い履歴を確認したら）0日目の占い履歴が表示されていなかった
+; TODO 2日目に0,1日目分をCOしようとしたとき、0日目に誰を選んだとしても、1日目の選択肢からめたんだけが消えている
+; →原因特定。fortuneTelling()の「this.fortuneTellingHistory[day] = todayResult;」が悪い。
+; 0日目の占い結果はバックアップ側に入っており、1日目の占い結果は現在のf.characterObject配下に入っていた。
 ; TODO 選択した「人狼だった」「人狼ではなかった」に色をつけておきたい
 
 *startAskCORole
