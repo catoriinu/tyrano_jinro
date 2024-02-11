@@ -593,7 +593,7 @@
     const characterObject = f.characterObjects[f.playerCharacterId];
     f.buttonObjects = [];
 
-    ; 占い師、騙り占い師COする
+    // 占い師、騙り占い師COする
     if (characterObject.role.allowCORoles.includes(ROLE_ID_FORTUNE_TELLER)) {
       let id = '';
       if (characterObject.role.roleId === ROLE_ID_FORTUNE_TELLER) {
@@ -611,7 +611,7 @@
       ));
     }
 
-    ; 役職COしない
+    // 役職COしない
     f.buttonObjects.push(new Button(
       'cancel',
       '役職COしない',
@@ -1425,17 +1425,23 @@
 
 
 
-; @param buf 必須。保存バッファ。任意のキー名を指定すること。保存済みのキー名と重複した場合は上書きする
+; @param buf 必須。保存バッファ。任意のキー名を指定すること。
+; @param bool noOverwrite trueの場合、bufが保存済みのキー名と重複した場合に上書きしない。デフォルトはfalse
 [macro name="j_backupJinroObjects"]
   [iscript]
     // 初回のみ、バックアップ用オブジェクトを生成
     if (!('backupJinroObjects' in f)) {
       f.backupJinroObjects = {};
     };
-    f.backupJinroObjects[mp.buf] = {
-      characterObjects: clone(f.characterObjects),
-      commonPerspective: clone(f.commonPerspective)
-    };
+
+    const noOverwrite = ('noOverwrite' in mp) ? mp.noOverwrite : false;
+    // 「上書き防止フラグが立っているかつそのbufが保存済みの場合」以外はバックアップする
+    if (!(noOverwrite && (mp.buf in f.backupJinroObjects))) {
+      f.backupJinroObjects[mp.buf] = {
+        characterObjects: clone(f.characterObjects),
+        commonPerspective: clone(f.commonPerspective)
+      };
+    }
   [endscript]
 [endmacro]
 

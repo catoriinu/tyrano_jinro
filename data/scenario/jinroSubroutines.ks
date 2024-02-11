@@ -339,7 +339,6 @@ MEMO 最終的には以下の構成のHTMLが生成される。
         ; 占い師
         ; 占い結果COする・しないボタンを表示する
         [j_setFrotuneTellerResultCOToButtonObjects]
-        ; TODO もっといい格納タイミングを検討する
         [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'noCO'"]
 
       [elsif exp="f.characterObjects[f.playerCharacterId].role.roleId !== ROLE_ID_FORTUNE_TELLER"]
@@ -348,7 +347,6 @@ MEMO 最終的には以下の構成のHTMLが生成される。
         ; TODO 「結果COしない」ボタンを追加する
         [eval exp="f.fakeFortuneTellingStartDay = f.day - 1"]
         [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingCOMultipleDaysForPC"]
-        ; TODO もっといい格納タイミングを検討する
         [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'noCO'"]
       [endif]
 
@@ -371,7 +369,7 @@ MEMO 最終的には以下の構成のHTMLが生成される。
       [eval exp="tf.tmpZeroRoleIds = [ROLE_ID_VILLAGER]"]
       [j_updateCommonPerspective characterId="&f.characterObjects[f.playerCharacterId].characterId" zeroRoleIds="&tf.tmpZeroRoleIds"]
     [endif]
-
+    
   [endif]
 
   ; 占い師の役職結果CO（「役職COしない」「結果COしない」を選んだときはCOしない）

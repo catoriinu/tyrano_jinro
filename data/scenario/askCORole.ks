@@ -1,36 +1,27 @@
-; TODO 2日目に0,1日目分をCOしたとき、（ゲーム終了時に占い履歴を確認したら）0日目の占い履歴が表示されていなかった
-; TODO 2日目に0,1日目分をCOしようとしたとき、0日目に誰を選んだとしても、1日目の選択肢からめたんだけが消えている
-; →原因特定。fortuneTelling()の「this.fortuneTellingHistory[day] = todayResult;」が悪い。
-; 0日目の占い結果はバックアップ側に入っており、1日目の占い結果は現在のf.characterObject配下に入っていた。
-; TODO 選択した「人狼だった」「人狼ではなかった」に色をつけておきたい
+; 役職COサブルーチン
 
 *startAskCORole
   [eval exp="f.askCOOnceMore = false"]
 
-  ; 役職COするか？→バックアップしてから選択肢を出す
-  ; 「騙り占い師COする」→騙り占い師のオブジェクトを取得して、fakeFortuneTellerCOに進む
-  ; （「騙り霊能者COする」）
-  ; 「役職COしない」→バックアップから復元して終了
+  ; 「（騙り）役職COしますか？」
   [j_setCORoleToButtonObjects]
   [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 
   [if exp="f.selectedButtonId === 'FortuneTellerCO'"]
-    ; TODO ここはただ移植しただけ
     ; 「占い師COする」
     [eval exp="f.playerCORoleId = ROLE_ID_FORTUNE_TELLER"]
     ; 前日の分までの占い結果を、メッセージなしでCOしたことにする
     [j_COFortuneTellingUntilTheLastDay fortuneTellerId="&f.playerCharacterId"]
-    ; TODO もっといい格納タイミングを検討する
     [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'cancel'"]
 
   [elsif exp="f.selectedButtonId === 'fakeFortuneTellerCO'"]
     ; 「騙り占い師COする」
     [eval exp="f.playerCORoleId = ROLE_ID_FORTUNE_TELLER"]
     [call target="*askFakeFortuneTellingResultMultipleDays"]
-    ; TODO もっといい格納タイミングを検討する
     [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'cancel'"]
 
   [endif]
+  ; 「役職COしない」なら何もしない
 
   ; 結果COの選択肢で「一つ前に戻る」で戻ってきた場合、役職COするかの選択肢をもう一度出す
   [jump target="*startAskCORole" cond="f.askCOOnceMore === true"]
@@ -47,6 +38,9 @@
   [eval exp="f.fakeFortuneTelledDay = ('fakeFortuneTellingStartDay' in f) ? f.fakeFortuneTellingStartDay : 0"]
   [eval exp="f.fakeFortuneTellingStartDay = f.fakeFortuneTelledDay"]
 
+  ; バックアップの上書き防止用フラグ
+  [eval exp="f.canceled = false"]
+
   *askFakeFortuneTellingResultMultipleDays_loopstart
 
     [eval exp="f.fakeFortuneTelledDayMsg = f.fakeFortuneTelledDay + '日目の夜'"]
@@ -54,8 +48,8 @@
     [eval exp="f.fakeFortuneTelledDayMsg = f.fakeFortuneTelledDayMsg + '（昨夜）'" cond="f.fakeFortuneTelledDay == f.lastDay"]
     [m_fakeFortuneTelledDayMsg]
 
-    ;「一つ前に戻る」を選んだときにロールバックできるよう、バックアップをとっておく
-    [j_backupJinroObjects buf="&f.fakeFortuneTelledDay"]
+    ;「一つ前に戻る」を選んだときにロールバックできるよう、バックアップをとっておく。ただし「一つ前に戻る」で戻ってきた直後はバックアップしない。
+    [j_backupJinroObjects buf="&f.fakeFortuneTelledDay" noOverwrite="&f.canceled"]
 
     ; 騙り役職COなら（まだ騙り役職オブジェクトを取得していないなら）騙り役職オブジェクトを取得する。この処理はバックアップより後で行うこと。
     [j_assignmentFakeRole characterId="&f.playerCharacterId" roleId="&f.playerCORoleId"]
@@ -78,6 +72,7 @@
 
     ; 次の日の騙り占いを行う
     [eval exp="f.fakeFortuneTelledDay++"]
+    [eval exp="f.canceled = false"]
     [jump target="*askFakeFortuneTellingResultMultipleDays_loopstart"]
 
   *askFakeFortuneTellingResultMultipleDays_loopend
@@ -92,6 +87,8 @@
   ; バックアップから復元してから、CO対象日を一日戻す
   [j_restoreJinroObjects buf="&f.fakeFortuneTelledDay"]
   [eval exp="f.fakeFortuneTelledDay--"]
+  ; 「一つ前に戻る」で戻ってきた直後はバックアップしないようにフラグを立てておく
+  [eval exp="f.canceled = true"]
 
   ; CO対象日が開始日以降（つまり戻れる日がある）なら、一日前の入力に戻る
   [jump target="*askFakeFortuneTellingResultMultipleDays_loopstart" cond="f.fakeFortuneTelledDay >= f.fakeFortuneTellingStartDay"]
@@ -99,37 +96,18 @@
   ; CO対象日が開始日より過去になったら「結果COしない」扱いとして終了。ここから戻ったときだけ、もう一度役職COするかの選択肢を出す。
   [eval exp="f.askCOOnceMore = true"]
   [jump target="*askFakeFortuneTellingResultMultipleDays_loopend"]
-[s]
-
-
-*fakeFortuneTellerCO
-  ; 2日分以上の占い結果を決める必要がある？
-
-
-  ; 前日の占い結果を決めてください
-  ; 「人狼だった」→第二階層を表示する
-  ; 「人狼ではなかった」→第二階層を表示する
-  ; 「一つ前に戻る」→askFakeRoleCOに戻る
+  [s]
 
 [return]
 
 
 
-
-; アクションボタンサブルーチン
+; 騙り結果COボタンサブルーチン（アクションボタンサブルーチンを流用）
 ; TODO 表示処理が重くて時間がかかるので、どうにか軽量化できないか？
 *start
-; アクションボタン用変数の初期化
+; 初期化
 [eval exp="tf.noNeedStop = false"]
-[iscript]
-  // PCがアクションを選択済みの場合に、ボタンの色を変えるために変数に格納しておく
-  //f.selectedActionId = ('actionId' in f.pcActionObject) ? f.pcActionObject.actionId : ACTION_CANCEL; // 未選択なら「発言しない」の色を変える
-  // 第2階層のキャラクターボタンの色を変えるかの判定に使うのは、前回選択したキャラクターIDとする。f.selectedCharacterIdはアクションボタン処理中に書き換わってしまうため使えない。
-  //f.originalSelectedCharacterId = ('targetId' in f.pcActionObject) ? f.pcActionObject.targetId : '';
-[endscript]
-; アクションボタンとステータスボタンを非表示（バックログボタンは押せて良いので残す）
-; アクションボタン自体がrole="sleepgame"のボタン（復元時に元のメッセージを表示したいため）のため、そこから更にfix属性であるステータスボタンは押せないため無効化しておく
-;[j_clearFixButton action="true" status="true"]
+[eval exp="f.selectedActionId = ''"]
 
 *firstLayer
 ; 第1階層のボタンを表示
@@ -173,8 +151,6 @@
 [endscript]
 
 *end
-; アクションボタンとステータスボタンを再表示
-;[j_displayFixButton action="true" status="true"]
 
 ;[awakegame]
 [return]
@@ -186,23 +162,28 @@
 
   [iscript]
     f.buttonObjects = [];
+
+    const classBlack = (f.selectedActionId == 'black') ? [CLASS_GLINK_SELECTED] : [CLASS_GLINK_BLACK];
     f.buttonObjects.push(new Button(
       'black',
       '人狼だった',
       'left',
       CLASS_GLINK_DEFAULT,
-      [CLASS_GLINK_BLACK]
+      classBlack
     ));
+
+    const classWhite = (f.selectedActionId == 'white') ? [CLASS_GLINK_SELECTED] : [CLASS_GLINK_WHITE];
     f.buttonObjects.push(new Button(
       'white',
       '人狼ではなかった',
       'left',
       CLASS_GLINK_DEFAULT,
-      [CLASS_GLINK_WHITE]
+      classWhite
     ));
+
     f.buttonObjects.push(new Button(
       'cancel',
-      '一つ前に戻る', // TODO 役職CO時ではなく結果CO時は「結果COしない」に変える
+      '一つ前に戻る',
       'left',
       CLASS_GLINK_DEFAULT,
       ['cancel']
