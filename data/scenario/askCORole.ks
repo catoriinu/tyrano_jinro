@@ -170,7 +170,6 @@
   const actionId = ACTION_FORTUNE_TELLING;
 
   f.pcActionObject = new Action(f.playerCharacterId, actionId, f.selectedCharacterId, declarationResult);
-  // MEMO: PCの判断基準IDを格納するのは、発言直前にする。ここではボタン処理のみに注力するため。
 [endscript]
 
 *end

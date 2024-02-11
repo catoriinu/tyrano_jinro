@@ -322,7 +322,8 @@
 ; @param roleId COする役職の役職ID
 [macro name="j_assignmentFakeRole"]
   [iscript]
-    if (f.characterObjects[mp.characterId].fakeRole) {
+    // 偽役職COしていない場合のみ実行 NOTE 撤回COさせたくなったらマクロの引数で強制できるようにする
+    if (Object.keys(f.characterObjects[mp.characterId].fakeRole).length === 0) {
       f.characterObjects[mp.characterId].fakeRole = roleAssignment(mp.roleId);
 
       // 今までの表の視点を破棄。現在の共通視点から新しく騙り役職についた状態での表の視点を上書きする。
@@ -1427,7 +1428,7 @@
 ; @param buf 必須。保存バッファ。任意のキー名を指定すること。保存済みのキー名と重複した場合は上書きする
 [macro name="j_backupJinroObjects"]
   [iscript]
-    // 初回のみ、ボタンの表示ステータスを保存するオブジェクトを生成
+    // 初回のみ、バックアップ用オブジェクトを生成
     if (!('backupJinroObjects' in f)) {
       f.backupJinroObjects = {};
     };
