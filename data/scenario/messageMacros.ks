@@ -184,14 +184,19 @@
 
 
 ; シーン：ゲームの勝敗判定結果を表示するシステムメッセージ
+[macro name="m_displayGameOver"]
+  [m_changeFrameWithId]
+  #
+  ゲームが終了しました。
+[endmacro]
+
+; シーン：ゲームの勝敗判定結果を表示するシステムメッセージ
 ; @param winnerFaction 勝利陣営。必須
-[macro name="m_displayGameOverAndWinnerFaction"]
+[macro name="m_displayWinnerFaction"]
   [m_changeFrameWithId]
   #
   [eval exp="tf.messageStorage = './message/system.ks'"]
-  [eval exp="tf.messageTarget = '*displayGameOverAndWinnerFaction_' + mp.winnerFaction"]
-  ゲームが終了しました。[p]
-  [j_playSePlayerResult winnerFaction="&mp.winnerFaction"]
+  [eval exp="tf.messageTarget = '*displayWinnerFaction_' + mp.winnerFaction"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
 [endmacro]
 

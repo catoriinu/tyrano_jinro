@@ -140,7 +140,7 @@
 [endscript]
 
 ; キャラクタ－画像を表示
-[j_setDchForStatus]
+[j_setDchForStatus winnerFaction="&f.winnerFaction"]
 [call storage="jinroSubroutines.ks" target="*displayCharactersHorizontallyForStatus"]
 [s]
 

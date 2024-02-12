@@ -21,6 +21,16 @@
     }
     // キャラクターのイメージカラーのカラーコード
     f.color.character[tf.characterId] = '#67ef65';
+    // ステータス画面等の立ち絵
+    f.statusFace[tf.characterId] = {
+      alive: 'normal.png',
+      lose: 'sad.png',
+      win: {
+        [FACTION_VILLAGERS]: 'happy.png',
+        [FACTION_WEREWOLVES]: 'proud.png',
+      },
+      draw: 'troubled.png',
+    };
   [endscript]
 
   ; キャラクターの登録

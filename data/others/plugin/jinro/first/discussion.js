@@ -556,10 +556,10 @@ function countTargetedId(actionObjects, countId) {
  * @param {*} id ボタンのID（ボタン要素のclass名に利用）
  * @param {*} text ボタンに表示するテキスト
  * @param {*} side ボタンの表示位置 'left','right'のいずれか（省略した場合center）
+ * @param {*} color ボタンの色
  * @param {*} addClasses ボタンに追加したいクラス名配列。以下補足
  * ・glinkのnameに追加され、ボタンのclass属性になる。colorのclass属性より後ろに追加されるので、より優先される。
  * ・glink生成時にカンマ区切りにするので、追加したいクラス名1つにつき配列の1要素ずつ格納すること。
- * @param {*} color ボタンの色（TODO 未利用）
  * @param {*} target ボタン押下時にジャンプするラベル名
  * @param {*} storage ボタン押下時にジャンプするファイル名
  */

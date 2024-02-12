@@ -40,14 +40,21 @@
     f.buttonObjects.push(new Button(
       'black',
       '人狼だった',
-      'center',
+      'left',
       CLASS_GLINK_DEFAULT,
       [CLASS_GLINK_BLACK]
     ));
     f.buttonObjects.push(new Button(
       'white',
       '人狼ではなかった',
-      'center',
+      'left',
+      CLASS_GLINK_DEFAULT,
+      [CLASS_GLINK_WHITE]
+    ));
+    f.buttonObjects.push(new Button(
+      'white',
+      '人狼ではなかった',
+      'left',
       CLASS_GLINK_DEFAULT,
       [CLASS_GLINK_WHITE]
     ));
@@ -67,13 +74,13 @@
 ; 指定された日から、前日の夜までに占っていたことにできる。
 ; 指定された日がなければ初日から。（＝2日目以降の騙り占い師CO用）
 ; 指定された日が前日の夜ならその1回分のみ。（＝騙り占いCO済み時の、騙り占い結果CO用）
-; @param f.fakeFortuneTelledDay 騙り占いを実行する開始日。指定する場合は、サブルーチン実行前に格納しておくこと。
+; @param f.fakeFortuneTellingStartDay 騙り占いを実行する開始日。指定する場合は、サブルーチン実行前に格納しておくこと。
 *fakeFortuneTellingCOMultipleDaysForPC
 
   ; 騙り占いを行う最新の日の日付（＝前日）を入れる。
   [eval exp="f.lastDay = f.day - 1"]
   ; サブルーチン実行前に開始日が指定されていればそれを、されていなければ0（=初日）を入れる
-  [eval exp="f.fakeFortuneTelledDay = ('fakeFortuneTelledDay' in f) ? f.fakeFortuneTelledDay : 0"]
+  [eval exp="f.fakeFortuneTelledDay = ('fakeFortuneTellingStartDay' in f) ? f.fakeFortuneTellingStartDay : 0"]
 
   *fakeFortuneTellingCOMultipleDays_loopstart
     [eval exp="f.fakeFortuneTelledDayMsg = f.fakeFortuneTelledDay + '日目の夜'"]
@@ -96,6 +103,6 @@
   *fakeFortuneTellingCOMultipleDays_loopend
 
   ; 次にこのサブルーチンを呼び出したときのために初期化
-  [eval exp="f.fakeFortuneTelledDay = 0"]
+  [eval exp="f.fakeFortuneTellingStartDay = 0"]
 
 [return]

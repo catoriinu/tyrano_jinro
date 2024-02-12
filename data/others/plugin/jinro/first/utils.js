@@ -60,6 +60,29 @@ function judgeWinnerFaction(characterObjects) {
 
 
 /**
+ * ゲームの結果が引き分けか
+ * MEMO 引き分け扱いになる陣営定数が増えた場合ここにも追加すること
+ * @param {String} winnerFaction 勝利した陣営定数
+ * @returns true:引き分け / false:引き分けではない
+ */
+function isResultDraw(winnerFaction) {
+  return [FACTION_DRAW_BY_REVOTE].includes(winnerFaction);
+}
+
+
+/**
+ * ゲームの結果がプレイヤーの勝利か
+ * 引き分けの判定が必要な場合はisResultDraw()で別途判定すること
+ * @param {String} winnerFaction 勝利した陣営定数
+ * @param {String} playerFaction プレイヤーの陣営
+ * @returns true:プレイヤーの勝利 / false:プレイヤーの勝利ではない
+ */
+function isResultPlayersWin(winnerFaction, playerFaction) {
+  return (winnerFaction === playerFaction);
+}
+
+
+/**
  * 「生存者か」プロパティをもとに、該当するキャラクターオブジェクトだけを返却する
  * @param {Array} characterObjects キャラクターオブジェクトの配列
  * @param {Boolean} [searchFlg=true] 検索値 true（デフォルト）:生存者 false:死亡済み
@@ -212,6 +235,9 @@ function daytimeInitialize() {
   TYRANO.kag.stat.f.day++;
   TYRANO.kag.stat.f.isDaytime = true;
 
+  // 勝利陣営を初期化する
+  TYRANO.kag.stat.f.winnerFaction = null;
+
   // NPCのCO候補者がいないフラグをfalseにする（昼の最初はいると考えてfalseで初期化。いないときにtrueにする）
   TYRANO.kag.stat.f.notExistCOCandidateNPC = false;
 
@@ -261,6 +287,9 @@ function nightInitialize() {
     TYRANO.kag.stat.f.day,
     TYRANO.kag.stat.f.isDaytime
   )
+
+  // 勝利陣営を初期化する
+  TYRANO.kag.stat.f.winnerFaction = null;
 
   // 噛み実行済みフラグを最初に初期化しておく。噛んだ後、立てること。人狼が2人以上いたときに、噛み実行済みならスキップするため。
   TYRANO.kag.stat.f.isBiteEnd = false;
@@ -362,10 +391,16 @@ function pushElement(array, element) {
 /**
  * chara/{characterId}.ksで設定した、そのキャラクターのイメージカラーのコードを取得する
  * @param {string} characterId 
+ * @param {boolean} isAlive 生存者かフラグ。退場済みと区別したいときのみ渡す。デフォルト:true
  * @returns {string} 16進数カラーコード 例:'#ffffff'
  */
-function getBgColorFromCharacterId(characterId) {
-  return TYRANO.kag.stat.f.color.character[characterId];
+function getBgColorFromCharacterId(characterId, isAlive = true) {
+  if (isAlive) {
+    return TYRANO.kag.stat.f.color.character[characterId];
+  } else {
+    // 退場済みなら黒固定
+    return '#000000';
+  }
 }
 
 

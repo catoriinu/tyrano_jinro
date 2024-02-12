@@ -1,12 +1,12 @@
 ; 四国めたんのmessageサブルーチン
 
 ; 呼び方サブルーチン
-; 事前準備：tf.characterIdToCall = キャラクターID
-; このmessageサブルーチンのキャラクターが、tf.characterIdToCallのキャラクターを呼ぶ際の二人称をtf.calledCharacterNameに格納する
+; 事前準備：tf.targetId = キャラクターID
+; このmessageサブルーチンのキャラクターが、tf.targetIdのキャラクターを呼ぶ際の二人称をtf.targetNameに格納する
 ; キャラクターごとの差異をなくすため、自分自身のIDが渡された場合は一人称を入れる
 *changeIdToCallName
   [iscript]
-    tf.calledCharacterName = (function(characterId) {
+    tf.targetName = (function(characterId) {
       const calledCharacterNameObject = {
         [CHARACTER_ID_ZUNDAMON]: 'ずんだもん',
         [CHARACTER_ID_METAN]:    'わたくし',
@@ -15,7 +15,7 @@
         [CHARACTER_ID_RITSU]:    'リツさん',
       }
       return calledCharacterNameObject[characterId];
-    }(tf.characterIdToCall));
+    }(tf.targetId));
   [endscript]
 [return]
 
@@ -32,7 +32,7 @@
 [add_playselist storage="chara/metan/005_四国めたん（ノーマル）_ふふっ、わたくしの….mp3"]
 [playselist]
 
-聞きなさい。[emb exp="tf.calledCharacterName"]は人狼だったわ！[r]
+聞きなさい。[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼だったわ！[r]
 ふふっ、わたくしの千里眼に見抜けぬものはないわ。[p]
 [stopse]
 [return]
@@ -46,7 +46,7 @@
 [add_playselist storage="chara/metan/006_四国めたん（ノーマル）_わたくしの心を弄ん….mp3"]
 [playselist]
 
-聞きなさい。[emb exp="tf.calledCharacterName"]は人狼だったわ！[r]
+聞きなさい。[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼だったわ！[r]
 わたくしの心を弄んだこと、後悔させてやるわ。[p]
 [stopse]
 [return]
@@ -60,7 +60,7 @@
 [add_playselist storage="chara/metan/007_四国めたん（ノーマル）_まあ、千里眼を使う….mp3"]
 [playselist]
 
-聞きなさい。[emb exp="tf.calledCharacterName"]は人狼だったわ！[r]
+聞きなさい。[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼だったわ！[r]
 まあ、千里眼を使う前から視えていたけれど。[p]
 [stopse]
 [return]
@@ -74,7 +74,7 @@
 [add_playselist storage="chara/metan/016_四国めたん（ノーマル）_信頼の証に、同盟を….mp3"]
 [playselist]
 
-聞きなさい。[emb exp="tf.calledCharacterName"]は人狼ではなかったわ。[r]
+聞きなさい。[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではなかったわ。[r]
 信頼の証に、同盟を結ばせてもらえるかしら。[p]
 [stopse]
 [return]
@@ -88,7 +88,7 @@
 [add_playselist storage="chara/metan/017_四国めたん（ノーマル）_これ以上疑いの眼を….mp3"]
 [playselist]
 
-聞きなさい。[emb exp="tf.calledCharacterName"]は人狼ではなかったわ。[r]
+聞きなさい。[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではなかったわ。[r]
 これ以上疑いの眼を向けることは、わたくしが許さないわ。[p]
 [stopse]
 [return]
@@ -102,7 +102,7 @@
 [add_playselist storage="chara/metan/018_四国めたん（ノーマル）_この千里眼の力、わ….mp3"]
 [playselist]
 
-聞きなさい。[emb exp="tf.calledCharacterName"]は人狼ではなかったわ。[r]
+聞きなさい。[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではなかったわ。[r]
 この千里眼の力、わたくしにも制御できないというの…?[p]
 [stopse]
 [return]
@@ -116,7 +116,7 @@
 [add_playselist storage="chara/metan/019_四国めたん（ノーマル）_わたくしたちが共に….mp3"]
 [playselist]
 
-聞きなさい。[emb exp="tf.calledCharacterName"]は人狼ではなかったわ。[r]
+聞きなさい。[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではなかったわ。[r]
 わたくしたちが共に手を取り合えた未来もあったのかしら。[p]
 [stopse]
 [return]
@@ -130,7 +130,7 @@
 [add_playselist storage="chara/metan/020_四国めたん（ノーマル）_仇は必ずとるわ。ど….mp3"]
 [playselist]
 
-聞きなさい。[emb exp="tf.calledCharacterName"]は人狼ではなかったわ。[r]
+聞きなさい。[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではなかったわ。[r]
 仇は必ずとるわ。どうかわたくしを見守ってちょうだい…！[p]
 [stopse]
 [return]
@@ -144,7 +144,7 @@
 [add_playselist storage="chara/metan/021_四国めたん（ノーマル）_どうやら人狼はわた….mp3"]
 [playselist]
 
-聞きなさい。[emb exp="tf.calledCharacterName"]は人狼ではなかったわ。[r]
+聞きなさい。[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではなかったわ。[r]
 どうやら人狼はわたくしを陥れるつもりのようね。[p]
 [stopse]
 [return]
@@ -224,7 +224,7 @@
 [add_playselist storage="chara/metan/030_四国めたん（ノーマル）_あなたの犯した罪は….mp3"]
 [playselist]
 
-[emb exp="tf.calledCharacterName"]、足掻いても無駄よ。[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]、足掻いても無駄よ。[r]
 あなたの犯した罪は決して消えないわ。[p]
 [stopse]
 [return]
@@ -246,7 +246,7 @@
 [endif]
 [playselist]
 
-[emb exp="tf.calledCharacterName"]、そろそろ認めたらどうかしら？[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]、そろそろ認めたらどうかしら？[r]
 自分が人狼だということを。[p]
 [stopse]
 [return]
@@ -270,7 +270,7 @@
 [add_playselist storage="chara/metan/039_四国めたん（ノーマル）_フォルトゥナによっ….mp3"]
 [playselist]
 
-[emb exp="tf.calledCharacterName"]とわたくしが手を携えることは、[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]とわたくしが手を携えることは、[r]
 運命の女神によって定められているわ。[p]
 [stopse]
 [return]
@@ -292,18 +292,18 @@
 [endif]
 [playselist]
 
-[emb exp="tf.calledCharacterName"]、わたくしと共にこの苦難を乗り越えましょう。[p]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]、わたくしと共にこの苦難を乗り越えましょう。[p]
 [stopse]
 [return]
 
 
 ; シーン：「聞き出す」アクション実行時
 *doAction_ask
-[eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+[eval exp="tf.targetId = tf.selectedCharacterId"]
 [call target="changeIdToCallName"]
 
 状況が混沌としてきたわね……。[r]
-[emb exp="tf.calledCharacterName"]の考えを聞かせてくれるかしら？[p]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]の考えを聞かせてくれるかしら？[p]
 [return]
 
 

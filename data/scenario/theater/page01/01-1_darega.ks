@@ -19,7 +19,8 @@
 ; pos_mode:キャラの初期位置はキャラ宣言時に全指定するのでfalse
 [chara_config pos_mode="false" memory="true" time="200"]
 
-;このゲームで登場する全キャラクターを宣言、表情登録
+;このシナリオで登場する全キャラクターを宣言、表情登録
+[call target="*registerTheaterParticipants"]
 [call storage="./chara/common.ks" target="*registerAllCharacters"]
 
 
@@ -151,6 +152,11 @@ zapzapzap[p]
 
 #
 
+
+; 視聴済みに更新する
+[t_watchIntroProgress pageKey="1" situationKey="1"]
+
+
 [eval exp="f.quickShowDetail = true"]
 
 [j_clearFixButton]
@@ -158,3 +164,19 @@ zapzapzap[p]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 [layopt layer="message0" visible="false"]
 [jump storage="theater/main.ks" target="*start"]
+[s]
+
+
+*registerTheaterParticipants
+[iscript]
+    f.participantsIdList = [
+        CHARACTER_ID_ZUNDAMON,
+        CHARACTER_ID_METAN,
+        CHARACTER_ID_TSUMUGI,
+        CHARACTER_ID_HAU,
+        CHARACTER_ID_RITSU,
+        //'mochiko'),
+    ];
+[endscript]
+[return]
+[s]

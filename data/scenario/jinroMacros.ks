@@ -51,6 +51,27 @@
 [endmacro]
 
 
+; キャラの名前を表示するマクロ
+; このマクロでキャラの名前を表示させると、コンフィグのキャラ判別サポート設定を適用することができる
+; @param targetId 表示するキャラのキャラクターID
+; @param targetName 表示するキャラクター名そのもの
+[macro name="j_callName"]
+
+  [iscript]
+    tf.color = f.color.character[mp.targetId];
+    //tf.iconStorage = 'sdchara/' + mp.targetId + '_mini.png'
+  [endscript]
+
+  [mark color="&tf.color" size="&sf.config.mark_size" cond="sf.config.mark_size > 0"]
+  [emb exp="mp.targetName"]
+  [endmark cond="sf.config.mark_size > 0"]
+
+  ;TODO 不具合が解消できるまでj_graphタグは使わない。
+  ; mark,endmarkタグの前後で使うとそこで文字の表示が途切れる問題。元々のgraphタグでは発生しない。
+  ;[j_graph storage="&tf.iconStorage" height="40" width="40" cond="sf.config.show_icon"]
+[endmacro]
+
+
 ; 処刑マクロ
 [macro name="j_execution"]
   [iscript]
@@ -73,14 +94,11 @@
 ; 勝利陣営がいるかを判定し、勝利陣営がいた場合、指定されたラベルにジャンプする（storage, targetともに必須）
 ; ex: [j_judgeWinnerFactionAndJump storage="playJinro.ks" target="*gameOver"]
 [macro name="j_judgeWinnerFactionAndJump"]
-  [m_changeFrameWithId]
-  #
-  勝敗判定中……[p]
   [iscript]
-    tf.winnerFaction = judgeWinnerFaction(f.characterObjects);
+    f.winnerFaction = judgeWinnerFaction(f.characterObjects);
   [endscript]
 
-  [if exp="tf.winnerFaction != null"]
+  [if exp="f.winnerFaction != null"]
     [jump *]
   [endif]
 [endmacro]
@@ -302,18 +320,21 @@
 ; 偽役職オブジェクトを取得するマクロ（人外による役職COを想定。なお、ギドラや撤回COは想定していない）
 ; @param characterId COするキャラクターのキャラクターID
 ; @param roleId COする役職の役職ID
-[macro name=j_assignmentFakeRole]
+[macro name="j_assignmentFakeRole"]
   [iscript]
-    f.characterObjects[mp.characterId].fakeRole = roleAssignment(mp.roleId);
+    // 偽役職COしていない場合のみ実行 NOTE 撤回COさせたくなったらマクロの引数で強制できるようにする
+    if (Object.keys(f.characterObjects[mp.characterId].fakeRole).length === 0) {
+      f.characterObjects[mp.characterId].fakeRole = roleAssignment(mp.roleId);
 
-    ; 今までの表の視点を破棄。現在の共通視点から新しく騙り役職についた状態での表の視点を上書きする。
-    ; ちなみに、fakeRole.rolePerspectiveは利用しないので空オブジェクトのままとなるので注意。
-    ; TODO ここで破綻することもありうる。対策を。
-    f.characterObjects[mp.characterId].perspective = organizePerspective (
-      f.commonPerspective,
-      mp.characterId,
-      f.uniqueRoleIdList.filter(rId => (rId != mp.roleId))
-    );
+      // 今までの表の視点を破棄。現在の共通視点から新しく騙り役職についた状態での表の視点を上書きする。
+      // ちなみに、fakeRole.rolePerspectiveは利用しないので空オブジェクトのままとなるので注意。
+      // TODO ここで破綻することもありうる。対策を。
+      f.characterObjects[mp.characterId].perspective = organizePerspective (
+        f.commonPerspective,
+        mp.characterId,
+        f.uniqueRoleIdList.filter(rId => (rId != mp.roleId))
+      );
+    }
   [endscript]
 [endmacro]
 
@@ -453,7 +474,7 @@
       if (f.characterObjects[mp.characterIds[i]].CORoleId != '') {
         // 既に役職CO済みの場合、必ず結果COしたいとする
         [probability, isCO] = [1, true]
-      } else if (f.characterObjects[mp.characterIds[i]].role.allowCO) {
+      } else if (f.characterObjects[mp.characterIds[i]].role.allowCORoles.length >= 1) {
         // 役職COできる役職で未COの場合、そのキャラの性格からCO確率を取得する
         [probability, isCO] = isCOMyRoll(mp.characterIds[i]);
       }
@@ -481,7 +502,10 @@
     tf.isNeedToAskPCWantToCO = false;
     // 以下の条件を満たした場合、PCがCOしたいかを確認する必要があると判定する
     // 生存している && COできる役職か && 今日は未COか
-    if (f.characterObjects[f.playerCharacterId].isAlive && f.characterObjects[f.playerCharacterId].role.allowCO && !f.characterObjects[f.playerCharacterId].isDoneTodaysCO) {
+    if (f.characterObjects[f.playerCharacterId].isAlive
+      && f.characterObjects[f.playerCharacterId].role.allowCORoles.length >= 1
+      && !f.characterObjects[f.playerCharacterId].isDoneTodaysCO
+    ) {
       tf.isNeedToAskPCWantToCO = true;
     }
   [endscript]
@@ -502,6 +526,7 @@
 
 ; 役職側の視点オブジェクトを表の視点オブジェクトにcloneする。
 ; 真役職CO時に利用。騙りCOには使わないこと。騙りCOの際は、j_assignmentFakeRoleマクロで表の視点を作成しているため。
+; TODO j_COFortuneTellingUntilTheLastDayの中に移動させたい
 ; @param characterId COするキャラクターID。必須。
 ; @param CORoleId COする役職ID。roleに格納されていることが前提。必須。
 [macro name=j_cloneRolePerspectiveForCO]
@@ -533,11 +558,12 @@
 ; @param characterId 判定対象のキャラクターID。必須。
 [macro name="j_setCanCOFortuneTellerStatus"]
   [iscript]
+    const characterObject = f.characterObjects[mp.characterId];
 
     ; 0: 占い師CO不可の役職、またはCO状態
     f.canCOFortuneTellerStatus = 0;
-    if (f.characterObjects[mp.characterId].role.roleId == ROLE_ID_FORTUNE_TELLER) {
-      if (f.characterObjects[mp.characterId].CORoleId == ROLE_ID_FORTUNE_TELLER) {
+    if (characterObject.role.roleId == ROLE_ID_FORTUNE_TELLER) {
+      if (characterObject.CORoleId == ROLE_ID_FORTUNE_TELLER) {
         ; 2: 真占い師であり、CO済み
         f.canCOFortuneTellerStatus = 2;
 
@@ -545,19 +571,77 @@
         ; 1: 真占い師で、未CO
         f.canCOFortuneTellerStatus = 1;
       }
-      
-    } else if (f.characterObjects[mp.characterId].role.roleId == ROLE_ID_WEREWOLF || f.characterObjects[mp.characterId].role.roleId == ROLE_ID_MADMAN) {
-      if (f.characterObjects[mp.characterId].CORoleId == ROLE_ID_FORTUNE_TELLER) {
+
+    } else if (characterObject.role.roleId == ROLE_ID_WEREWOLF || characterObject.role.roleId == ROLE_ID_MADMAN) {
+      if (characterObject.CORoleId == ROLE_ID_FORTUNE_TELLER) {
         ; 4: 騙り占い師としてCO済み
         f.canCOFortuneTellerStatus = 4;
 
-      } else if (f.characterObjects[mp.characterId].CORoleId == '') {
+      } else if (characterObject.CORoleId == '') {
         ; 3: 騙り占い師としてCO可能な役職で、未CO
         f.canCOFortuneTellerStatus = 3;
       }
       ; 占い師以外の役職としてCO済みなら、占い師COは不可
     }
   [endscript]
+[endmacro]
+
+
+; @param characterId 判定対象のキャラクターID。必須。
+[macro name="j_setCORoleToButtonObjects"]
+  [iscript]
+    const characterObject = f.characterObjects[f.playerCharacterId];
+    f.buttonObjects = [];
+
+    // 占い師、騙り占い師COする
+    if (characterObject.role.allowCORoles.includes(ROLE_ID_FORTUNE_TELLER)) {
+      let id = '';
+      if (characterObject.role.roleId === ROLE_ID_FORTUNE_TELLER) {
+        id = 'FortuneTellerCO';
+        text = '占い師COする';
+      } else {
+        id = 'fakeFortuneTellerCO';
+        text = '騙り占い師COする';
+      }
+      f.buttonObjects.push(new Button(
+        id,
+        text,
+        'center',
+        CLASS_GLINK_DEFAULT
+      ));
+    }
+
+    // 役職COしない
+    f.buttonObjects.push(new Button(
+      'cancel',
+      '役職COしない',
+      'center',
+      CLASS_GLINK_DEFAULT
+    ));
+  [endscript]
+
+[endmacro]
+
+
+; @param characterId 判定対象のキャラクターID。必須。
+[macro name="j_setFrotuneTellerResultCOToButtonObjects"]
+  ; COするしないボタン表示
+  [iscript]
+    f.buttonObjects = [];
+    f.buttonObjects.push(new Button(
+      'FortuneTellerCO',
+      '占い結果COする',
+      'center',
+      CLASS_GLINK_DEFAULT
+    ));
+    f.buttonObjects.push(new Button(
+      'noCO',
+      '何もしない',
+      'center',
+      CLASS_GLINK_DEFAULT
+    ));
+  [endscript]
+  [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 [endmacro]
 
 
@@ -964,20 +1048,95 @@
 [endmacro]
 
 
-
 [macro name="j_setDchForStatus"]
-  ; メモ：夜の場合は夜時間開始時のオブジェクト（f.characterObjectsHistory[f.day]）のほうがいい？isAlive判定など。どちらの方が自然か検討する。
   [iscript]
     let tmpCharacterList = [];
     for (let i = 0; i < f.participantsIdList.length; i++) {
       let cId = f.participantsIdList[i];
 
-      let bgColor = getBgColorFromCharacterId(cId);
-      let fileName = 'normal.png';
-      if (!f.characterObjects[cId].isAlive) {
-        bgColor = '#000000';
-        // fileName = '退場済用の表情差分';
+      let bgColor = '';
+      let fileName = '';
+
+      if (mp.winnerFaction == null) {
+        // 勝利陣営が未確定（ゲーム進行中）に開いた場合
+        // TODO：夜の場合は夜時間開始時のオブジェクト（f.characterObjectsHistory[f.day]）のほうがいい？isAlive判定など。どちらの方が自然か検討する。
+        bgColor = getBgColorFromCharacterId(cId, f.characterObjects[cId].isAlive);
+        if (f.characterObjects[cId].isAlive) {
+          fileName = f.statusFace[cId].alive;
+        } else {
+          fileName = f.statusFace[cId].lose;
+        }
+      } else {
+        // 勝利陣営が確定済み（ゲーム終了後）に開いた場合
+        bgColor = getBgColorFromCharacterId(cId, f.characterObjects[cId].isAlive);
+        if (mp.winnerFaction == FACTION_DRAW_BY_REVOTE) {
+          fileName = f.statusFace[cId].draw;
+        } else if (f.characterObjects[cId].role.faction == mp.winnerFaction){
+          fileName = f.statusFace[cId].win[mp.winnerFaction];
+        } else {
+          fileName = f.statusFace[cId].lose;
+        }
       }
+
+      tmpCharacterList.push(new DisplayCharactersHorizontallySingle(
+        cId,
+        fileName,
+        bgColor,
+        '',
+        f.characterObjects[cId].name
+      ))
+    }
+
+    f.dch = new DisplayCharactersHorizontally(
+      tmpCharacterList,
+      20, // キャラクター画像の表示位置を中央より右へずらす。leftTextの文字を表示するスペースを作るため
+      -100, // キャラクター画像の表示位置を中央より上へずらす。メニューボタンは非表示にしているので、干渉しない分上げておく
+    );
+  [endscript]
+[endmacro]
+
+
+; 勝敗結果画面を表示する
+; 事前にf.winnerFactionに勝利陣営を格納しておくこと
+[macro name="j_displayGameOverAndWinnerFaction"]
+
+  [fadeoutbgm time="1000"]
+  ; 全ボタンを消去
+  [j_saveFixButton buf="gameover"]
+  [j_clearFixButton]
+  [m_displayGameOver][p]
+
+  ; 勝利陣営を表示、プレイヤー視点での勝敗結果効果音を鳴らす
+  [j_setDchForWinnerFactionCharacters winnerFaction="&f.winnerFaction"]
+  [call storage="jinroSubroutines.ks" target="*displayCharactersHorizontally"]
+  [j_playSePlayerResult winnerFaction="&f.winnerFaction"]
+  [m_displayWinnerFaction winnerFaction="&f.winnerFaction"]
+
+  ; ボタン復元
+  [j_loadFixButton buf="gameover"]
+  詳細はステータス画面を確認してください。[p]
+
+  ; キャラクター画像を表示していたレイヤーを解放するのは呼び元に任せる
+[endmacro]
+
+
+; @param winnerFaction 勝利陣営。必須
+[macro name="j_setDchForWinnerFactionCharacters"]
+  [iscript]
+    let tmpCharacterList = [];
+    for (let i = 0; i < f.participantsIdList.length; i++) {
+      let cId = f.participantsIdList[i];
+
+      let fileName = '';
+      if (mp.winnerFaction == FACTION_DRAW_BY_REVOTE) {
+        fileName = f.statusFace[cId].draw;
+      } else if (f.characterObjects[cId].role.faction == mp.winnerFaction){
+        fileName = f.statusFace[cId].win[mp.winnerFaction];
+      } else {
+        // 敗北陣営のキャラクターは表示しない
+        continue;
+      }
+      let bgColor = getBgColorFromCharacterId(cId);
 
       tmpCharacterList.push(new DisplayCharactersHorizontallySingle(
         cId,
@@ -1000,19 +1159,20 @@
 ; ゲーム終了時のプレイヤーの勝敗結果（または引き分け）によって、再生する効果音を鳴らし分ける
 ; @param winnerFaction 勝利陣営。必須
 [macro name="j_playSePlayerResult"]
-  [if exp="mp.winnerFaction == FACTION_DRAW_BY_REVOTE"]
+  [if exp="isResultDraw(mp.winnerFaction)"]
     ; 引き分け
-    [playse storage="megaten.ogg" loop="false" volume="35" sprite_time="50-20000"]
-  [elsif exp="f.characterObjects[f.playerCharacterId].role.faction == mp.winnerFaction"]
+    [playse storage="megaten.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
+  [elsif exp="isResultPlayersWin(mp.winnerFaction, f.characterObjects[f.playerCharacterId].role.faction)"]
     ; 勝利
-    [playse storage="kirakira4.ogg" loop="false" volume="35" sprite_time="50-20000"]
+    [playse storage="kirakira4.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
   [else]
     ; 敗北
-    [playse storage="chiin1.ogg" loop="false" volume="35" sprite_time="50-20000"]
+    [playse storage="chiin1.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
   [endif]
 [endmacro]
 
 
+; TODO 現状使っていないマクロ。完全に不要になったら消す。
 [macro name="j_displayRoles"]
 役職公開[r]
 ずんだもん：[emb exp="f.characterObjects.zundamon.role.roleName"]、
@@ -1075,14 +1235,14 @@
 
   [if exp="!f.displaingButton.menu && mp.menu"]
     ; ステータス画面→メニュー画面に遷移する用。ステータス画面自体がrole="sleepgame"で遷移する画面なので、そこから遷移するためのボタンにはfix属性やrole="sleepgame"を指定しない。
-    [button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMainFromStatus" x="867" y="23" width="114" height="103" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
+    [button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMainFromStatus" x="868" y="23" width="114" height="103" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
     ; 通常画面→メニュー画面に遷移する用。
-    ;[button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="867" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
+    ;[button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="868" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
     [eval exp="f.displaingButton.menu = mp.menu"]
   [endif]
 
   [if exp="!f.displaingButton.backlog && mp.backlog"]
-    [button graphic="button/button_backlog_normal.png" x="1009" y="23" width="114" height="103" fix="true" role="backlog" name="button_j_fix,button_j_backlog" enterimg="button/button_backlog_hover.png"]
+    [button graphic="button/button_backlog_normal.png" x="1006" y="23" width="114" height="103" fix="true" role="backlog" name="button_j_fix,button_j_backlog" enterimg="button/button_backlog_hover.png"]
     [eval exp="f.displaingButton.backlog = mp.backlog"]
   [endif]
 
@@ -1211,10 +1371,10 @@
 
   [bg storage="black.png" time="1000" wait="true" effect="fadeInDown"]
 
-  [playse storage="shock1.ogg" loop="false" volume="30" sprite_time="50-20000"]
+  [playse storage="shock1.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
   [emb exp="f.day + '日目の朝を迎えました。'"][l][r]
   [if exp="typeof f.bitingObjectLastNight === 'undefined'"]
-    [playse storage="shock1.ogg" loop="false" volume="30" sprite_time="50-20000"]
+    [playse storage="shock1.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
     ; 昨夜の襲撃結果が取得できなかった（＝初日犠牲者のいない1日目昼）場合
     ; TODO 人狼の人数を可変で出力する
     ; FIXME 役職の内訳を表示してもいいかも。
@@ -1222,7 +1382,7 @@
     [j_introductionCharacters]
 
   [elsif exp="f.bitingObjectLastNight.result"]
-    [playse storage="shock1.ogg" loop="false" volume="30" sprite_time="50-20000"]
+    [playse storage="shock1.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
     ; 昨夜の襲撃結果が襲撃成功の場合
     ; キャラを登場させ、メッセージ表示
     [m_changeCharacter characterId="&f.bitingObjectLastNight.targetId" face="normal"]
@@ -1262,6 +1422,44 @@
   恐ろしい夜がやってきました。[p]
 
 [endmacro]
+
+
+
+; @param buf 必須。保存バッファ。任意のキー名を指定すること。
+; @param bool noOverwrite trueの場合、bufが保存済みのキー名と重複した場合に上書きしない。デフォルトはfalse
+[macro name="j_backupJinroObjects"]
+  [iscript]
+    // 初回のみ、バックアップ用オブジェクトを生成
+    if (!('backupJinroObjects' in f)) {
+      f.backupJinroObjects = {};
+    };
+
+    const noOverwrite = ('noOverwrite' in mp) ? mp.noOverwrite : false;
+    // 「上書き防止フラグが立っているかつそのbufが保存済みの場合」以外はバックアップする
+    if (!(noOverwrite && (mp.buf in f.backupJinroObjects))) {
+      f.backupJinroObjects[mp.buf] = {
+        characterObjects: clone(f.characterObjects),
+        commonPerspective: clone(f.commonPerspective)
+      };
+    }
+  [endscript]
+[endmacro]
+
+; @param buf 必須。保存バッファ。任意のキー名を指定すること。保存済みのキー名から復元する。キーが存在しない場合はエラー（未考慮）
+[macro name="j_restoreJinroObjects"]
+  [iscript]
+    f.characterObjects = clone(f.backupJinroObjects[mp.buf].characterObjects);
+    f.commonPerspective = clone(f.backupJinroObjects[mp.buf].commonPerspective);
+  [endscript]
+[endmacro]
+
+; @param buf 必須。保存バッファ。任意のキー名を指定すること。
+[macro name="j_initializeBackupJinroObjects"]
+  [iscript]
+    f.backupJinroObjects = {};
+  [endscript]
+[endmacro]
+
 
 
 

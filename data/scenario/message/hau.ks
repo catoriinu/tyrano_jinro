@@ -1,12 +1,12 @@
 ; 雨晴はうのmessageサブルーチン
 
 ; 呼び方サブルーチン
-; 事前準備：tf.characterIdToCall = キャラクターID
-; このmessageサブルーチンのキャラクターが、tf.characterIdToCallのキャラクターを呼ぶ際の二人称をtf.calledCharacterNameに格納する
+; 事前準備：tf.targetId = キャラクターID
+; このmessageサブルーチンのキャラクターが、tf.targetIdのキャラクターを呼ぶ際の二人称をtf.targetNameに格納する
 ; キャラクターごとの差異をなくすため、自分自身のIDが渡された場合は一人称を入れる
 *changeIdToCallName
   [iscript]
-    tf.calledCharacterName = (function(characterId) {
+    tf.targetName = (function(characterId) {
       const calledCharacterNameObject = {
         [CHARACTER_ID_ZUNDAMON]: 'ずんだもん',
         [CHARACTER_ID_METAN]:    'めたんさん',
@@ -15,7 +15,7 @@
         [CHARACTER_ID_RITSU]:    'リツさん',
       }
       return calledCharacterNameObject[characterId];
-    }(tf.characterIdToCall));
+    }(tf.targetId));
   [endscript]
 [return]
 
@@ -32,7 +32,7 @@
 [add_playselist storage="chara/hau/009_雨晴はう（ノーマル）_潔く認めていただけ….mp3"]
 [playselist]
 
-僕が占った[emb exp="tf.calledCharacterName"]は人狼でした…！[r]
+僕が占った[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼でした…！[r]
 潔く認めていただけると嬉しいのですが…。[p]
 [stopse]
 [return]
@@ -46,7 +46,7 @@
 [add_playselist storage="chara/hau/010_雨晴はう（ノーマル）_こんな結果、未だに….mp3"]
 [playselist]
 
-僕が占った[emb exp="tf.calledCharacterName"]は人狼でした…！[r]
+僕が占った[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼でした…！[r]
 こんな結果、未だに信じられません…！[p]
 [stopse]
 [return]
@@ -60,7 +60,7 @@
 [add_playselist storage="chara/hau/011_雨晴はう（ノーマル）_人狼さん、もう隠れ….mp3"]
 [playselist]
 
-僕が占った[emb exp="tf.calledCharacterName"]は人狼でした…！[r]
+僕が占った[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼でした…！[r]
 人狼さん、もう隠れても無駄ですよ？[p]
 [stopse]
 [return]
@@ -74,7 +74,7 @@
 [add_playselist storage="chara/hau/020_雨晴はう（ノーマル）_みなさん、安心して….mp3"]
 [playselist]
 
-僕が占った[emb exp="tf.calledCharacterName"]は人狼ではありませんでした。[r]
+僕が占った[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではありませんでした。[r]
 みなさん、安心して大丈夫ですよ。[p]
 [stopse]
 [return]
@@ -88,7 +88,7 @@
 [add_playselist storage="chara/hau/021_雨晴はう（ノーマル）_もし人狼ならどうし….mp3"]
 [playselist]
 
-僕が占った[emb exp="tf.calledCharacterName"]は人狼ではありませんでした。[r]
+僕が占った[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではありませんでした。[r]
 もし人狼ならどうしようって思ってました…！[p]
 [stopse]
 [return]
@@ -102,7 +102,7 @@
 [add_playselist storage="chara/hau/022_雨晴はう（ノーマル）_もう怪しまれるよう….mp3"]
 [playselist]
 
-僕が占った[emb exp="tf.calledCharacterName"]は人狼ではありませんでした。[r]
+僕が占った[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではありませんでした。[r]
 もう怪しまれるようなことしないでくださいね。[p]
 [stopse]
 [return]
@@ -116,7 +116,7 @@
 [add_playselist storage="chara/hau/023_雨晴はう（ノーマル）_ああ、間に合いませ….mp3"]
 [playselist]
 
-僕が占った[emb exp="tf.calledCharacterName"]は人狼ではありませんでした。[r]
+僕が占った[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではありませんでした。[r]
 ああ、間に合いませんでしたか…！[p]
 [stopse]
 [return]
@@ -130,7 +130,7 @@
 [add_playselist storage="chara/hau/024_雨晴はう（ノーマル）_僕が力不足なばっか….mp3"]
 [playselist]
 
-僕が占った[emb exp="tf.calledCharacterName"]は人狼ではありませんでした。[r]
+僕が占った[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではありませんでした。[r]
 僕が力不足なばっかりに、すみません…！[p]
 [stopse]
 [return]
@@ -144,7 +144,7 @@
 [add_playselist storage="chara/hau/025_雨晴はう（ノーマル）_…いえ、僕がやった….mp3"]
 [playselist]
 
-僕が占った[emb exp="tf.calledCharacterName"]は人狼ではありませんでした。[r]
+僕が占った[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではありませんでした。[r]
 …いえ、僕がやったんじゃないですからね？[p]
 [stopse]
 [return]
@@ -234,7 +234,7 @@
 [add_playselist storage="chara/hau/034_雨晴はう（ノーマル）_どう考えてもそうと….mp3"]
 [playselist]
 
-人狼は[emb exp="tf.calledCharacterName"]ですよね？[r]
+人狼は[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]ですよね？[r]
 どう考えてもそうとしか思えないのですが…。[p]
 [stopse]
 [return]
@@ -256,7 +256,7 @@
 [endif]
 [playselist]
 
-僕は[emb exp="tf.calledCharacterName"]が怪しいと思います。[r]
+僕は[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]が怪しいと思います。[r]
 か、勘違いだったらすみません…！[p]
 [stopse]
 [return]
@@ -280,7 +280,7 @@
 [add_playselist storage="chara/hau/043_雨晴はう（ノーマル）_少なくとも、僕にと….mp3"]
 [playselist]
 
-[emb exp="tf.calledCharacterName"]は信頼に値する方です。[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は信頼に値する方です。[r]
 少なくとも、僕にとっては確実に。[p]
 [stopse]
 [return]
@@ -302,7 +302,7 @@
 [endif]
 [playselist]
 
-[emb exp="tf.calledCharacterName"]はきっと大丈夫です。[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]はきっと大丈夫です。[r]
 僕はそう信じてます。[p]
 [stopse]
 [return]
@@ -310,10 +310,10 @@
 
 ; シーン：「聞き出す」アクション実行時
 *doAction_ask
-[eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+[eval exp="tf.targetId = tf.selectedCharacterId"]
 [call target="changeIdToCallName"]
 
-えっと、[emb exp="tf.calledCharacterName"]はどう思いますか？[p]
+えっと、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]はどう思いますか？[p]
 [return]
 
 
