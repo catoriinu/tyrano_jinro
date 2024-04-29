@@ -24,6 +24,8 @@
   [call storage="./chara/tsumugi.ks" target="*executeCharaNewAndCharaFace" cond="f.participantsIdList.includes(CHARACTER_ID_TSUMUGI)"]
   [call storage="./chara/hau.ks" target="*executeCharaNewAndCharaFace" cond="f.participantsIdList.includes(CHARACTER_ID_HAU)"]
   [call storage="./chara/ritsu.ks" target="*executeCharaNewAndCharaFace" cond="f.participantsIdList.includes(CHARACTER_ID_RITSU)"]
-  [call storage="./chara/mochiko.ks" target="*executeCharaNewAndCharaFace" cond="f.participantsIdList.includes(CHARACTER_ID_MOCHIKO)"]
+
+  [call storage="./chara/mochiko.ks" target="*executeCharaNewAndCharaFace"]
+;  [call storage="./chara/mochiko.ks" target="*executeCharaNewAndCharaFace" cond="f.participantsIdList.includes(CHARACTER_ID_MOCHIKO)"]
   [call storage="./chara/miko.ks" target="*executeCharaNewAndCharaFace" cond="f.participantsIdList.includes(CHARACTER_ID_MIKO)"]
 [return]

@@ -7,10 +7,30 @@
 [start_keyconfig]
 
 
+[iscript]
+  // TODO 【チュートリアル】
+  sf.tutorialMode = false;
+  if (sf.tutorialMode) {
+    f.doneTutorial = {
+      instruction: false,
+      COPhase: false,
+      discussionPhase: false,
+      votePhase: false,
+      firstDayNightPhase: false,
+      secondDayDayPhase: false,
+      thankStatusButton: false,
+      forceStatusButton: false,
+      statusButton: false,
+      endInstruction: false,
+    }
+  }
+[endscript]
+
+
 [bg storage="living_night_close_nc238328.jpg" time="300"]
 
 ;メッセージウィンドウの設定、文字が表示される領域を調整
-[position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="210" page="fore"]
+[position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="220" page="fore"]
 
 ;メッセージウィンドウの表示
 [layopt layer="message0" visible="true"]
@@ -45,6 +65,10 @@
 ; プレイヤーの役職確認セリフ出力
 [m_noticeRole characterId="&f.playerCharacterId" roleId="&f.characterObjects[f.playerCharacterId].role.roleId"]
 
+; 【チュートリアル】
+[call storage="tutorial.ks" target="instruction" cond="sf.tutorialMode && !f.doneTutorial.instruction"]
+
+
 ; 占い師なら初日占い実行
 [if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_FORTUNE_TELLER"]
 
@@ -71,6 +95,11 @@
 [clearstack]
 [playbgm storage="nc282335.ogg" loop="true" volume="11" restart="false"]
 
+
+; 【チュートリアル】
+[call storage="tutorial.ks" target="secondDayDayPhase" cond="sf.tutorialMode && f.doneTutorial.firstDayNightPhase && !f.doneTutorial.secondDayDayPhase"]
+
+
 [m_changeFrameWithId]
 #
 ～COフェイズ～[p]
@@ -87,6 +116,10 @@
 
 ; NPCにCO候補者がいるフラグを初期化する
 [eval exp="f.notExistCOCandidateNPC = false"]
+
+
+; 【チュートリアル】
+[call storage="tutorial.ks" target="COPhase" cond="sf.tutorialMode && !f.doneTutorial.COPhase"]
 
 *COPhasePlayer
 
@@ -200,6 +233,10 @@
 [m_changeFrameWithId]
 #
 ～議論フェイズ～[p]
+
+; 【チュートリアル】
+[call storage="tutorial.ks" target="discussionPhase" cond="sf.tutorialMode && !f.doneTutorial.discussionPhase"]
+
 *startDiscussionLoop
 
 ; アクション実行上限回数以上の場合は議論フェイズを終了する
@@ -232,6 +269,9 @@
 [m_changeFrameWithId]
 #
 ～投票フェイズ～[p]
+
+; 【チュートリアル】
+[call storage="tutorial.ks" target="votePhase" cond="sf.tutorialMode && !f.doneTutorial.votePhase"]
 
 ; 投票フェイズ
 ; NPCの投票先を決める
@@ -334,13 +374,17 @@
 ; なお、この問題は[clearstack]では解決しなかったが、おまじないとして各フェイズの最初に追加しておく。
 [jump target="*nightPhaseNPC" cond="!f.characterObjectsHistory[f.day][f.playerCharacterId].isAlive"]
 
+
+; 【チュートリアル】
+[call storage="tutorial.ks" target="firstDayNightPhase" cond="sf.tutorialMode && !f.doneTutorial.firstDayNightPhase"]
+
+
 [m_changeFrameWithId]
 #
-プレイヤーの行動です。[p]
 
 ; 村人
 [if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_VILLAGER"]
-  村人なので行動できません。[p]
+  村人なので役職能力を実行できません。[p]
 [endif]
 
 ; 真占い師であれば
@@ -398,7 +442,7 @@
 *nightPhaseNPC
 [m_changeFrameWithId]
 #
-NPCが行動しています……[p]
+NPCが役職能力を実行しています……[p]
 
 ; 占い師（真のみ）の占い実行
 [j_nightPhaseFortuneTellingForNPC]

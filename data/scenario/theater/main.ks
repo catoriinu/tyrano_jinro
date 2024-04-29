@@ -20,7 +20,7 @@
 [loadTheaterList page="&f.theaterListPage"]
 
 ;メッセージウィンドウの設定、文字が表示される領域を調整
-[position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="210" page="fore"]
+[position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="220" page="fore"]
 [position layer="message0" frame="message_window_none.png"]
 
 

@@ -6,7 +6,7 @@
 [bg storage="living_day_nc238325.jpg" time="300"]
 
 ;メッセージウィンドウの設定、文字が表示される領域を調整
-[position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="210" page="fore"]
+[position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="220" page="fore"]
 
 ;メッセージウィンドウの表示
 [layopt layer="message0" visible="true"]
@@ -25,8 +25,7 @@
 
 
 ; バックログボタン表示
-[j_displayFixButton backlog="true"]
-
+;[j_displayFixButton backlog="true"]
 
 [m_changeCharacterFrameName name="ずんだもん"]
 か、勝ったのだ…。[p]
@@ -59,8 +58,7 @@
 それが人狼ゲームの結果だからよ。[r]
 ずんだもんは勝ち、あたしたちは負けた。[p]
 
-つまり、ずんだもんが持っていた不満は、[r]
-あたしたち敗者陣営に解消する責任があるというわけ。[p]
+つまり、ずんだもんが持っていた不満は、あたしたち敗者陣営に解消する責任があるというわけ。[p]
 
 [m_changeCharacterFrameName name="雨晴はう"]
 そういえば僕のぶんのずんだもち、[r]
@@ -81,11 +79,9 @@
 そういうわけじゃないのだ。でも…。[p]
 
 [m_changeCharacterFrameName name="四国めたん"]
-人狼ゲームに負けたはうさんたちはその掟に従って、[r]
-ずんだもんにずんだもちを食べさせてくれると言っているのよ。[p]
+人狼ゲームに負けたはうさんたちはその掟に従って、ずんだもんにずんだもちを食べさせてくれると言っているのよ。[p]
 
-わたくしたちボイボ寮生は寮内でトラブルが起きたら、[r]
-ずっとこうして対処してきたじゃない。[p]
+わたくしたちボイボ寮生は寮内でトラブルが起きたら、ずっとこうして対処してきたじゃない。[p]
 
 [m_changeCharacterFrameName name="ずんだもん"]
 ずっと…？[p]
@@ -93,7 +89,7 @@
 そう…だったのだ…？[r]
 おかしいのは僕の方…なのだ？[p]
 
-で、でも、ずんだもちをもらえても、何も解決してないのだ！[r]
+で、でも、結局何も解決してないのだ！[r]
 僕のずんだもちを食べたのは、誰なのだー！[p]
 
 #

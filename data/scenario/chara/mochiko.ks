@@ -11,7 +11,7 @@
   ; 画面内への登場時の定位置はleft="796" top="143"
   [iscript]
     f.defaultPosition[tf.characterId] = {
-      side: 'left', // デフォルト待機位置
+      side: 'right', // デフォルト待機位置
       left: -1070, // デフォルト座標（left）
       top: 140, // デフォルト座標（top）
       width: 522, // 画像の幅（画面幅1280pxの中での幅）

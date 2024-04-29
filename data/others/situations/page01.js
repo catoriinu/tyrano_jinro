@@ -46,7 +46,7 @@ function getSituationPage01_02() {
 
 function getSituationPage01_03() {
     return new Situation(
-        'ずんだカレーを布教するのだ！',
+        'えだまめカレーを布教するのだ！',
         'theater/p01_03_zundacurry.png',
         '【解放条件】<br>ずんだもん：狂人、春日部つむぎ：人狼でゲームに勝利する',
         null,
@@ -70,7 +70,7 @@ function getSituationPage01_03() {
 
 function getSituationPage01_04() {
     return new Situation(
-        '入れれば入れる程幸せになれるもの',
+        'ニンニクマシマシ幸せマシマシ',
         'theater/p01_04_irereba.png',
         '【解放条件】<br>ずんだもん：占い師、雨晴はう：人狼でゲームに勝利する',
         null,

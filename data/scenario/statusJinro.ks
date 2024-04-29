@@ -142,6 +142,11 @@
 ; キャラクタ－画像を表示
 [j_setDchForStatus winnerFaction="&f.winnerFaction"]
 [call storage="jinroSubroutines.ks" target="*displayCharactersHorizontallyForStatus"]
+
+
+; 【チュートリアル】
+[call storage="tutorial.ks" target="statusButton" cond="sf.tutorialMode && !f.doneTutorial.statusButton"]
+
 [s]
 
 

@@ -716,7 +716,7 @@
 [endmacro]
 
 
-; 議論フェーズのアクションを誰が実行するかを判定し、実行するアクションオブジェクトをf.doActionObjectに入れる
+; 議論フェイズのアクションを誰が実行するかを判定し、実行するアクションオブジェクトをf.doActionObjectに入れる
 [macro name="j_setDoActionObject"]
   [iscript]
     // PCがアクションボタンでアクション指定済みならPC

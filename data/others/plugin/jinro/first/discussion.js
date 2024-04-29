@@ -1117,15 +1117,39 @@ function updateReliabirityForVote(characterObjects, cId, actionObject) {
       );
     }
 
-    if (sameFactionPossivility[actionObject.characterId] > sameFactionPossivility[actionObject.targetId]) {
-      console.log(actionObject.characterId + 'の仲間度の方が高いなら、' + actionObject.targetId + 'への信頼度を下げる');
+    if (sameFactionPossivility[actionObject.characterId] >= sameFactionPossivility[actionObject.targetId]) {
+      console.log('投票した' + actionObject.characterId + 'の仲間度の方が高いなら、' + actionObject.characterId + 'への信頼度を上げ、'+ actionObject.targetId + 'への信頼度を下げる');
       // 投票したキャラの仲間度の方が高いなら
+      // 投票したキャラへの信頼度を上げ、
       // 投票されたキャラへの信頼度を下げる
+      characterObjects[cId].reliability[actionObject.characterId] = calcUpdatedReliability(
+        characterObjects[cId].reliability[actionObject.characterId],
+        impressiveReason,
+        true,
+        0.2
+      );
       characterObjects[cId].reliability[actionObject.targetId] = calcUpdatedReliability(
         characterObjects[cId].reliability[actionObject.targetId],
         impressiveReason,
         false,
-        0.3
+        0.1
+      );
+    } else {
+      console.log('投票された' + actionObject.targetId + 'の仲間度の方が高いなら、' + actionObject.targetId + 'への信頼度を上げ、'+ actionObject.characterId + 'への信頼度を下げる');
+      // 投票されたキャラの仲間度の方が高いなら
+      // 投票されたキャラへの信頼度を上げ、
+      // 投票したキャラへの信頼度を下げる
+      characterObjects[cId].reliability[actionObject.targetId] = calcUpdatedReliability(
+        characterObjects[cId].reliability[actionObject.targetId],
+        impressiveReason,
+        true,
+        0.1
+      );
+      characterObjects[cId].reliability[actionObject.characterId] = calcUpdatedReliability(
+        characterObjects[cId].reliability[actionObject.characterId],
+        impressiveReason,
+        false,
+        0.2
       );
     }
   }
