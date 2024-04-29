@@ -46,7 +46,7 @@
     transform: scale(.96);
 }
 
-/* glinkのname用CSS。colorの要素を上書きしたい要素だけ設定する */
+/* glinkのname用CSS。colorの要素を上書きしたい要素だけ設定する。使う場合は"btn_voivo btn_voivo_selected"のように両方適用すること */
 .btn_voivo_selected {
     background-color: #80da87;
 }
@@ -91,8 +91,8 @@
     border-radius: 20px 20px 20px 20px / 20px 20px 20px 20px;
 }
 
-
-input {
+/* ラジオボタン要素は非表示にする */
+input[type="radio"] {
     display: none;
 }
 input:checked + label {

@@ -18,10 +18,8 @@
 [eval exp="tf.buttonColor = CLASS_GLINK_DEFAULT"]
 [glink color="&tf.buttonColor" size="30" width="300" x="488" y="480" name="buttonhover" text="プレイ" target="*gamestart"]
 [glink color="&tf.buttonColor" size="30" width="300" x="488" y="590" name="buttonhover" text="カスタムプレイ" target="*selectStage"]
-; TODO 作成するまでコメントアウト
 [glink color="&tf.buttonColor" size="30" width="300" x="158" y="540" name="buttonhover" text="シアター" target="*theater"]
-; TODO 戻るボタンでUncaught TypeError: Cannot read property 'caller' of undefinedになる。使えるようにするまでコメントアウト
-;[glink color="&tf.buttonColor" size="26" width="300" x="488" y="630" name="&tf.glink_name" text="コンフィグ"  storage="config.ks" ]
+[glink color="&tf.buttonColor" size="30" width="300" x="818" y="540" name="buttonhover" text="コンフィグ" target="*config"]
 
 [glink color="black" size="15" x="1152" y="684" text="開発者用" name="buttonhover" target="*developerSettings"]
 
@@ -32,6 +30,9 @@
       // glinkのenterse属性だと細かい設定ができないため独自に設定（特にbufがデフォルトだと他で鳴っている効果音を打ち消してしまう）
       TYRANO.kag.ftag.startTag("playse",{storage:"botan_b34.ogg",volume:40,buf:1});
     },
+    function(e) {
+      // ボタンが離れても何もしない。第二引数を明記しておかないと、離れたときも乗ったときと同じ処理が発生する
+    }
   );
 [endscript]
 [s]
@@ -66,5 +67,10 @@
 
 *theater
 [freeimage layer="1"]
-;シアターへジャンプする
+; シアターへジャンプする
 [jump storage="theater/main.ks"]
+
+*config
+[freeimage layer="1"]
+; コンフィグ画面へジャンプする
+[jump storage="configJinro.ks"]

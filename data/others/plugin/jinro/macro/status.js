@@ -3,9 +3,10 @@
  * @param {*} characterObjects TODO 夜時間ならここで夜オブジェクトを渡してくること
  * @param {*} characterId 
  * @param {*} boxWidth 
+ * @param {boolean} shouldOpenRoleInfo
  * @returns $infoContainer
  */
-function createInfoContainer(characterObjects, characterId, boxWidth) {
+function createInfoContainer(characterObjects, characterId, boxWidth, shouldOpenRoleInfo) {
 
   // キャラ情報コンテナオブジェクト生成
   const $infoContainer = $('<div>').attr({
@@ -15,7 +16,7 @@ function createInfoContainer(characterObjects, characterId, boxWidth) {
   });
 
   // 役職情報、死因情報
-  $infoContainer.append(createParticipantsInfoBoxes(characterObjects, characterId));
+  $infoContainer.append(createParticipantsInfoBoxes(characterObjects, characterId, shouldOpenRoleInfo));
 
   // 投票情報
   $infoContainer.append(createVoteHistoryInfoBoxes(characterObjects, characterId));
@@ -31,18 +32,19 @@ function createInfoContainer(characterObjects, characterId, boxWidth) {
  * 「住民一覧」として表示する情報ボックスを一括生成する
  * @param {*} characterObjects 
  * @param {*} characterId 
+ * @param {boolean} shouldOpenRoleInfo
  * @returns 
  */
-function createParticipantsInfoBoxes(characterObjects, characterId) {
+function createParticipantsInfoBoxes(characterObjects, characterId, shouldOpenRoleInfo) {
 
   // 役職情報と死因情報の2行
   const totalLineNumber = 2;
   const characterObject = characterObjects[characterId];
 
   // 役職情報表示
-  // PCは、自分の役職を常時表示する
-  // NPCは、CO済み役職がある場合に表示する（未COでも要素は生成し、スペースを確保する）
-  const $roleInfoBox = createRoleInfoBox(characterObject, totalLineNumber);
+  // 公開してよい状況なら、役職を常時表示する
+  // それ以外なら、CO済み役職がある場合に表示する（未COでも要素は生成し、スペースを確保する）
+  const $roleInfoBox = createRoleInfoBox(characterObject, totalLineNumber, shouldOpenRoleInfo);
 
   // 死因情報表示
   // TODO 夜時間はどうする？
@@ -56,18 +58,19 @@ function createParticipantsInfoBoxes(characterObjects, characterId) {
  * 役職情報ボックスを生成する
  * @param {*} characterObject 
  * @param {*} totalLineNumber 
+ * @param {boolean} shouldOpenRoleInfo
  * @returns 
  */
-function createRoleInfoBox(characterObject, totalLineNumber) {
+function createRoleInfoBox(characterObject, totalLineNumber, shouldOpenRoleInfo) {
 
   const $roleInfoBox = $('<div>').attr({
     'class': 'infoBox roleInfoBox participantsInfo'
   }).css(
-    getCssObjectForRoleInfoBox(characterObject, totalLineNumber)
+    getCssObjectForRoleInfoBox(characterObject, totalLineNumber, shouldOpenRoleInfo)
   );
 
-  // プレイヤーの場合
-  if (characterObject.isPlayer) {
+  // 役職を公開してよい場合
+  if (shouldOpenRoleInfo) {
     // 役職情報ボックスの中に自役職の画像を入れる
     $roleInfoBox.append(getRoleIconImgObject(characterObject.role.roleId));
   }
@@ -81,7 +84,6 @@ function createRoleInfoBox(characterObject, totalLineNumber) {
     // 役職情報ボックスの中にフキダシを入れる
     $roleInfoBox.append($balloonTop);
   }
-  // TODO 共通視点で役職確定済みなら、その役職の画像を入れる
 
   return $roleInfoBox;
 }
@@ -91,14 +93,15 @@ function createRoleInfoBox(characterObject, totalLineNumber) {
  * 役職情報ボックス用のCSSオブジェクトを取得する
  * @param {*} characterObject 
  * @param {*} totalLineNumber 
+ * @param {boolean} shouldOpenRoleInfo
  * @returns 
  */
-function getCssObjectForRoleInfoBox(characterObject, totalLineNumber) {
+function getCssObjectForRoleInfoBox(characterObject, totalLineNumber, shouldOpenRoleInfo) {
 
   // デフォルトは空文字（Boxに色を付けない）
   let color = '';
-  if (characterObject.isPlayer) {
-    // プレイヤーの場合、役職COしているかに関わらず、自分の役職の陣営の色とする
+  if (shouldOpenRoleInfo) {
+    // 役職を公開してよい場合、役職COしているかに関わらず、自分の役職の陣営の色とする
     if (ROLE_ID_TO_FACTION[characterObject.role.roleId] == FACTION_WEREWOLVES) {
       color = 'black';
     } else {
@@ -106,16 +109,11 @@ function getCssObjectForRoleInfoBox(characterObject, totalLineNumber) {
     }
 
   } else {
-    // NPCの場合
+    // 役職を公開しない場合
     if (characterObject.CORoleId) {
-      // 今のところ村役職しかCOしないので、白のまま
-      color = 'white';
-      if (characterObject.isContradicted) {
-        // ただし破綻済みの場合は黒にする（TODO ことができるようにしておくが、プレイヤーに有利になりすぎるので有効化しない）
-        // color = 'black';
-      }
+      // CO済みなら灰色にする
+      color = 'gray';
     }
-    // TODO 共通視点で役職確定済みなら、その役職の色を入れる
   }
 
   const cssObject = Object.assign(
@@ -124,6 +122,39 @@ function getCssObjectForRoleInfoBox(characterObject, totalLineNumber) {
   );
 
   return cssObject;
+}
+
+
+/**
+ * 役職を公開してよい状況かを判定する
+ * @param {*} characterObjects 
+ * @param {*} characterId 
+ * @param {*} winnerFaction 
+ * @param {*} commonPerspective 
+ * @returns {boolean} true: 公開してよい | false: 公開しない
+ */
+function isShouldOpenRoleInfo(characterObjects, characterId, winnerFaction, commonPerspective = {}) {
+  // 開発者モードなら公開する？
+
+  // プレイヤーである場合は公開する
+  if (characterObjects[characterId].isPlayer) {
+    return true;
+  }
+
+  // 勝利陣営が確定済み（ゲームが終了している）場合は公開する
+  if (winnerFaction != null) {
+    return true;
+  }
+
+  // 共通視点で、そのキャラの役職が1つに確定済みの場合は公開する
+  // …ことができるようにしておくが、プレイヤーが正解にたどり着く前に公開する可能性があるので無効化しておく。ヒントモードならありかもしれない
+  /*
+  const possibleRoleList = Object.keys(commonPerspective[characterId]).filter(rId => commonPerspective[characterId][rId] !== 0);
+  if (possibleRoleList.length === 1) {
+    return true;
+  }
+  */
+  return false;
 }
 
 
@@ -150,20 +181,35 @@ function getCssHeightForInfoLine(totalLineNumber) {
 
 
 /**
- * 文字色と背景色のセットを、オブジェクト形式で返却する
- * @param {*} color 
+ * 背景色と文字色のセットを、オブジェクト形式で返却する
+ * @param {string} bgColor 背景色
+ * @param {string} letterColor 文字色。ただし、文字色そのものを指定するのではないことに注意。指定しない場合はbgColorが入る（つまり背景色に適した色になる）
  * @returns 
  */
-function getCssBGColor(color) {
+function getCssBGColor(bgColor, letterColor = bgColor) {
   const bgColorObject = {}
-  switch (color) {
+  // 背景色
+  switch (bgColor) {
     case 'black':
-      bgColorObject['background-color'] = 'rgba(36, 36, 36, 0.9)'; // #242424
-      bgColorObject['color'] = 'rgba(247, 247, 247, 0.9)'; // #f7f7f7
+      bgColorObject['background-color'] = 'rgba(36, 36, 36, 0.9)'; // #242424 黒
       break;
     case 'white':
-      bgColorObject['background-color'] = 'rgba(247, 247, 247, 0.9)'; // #f7f7f7
-      bgColorObject['color'] = 'rgba(36, 36, 36, 0.9)'; // #242424
+      bgColorObject['background-color'] = 'rgba(247, 247, 247, 0.9)'; // #f7f7f7 白
+      break;
+    case 'gray':
+      bgColorObject['background-color'] = 'rgba(173, 173, 173, 0.9)'; // #adadad 灰
+      break;
+  }
+  // （その背景色に適した）文字色
+  switch (letterColor) {
+    case 'black':
+      bgColorObject['color'] = 'rgba(247, 247, 247, 0.9)'; // #f7f7f7 白
+      break;
+    case 'white':
+      bgColorObject['color'] = 'rgba(36, 36, 36, 0.9)'; // #242424 黒
+      break;
+    case 'gray':
+      bgColorObject['color'] = 'rgba(36, 36, 36, 0.9)'; // #242424 黒
       break;
   }
   return bgColorObject;
@@ -343,7 +389,9 @@ function createRoleHistoryInfoBoxes(characterObjects, targetId, roleId) {
   for (let i = 0; i < COCharacterList.length; i++) {
     const roleCharacterId = COCharacterList[i];
     const roleCharacterObject = characterObjects[roleCharacterId];
-    const $roleHistoryInfoBox = createRoleHistoryInfoBox(roleCharacterObject, targetId, roleId, COCharacterList.length);
+    // （アクション対象のキャラではなく、）アクション実行者のキャラの役職情報を公開してもよいかのフラグ
+    const shouldOpenRoleInfo = isShouldOpenRoleInfo(characterObjects, roleCharacterId, TYRANO.kag.stat.f.winnerFaction); // FIXME status.jsはティラノ変数を参照しない思想なので、winnerFactionも直したい。引数で渡してくるのではなくもっとよいリファクタを望む
+    const $roleHistoryInfoBox = createRoleHistoryInfoBox(roleCharacterObject, targetId, roleId, COCharacterList.length, shouldOpenRoleInfo);
     roleHistoryInfoBoxes.push($roleHistoryInfoBox);
   }
 
@@ -357,9 +405,10 @@ function createRoleHistoryInfoBoxes(characterObjects, targetId, roleId) {
  * @param {*} targetId 
  * @param {*} roleId 
  * @param {*} totalLineNumber 
+ * @param {boolean} shouldOpenRoleInfo
  * @returns 
  */
-function createRoleHistoryInfoBox(roleCharacterObject, targetId, roleId, totalLineNumber) {
+function createRoleHistoryInfoBox(roleCharacterObject, targetId, roleId, totalLineNumber, shouldOpenRoleInfo) {
 
   const $roleHistoryInfoBox = $('<div>').attr({
     'class': 'infoBox roleHistoryInfoBox ' + roleId + 'HistoryInfo'
@@ -374,7 +423,17 @@ function createRoleHistoryInfoBox(roleCharacterObject, targetId, roleId, totalLi
     // そのアクションが公開情報である、または（未公開情報であっても）その役職のキャラがプレイヤーなら表示対象とする
     if (actionObject.isPublic || roleCharacterObject.isPlayer) {
       $roleHistoryInfoBox.append(getDetailForRoleHistoryInfoBox(roleCharacterObject, day, actionObject));
-      Object.assign(cssObject, getCssBGColor('white'));
+
+      let bgColor = 'gray';
+      if (shouldOpenRoleInfo) {
+        // 役職を公開してよい場合、そのキャラの役職が本当にその役職であるなら背景色は白とする
+        if (roleCharacterObject.role.roleId == roleId) {
+          bgColor = 'white';
+        } else {
+          bgColor = 'black';
+        }
+      }
+      Object.assign(cssObject, getCssBGColor(bgColor, 'white')); // 実際に文字の背景色となるフキダシは白なので、boxの背景色に関わらず文字色は黒にする。
     }
   }
 

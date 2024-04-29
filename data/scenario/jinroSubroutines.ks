@@ -289,8 +289,10 @@ MEMO 最終的には以下の構成のHTMLが生成される。
     // キャラ画像のimg要素をboxの子要素として追加する
     $characterImg.appendTo($statusBox);
 
+    // 役職を公開してよいかフラグを取得
+    const shouldOpenRoleInfo = isShouldOpenRoleInfo(f.characterObjects, tf.characterId, f.winnerFaction, f.commonPerspective);
     // キャラ情報コンテナ取得。中身の情報はメソッド内で格納済み
-    const $infoContainer = createInfoContainer(f.characterObjects, tf.characterId, tf.boxWidth);
+    const $infoContainer = createInfoContainer(f.characterObjects, tf.characterId, tf.boxWidth, shouldOpenRoleInfo);
     $infoContainer.appendTo($statusBox);
 
     // 1キャラ分のboxを.dchStatusContainerの子要素として追加する
@@ -311,4 +313,74 @@ MEMO 最終的には以下の構成のHTMLが生成される。
   （以下キャラクター数分のboxが続く）
 </div>
 */
+[return]
+
+
+*COPhasePlayer
+
+; PCがCOしたいかを確認する必要があるか。必要がなければジャンプ
+[j_setIsNeedToAskPCWantToCO]
+[jump target="*COPhasePlayer_end" cond="!tf.isNeedToAskPCWantToCO"]
+
+  ; プレイヤーのCO役職IDを格納しておく。未COなら空文字
+  [eval exp="f.playerCORoleId = f.characterObjects[f.playerCharacterId].CORoleId"]
+  ; 役職結果COをする役職ID格納用変数を初期化しておく
+  [eval exp="f.resultCORoleId = ''"]
+
+  ; TODO メッセージを出すか、出すならその出し方を検討する
+  [j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
+  [m_askFortuneTellerCO canCOFortuneTellerStatus="&f.canCOFortuneTellerStatus"]
+
+  [if exp="f.playerCORoleId !== ''"]
+    ; プレイヤーのCO役職が占い師の場合
+    [if exp="f.playerCORoleId === ROLE_ID_FORTUNE_TELLER"]
+
+      [if exp="f.characterObjects[f.playerCharacterId].role.roleId === ROLE_ID_FORTUNE_TELLER"]
+        ; 占い師
+        ; 占い結果COする・しないボタンを表示する
+        [j_setFrotuneTellerResultCOToButtonObjects]
+        [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'noCO'"]
+
+      [elsif exp="f.characterObjects[f.playerCharacterId].role.roleId !== ROLE_ID_FORTUNE_TELLER"]
+        ; 騙り占い師
+        ; 騙り占いサブルーチン実行。前日分のみ騙り占い結果を入れる
+        ; TODO 「結果COしない」ボタンを追加する
+        [eval exp="f.fakeFortuneTellingStartDay = f.day - 1"]
+        [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingCOMultipleDaysForPC"]
+        [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'noCO'"]
+      [endif]
+
+    [endif]
+
+  ; MEMO:「[if] PCが未COの場合 [else] PCがCO済みの場合 [endif]」の順に入れ替えると「[if]文内のスクリプトが多すぎます」エラーが出る。
+  ; 今後このあたりの行数や処理数を増やすときは要注意
+  [else]
+    ; PCが未COの場合
+    ; 役職COボタンを表示する
+    [call storage="./askCORole.ks" target="*startAskCORole"]
+ 
+    ; 役職COする場合（ここに来るルートでresultCORoleIdに役職IDが格納済みなら、PCが未COかつ役職COしたいと確定する）
+    [if exp="f.resultCORoleId !== ''"]
+      ; キャラクターオブジェクトにCOした役職IDを格納する
+      [eval exp="f.characterObjects[f.playerCharacterId].CORoleId = f.playerCORoleId"]
+      ; 共通および各キャラの視点オブジェクトを更新する
+      [j_cloneRolePerspectiveForCO characterId="&f.characterObjects[f.playerCharacterId].characterId" CORoleId="&f.playerCORoleId"]
+      ; TODO 「その役職をCOできない役職」をゼロ更新する。今は占い師COしかないので村人で決め打ちしている
+      [eval exp="tf.tmpZeroRoleIds = [ROLE_ID_VILLAGER]"]
+      [j_updateCommonPerspective characterId="&f.characterObjects[f.playerCharacterId].characterId" zeroRoleIds="&tf.tmpZeroRoleIds"]
+    [endif]
+    
+  [endif]
+
+  ; 占い師の役職結果CO（「役職COしない」「結果COしない」を選んだときはCOしない）
+  [if exp="f.resultCORoleId === ROLE_ID_FORTUNE_TELLER"]
+    ; 占いカットイン発生
+    [j_cutin1]
+
+    ; 指定した占い師のCOを実行する（メッセージは当日分のみ表示）
+    [j_COFortuneTelling fortuneTellerId="&f.playerCharacterId"]
+  [endif]
+  ; NOTE:役職が増えたときはここにelsifで増やしていく
+
+*COPhasePlayer_end
 [return]

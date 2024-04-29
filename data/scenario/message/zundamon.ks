@@ -1,12 +1,12 @@
 ; ずんだもんのmessageサブルーチン
 
 ; 呼び方サブルーチン
-; 事前準備：tf.characterIdToCall = キャラクターID
-; このmessageサブルーチンのキャラクターが、tf.characterIdToCallのキャラクターを呼ぶ際の二人称をtf.calledCharacterNameに格納する
+; 事前準備：tf.targetId = キャラクターID
+; このmessageサブルーチンのキャラクターが、tf.targetIdのキャラクターを呼ぶ際の二人称をtf.targetNameに格納する
 ; キャラクターごとの差異をなくすため、自分自身のIDが渡された場合は一人称を入れる
 *changeIdToCallName
   [iscript]
-    tf.calledCharacterName = (function(characterId) {
+    tf.targetName = (function(characterId) {
       const calledCharacterNameObject = {
         [CHARACTER_ID_ZUNDAMON]: '僕',
         [CHARACTER_ID_METAN]:    'めたん',
@@ -15,7 +15,7 @@
         [CHARACTER_ID_RITSU]:    'リツ',
       }
       return calledCharacterNameObject[characterId];
-    }(tf.characterIdToCall));
+    }(tf.targetId));
   [endscript]
 [return]
 
@@ -88,7 +88,7 @@
 [playse storage="chara/zundamon/008_ずんだもん（ノーマル）_発見なのだ！Xが人….mp3"]
 [endif]
 
-発見なのだ！[emb exp="tf.calledCharacterName"]が人狼だったのだ！[p]
+発見なのだ！[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]が人狼だったのだ！[p]
 [stopse]
 [return]
 
@@ -109,7 +109,7 @@
 [playse storage="chara/zundamon/012_ずんだもん（ノーマル）_Xは人狼じゃなかっ….mp3"]
 [endif]
 
-[emb exp="tf.calledCharacterName"]は人狼じゃなかったのだ。[p]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったのだ。[p]
 [stopse]
 [return]
 
@@ -126,7 +126,7 @@
 [add_playselist storage="chara/zundamon/021_ずんだもん（ノーマル）_力を合わせてやっつ….mp3"]
 [playselist]
 
-みんな、[emb exp="tf.calledCharacterName"]は人狼だったのだ！[r]
+みんな、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼だったのだ！[r]
 力を合わせてやっつけるのだ！[p]
 [stopse]
 [return]
@@ -140,7 +140,7 @@
 [add_playselist storage="chara/zundamon/022_ずんだもん（ノーマル）_僕も今まで騙されて….mp3"]
 [playselist]
 
-みんな、[emb exp="tf.calledCharacterName"]は人狼だったのだ。[r]
+みんな、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼だったのだ。[r]
 僕も今まで騙されてたのだ…。[p]
 [stopse]
 [return]
@@ -154,7 +154,7 @@
 [add_playselist storage="chara/zundamon/023_ずんだもん（ノーマル）_ふふん！僕にはお見….mp3"]
 [playselist]
 
-みんな、[emb exp="tf.calledCharacterName"]は人狼だったのだ！[r]
+みんな、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼だったのだ！[r]
 ふふん！僕にはお見通しなのだ！[p]
 [stopse]
 [return]
@@ -168,7 +168,7 @@
 [add_playselist storage="chara/zundamon/032_ずんだもん（ノーマル）_つまり人狼は他にい….mp3"]
 [playselist]
 
-みんな、[emb exp="tf.calledCharacterName"]は人狼じゃなかったのだ。[r]
+みんな、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったのだ。[r]
 つまり人狼は他にいるってことなのだ。[p]
 [stopse]
 [return]
@@ -182,7 +182,7 @@
 [add_playselist storage="chara/zundamon/033_ずんだもん（ノーマル）_無実が証明できてよ….mp3"]
 [playselist]
 
-みんな、[emb exp="tf.calledCharacterName"]は人狼じゃなかったのだ！[r]
+みんな、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったのだ！[r]
 無実が証明できてよかったのだ！[p]
 [stopse]
 [return]
@@ -196,7 +196,7 @@
 [add_playselist storage="chara/zundamon/034_ずんだもん（ノーマル）_自分の占い結果が信….mp3"]
 [playselist]
 
-みんな、[emb exp="tf.calledCharacterName"]は人狼じゃなかったのだ。[r]
+みんな、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったのだ。[r]
 自分の占い結果が信じられないのだ。[p]
 [stopse]
 [return]
@@ -210,7 +210,7 @@
 [add_playselist storage="chara/zundamon/035_ずんだもん（ノーマル）_けど、残念ながら手….mp3"]
 [playselist]
 
-みんな、[emb exp="tf.calledCharacterName"]は人狼じゃなかったのだ。[r]
+みんな、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったのだ。[r]
 けど、残念ながら手遅れだったのだ。[p]
 [stopse]
 [return]
@@ -224,7 +224,7 @@
 [add_playselist storage="chara/zundamon/036_ずんだもん（ノーマル）_ひどいのだ…誰がこ….mp3"]
 [playselist]
 
-みんな、[emb exp="tf.calledCharacterName"]は人狼じゃなかったのだ。[r]
+みんな、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったのだ。[r]
 ひどいのだ…誰がこんなことをしたのだ…！[p]
 [stopse]
 [return]
@@ -238,7 +238,7 @@
 [add_playselist storage="chara/zundamon/037_ずんだもん（ノーマル）_これじゃあ占った意….mp3"]
 [playselist]
 
-みんな、[emb exp="tf.calledCharacterName"]は人狼じゃなかったのだ。[r]
+みんな、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったのだ。[r]
 これじゃあ占った意味がないのだ。[p]
 [stopse]
 [return]
@@ -327,7 +327,7 @@
 [endif]
 
 僕のずんだ色の脳みそが告げているのだ。[r]
-[emb exp="tf.calledCharacterName"]は人狼に違いないのだ！[p]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼に違いないのだ！[p]
 [stopse]
 [return]
 
@@ -347,7 +347,7 @@
 [playse storage="chara/zundamon/052_ずんだもん（ノーマル）_もしかしてXが人狼….mp3"]
 [endif]
 
-もしかして[emb exp="tf.calledCharacterName"]が人狼なのだ……？[r]
+もしかして[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]が人狼なのだ……？[r]
 そんな気がするのだ。[p]
 [stopse]
 [return]
@@ -369,7 +369,7 @@
 [playse storage="chara/zundamon/072_ずんだもん（ノーマル）_Xは絶対絶対人狼じ….mp3"]
 [endif]
 
-[emb exp="tf.calledCharacterName"]は絶対絶対人狼じゃないのだ。[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は絶対絶対人狼じゃないのだ。[r]
 僕でも分かるのだ！[p]
 [stopse]
 [return]
@@ -390,7 +390,7 @@
 [playse storage="chara/zundamon/068_ずんだもん（ノーマル）_僕はXを信じてるの….mp3"]
 [endif]
 
-僕は[emb exp="tf.calledCharacterName"]を信じてるのだ。[r]
+僕は[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]を信じてるのだ。[r]
 きっと人狼じゃないのだ！[p]
 [stopse]
 [return]
@@ -398,10 +398,10 @@
 
 ; シーン：「聞き出す」アクション実行時
 *doAction_ask
-[eval exp="tf.characterIdToCall = tf.selectedCharacterId"]
+[eval exp="tf.targetId = tf.selectedCharacterId"]
 [call target="changeIdToCallName"]
 
-[emb exp="tf.calledCharacterName"]にちょっと質問なのだ。[r]
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]にちょっと質問なのだ。[r]
 今の状況をどう思うのだ？[p]
 [return]
 

@@ -39,7 +39,7 @@
 
 
 ; 以下は、通常画面からメニュー画面に遷移する場合のシナリオ
-; [button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="867" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
+; [button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="868" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
 ; で呼び出すこと
 
 *menuJinroMain
