@@ -58,8 +58,7 @@ if (!('config' in sf)) {
 }
 tf.tmp_bgm_vol = sf.config.mute_bgm ? "0" : String(sf.config.current_bgm_vol);
 tf.tmp_se_vol = sf.config.mute_se ? "0" : String(sf.config.current_se_vol);
-// TODO sf.config.tmp_voice_volではなくsf.config.current_voice_volでは？
-tf.tmp_voice_vol = sf.config.mute_voice ? "0" : String(sf.config.tmp_voice_vol);
+tf.tmp_voice_vol = sf.config.mute_voice ? "0" : String(sf.config.current_voice_vol);
 tf.tmp_ch_speed = String(sf.config.current_ch_speed);
 [endscript]
 
