@@ -1,6 +1,6 @@
 *start
 ; 利用する変数の初期化
-[eval exp="f.detailSituation = f.theaterList[f.theaterDetailNum]"]
+[eval exp="f.displayEpisode = f.episodeList[f.displayEpisodeId]"]
 [eval exp="tf.buttonColor = CLASS_GLINK_DEFAULT"]
 
 [layopt layer="message0" visible="false"]
@@ -9,8 +9,8 @@
 [image storage="theater/detail_rectangle.png" layer="1" page="back" name="detail" x="158.5" y="38"]
 [kanim name="detail" keyframe="open_detail" time="150" easing="ease-out"]
 
-[image storage="&f.detailSituation.thumbnail" layer="1" page="back" left="424" top="80" height="243" name="thumbnail"]
-[ptext layer="1" page="back" text="&f.detailSituation.title" face="MPLUSRounded" size="36" x="180" y="330" width="920" align="center"]
+[image storage="&f.displayEpisode.thumbnail" layer="1" page="back" left="424" top="80" height="243" name="thumbnail"]
+[ptext layer="1" page="back" text="&f.displayEpisode.title" face="MPLUSRounded" size="36" x="180" y="330" width="920" align="center"]
 
 ; ✕ボタンまたは枠外（左右上下）のクリックで一覧に戻る
 [glink color="&tf.buttonColor" size="35" width="70" x="1005" y="85" text="✕" target="*returnMain"]
@@ -22,24 +22,29 @@
 ; 「導入編を見る」ボタン
 [glink color="&tf.buttonColor" size="26" width="300" x="488" y="395" text="導入編を見る" target="*startIntro"]
 
-; 「このシチュエーションでプレイする」ボタンまたはプレイできない理由
-[if exp="f.detailSituation.cantSituationPlay === null"]
+; 「このシチュエーションでプレイする」ボタンまたはプレイできない理由を表示
+[if exp="f.displayEpisode.cantPlayReason === null"]
   [glink color="&tf.buttonColor" size="26" width="450" x="412.9" y="480" text="このシチュエーションでプレイする" target="*startSituationPlay"]
 [else]
-  [ptext layer="1" page="back" text="&f.detailSituation.cantSituationPlay" face="MPLUSRounded" size="30" x="180" y="480" width="920" align="center"]
+  [ptext layer="1" page="back" text="&f.displayEpisode.cantPlayReason" face="MPLUSRounded" size="30" x="180" y="480" width="920" align="center"]
 [endif]
 
+
 ; 「解決編を見る」ボタンまたは解放条件
-;[if exp="isOutroProgressLocked(sf.theater[f.theaterListPage][f.theaterDetailNum])"]
-; TODO こちらはテスト用。実際には↑を有効化すること
-[if exp="isOutroProgressLocked(f.detailSituation)"]
+[t_isProgressLocked pageId="&f.displayPageId" episodeId="&f.displayEpisodeId" chapterId="c02"]
+[if exp="tf.isProgressLocked"]
   ; 解決編がロック中の場合、解放条件を表示する
-  [ptext layer="1" page="back" text="&f.detailSituation.unlockCondition" face="MPLUSRounded" size="30" x="180" y="555" width="920" align="center"]
-[elsif exp="isIntroProgressUnlocked(f.detailSituation)"]
-  ; 解決編の解放条件は達成済みだが導入編を未視聴の場合、誘導テキストを表示する
-  [ptext layer="1" page="back" text="解決編は導入編を見ると解放されます" face="MPLUSRounded" size="30" x="180" y="555" width="920" align="center"]
+  [ptext layer="1" page="back" text="&f.displayEpisode.unlockCondition" face="MPLUSRounded" size="30" x="180" y="555" width="920" align="center"]
 [else]
-  [glink color="&tf.buttonColor" size="26" width="300" x="488" y="565" text="解決編を見る" target="*startOutro"]
+
+  [t_isProgressUnlocked pageId="&f.displayPageId" episodeId="&f.displayEpisodeId" chapterId="c01"]
+  [if exp="tf.isProgressUnlocked"]
+    ; 解決編の解放条件は達成済みだが導入編を未視聴の場合、誘導テキストを表示する
+    [ptext layer="1" page="back" text="解決編は導入編を見ると解放されます" face="MPLUSRounded" size="30" x="180" y="555" width="920" align="center"]
+  [else]
+    ; 解決編を見てよい状態なら「解決編を見る」ボタンを表示する
+    [glink color="&tf.buttonColor" size="26" width="300" x="488" y="565" text="解決編を見る" target="*startOutro"]
+  [endif]
 [endif]
 
 [trans layer="1" time="0"]
@@ -55,7 +60,7 @@
 [endnowait]
 [layopt layer="message0" visible="true"]
 
-[jump storage="&f.detailSituation.introStorage"]
+[jump storage="&f.displayEpisode.introChapter.storage"]
 [s]
 
 
@@ -68,7 +73,7 @@
 [endnowait]
 [layopt layer="message0" visible="true"]
 
-[jump storage="&f.detailSituation.outroStorage"]
+[jump storage="&f.displayEpisode.outroChapter.storage"]
 [s]
 
 
@@ -82,7 +87,7 @@
 [layopt layer="message0" visible="true"]
 
 [t_registerSituationParticipants]
-[j_prepareJinroGame participantsNumber="&f.detailSituation.situationParticipantsNumber" preload="true"]
+[j_prepareJinroGame participantsNumber="&f.displayEpisode.situation.participantsNumber" preload="true"]
 
 [jump storage="playJinro.ks"]
 [s]
@@ -93,5 +98,5 @@
 [freeimage layer="1" page="fore"]
 [freeimage layer="1" page="back"]
 [layopt layer="message0" visible="true"]
-[jump storage="theater/main.ks" target="*hideDetail"]
+[jump storage="theater/main.ks" target="*hideEpisodeWindow"]
 [s]

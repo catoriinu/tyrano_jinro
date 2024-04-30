@@ -22,6 +22,8 @@
 [glink color="&tf.buttonColor" size="30" width="300" x="818" y="540" name="buttonhover" text="コンフィグ" target="*config"]
 
 [glink color="black" size="15" x="1152" y="684" text="開発者用" name="buttonhover" target="*developerSettings"]
+[glink color="black" size="15" x="1136" y="642" text="進捗初期化" name="buttonhover" target="*resetProgress"]
+
 
 [iscript]
   // ボタンにカーソルが乗ったときの処理
@@ -74,3 +76,9 @@
 [freeimage layer="1"]
 ; コンフィグ画面へジャンプする
 [jump storage="configJinro.ks"]
+
+*resetProgress
+[clearvar exp="sf.theaterProgress"]
+[ptext layer="1" x="310" y="100" text="シアター進捗の初期化完了 再起動してください" color="black" size="60"]
+[layopt layer="1" visible="true"]
+[s]

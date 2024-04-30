@@ -1,31 +1,35 @@
-[cm  ]
-[clearfix]
-[start_keyconfig]
+; タイトル：誰がずんだもちを食べたのだ（導入編）
 
+; ここからチャプターごとに設定が必要な項目
+[iscript]
+// このチャプターを表す通し番号
+f.pageId    = 'p01';
+f.episodeId = 'e01';
+f.chapterId = 'c01';
 
-[bg storage="living_day_nc238325.jpg" time="300"]
+// 出演キャラリスト
+tf.actorsList = [
+    CHARACTER_ID_ZUNDAMON,
+    CHARACTER_ID_METAN,
+    CHARACTER_ID_TSUMUGI,
+    CHARACTER_ID_HAU,
+    CHARACTER_ID_RITSU,
+];
 
-;メッセージウィンドウの設定、文字が表示される領域を調整
-[position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="220" page="fore"]
+// 初期背景用パラメータ
+tf.bgParams = {
+    storage: "living_day_nc238325.jpg",
+}
 
-;メッセージウィンドウの表示
-[layopt layer="message0" visible="true"]
+// 初期BGM用パラメータ
+tf.playbgmParams = {
+    storage: "nc282335.ogg",
+    volume: "11",
+}
+[endscript]
+[t_setupChapter actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
 
-;キャラクターの名前が表示される文字領域
-[ptext name="chara_name_area" layer="message0" face="にくまるフォント" color="0x28332a" size=36 x=175 y=505]
-
-;上記で定義した領域がキャラクターの名前表示であることを宣言（これがないと#の部分でエラーになります）
-[chara_config ptext="chara_name_area"]
-; pos_mode:キャラの初期位置はキャラ宣言時に全指定するのでfalse
-[chara_config pos_mode="false" memory="true" time="200"]
-
-;このシナリオで登場する全キャラクターを宣言、表情登録
-[call target="*registerTheaterParticipants"]
-[call storage="./chara/common.ks" target="*registerAllCharacters"]
-
-
-; バックログボタン表示
-;[j_displayFixButton backlog="true"]
+; ここからチャプター視聴開始
 
 
 [m_changeCharacterFrameName name="ずんだもん" face="deny"]
@@ -98,7 +102,7 @@
 
 [playse storage="chara/zundamon/01-01/017_ずんだもん（ノーマル）_犯人は誰なのだ…！….ogg" sprite_time="50-20000"]
 犯人は誰なのだ…！？[r]
-こたろう？ミコ？はう？それとも[p]
+こたろう？ミコ？はう？それとも――[p]
 
 [playse storage="ufo03.mp3" buf="1" volume="50" sprite_time="100-4100"]
 [layopt layer="message0" visible="false"]
@@ -202,33 +206,10 @@
 [playse storage="chara/ritsu/01-01/038_波音リツ（ノーマル）_さあ、配役を決めて….ogg" sprite_time="50-20000"]
 さあ、配役を決めてゲームスタートだ！[p]
 
-#
 
+; チャプターここまで
+*end
 
-; 視聴済みに更新する
-[t_watchIntroProgress pageKey="1" situationKey="1"]
-
-
-[eval exp="f.quickShowDetail = true"]
-
-[j_clearFixButton]
-[m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
-[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
-[layopt layer="message0" visible="false"]
+[t_teardownChapter pageId="&f.pageId" episodeId="&f.episodeId" chapterId="&f.chapterId"]
 [jump storage="theater/main.ks" target="*start"]
-[s]
-
-
-*registerTheaterParticipants
-[iscript]
-    f.participantsIdList = [
-        CHARACTER_ID_ZUNDAMON,
-        CHARACTER_ID_METAN,
-        CHARACTER_ID_TSUMUGI,
-        CHARACTER_ID_HAU,
-        CHARACTER_ID_RITSU,
-        //'mochiko'),
-    ];
-[endscript]
-[return]
 [s]

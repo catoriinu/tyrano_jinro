@@ -43,11 +43,13 @@
 
     // 登録が済んだらティラノの一時変数は初期化しておく
     tf.tmpParticipantObjectList = [];
+
+    // ボイスのプリロードが必要か判定しておく
+    tf.needPreloadVoice = (('preload' in mp) && (mp.preload === 'true' || mp.preload === true));
   [endscript]
 
-  [if exp="('preload' in mp) && (mp.preload === 'true' || mp.preload === true)"]
-    [call storage="message/utility.ks" target="preloadVoice"]
-  [endif]
+  ; 必要ならボイスをプリロードする
+  [call storage="message/utility.ks" target="*preloadVoice" cond="tf.needPreloadVoice"]
 [endmacro]
 
 

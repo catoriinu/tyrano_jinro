@@ -13,11 +13,12 @@
 [bg storage="bg_fafafa.png" time="300"]
 
 ; シアター一覧の1ページ目の情報を取得
-[eval exp="f.theaterListPage = 1"]
+[eval exp="f.displayPageId = 'p01'"]
+[eval exp="f.displayEpisodeId = ''"]
 
 *loadTheaterList
 [freeimage layer="0"]
-[loadTheaterList page="&f.theaterListPage"]
+[loadEpisodeList pageId="&f.displayPageId"]
 
 ;メッセージウィンドウの設定、文字が表示される領域を調整
 [position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="220" page="fore"]
@@ -36,120 +37,122 @@
 [image storage="theater/theater_rectangle.png" layer="0" name="theater1" x="723" y="260"]
 
 ; サムネ画像
-[image storage="&f.theaterList[1].thumbnail" layer="0" left="24.5" top="19" width="200" height="112.5" name="thumbnail"]
-[image storage="&f.theaterList[2].thumbnail" layer="0" left="261.5" top="19" width="200" height="112.5" name="thumbnail"]
-[image storage="&f.theaterList[3].thumbnail" layer="0" left="498.5" top="19" width="200" height="112.5" name="thumbnail"]
-[image storage="&f.theaterList[4].thumbnail" layer="0" left="735.5" top="19" width="200" height="112.5" name="thumbnail"]
+[image storage="&f.episodeList.e01.thumbnail" layer="0" left="24.5" top="19" width="200" height="112.5" name="thumbnail"]
+[image storage="&f.episodeList.e02.thumbnail" layer="0" left="261.5" top="19" width="200" height="112.5" name="thumbnail"]
+[image storage="&f.episodeList.e03.thumbnail" layer="0" left="498.5" top="19" width="200" height="112.5" name="thumbnail"]
+[image storage="&f.episodeList.e04.thumbnail" layer="0" left="735.5" top="19" width="200" height="112.5" name="thumbnail"]
 
-[image storage="&f.theaterList[5].thumbnail" layer="0" left="24.5" top="274" width="200" height="112.5" name="thumbnail"]
-[image storage="&f.theaterList[6].thumbnail" layer="0" left="261.5" top="274" width="200" height="112.5" name="thumbnail"]
-[image storage="&f.theaterList[7].thumbnail" layer="0" left="498.5" top="274" width="200" height="112.5" name="thumbnail"]
-[image storage="&f.theaterList[8].thumbnail" layer="0" left="735.5" top="274" width="200" height="112.5" name="thumbnail"]
+[image storage="&f.episodeList.e05.thumbnail" layer="0" left="24.5" top="274" width="200" height="112.5" name="thumbnail"]
+[image storage="&f.episodeList.e06.thumbnail" layer="0" left="261.5" top="274" width="200" height="112.5" name="thumbnail"]
+[image storage="&f.episodeList.e07.thumbnail" layer="0" left="498.5" top="274" width="200" height="112.5" name="thumbnail"]
+[image storage="&f.episodeList.e08.thumbnail" layer="0" left="735.5" top="274" width="200" height="112.5" name="thumbnail"]
 
+; TODO なぜここ？もっと前か後に移動したい
 [iscript]
-if (!('quickShowDetail' in f)) {f.quickShowDetail = false}
+if (!('quickShowEpisodeWindow' in f)) {f.quickShowEpisodeWindow = false}
 [endscript]
 
 ; シアタータイトル文字（全角24文字まで）
-[ptext layer="0" text="&f.theaterList[1].title" face="MPLUSRounded" size="24" x="29" y="136" width="200"]
-[ptext layer="0" text="&f.theaterList[2].title" face="MPLUSRounded" size="24" x="264" y="136" width="200"]
-[ptext layer="0" text="&f.theaterList[3].title" face="MPLUSRounded" size="24" x="501" y="136" width="200"]
-[ptext layer="0" text="&f.theaterList[4].title" face="MPLUSRounded" size="24" x="738" y="136" width="200"]
+[ptext layer="0" text="&f.episodeList.e01.title" face="MPLUSRounded" size="24" x="29" y="136" width="200"]
+[ptext layer="0" text="&f.episodeList.e02.title" face="MPLUSRounded" size="24" x="264" y="136" width="200"]
+[ptext layer="0" text="&f.episodeList.e03.title" face="MPLUSRounded" size="24" x="501" y="136" width="200"]
+[ptext layer="0" text="&f.episodeList.e04.title" face="MPLUSRounded" size="24" x="738" y="136" width="200"]
 
-[ptext layer="0" text="&f.theaterList[5].title" face="MPLUSRounded" size="24" x="29" y="391" width="200"]
-[ptext layer="0" text="&f.theaterList[6].title" face="MPLUSRounded" size="24" x="264" y="391" width="200"]
-[ptext layer="0" text="&f.theaterList[7].title" face="MPLUSRounded" size="24" x="501" y="391" width="200"]
-[ptext layer="0" text="&f.theaterList[8].title" face="MPLUSRounded" size="24" x="738" y="391" width="200"]
+[ptext layer="0" text="&f.episodeList.e05.title" face="MPLUSRounded" size="24" x="29" y="391" width="200"]
+[ptext layer="0" text="&f.episodeList.e06.title" face="MPLUSRounded" size="24" x="264" y="391" width="200"]
+[ptext layer="0" text="&f.episodeList.e07.title" face="MPLUSRounded" size="24" x="501" y="391" width="200"]
+[ptext layer="0" text="&f.episodeList.e08.title" face="MPLUSRounded" size="24" x="738" y="391" width="200"]
 
 [layopt visible="true" layer="0"]
 
-; クリッカブル領域はメイン画面を表示するたびに必要。ただしquickShowDetailが立っているときはすぐに詳細画面を表示してしまうので、領域は表示しない
+; クリッカブル領域はメイン画面を表示するたびに必要。ただしquickShowEpisodeWindowが立っているときはすぐに詳細画面を表示してしまうので、領域は表示しない
 *setClickable
-[if exp="!f.quickShowDetail"]
+[eval exp="tf.episodeWindowTarget = '*episodeWindow_' + f.displayEpisodeId"]
+[jump target="&tf.episodeWindowTarget" cond="f.quickShowEpisodeWindow"]
 
-  [clickable width="210" height="234" x="20" y="14" color="0x333333" opacity="0" mouseopacity="40" target="*detail_1"]
-  [clickable width="210" height="234" x="257" y="14" color="0x333333" opacity="0" mouseopacity="40" target="*detail_2"]
-  [clickable width="210" height="234" x="494" y="14" color="0x333333" opacity="0" mouseopacity="40" target="*detail_3"]
-  [clickable width="210" height="234" x="731" y="14" color="0x333333" opacity="0" mouseopacity="40" target="*detail_4"]
+; quickShowEpisodeWindowが立っていないときはクリッカブル領域を表示する
+[clickable width="210" height="234" x="20" y="14" color="0x333333" opacity="0" mouseopacity="40" target="*episodeWindow_e01"]
+[clickable width="210" height="234" x="257" y="14" color="0x333333" opacity="0" mouseopacity="40" target="*episodeWindow_e02"]
+[clickable width="210" height="234" x="494" y="14" color="0x333333" opacity="0" mouseopacity="40" target="*episodeWindow_e03"]
+[clickable width="210" height="234" x="731" y="14" color="0x333333" opacity="0" mouseopacity="40" target="*episodeWindow_e04"]
 
-  [clickable width="210" height="234" x="20" y="268" color="0x333333" opacity="0" mouseopacity="40" target="*detail_5"]
-  [clickable width="210" height="234" x="257" y="268" color="0x333333" opacity="0" mouseopacity="40" target="*detail_6"]
-  [clickable width="210" height="234" x="494" y="268" color="0x333333" opacity="0" mouseopacity="40" target="*detail_7"]
-  [clickable width="210" height="234" x="731" y="268" color="0x333333" opacity="0" mouseopacity="40" target="*detail_8"]
+[clickable width="210" height="234" x="20" y="268" color="0x333333" opacity="0" mouseopacity="40" target="*episodeWindow_e05"]
+[clickable width="210" height="234" x="257" y="268" color="0x333333" opacity="0" mouseopacity="40" target="*episodeWindow_e06"]
+[clickable width="210" height="234" x="494" y="268" color="0x333333" opacity="0" mouseopacity="40" target="*episodeWindow_e07"]
+[clickable width="210" height="234" x="731" y="268" color="0x333333" opacity="0" mouseopacity="40" target="*episodeWindow_e08"]
 
-  ; ボタン類
-  [eval exp="tf.buttonColor = CLASS_GLINK_DEFAULT"]
-  [glink color="&tf.buttonColor" size="30" width="270" x="975" y="438" text="タイトルに戻る" target="*returnTitle"]
-  [glink color="&tf.buttonColor" size="30" width="270" x="975" y="338" text="1期・2期" target="*loadTheaterList" exp="f.theaterListPage = 1"]
-  ;[glink color="&tf.buttonColor" size="30" width="270" x="975" y="38" text="もち子ミコ" target="*loadTheaterList" exp="f.theaterListPage = 99"]
+; ボタン類
+[eval exp="tf.buttonColor = CLASS_GLINK_DEFAULT"]
+[glink color="&tf.buttonColor" size="30" width="270" x="975" y="438" text="タイトルに戻る" target="*returnTitle"]
+; TODO sf.theaterProgressのpageIdを参照して出し分けるべき。以下のように現在表示してよいページID一覧を取得するなど
+; TYRANO.kag.stat.f.availablePageIdList = Object.keys(TYRANO.kag.variable.sf.theaterProgress);
+[glink color="&tf.buttonColor" size="30" width="270" x="975" y="338" text="1期・2期" target="*loadTheaterList" exp="f.displayPageId = 'p01'"]
+;[glink color="&tf.buttonColor" size="30" width="270" x="975" y="38" text="もち子ミコ" target="*loadTheaterList" exp="f.theaterListPage = 99"]
 
-  ;メッセージウィンドウの表示
-  [layopt layer="message0" visible="true"]
+;メッセージウィンドウの表示
+[layopt layer="message0" visible="true"]
 
-  視聴したいシアターを選択してください。[r]
-  人狼ゲームで特定の条件を満たすと解決編が解放されます。
-
-[else]
-  [eval exp="tf.detailTarget = '*detail_' + f.theaterDetailNum"]
-  [jump target="&tf.detailTarget"]
-[endif]
+視聴したいシアターを選択してください。[r]
+人狼ゲームで特定の条件を満たすと解決編が解放されます。
 [s]
 
 
-*detail_1
-[eval exp="f.theaterDetailNum = 1"]
-[jump target="*showDetail"]
+*episodeWindow_e01
+[eval exp="f.displayEpisodeId = 'e01'"]
+[jump target="*showEpisodeWindow"]
 [s]
 
-*detail_2
-[eval exp="f.theaterDetailNum = 2"]
-[jump target="*showDetail"]
+*episodeWindow_e02
+[eval exp="f.displayEpisodeId = 'e02'"]
+[jump target="*showEpisodeWindow"]
 [s]
 
-*detail_3
-[eval exp="f.theaterDetailNum = 3"]
-[jump target="*showDetail"]
+*episodeWindow_e03
+[eval exp="f.displayEpisodeId = 'e03'"]
+[jump target="*showEpisodeWindow"]
 [s]
 
-*detail_4
-[eval exp="f.theaterDetailNum = 4"]
-[jump target="*showDetail"]
+*episodeWindow_e04
+[eval exp="f.displayEpisodeId = 'e04'"]
+[jump target="*showEpisodeWindow"]
 [s]
 
-*detail_5
-[eval exp="f.theaterDetailNum = 5"]
-[jump target="*showDetail"]
+*episodeWindow_e05
+[eval exp="f.displayEpisodeId = 'e05'"]
+[jump target="*showEpisodeWindow"]
 [s]
 
-*detail_6
-[eval exp="f.theaterDetailNum = 6"]
-[jump target="*showDetail"]
+*episodeWindow_e06
+[eval exp="f.displayEpisodeId = 'e06'"]
+[jump target="*showEpisodeWindow"]
 [s]
 
-*detail_7
-[eval exp="f.theaterDetailNum = 7"]
-[jump target="*showDetail"]
+*episodeWindow_e07
+[eval exp="f.displayEpisodeId = 'e07'"]
+[jump target="*showEpisodeWindow"]
 [s]
 
-*detail_8
-[eval exp="f.theaterDetailNum = 8"]
-[jump target="*showDetail"]
+*episodeWindow_e08
+[eval exp="f.displayEpisodeId = 'e08'"]
+[jump target="*showEpisodeWindow"]
 [s]
 
 
-*showDetail
-[eval exp="f.quickShowDetail = false"]
+*showEpisodeWindow
+[eval exp="f.quickShowEpisodeWindow = false"]
 
-; そのシアターが解放済みなら、シアター詳細モジュール表示
-;[jump storage="theater/detail.ks" target="*start" cond="!isIntroProgressLocked(sf.theater[f.theaterListPage][f.theaterDetailNum])"]
+; そのエピソードの導入編が解放済みなら、エピソードウィンドウ表示。chapterIdは導入編で固定
+[t_isProgressLocked pageId="&f.displayPageId" episodeId="&f.displayEpisodeId" chapterId="c01"]
+[jump storage="theater/detail.ks" target="*start" cond="!tf.isProgressLocked"]
+
 ; TODO こちらはテスト用。実際には↑を有効化すること
-[jump storage="theater/detail.ks" target="*start" cond="!isIntroProgressLocked(f.theaterList[f.theaterDetailNum])"]
+; [jump storage="theater/detail.ks" target="*start" cond="!isIntroProgressLocked(f.theaterList[f.theaterEpisodeWindowNum])"]
 
-; そのシアターが未解放なら、詳細を表示させないで戻す
-未解放のシアターのため選択できません。[p]
+; そのエピソードが未解放なら、詳細を表示させないで戻す
+未解放のエピソードのため選択できません。[p]
 
-*hideDetail
-; シアター詳細モジュール非表示（モジュールから戻ってくるためのラベル）
+*hideEpisodeWindow
+; エピソードウィンドウ非表示（ウィンドウから戻ってくるためのラベル）
 [jump target="*setClickable"]
 [s]
 

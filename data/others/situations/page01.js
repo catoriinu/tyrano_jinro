@@ -180,3 +180,74 @@ function getSituationPage01_08() {
     );
 }
 
+
+/**
+ * エピソードオブジェクトを返却する
+ * すべてのエピソードの情報はここで管理する
+ * @param {String} pageId ページID
+ * @param {String} episodeId エピソードID
+ */
+function episodeData(pageId, episodeId) {
+    switch (pageId) {
+        // 1期・2期
+        case 'p01':
+            switch (episodeId) {
+                case 'e01':
+                    return new Episode(
+                        'e01',
+                        '誰がずんだもちを食べたのだ？',
+                        'theater/p01_01_darega.png',
+                        '初めから解放されている',
+                        null,
+                        new Chapter(
+                            'c01',
+                            'theater/page01/01-1_darega.ks',
+                            null,
+                        ),
+                        new Chapter(
+                            'c02',
+                            'theater/page01/01-2_darega.ks',
+                            null,
+                        ),
+                        new Situation_new(
+                            5,
+                            [
+                                new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_WEREWOLF),
+                                new Participant(CHARACTER_ID_METAN, ROLE_ID_MADMAN),
+                            ],
+                        ),
+                    );
+                case 'e02':
+                    return new Episode(
+                        'e01',
+                        '誰がずんだもちを食べたのだ？',
+                        'theater/p01_01_darega.png',
+                        '初めから解放されている',
+                        null,
+                        new Chapter(
+                            'c01',
+                            'theater/page01/01-1_darega.ks',
+                            null,
+                        ),
+                        new Chapter(
+                            'c02',
+                            'theater/page01/01-2_darega.ks',
+                            null,
+                        ),
+                        new Situation_new(
+                            5,
+                            [
+                                new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_VILLAGER),
+                                new Participant(CHARACTER_ID_METAN, ROLE_ID_FORTUNE_TELLER),
+                            ],
+                        ),
+                    );
+                default:
+                    alert('存在しないepisodeIdが指定されました episodeId=' + episodeId);
+                    return;
+            }
+        default:
+            alert('存在しないpageIdが指定されました pageId' + pageId);
+            return;
+    }
+}
