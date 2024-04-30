@@ -15,7 +15,7 @@
 ; シアター一覧の1ページ目の情報を取得
 [eval exp="f.displayPageId = 'p01'"]
 
-*loadTheaterList
+*loadEpisodeList
 [freeimage layer="0"]
 [loadEpisodeList pageId="&f.displayPageId"]
 
@@ -92,8 +92,8 @@ if (!f.quickShowEpisodeWindow) {
 [glink color="&tf.buttonColor" size="30" width="270" x="975" y="438" text="タイトルに戻る" target="*returnTitle"]
 ; TODO sf.theaterProgressのpageIdを参照して出し分けるべき。以下のように現在表示してよいページID一覧を取得するなど
 ; TYRANO.kag.stat.f.availablePageIdList = Object.keys(TYRANO.kag.variable.sf.theaterProgress);
-[glink color="&tf.buttonColor" size="30" width="270" x="975" y="338" text="1期・2期" target="*loadTheaterList" exp="f.displayPageId = 'p01'"]
-;[glink color="&tf.buttonColor" size="30" width="270" x="975" y="38" text="もち子ミコ" target="*loadTheaterList" exp="f.theaterListPage = 99"]
+[glink color="&tf.buttonColor" size="30" width="270" x="975" y="338" text="1期・2期" target="*loadEpisodeList" exp="f.displayPageId = 'p01'"]
+;[glink color="&tf.buttonColor" size="30" width="270" x="975" y="38" text="もち子ミコ" target="*loadEpisodeList" exp="f.theaterListPage = 99"]
 
 ;メッセージウィンドウの表示
 [layopt layer="message0" visible="true"]
@@ -149,10 +149,7 @@ if (!f.quickShowEpisodeWindow) {
 
 ; そのエピソードの導入編が解放済みなら、エピソードウィンドウ表示。chapterIdは導入編で固定
 [t_isProgressLocked pageId="&f.displayPageId" episodeId="&f.displayEpisodeId" chapterId="c01"]
-[jump storage="theater/detail.ks" target="*start" cond="!tf.isProgressLocked"]
-
-; TODO こちらはテスト用。実際には↑を有効化すること
-; [jump storage="theater/detail.ks" target="*start" cond="!isIntroProgressLocked(f.theaterList[f.theaterEpisodeWindowNum])"]
+[jump storage="theater/episodeWindow.ks" target="*start" cond="!tf.isProgressLocked"]
 
 ; そのエピソードが未解放なら、詳細を表示させないで戻す
 未解放のエピソードのため選択できません。[p]

@@ -7,7 +7,7 @@
 [wait time="100"]
 
 *start 
-[ptext layer="1" x="1050" y="684" text="ver.0.9.0" color="white" size="24"]
+[ptext layer="1" x="1050" y="684" text="ver.0.11.0" color="white" size="24"]
 [layopt layer="1" visible="true"]
 [playbgm storage="fun_fun_Ukelele_1loop.ogg" volume="20" loop="true" restart="false"]
 

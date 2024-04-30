@@ -48,10 +48,10 @@
 [endmacro]
 
 
-; 達成済みシチュエーションを画面上に表示する
+; 達成したエピソードを画面上に表示する
 [macro name="a_displayAchievedEpisodes"]
 
-  ; 達成済みシチュエーションがない場合、なにもせず終了する
+  ; 達成したエピソードがない場合、なにもせず終了する
   [jump target="*end_a_displayAchievedEpisodes" cond="f.achievedEpisodes.length < 1"]
 
   ; 表示開始前の準備
@@ -67,7 +67,7 @@
     [eval exp="f.displayEpisode = f.achievedEpisodes[tf.cnt]"]
     [call storage="achievement/achieveSituation.ks"]
 
-    ; 達成済みシチュエーションがまだある場合のみループ継続
+    ; 達成したエピソードがまだある場合のみループ継続
     [eval exp="tf.cnt++"]
     [jump target="*loopstart" cond="tf.cnt < f.achievedEpisodes.length"]
     [jump target="*loopend"]

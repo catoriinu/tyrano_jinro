@@ -61,23 +61,3 @@ function getTheaterProgress(pageId, episodeId, chapterId) {
   }
   return THEATER_LOCKED;
 }
-
-
-function setSituationsForAchievement(keys = []) {
-  const situations = [];
-
-  if (keys.includes('page01')) {
-    situations.push(
-      getSituationPage01_01(),
-      getSituationPage01_02(),
-      getSituationPage01_03(),
-      getSituationPage01_04(),
-      getSituationPage01_05(),
-      getSituationPage01_06(),
-      getSituationPage01_07(),
-      getSituationPage01_08(),
-    );
-  }
-
-  TYRANO.kag.variable.sf.situationsForAchievement = situations;
-}

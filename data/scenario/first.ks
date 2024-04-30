@@ -27,13 +27,13 @@
 ; ボイボ人狼用初期化
 [call storage="theater/macros.ks"]
 [call storage="achievement/macros.ks"]
-[loadjs storage="situations/Situation_new.js"]
-[loadjs storage="situations/CharacterCondition.js"]
-[loadjs storage="situations/AchievementCondition.js"]
-[loadjs storage="situations/Chapter.js"]
-[loadjs storage="situations/Episode.js"]
-[loadjs storage="situations/page01.js"]
-[loadjs storage="theaterScripts.js"]
+[loadjs storage="voivoJinro/achievement/AchievementCondition.js"]
+[loadjs storage="voivoJinro/achievement/CharacterCondition.js"]
+[loadjs storage="voivoJinro/theater/Episode.js"]
+[loadjs storage="voivoJinro/theater/Chapter.js"]
+[loadjs storage="voivoJinro/theater/Situation.js"]
+[loadjs storage="voivoJinro/theater/theaterScripts.js"]
+[loadjs storage="voivoJinro/theater/episodeData.js"]
 
 ; キーフレーム定義読み込み
 [call storage="keyframe.ks"]
@@ -58,6 +58,7 @@ if (!('config' in sf)) {
 }
 tf.tmp_bgm_vol = sf.config.mute_bgm ? "0" : String(sf.config.current_bgm_vol);
 tf.tmp_se_vol = sf.config.mute_se ? "0" : String(sf.config.current_se_vol);
+// TODO sf.config.tmp_voice_volではなくsf.config.current_voice_volでは？
 tf.tmp_voice_vol = sf.config.mute_voice ? "0" : String(sf.config.tmp_voice_vol);
 tf.tmp_ch_speed = String(sf.config.current_ch_speed);
 [endscript]

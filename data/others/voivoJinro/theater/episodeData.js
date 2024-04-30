@@ -216,7 +216,7 @@ function episodeData(pageId, episodeId) {
                                 },
                             ),
                         ),
-                        new Situation_new(
+                        new Situation(
                             5,
                             [
                                 new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_WEREWOLF),
@@ -248,7 +248,7 @@ function episodeData(pageId, episodeId) {
                                 },
                             ),
                         ),
-                        new Situation_new(
+                        new Situation(
                             5,
                             [
                                 new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_VILLAGER),

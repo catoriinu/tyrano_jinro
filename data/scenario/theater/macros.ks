@@ -29,6 +29,7 @@
 [endmacro]
 
 ; シアター一覧画面に表示する、シアターの情報をゲーム変数に格納する
+; TODO 削除予定
 ; @param page シアター一覧のページ番号。必須。
 [macro name="loadTheaterList"]
 [iscript]
@@ -115,12 +116,6 @@
     }
   }
 
-  // TODO テスト用に解放状況を書き換える
-  for (let i = 1; i < (Object.keys(f.theaterList).length + 1); i++) {
-    //updateIntroProgress(f.theaterList[i], THEATER_UNLOCKED);
-    //updateOutroProgress(f.theaterList[i], THEATER_UNLOCKED);
-  }
-
   // 導入編が未解放のシアターは、タイトルとサムネイルを上書きする
   console.log(f.theaterList);
   for (let i = 1; i < (Object.keys(f.theaterList).length + 1); i++) {
@@ -139,26 +134,6 @@
 [macro name="t_registerSituationParticipants"]
   [iscript]
     tf.tmpParticipantObjectList = clone(f.displayEpisode.situation.participantsList);
-  [endscript]
-[endmacro]
-
-
-; TODO 削除予定
-; @param pageKey
-; @param situationKey
-[macro name="t_watchIntroProgress"]
-  [iscript]
-    sf.theater[mp.pageKey][mp.situationKey] = updateIntroProgress(sf.theater[mp.pageKey][mp.situationKey], THEATER_WATCHED);
-  [endscript]
-[endmacro]
-
-
-; TODO 削除予定
-; @param pageKey
-; @param situationKey
-[macro name="t_watchOutroProgress"]
-  [iscript]
-    sf.theater[mp.pageKey][mp.situationKey] = updateOutroProgress(sf.theater[mp.pageKey][mp.situationKey], THEATER_WATCHED);
   [endscript]
 [endmacro]
 

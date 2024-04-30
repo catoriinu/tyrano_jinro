@@ -1,3 +1,5 @@
+; エピソードウィンドウ
+
 *start
 ; 利用する変数の初期化
 [eval exp="f.displayEpisode = f.episodeList[f.displayEpisodeId]"]
@@ -6,8 +8,8 @@
 [layopt layer="message0" visible="false"]
 [filter layer="0" blur="10"]
 
-[image storage="theater/detail_rectangle.png" layer="1" page="back" name="detail" x="158.5" y="38"]
-[kanim name="detail" keyframe="open_detail" time="150" easing="ease-out"]
+[image storage="theater/episodeWindow_rectangle.png" layer="1" page="back" name="episodeWindow" x="158.5" y="38"]
+[kanim name="episodeWindow" keyframe="open_episodeWindow" time="150" easing="ease-out"]
 
 [image storage="&f.displayEpisode.thumbnail" layer="1" page="back" left="424" top="80" height="243" name="thumbnail"]
 [ptext layer="1" page="back" text="&f.displayEpisode.title" face="MPLUSRounded" size="36" x="180" y="330" width="920" align="center"]

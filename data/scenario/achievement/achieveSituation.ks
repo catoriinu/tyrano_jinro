@@ -7,18 +7,18 @@
 ; 利用する変数の初期化
 [eval exp="tf.buttonColor = CLASS_GLINK_DEFAULT"]
 
-[image storage="theater/detail_rectangle.png" layer="1" page="back" name="detail" x="158.5" y="38"]
-[kanim name="detail" keyframe="open_detail" time="150" easing="ease-out"]
+[image storage="theater/episodeWindow_rectangle.png" layer="1" page="back" name="episodeWindow" x="158.5" y="38"]
+[kanim name="episodeWindow" keyframe="open_episodeWindow" time="150" easing="ease-out"]
 
 [image storage="&f.displayEpisode.thumbnail" layer="1" page="back" left="424" top="80" height="243" name="thumbnail"]
 [ptext layer="1" page="back" text="&f.displayEpisode.title" face="MPLUSRounded" size="36" x="180" y="330" width="920" align="center"]
 
 ; ✕ボタンまたは枠外（左右上下）のクリックは「あとで見る」ボタンと同義
-[glink color="&tf.buttonColor" size="35" width="70" x="1005" y="85" text="✕" target="*closeAchieveSituation"]
-[clickable width="174" height="720" x="0" y="0" target="*closeAchieveSituation"]
-[clickable width="174" height="720" x="1105" y="0" target="*closeAchieveSituation"]
-[clickable width="1280" height="55" x="0" y="0" target="*closeAchieveSituation"]
-[clickable width="1280" height="55" x="0" y="665" target="*closeAchieveSituation"]
+[glink color="&tf.buttonColor" size="35" width="70" x="1005" y="85" text="✕" target="*closeAchieveEpisode"]
+[clickable width="174" height="720" x="0" y="0" target="*closeAchieveEpisode"]
+[clickable width="174" height="720" x="1105" y="0" target="*closeAchieveEpisode"]
+[clickable width="1280" height="55" x="0" y="0" target="*closeAchieveEpisode"]
+[clickable width="1280" height="55" x="0" y="665" target="*closeAchieveEpisode"]
 
 [ptext layer="1" page="back" text="の解決編が解放されました！" size="28" x="180" y="380" width="920" align="center"]
 
@@ -32,7 +32,7 @@
 [endif]
 
 ; 「あとで見る」ボタン
-[glink color="&tf.buttonColor" size="24" width="300" x="488" y="510" text="あとで見る" target="*closeAchieveSituation"]
+[glink color="&tf.buttonColor" size="24" width="300" x="488" y="510" text="あとで見る" target="*closeAchieveEpisode"]
 
 ; 達成した解放条件テキスト
 [ptext layer="1" page="back" text="&f.displayEpisode.unlockCondition" face="MPLUSRounded" size="26" x="180" y="570" width="920" align="center"]
@@ -71,7 +71,7 @@
 [s]
 
 
-*closeAchieveSituation
+*closeAchieveEpisode
 [freeimage layer="1" page="fore"]
 [freeimage layer="1" page="back"]
 [return]
