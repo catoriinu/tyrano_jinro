@@ -464,9 +464,10 @@ NPCが役職能力を実行しています……[p]
 *gameOver
 [fadeoutbgm time="1000"]
 [j_displayGameOverAndWinnerFaction]
+
 [a_convertResultToAchievementCondition]
 [a_checkAchievedConditions]
-[a_displayAchievedSituations]
+[a_displayAchievedEpisodes]
 
 タイトルに戻ります。[p]
 

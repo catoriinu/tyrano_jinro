@@ -42,6 +42,27 @@ function getEpisodes(
 }
 
 
+/**
+ * 指定されたチャプターの進捗を返却する
+ * @param {String} pageId ページID
+ * @param {String} episodeId エピソードID
+ * @param {String} chapterId チャプターID
+ * @returns {Number} シアター進捗定数
+ */
+function getTheaterProgress(pageId, episodeId, chapterId) {
+  // 進捗状況内に進捗があればそれを、なければ未解放を格納する
+  const theaterProgress = TYRANO.kag.variable.sf.theaterProgress;
+  if (
+    pageId in theaterProgress &&
+    episodeId in theaterProgress[pageId] &&
+    chapterId in theaterProgress[pageId][episodeId]
+  ) {
+    return theaterProgress[pageId][episodeId][chapterId];
+  }
+  return THEATER_LOCKED;
+}
+
+
 function setSituationsForAchievement(keys = []) {
   const situations = [];
 

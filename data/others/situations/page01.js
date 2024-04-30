@@ -194,20 +194,27 @@ function episodeData(pageId, episodeId) {
             switch (episodeId) {
                 case 'e01':
                     return new Episode(
-                        'e01',
+                        pageId,
+                        episodeId,
                         '誰がずんだもちを食べたのだ？',
                         'theater/p01_01_darega.png',
-                        '初めから解放されている',
+                        '【解放条件】<br>チュートリアルで勝利する',
                         null,
                         new Chapter(
                             'c01',
-                            'theater/page01/01-1_darega.ks',
-                            null,
+                            'theater/page01/01-1_darega.ks'
                         ),
                         new Chapter(
                             'c02',
                             'theater/page01/01-2_darega.ks',
-                            null,
+                            new AchievementCondition(
+                                true,
+                                null,
+                                {
+                                    [CHARACTER_ID_ZUNDAMON]: new CharacterCondition([ROLE_ID_WEREWOLF], null),
+                                    [CHARACTER_ID_METAN]: new CharacterCondition([ROLE_ID_MADMAN], null),
+                                },
+                            ),
                         ),
                         new Situation_new(
                             5,
@@ -219,20 +226,27 @@ function episodeData(pageId, episodeId) {
                     );
                 case 'e02':
                     return new Episode(
-                        'e01',
-                        '誰がずんだもちを食べたのだ？',
-                        'theater/p01_01_darega.png',
-                        '初めから解放されている',
+                        pageId,
+                        episodeId,
+                        'わたくしの千里眼―サウザンドアイ―に死角なし！',
+                        'theater/p01_02_watakushino.png',
+                        '【解放条件】<br>ずんだもん：村人、四国めたん：占い師でゲームに勝利する',
                         null,
                         new Chapter(
                             'c01',
-                            'theater/page01/01-1_darega.ks',
-                            null,
+                            'theater/page01/e02_c01.ks'
                         ),
                         new Chapter(
                             'c02',
-                            'theater/page01/01-2_darega.ks',
-                            null,
+                            'theater/page01/e02_c02.ks',
+                            new AchievementCondition(
+                                true,
+                                null,
+                                {
+                                    [CHARACTER_ID_ZUNDAMON]: new CharacterCondition([ROLE_ID_VILLAGER], null),
+                                    [CHARACTER_ID_METAN]: new CharacterCondition([ROLE_ID_FORTUNE_TELLER], null),
+                                },
+                            ),
                         ),
                         new Situation_new(
                             5,

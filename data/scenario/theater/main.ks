@@ -14,11 +14,22 @@
 
 ; シアター一覧の1ページ目の情報を取得
 [eval exp="f.displayPageId = 'p01'"]
-[eval exp="f.displayEpisodeId = ''"]
 
 *loadTheaterList
 [freeimage layer="0"]
 [loadEpisodeList pageId="&f.displayPageId"]
+
+[iscript]
+// 即座にエピソードウィンドウを開くフラグについて
+// 初回のみ初期値falseを入れる
+if (!('quickShowEpisodeWindow' in f)) {
+  f.quickShowEpisodeWindow = false;
+}
+// falseの場合のみエピソードIDを初期化する（trueの場合は開くエピソードIDがすでに格納済みのはず）
+if (!f.quickShowEpisodeWindow) {
+  f.displayEpisodeId = '';
+}
+[endscript]
 
 ;メッセージウィンドウの設定、文字が表示される領域を調整
 [position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="220" page="fore"]
@@ -46,11 +57,6 @@
 [image storage="&f.episodeList.e06.thumbnail" layer="0" left="261.5" top="274" width="200" height="112.5" name="thumbnail"]
 [image storage="&f.episodeList.e07.thumbnail" layer="0" left="498.5" top="274" width="200" height="112.5" name="thumbnail"]
 [image storage="&f.episodeList.e08.thumbnail" layer="0" left="735.5" top="274" width="200" height="112.5" name="thumbnail"]
-
-; TODO なぜここ？もっと前か後に移動したい
-[iscript]
-if (!('quickShowEpisodeWindow' in f)) {f.quickShowEpisodeWindow = false}
-[endscript]
 
 ; シアタータイトル文字（全角24文字まで）
 [ptext layer="0" text="&f.episodeList.e01.title" face="MPLUSRounded" size="24" x="29" y="136" width="200"]

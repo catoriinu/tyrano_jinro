@@ -97,7 +97,7 @@
 ; 視聴済みに更新する
 [t_watchOutroProgress pageKey="1" situationKey="1"]
 
-[eval exp="f.quickShowDetail = true"]
+[eval exp="f.quickShowEpisodeWindow = true"]
 
 [j_clearFixButton]
 [m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]

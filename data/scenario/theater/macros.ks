@@ -13,6 +13,7 @@
   for (let episodeId of episodeIdList) {
     if (!(episodeId in f.episodeList)){
       f.episodeList[episodeId] = new Episode(
+        mp.pageId,
         episodeId,
         '？？？？？',
         'theater/TVStaticColor01_10.png',
@@ -142,6 +143,7 @@
 [endmacro]
 
 
+; TODO 削除予定
 ; @param pageKey
 ; @param situationKey
 [macro name="t_watchIntroProgress"]
@@ -150,6 +152,8 @@
   [endscript]
 [endmacro]
 
+
+; TODO 削除予定
 ; @param pageKey
 ; @param situationKey
 [macro name="t_watchOutroProgress"]
@@ -164,9 +168,8 @@
 ; @param episodeId
 ; @param chapterId
 [macro name="t_isProgressLocked"]
-  [t_getTheaterProgress pageId="&mp.pageId" episodeId="&mp.episodeId" chapterId="&mp.chapterId"]
   [iscript]
-    tf.isProgressLocked = (tf.tmpProgress === THEATER_LOCKED);
+    tf.isProgressLocked = (getTheaterProgress(mp.pageId, mp.episodeId, mp.chapterId) === THEATER_LOCKED);
   [endscript]
 [endmacro]
 
@@ -176,29 +179,19 @@
 ; @param episodeId
 ; @param chapterId
 [macro name="t_isProgressUnlocked"]
-  [t_getTheaterProgress pageId="&mp.pageId" episodeId="&mp.episodeId" chapterId="&mp.chapterId"]
   [iscript]
-    tf.isProgressUnlocked = (tf.tmpProgress === THEATER_UNLOCKED);
+    tf.isProgressUnlocked = (getTheaterProgress(mp.pageId, mp.episodeId, mp.chapterId) === THEATER_UNLOCKED);
   [endscript]
 [endmacro]
 
 
-; 指定されたチャプターの進捗を一時変数に格納する
+; 指定されたチャプターの進捗が「視聴済み」なら一時変数にtrueを格納する
 ; @param pageId
 ; @param episodeId
 ; @param chapterId
-[macro name="t_getTheaterProgress"]
+[macro name="t_isProgressWatched"]
   [iscript]
-    // 進捗状況内に進捗があればそれを、なければ未解放を格納する
-    if (
-      mp.pageId in sf.theaterProgress &&
-      mp.episodeId in sf.theaterProgress[mp.pageId] &&
-      mp.chapterId in sf.theaterProgress[mp.pageId][mp.episodeId]
-    ) {
-      tf.tmpProgress = sf.theaterProgress[mp.pageId][mp.episodeId][mp.chapterId];
-    } else {
-      tf.tmpProgress = THEATER_LOCKED;
-    }
+    tf.isProgressWatched = (getTheaterProgress(mp.pageId, mp.episodeId, mp.chapterId) === THEATER_WATCHED);
   [endscript]
 [endmacro]
 
@@ -266,7 +259,7 @@
   ; 視聴済みに更新する
   [t_updateProgressWatched pageId="&mp.pageId" episodeId="&mp.episodeId" chapterId="&mp.chapterId"]
 
-  [eval exp="f.quickShowDetail = true"]
+  [eval exp="f.quickShowEpisodeWindow = true"]
 
   [j_clearFixButton]
   [m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]

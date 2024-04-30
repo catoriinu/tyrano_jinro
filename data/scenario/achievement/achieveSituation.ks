@@ -1,5 +1,5 @@
 ; サブルーチン
-; f.detailSituationにシチュエーションオブジェクトを格納しておくこと
+; f.displayEpisodeにエピソードオブジェクトを格納しておくこと
 ; 複数回ループで呼ばれることを考慮し、表示開始前後の処理（背景ブラーやメッセージレイヤの表示非表示など）は基本的に呼び元で行うこと。
 ; ただし「解決編を見る」「導入編から見る」ボタンを押した場合はこのサブルーチン内で後片付けすること。
 
@@ -10,8 +10,8 @@
 [image storage="theater/detail_rectangle.png" layer="1" page="back" name="detail" x="158.5" y="38"]
 [kanim name="detail" keyframe="open_detail" time="150" easing="ease-out"]
 
-[image storage="&f.detailSituation.thumbnail" layer="1" page="back" left="424" top="80" height="243" name="thumbnail"]
-[ptext layer="1" page="back" text="&f.detailSituation.title" face="MPLUSRounded" size="36" x="180" y="330" width="920" align="center"]
+[image storage="&f.displayEpisode.thumbnail" layer="1" page="back" left="424" top="80" height="243" name="thumbnail"]
+[ptext layer="1" page="back" text="&f.displayEpisode.title" face="MPLUSRounded" size="36" x="180" y="330" width="920" align="center"]
 
 ; ✕ボタンまたは枠外（左右上下）のクリックは「あとで見る」ボタンと同義
 [glink color="&tf.buttonColor" size="35" width="70" x="1005" y="85" text="✕" target="*closeAchieveSituation"]
@@ -24,7 +24,8 @@
 
 ; 導入編を視聴済みなら「解決編を見る」ボタンを、未視聴なら「導入編から見る」ボタンを表示する
 ; TODO 「解決編を見る」ボタンを出すときには「導入編から見る」ボタンも出そう。ボタン位置も調整すること
-[if exp="isIntroProgressWatched(f.detailSituation)"]
+[t_isProgressWatched pageId="&f.displayEpisode.pageId" episodeId="&f.displayEpisode.episodeId" chapterId="c01"]
+[if exp="tf.isProgressWatched"]
   [glink color="&tf.buttonColor" size="24" width="300" x="488" y="435" text="解決編を見る" target="*startOutro"]
 [else]
   [glink color="&tf.buttonColor" size="24" width="300" x="488" y="435" text="導入編から見る" target="*startIntro"]
@@ -34,7 +35,7 @@
 [glink color="&tf.buttonColor" size="24" width="300" x="488" y="510" text="あとで見る" target="*closeAchieveSituation"]
 
 ; 達成した解放条件テキスト
-[ptext layer="1" page="back" text="&f.detailSituation.unlockCondition" face="MPLUSRounded" size="26" x="180" y="570" width="920" align="center"]
+[ptext layer="1" page="back" text="&f.displayEpisode.unlockCondition" face="MPLUSRounded" size="26" x="180" y="570" width="920" align="center"]
 
 [trans layer="1" time="0"]
 [s]
@@ -51,7 +52,7 @@
 [endnowait]
 [layopt layer="message0" visible="true"]
 
-[jump storage="&f.detailSituation.introStorage"]
+[jump storage="&f.displayEpisode.introChapter.storage"]
 [s]
 
 
@@ -66,7 +67,7 @@
 [endnowait]
 [layopt layer="message0" visible="true"]
 
-[jump storage="&f.detailSituation.outroStorage"]
+[jump storage="&f.displayEpisode.outroChapter.storage"]
 [s]
 
 
