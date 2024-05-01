@@ -1,4 +1,4 @@
-; タイトル：誰がずんだもちを食べたのだ（導入編）
+; タイトル：誰がずんだもちを食べたのだ？（導入編）
 
 ; ここからチャプターごとに設定が必要な項目
 [iscript]
@@ -23,8 +23,8 @@ tf.bgParams = {
 
 // 初期BGM用パラメータ
 tf.playbgmParams = {
-    storage: "nc282335.ogg",
-    volume: "11",
+    storage: "honwakapuppu.ogg",
+    volume: "12",
 }
 [endscript]
 [t_setupChapter actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
@@ -103,6 +103,7 @@ tf.playbgmParams = {
 [playse storage="chara/zundamon/01-01/017_ずんだもん（ノーマル）_犯人は誰なのだ…！….ogg" sprite_time="50-20000"]
 犯人は誰なのだ…！？[r]
 こたろう？ミコ？はう？それとも――[p]
+
 
 [playse storage="ufo03.mp3" buf="1" volume="50" sprite_time="100-4100"]
 [layopt layer="message0" visible="false"]

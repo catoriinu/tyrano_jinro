@@ -8,12 +8,18 @@ const CHARACTER_ID_MIKI   = 'miki'; // ミキ
 const CHARACTER_ID_YU     = 'yu'; // ユウ
 const CHARACTER_ID_DUMMY  = 'dummy'; // ダミー
 const CHARACTER_ID_ZUNDAMON = 'zundamon'; // ずんだもん
-const CHARACTER_ID_METAN    = 'metan'; // 四国めたん
-const CHARACTER_ID_TSUMUGI  = 'tsumugi'; // 春日部つむぎ
-const CHARACTER_ID_HAU      = 'hau'; // 雨晴はう
-const CHARACTER_ID_RITSU    = 'ritsu'; // 波音リツ
-const CHARACTER_ID_MOCHIKO  = 'mochiko'; // もち子さん
-const CHARACTER_ID_MIKO     = 'miko'; // 櫻歌ミコ
+const CHARACTER_ID_METAN    = 'metan';    // 四国めたん
+const CHARACTER_ID_TSUMUGI  = 'tsumugi';  // 春日部つむぎ
+const CHARACTER_ID_HAU      = 'hau';      // 雨晴はう
+const CHARACTER_ID_RITSU    = 'ritsu';    // 波音リツ
+const CHARACTER_ID_TAKEHIRO = 'takehiro'; // 玄野武宏
+const CHARACTER_ID_KOTARO   = 'kotaro';   // 白上虎太郎
+const CHARACTER_ID_RYUSEI   = 'ryusei';   // 青山龍星
+const CHARACTER_ID_HIMARI   = 'himari';   // 冥鳴ひまり
+const CHARACTER_ID_SORA     = 'sora';     // 九州そら
+const CHARACTER_ID_MESUO    = 'mesuo';    // 剣崎雌雄
+const CHARACTER_ID_MOCHIKO  = 'mochiko';  // もち子さん
+const CHARACTER_ID_MIKO     = 'miko';     // 櫻歌ミコ
 
 // 登場する全てのキャラクターIDと名前、およびその基本的な序列
 const PARTICIPANTS_LIST = [

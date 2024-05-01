@@ -259,7 +259,7 @@
 #
 [p]
 
-[eval exp="f.quickShowDetail = true"]
+[eval exp="f.quickShowEpisodeWindow = true"]
 
 [j_clearFixButton]
 [m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]

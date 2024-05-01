@@ -8,7 +8,7 @@
  * @param {String|null} cantPlayReason 「このシチュエーションでプレイする」ボタンを表示できない理由（シアター画面表示用）。表示してよいならnullを渡すこと
  * @param {Chapter} introChapter 導入編のチャプターオブジェクト
  * @param {Chapter} outroChapter 解決編のチャプターオブジェクト
- * @param {Situation} situation シチュエーションオブジェクト
+ * @param {Situation|null} situation シチュエーションオブジェクト。特定のシチュエーションがないならnullを渡すこと
  */
 function Episode(
     pageId,
