@@ -112,12 +112,18 @@
   ; pos_mode:キャラの初期位置はキャラ宣言時に全指定するのでfalse
   [chara_config pos_mode="false" memory="true" time="200"]
 
+  ; 再生中のチャプターのファイルパスを生成しておく（スキップからの再開のため・コンフィグでチャプター再生中と判定するため）
+  [eval exp="f.chapterStorage = 'theater/' + f.pageId + '/' + f.episodeId + '_' + f.chapterId + '.ks'"]
+
+  ; スキップした場合用の変数を初期化
+  [eval exp="tf.chapterSkiped = false"]
+
   ;このシナリオで登場する全キャラクターを宣言、表情登録
   [eval exp="f.participantsIdList = mp.actorsList"]
   [call storage="./chara/common.ks" target="*registerAllCharacters"]
 
   ; ボタン表示
-  ;[j_displayFixButton backlog="true"]
+  [j_displayFixButton backlog="true" pauseMenu="true"]
 
 [endmacro]
 
@@ -136,9 +142,14 @@
 
   [eval exp="f.quickShowEpisodeWindow = true"]
 
+  ; 再生中のチャプターのファイルパスを初期化
+  [eval exp="f.chapterStorage = null"]
+
   [j_clearFixButton]
   [m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
   [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
   [layopt layer="message0" visible="false"]
+  ; TODO ボイスを停止する
+  ; TODO BGMを元に戻す
 
 [endmacro]

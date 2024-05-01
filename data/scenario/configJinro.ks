@@ -13,19 +13,8 @@
 ; キーコンフィグの無効化
 [stop_keyconfig]
 
-; レイヤーモードの解放
-[free_layermode time="100" wait="true"]
-
-; カメラのリセット
-[reset_camera time="100" wait="true"]
-
-; 前景レイヤの中身をすべて空に
-[iscript]
-  $(".layer_camera").empty();
-[endscript]
-
 ; メニューボタン非表示
- [hidemenubutton]
+[hidemenubutton]
 
 [iscript]
   /* sf.configはfirst.ksで初期設定しておくこと */
@@ -65,7 +54,7 @@
 [cm]
 
 ; コンフィグ用の背景を読み込んでトランジション
-[bg storage="&tf.img_path +'voivo_config_bg.png'" time="100"]
+[image storage="&tf.img_path +'voivo_config_bg.png'" layer="1" visible="true" left="0" top="0" width="1280" height="720" name="config_bg" time="100"]
 
 [ptext layer="1" x="490" y="30"  text="コンフィグ" color="#28332a" size="60"]
 [ptext layer="1" x="100" y="170" text="音量" color="#28332a" size="44"]
@@ -81,7 +70,7 @@
 [current layer="message1"]
 
 ; 画面右上の「戻る」ボタン
-[button fix="true" graphic="button/button_return_normal.png" enterimg="button/button_return_hover.png" target="*backtitle" x="1143" y="23" width="114" height="103"]
+[button fix="true" graphic="button/button_return_normal.png" enterimg="button/button_return_hover.png" target="*return" x="1143" y="23" width="114" height="103"]
 
 [jump target="*config_page"]
 
@@ -181,34 +170,22 @@
 [glink color="&tf.mark20Color" size="26" width="180" x="710" y="520" text="下線" exp="sf.config.mark_size = preexp" preexp="20" target="*marker_button"]
 [glink color="&tf.mark100Color" size="26" width="180" x="940" y="520" text="塗りつぶし" exp="sf.config.mark_size = preexp" preexp="100" target="*marker_button"]
 
-
-[iscript]
-/*
-  // コンフィグに関わる設定を全て削除する。sf.configだけでなく下記のシステム変数まで削除しないと、config.tjsの設定を再読み込みしに行ってくれない。
-  delete sf.config;
-  delete sf._system_config_bgm_volume;
-  delete sf._system_config_se_volume;
-  delete sf._config_ch_speed;
-  console.log("config all deleted");
-*/
-[endscript]
 [s]
 
 
 ;--------------------------------------------------------------------------------
 ; コンフィグモードの終了
 ;--------------------------------------------------------------------------------
-*backtitle
+*return
 [cm]
 
 [endnolog]
 
 ;	テキスト速度のサンプル表示に使用していたメッセージレイヤを非表示に
 [layopt layer="message1" visible="false"]
-;[layopt layer="message0" visible="true"]
 [current layer="message0"]
 
-; 見出しのテキストを非表示に
+; 見出しのテキストと背景を非表示に
 [freeimage layer="1"]
 
 ; fixボタンをクリア
@@ -220,8 +197,10 @@
 ; コールスタックのクリア
 [clearstack]
 
-;	ゲーム復帰
-;[awakegame]
+; チャプター再生中ならポーズメニュー画面に戻る
+[jump storage="theater/pauseMenu.ks" cond="f.chapterStorage != null"]
+; TODO 人狼ゲーム中ならステータス画面に戻る
+; それ以外ならタイトル画面に戻る
 [jump storage="title.ks"]
 
 ;================================================================================

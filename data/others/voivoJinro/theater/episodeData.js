@@ -19,11 +19,11 @@ function episodeData(pageId, episodeId) {
                         null,
                         new Chapter(
                             'c01',
-                            'theater/page01/e01_c01.ks'
+                            'theater/p01/e01_c01.ks'
                         ),
                         new Chapter(
                             'c02',
-                            'theater/page01/e01_c02.ks',
+                            'theater/p01/e01_c02.ks',
                             new AchievementCondition(
                                 true,
                                 null,
@@ -51,11 +51,11 @@ function episodeData(pageId, episodeId) {
                         null,
                         new Chapter(
                             'c01',
-                            'theater/page01/e02_c01.ks'
+                            'theater/p01/e02_c01.ks'
                         ),
                         new Chapter(
                             'c02',
-                            'theater/page01/e02_c02.ks',
+                            'theater/p01/e02_c02.ks',
                             new AchievementCondition(
                                 true,
                                 null,
@@ -83,11 +83,11 @@ function episodeData(pageId, episodeId) {
                         null,
                         new Chapter(
                             'c01',
-                            'theater/page01/e03_c01.ks'
+                            'theater/p01/e03_c01.ks'
                         ),
                         new Chapter(
                             'c02',
-                            'theater/page01/e03_c02.ks',
+                            'theater/p01/e03_c02.ks',
                             new AchievementCondition(
                                 true,
                                 null,
@@ -115,11 +115,11 @@ function episodeData(pageId, episodeId) {
                         null,
                         new Chapter(
                             'c01',
-                            'theater/page01/e04_c01.ks'
+                            'theater/p01/e04_c01.ks'
                         ),
                         new Chapter(
                             'c02',
-                            'theater/page01/e04_c02.ks',
+                            'theater/p01/e04_c02.ks',
                             new AchievementCondition(
                                 true,
                                 null,
@@ -147,11 +147,11 @@ function episodeData(pageId, episodeId) {
                         null,
                         new Chapter(
                             'c01',
-                            'theater/page01/e05_c01.ks'
+                            'theater/p01/e05_c01.ks'
                         ),
                         new Chapter(
                             'c02',
-                            'theater/page01/e05_c02.ks',
+                            'theater/p01/e05_c02.ks',
                             new AchievementCondition(
                                 true,
                                 null,
@@ -179,11 +179,11 @@ function episodeData(pageId, episodeId) {
                         '特定のシチュエーションではないためプレイできません', // 「人狼陣営」なのでどちらがどちらでもよいのでシチュを作れない。かつe03で代用できるため問題なし
                         new Chapter(
                             'c01',
-                            'theater/page01/e06_c01.ks'
+                            'theater/p01/e06_c01.ks'
                         ),
                         new Chapter(
                             'c02',
-                            'theater/page01/e06_c02.ks',
+                            'theater/p01/e06_c02.ks',
                             new AchievementCondition(
                                 false,
                                 FACTION_VILLAGERS,
@@ -205,11 +205,11 @@ function episodeData(pageId, episodeId) {
                         '特定のシチュエーションではないためプレイできません',
                         new Chapter(
                             'c01',
-                            'theater/page01/e07_c01.ks'
+                            'theater/p01/e07_c01.ks'
                         ),
                         new Chapter(
                             'c02',
-                            'theater/page01/e07_c02.ks',
+                            'theater/p01/e07_c02.ks',
                             new AchievementCondition(
                                 null,
                                 FACTION_DRAW_BY_REVOTE,
@@ -228,11 +228,11 @@ function episodeData(pageId, episodeId) {
                         '特定のシチュエーションではないためプレイできません',
                         new Chapter(
                             'c01',
-                            'theater/page01/e08_c01.ks'
+                            'theater/p01/e08_c01.ks'
                         ),
                         new Chapter(
                             'c02',
-                            'theater/page01/e08_c02.ks',
+                            'theater/p01/e08_c02.ks',
                             new AchievementCondition(
                                 true,
                                 null,

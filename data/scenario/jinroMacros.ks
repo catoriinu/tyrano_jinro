@@ -1192,6 +1192,7 @@
 ; @param menu メニューボタンを表示する
 ; @param backlog バックログボタンを表示する
 ; @param status ステータスボタンを表示する
+; @param pauseMenu ポーズメニューボタンを表示する（チャプター再生中用）
 ; ※引数に'ignore'を設定すると、引数を指定しなかった場合と同様にそのボタンには何もしない。'ignore'以外を渡すと通常のボタンを表示する
 ; ※以下は特殊なボタンを表示したい場合に設定する引数
 ; status="nofix": fix属性ではないかつrole="sleepgame"指定もしないステータスボタン
@@ -1205,10 +1206,12 @@
         action: null,
         menu: null,
         backlog: null,
-        status: null
+        status: null,
+        pauseMenu: null,
       };
     };
 
+    // TODO pauseMenuを追加すると多分未定義出る気がする。forで回すのはf.displaingButtonがいいかもしれない。
     for (let button in mp) {
       if (mp[button] === 'ignore') {
         // 'ignore'が渡されてきた場合、引数を指定しなかった場合と同様にそのボタンには何もしない
@@ -1219,7 +1222,7 @@
       }
     }
 
-    // 一つも引数に指定されていないなら、全て表示する。一つでも指定されているなら引数通りとする。
+    // 一つも引数に指定されていないなら、全て表示する。一つでも指定されているなら引数通りとする。(基本的に人狼中を想定しているので、pauseMenuは判定・表示対象外)
     if (!(('action' in mp) || ('menu' in mp) || ('backlog' in mp) || ('status' in mp))) {
       mp.action = 'normal';
       mp.menu = 'normal';
@@ -1265,6 +1268,12 @@
 
     [eval exp="f.displaingButton.status = mp.status"]
   [endif]
+
+
+  [if exp="!f.displaingButton.pauseMenu && mp.pauseMenu"]
+    [button graphic="button/button_menu_normal.png" storage="theater/pauseMenu.ks" target="*start" x="1143" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_pauseMenu" enterimg="button/button_menu_hover.png"]
+    [eval exp="f.displaingButton.pauseMenu = mp.pauseMenu"]
+  [endif]
 [endmacro]
 
 
@@ -1275,15 +1284,17 @@
 ; @param menu メニューボタンを消去する（※"false"を渡すとtrue判定になるので注意）
 ; @param backlog バックログボタンを消去する（※"false"を渡すとtrue判定になるので注意）
 ; @param status ステータスボタンを消去する（※"false"を渡すとtrue判定になるので注意）
+; @param pauseMenu ポーズメニューボタンを消去する（チャプター再生中用）（※"false"を渡すとtrue判定になるので注意）
 [macro name="j_clearFixButton"]
   [iscript]
     // [j_displayFixButton]は実行済みでf.displaingButtonは存在している前提とする。
     // 一つもマクロ変数に指定されていないなら、全て消去する。一つでも指定されているならマクロ変数通りとする。
-    if (!(('action' in mp) || ('menu' in mp) || ('backlog' in mp) || ('status' in mp))) {
+    if (!(('action' in mp) || ('menu' in mp) || ('backlog' in mp) || ('status' in mp) || ('pauseMenu' in mp))) {
       mp.action = true;
       mp.menu = true;
       mp.backlog = true;
       mp.status = true;
+      mp.pauseMenu = true;
     }
     console.log('消去');
     console.log(mp);
@@ -1308,6 +1319,11 @@
     [clearfix name="button_j_status"]
     [eval exp="f.displaingButton.status = null"]
   [endif]
+
+  [if exp="f.displaingButton.pauseMenu && mp.pauseMenu"]
+    [clearfix name="button_j_pauseMenu"]
+    [eval exp="f.displaingButton.pauseMenu = null"]
+  [endif]
 [endmacro]
 
 
@@ -1325,7 +1341,7 @@
 [endmacro]
 
 
-; 保存済みのTixレイヤーのボタンの表示ステータスを読み込み、復元するマクロ
+; 保存済みのFixレイヤーのボタンの表示ステータスを読み込み、復元するマクロ
 ; [j_saveFixButton]は実行済みでf.saveButtonは存在している前提とする。
 ; @param buf 必須。保存バッファ。任意のキー名を指定すること。保存済みのキー名から復元する。キーが存在しない場合はエラー（未考慮）
 [macro name="j_loadFixButton"]
@@ -1348,8 +1364,8 @@
       }
     }
   [endscript]
-  [j_clearFixButton action="&tf.tmpClearButton.action" menu="&tf.tmpClearButton.menu" backlog="&tf.tmpClearButton.backlog" status="&tf.tmpClearButton.status"]
-  [j_displayFixButton action="&tf.tmpDisplayButton.action" menu="&tf.tmpDisplayButton.menu" backlog="&tf.tmpDisplayButton.backlog" status="&tf.tmpDisplayButton.status"]
+  [j_clearFixButton action="&tf.tmpClearButton.action" menu="&tf.tmpClearButton.menu" backlog="&tf.tmpClearButton.backlog" status="&tf.tmpClearButton.status" pauseMenu="&tf.tmpClearButton.pauseMenu"]
+  [j_displayFixButton action="&tf.tmpDisplayButton.action" menu="&tf.tmpDisplayButton.menu" backlog="&tf.tmpDisplayButton.backlog" status="&tf.tmpDisplayButton.status" pauseMenu="&tf.tmpDisplayButton.pauseMenu"]
 [endmacro]
 
 
