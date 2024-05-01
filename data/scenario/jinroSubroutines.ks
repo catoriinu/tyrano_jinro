@@ -329,32 +329,31 @@ MEMO 最終的には以下の構成のHTMLが生成される。
 
   ; TODO メッセージを出すか、出すならその出し方を検討する
   [j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
-  [m_askFortuneTellerCO canCOFortuneTellerStatus="&f.canCOFortuneTellerStatus"]
+  ;[m_askFortuneTellerCO canCOFortuneTellerStatus="&f.canCOFortuneTellerStatus"]
 
-  [if exp="f.playerCORoleId !== ''"]
-    ; プレイヤーのCO役職が占い師の場合
-    [if exp="f.playerCORoleId === ROLE_ID_FORTUNE_TELLER"]
+  ; プレイヤーのCO役職が占い師の場合
+  [if exp="f.playerCORoleId === ROLE_ID_FORTUNE_TELLER"]
 
-      [if exp="f.characterObjects[f.playerCharacterId].role.roleId === ROLE_ID_FORTUNE_TELLER"]
-        ; 占い師
-        ; 占い結果COする・しないボタンを表示する
-        [j_setFrotuneTellerResultCOToButtonObjects]
-        [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'noCO'"]
+    [if exp="f.characterObjects[f.playerCharacterId].role.roleId === ROLE_ID_FORTUNE_TELLER"]
+      ; 占い師
+      ; 占い結果COする・しないボタンを表示する
+      [j_setFrotuneTellerResultCOToButtonObjects]
 
-      [elsif exp="f.characterObjects[f.playerCharacterId].role.roleId !== ROLE_ID_FORTUNE_TELLER"]
-        ; 騙り占い師
-        ; 騙り占いサブルーチン実行。前日分のみ騙り占い結果を入れる
-        ; TODO 「結果COしない」ボタンを追加する
-        [eval exp="f.fakeFortuneTellingStartDay = f.day - 1"]
-        [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingCOMultipleDaysForPC"]
-        [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'noCO'"]
-      [endif]
-
+    [elsif exp="f.characterObjects[f.playerCharacterId].role.roleId !== ROLE_ID_FORTUNE_TELLER"]
+      ; 騙り占い師
+      ; 騙り占いサブルーチン実行。前日分のみ騙り占い結果を入れる
+      ; TODO 「結果COしない」ボタンを追加する
+      [eval exp="f.fakeFortuneTellingStartDay = f.day - 1"]
+      [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingCOMultipleDaysForPC"]
     [endif]
+
+    ; COしたことを表す定数を入れる。今日は「COしない」を選んだ場合は入れない。
+    [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'noCO'"]
+  [endif]
 
   ; MEMO:「[if] PCが未COの場合 [else] PCがCO済みの場合 [endif]」の順に入れ替えると「[if]文内のスクリプトが多すぎます」エラーが出る。
   ; 今後このあたりの行数や処理数を増やすときは要注意
-  [else]
+  [if exp="f.playerCORoleId === ''"]
     ; PCが未COの場合
     ; 役職COボタンを表示する
     [call storage="./askCORole.ks" target="*startAskCORole"]
@@ -362,9 +361,9 @@ MEMO 最終的には以下の構成のHTMLが生成される。
     ; 役職COする場合（ここに来るルートでresultCORoleIdに役職IDが格納済みなら、PCが未COかつ役職COしたいと確定する）
     [if exp="f.resultCORoleId !== ''"]
       ; キャラクターオブジェクトにCOした役職IDを格納する
-      [eval exp="f.characterObjects[f.playerCharacterId].CORoleId = f.playerCORoleId"]
+      [eval exp="f.characterObjects[f.playerCharacterId].CORoleId = f.resultCORoleId"]
       ; 共通および各キャラの視点オブジェクトを更新する
-      [j_cloneRolePerspectiveForCO characterId="&f.characterObjects[f.playerCharacterId].characterId" CORoleId="&f.playerCORoleId"]
+      [j_cloneRolePerspectiveForCO characterId="&f.characterObjects[f.playerCharacterId].characterId" CORoleId="&f.resultCORoleId"]
       ; TODO 「その役職をCOできない役職」をゼロ更新する。今は占い師COしかないので村人で決め打ちしている
       [eval exp="tf.tmpZeroRoleIds = [ROLE_ID_VILLAGER]"]
       [j_updateCommonPerspective characterId="&f.characterObjects[f.playerCharacterId].characterId" zeroRoleIds="&tf.tmpZeroRoleIds"]

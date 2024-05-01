@@ -1,31 +1,31 @@
 ; 役職COサブルーチン
 
 *startAskCORole
+  ; 初期化
   [eval exp="f.askCOOnceMore = false"]
+  [eval exp="f.playerCORoleId = ''"]
 
-  ; 「（騙り）役職COしますか？」
+  ; （騙り）役職COをするか問うボタンを表示
+  まだ役職COしていません。役職COしますか？
   [j_setCORoleToButtonObjects]
   [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 
-  [if exp="f.selectedButtonId === 'FortuneTellerCO'"]
-    ; 「占い師COする」
-    [eval exp="f.playerCORoleId = ROLE_ID_FORTUNE_TELLER"]
-    ; 前日の分までの占い結果を、メッセージなしでCOしたことにする
-    [j_COFortuneTellingUntilTheLastDay fortuneTellerId="&f.playerCharacterId"]
-    [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'cancel'"]
+  ; ０）「役職COしない」を選んだ場合、f.playerCORoleIdは空文字のまま
+  ; １）「占い師COする」「騙り占い師COする」を選んだ場合、f.playerCORoleIdに占い師を入れる
+  [eval exp="f.playerCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId === 'FortuneTellerCO' || f.selectedButtonId === 'fakeFortuneTellerCO'"]
+  ; MEMO:役職が増えたときも、まずはここで暫定のf.playerCORoleIdを入れる。その後でボタンごとの処理を呼び出すこと。
 
-  [elsif exp="f.selectedButtonId === 'fakeFortuneTellerCO'"]
-    ; 「騙り占い師COする」
-    [eval exp="f.playerCORoleId = ROLE_ID_FORTUNE_TELLER"]
-    [call target="*askFakeFortuneTellingResultMultipleDays"]
-    [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'cancel'"]
+  ; １－１）真占い師なら、前日の分までの占い結果をメッセージなしでCOしたことにする
+  [j_COFortuneTellingUntilTheLastDay fortuneTellerId="&f.playerCharacterId" cond="f.selectedButtonId === 'FortuneTellerCO'"]
 
-  [endif]
-  ; 「役職COしない」なら何もしない
+  ; １－２）騙り占い師なら、前日の分までの占い結果を騙っていく（※「一つ前に戻る」で戻ってくることがありうる）
+  [call target="*askFakeFortuneTellingResultMultipleDays" cond="f.selectedButtonId === 'fakeFortuneTellerCO'"]
 
-  ; 結果COの選択肢で「一つ前に戻る」で戻ってきた場合、役職COするかの選択肢をもう一度出す
+  ; 騙り結果COの選択肢で「一つ前に戻る」で戻ってきた場合、役職COするかの選択肢をもう一度出す
   [jump target="*startAskCORole" cond="f.askCOOnceMore === true"]
 
+  ; COした役職IDを格納する（「役職COしない」なら空文字）
+  [eval exp="f.resultCORoleId = f.playerCORoleId"]
 [return]
 
 
