@@ -1,3 +1,34 @@
+*startAskResultCO
+  ; 初期化
+  [eval exp="f.askCOOnceMore = false"]
+  [eval exp="f.resultCORoleId = ''"]
+
+  ; （騙り）占い結果COをするか問うボタンを表示
+  ; TODO 騙りの場合はテキストを変えたほうがよい
+  昨夜の占い結果をCOしますか？
+  [j_setFrotuneTellerResultCOToButtonObjects]
+  [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
+
+  ; ０）「何もしない」を選んだ場合、f.resultCORoleIdは空文字のまま
+  ; １）「占い結果COする」「騙り占い結果COする」を選んだ場合、f.resultCORoleIdに占い師を入れる
+  [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId === 'FortuneTellerCO' || f.selectedButtonId === 'fakeFortuneTellerCO'"]
+
+  ; １－１）真占い師なら、すでに占い済みなのでここでは何もしない
+
+  ; １－２）騙り占い師なら、前日の分の占い結果を騙っていく（※「一つ前に戻る」で戻ってくることがありうる）
+  ; TODO storageを変えるなり、移してくるなりする
+  [eval exp="f.fakeFortuneTellingStartDay = f.day - 1"]
+  [call storage="./askCORole.ks" target="*askFakeFortuneTellingResultMultipleDays" cond="f.selectedButtonId === 'fakeFortuneTellerCO'"]
+
+  ; 騙り結果COの選択肢で「一つ前に戻る」で戻ってきた場合、役職COするかの選択肢をもう一度出す
+  [jump target="*startAskResultCO" cond="f.askCOOnceMore === true"]
+
+  ; COした役職IDがf.resultCORoleIdに格納されている状態でサブルーチンを終了する（「何もしない」なら空文字）
+[return]
+
+
+
+
 ; PCの占いサブルーチン
 *fortuneTellingForPC
 
@@ -14,6 +45,7 @@
 [return]
 
 
+; TODO 削除予定
 ; PCの騙り占いサブルーチン
 ; 昼時間は*fakeFortuneTellingCOMultipleDaysForPCから呼び出すこと
 ; （上記サブルーチン内で、f.fakeFortuneTelledDayの格納を行っておく必要がある）
@@ -21,6 +53,9 @@
 *fakeFortuneTellingForPC
   ; TODO アクションボタンと同じように、第1階層はキャラクター、第2階層は騙り結果、という構成にできそう
   ; 入力し直しもできるようになるのでなるべくそうしたい
+
+  ; デッドコードを仕込む
+  [eval exp="alert('*fakeFortuneTellingForPC が実行されました')"]
 
   ; 騙り占い候補のキャラクターID配列を取得。指定された日の夜時間開始時の生存者を参照する。
   [eval exp="tf.candidateCharacterIds = f.characterObjects[f.playerCharacterId].fakeRole.getCandidateCharacterIds(f.playerCharacterId, f.fakeFortuneTelledDay)"]
@@ -51,13 +86,6 @@
       CLASS_GLINK_DEFAULT,
       [CLASS_GLINK_WHITE]
     ));
-    f.buttonObjects.push(new Button(
-      'white',
-      '人狼ではなかった',
-      'left',
-      CLASS_GLINK_DEFAULT,
-      [CLASS_GLINK_WHITE]
-    ));
   [endscript]
   [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
   ; ボタン入力をboolean型に変換する
@@ -70,12 +98,16 @@
 [return]
 
 
+; TODO 削除予定
 ; PC用の騙り占いCOサブルーチン
 ; 指定された日から、前日の夜までに占っていたことにできる。
 ; 指定された日がなければ初日から。（＝2日目以降の騙り占い師CO用）
 ; 指定された日が前日の夜ならその1回分のみ。（＝騙り占いCO済み時の、騙り占い結果CO用）
 ; @param f.fakeFortuneTellingStartDay 騙り占いを実行する開始日。指定する場合は、サブルーチン実行前に格納しておくこと。
 *fakeFortuneTellingCOMultipleDaysForPC
+
+  ; デッドコードを仕込む
+  [eval exp="alert('*fakeFortuneTellingCOMultipleDaysForPC が実行されました')"]
 
   ; 騙り占いを行う最新の日の日付（＝前日）を入れる。
   [eval exp="f.lastDay = f.day - 1"]

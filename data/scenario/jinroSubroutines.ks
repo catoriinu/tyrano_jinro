@@ -328,28 +328,11 @@ MEMO 最終的には以下の構成のHTMLが生成される。
   [eval exp="f.resultCORoleId = ''"]
 
   ; TODO メッセージを出すか、出すならその出し方を検討する
-  [j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
+  ;[j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
   ;[m_askFortuneTellerCO canCOFortuneTellerStatus="&f.canCOFortuneTellerStatus"]
 
-  ; プレイヤーのCO役職が占い師の場合
-  [if exp="f.playerCORoleId === ROLE_ID_FORTUNE_TELLER"]
-
-    [if exp="f.characterObjects[f.playerCharacterId].role.roleId === ROLE_ID_FORTUNE_TELLER"]
-      ; 占い師
-      ; 占い結果COする・しないボタンを表示する
-      [j_setFrotuneTellerResultCOToButtonObjects]
-
-    [elsif exp="f.characterObjects[f.playerCharacterId].role.roleId !== ROLE_ID_FORTUNE_TELLER"]
-      ; 騙り占い師
-      ; 騙り占いサブルーチン実行。前日分のみ騙り占い結果を入れる
-      ; TODO 「結果COしない」ボタンを追加する
-      [eval exp="f.fakeFortuneTellingStartDay = f.day - 1"]
-      [call storage="./fortuneTellingForPC.ks" target="*fakeFortuneTellingCOMultipleDaysForPC"]
-    [endif]
-
-    ; COしたことを表す定数を入れる。今日は「COしない」を選んだ場合は入れない。
-    [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'noCO'"]
-  [endif]
+  ; プレイヤーのCO役職が占い師の場合（真・騙り共用）
+  [call storage="./fortuneTellingForPC.ks" target="*startAskResultCO" cond="f.playerCORoleId === ROLE_ID_FORTUNE_TELLER"]
 
   ; MEMO:「[if] PCが未COの場合 [else] PCがCO済みの場合 [endif]」の順に入れ替えると「[if]文内のスクリプトが多すぎます」エラーが出る。
   ; 今後このあたりの行数や処理数を増やすときは要注意

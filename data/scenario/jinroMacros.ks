@@ -597,11 +597,9 @@
 
     // 占い師、騙り占い師COする
     if (characterObject.role.allowCORoles.includes(ROLE_ID_FORTUNE_TELLER)) {
-      let id = '';
-      if (characterObject.role.roleId === ROLE_ID_FORTUNE_TELLER) {
-        id = 'FortuneTellerCO';
-        text = '占い師COする';
-      } else {
+      let id = 'FortuneTellerCO';
+      let text = '占い師COする';
+      if (characterObject.role.roleId !== ROLE_ID_FORTUNE_TELLER) {
         id = 'fakeFortuneTellerCO';
         text = '騙り占い師COする';
       }
@@ -621,7 +619,6 @@
       CLASS_GLINK_DEFAULT
     ));
   [endscript]
-
 [endmacro]
 
 
@@ -629,13 +626,23 @@
 [macro name="j_setFrotuneTellerResultCOToButtonObjects"]
   ; COするしないボタン表示
   [iscript]
+    const roleId = f.characterObjects[f.playerCharacterId].role.roleId;
     f.buttonObjects = [];
+
+    // 占い結果、騙り占い結果COする
+    let id = 'FortuneTellerCO';
+    let text = '占い結果COする';
+    if (roleId !== ROLE_ID_FORTUNE_TELLER) {
+      id = 'fakeFortuneTellerCO';
+      text = '騙り占い結果COする';
+    }
     f.buttonObjects.push(new Button(
-      'FortuneTellerCO',
-      '占い結果COする',
+      id,
+      text,
       'center',
       CLASS_GLINK_DEFAULT
     ));
+
     f.buttonObjects.push(new Button(
       'noCO',
       '何もしない',
@@ -643,7 +650,6 @@
       CLASS_GLINK_DEFAULT
     ));
   [endscript]
-  [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 [endmacro]
 
 
