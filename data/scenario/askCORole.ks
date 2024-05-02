@@ -26,6 +26,17 @@
 
   ; COした役職IDを格納する（「役職COしない」なら空文字）
   [eval exp="f.resultCORoleId = f.playerCORoleId"]
+
+  ; 今回、役職COする場合
+  [if exp="f.resultCORoleId !== ''"]
+    ; キャラクターオブジェクトにCOした役職IDを格納する
+    [eval exp="f.characterObjects[f.playerCharacterId].CORoleId = f.resultCORoleId"]
+    ; 共通および各キャラの視点オブジェクトを更新する
+    [j_cloneRolePerspectiveForCO characterId="&f.characterObjects[f.playerCharacterId].characterId" CORoleId="&f.resultCORoleId"]
+    ; TODO 「その役職をCOできない役職」をゼロ更新する。今は占い師COしかないので村人で決め打ちしている
+    [eval exp="tf.tmpZeroRoleIds = [ROLE_ID_VILLAGER]"]
+    [j_updateCommonPerspective characterId="&f.characterObjects[f.playerCharacterId].characterId" zeroRoleIds="&tf.tmpZeroRoleIds"]
+  [endif]
 [return]
 
 
@@ -68,7 +79,7 @@
     [jump target="*askFakeFortuneTellingResultMultipleDays_loopend" cond="f.fakeFortuneTelledDay >= f.lastDay"]
 
     ; メッセージを表示しないでCOしたことにする（メッセージ表示が必要な、前日の分のCOは呼び元側で行う）
-    [j_COFortuneTelling fortuneTellerId="&f.playerCharacterId" day="&f.fakeFortuneTelledDay" noNeedMessage="true"]
+    [j_COFortuneTelling fortuneTellerId="&f.playerCharacterId" day="&f.fakeFortuneTelledDay" noNeedNotice="true"]
 
     ; 次の日の騙り占いを行う
     [eval exp="f.fakeFortuneTelledDay++"]

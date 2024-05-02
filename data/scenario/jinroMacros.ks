@@ -193,7 +193,7 @@
   [jump target="*fakeFortuneTellingCOMultipleDays_loopend" cond="tf.fakeFortuneTelledDay >= tf.lastDay"]
 
   ; メッセージを表示しないでCOしたことにする（メッセージ表示が必要な、前日の分のCOは呼び元側で行う）
-  [j_COFortuneTelling fortuneTellerId="&tf.fortuneTellerId" day="&tf.fakeFortuneTelledDay" noNeedMessage="true"]
+  [j_COFortuneTelling fortuneTellerId="&tf.fortuneTellerId" day="&tf.fakeFortuneTelledDay" noNeedNotice="true"]
 
   ; 次の日の騙り占いを行う
   [eval exp="tf.fakeFortuneTelledDay++"]
@@ -266,7 +266,7 @@
     [jump target="*j_COFortuneTellingUntilTheLastDay_loopend" cond="tf.CODay >= tf.lastDay"]
 
     ; メッセージなしでCOしたことにする
-    [j_COFortuneTelling fortuneTellerId="&tf.COFortuneTellerId" day="&tf.CODay" noNeedMessage="true"]
+    [j_COFortuneTelling fortuneTellerId="&tf.COFortuneTellerId" day="&tf.CODay" noNeedNotice="true"]
 
     ; 次の日の分をCOする
     [eval exp="tf.CODay++"]
@@ -406,7 +406,7 @@
 ; 占い師、占い騙り両対応。
 ; @param fortuneTellerId 取得したい占い師（騙り占い）のキャラクターID。必須
 ; @param [day] 取得したい占い日。指定しない場合、その占い師の最新の履歴を取得する。引数の渡し方（型）は0でも"0"でも可。
-; @param [noNeedMessage] 占いCOメッセージを表示しないか。trueなら表示しない（複数日分の占いCO時、前日以外の分は表示しないべき）
+; @param [noNeedNotice] 占いCO演出（カットインやメッセージ）を表示しないか。trueなら表示しない（複数日分の占いCO時、前日以外の分は表示しないべき）
 [macro name="j_COFortuneTelling"]
 
   [iscript]
@@ -450,9 +450,11 @@
     f.characterObjects[mp.fortuneTellerId].isDoneTodaysCO = true;
   [endscript]
 
-  ; メッセージ出力（mp.noNeedMessageがtrueなら表示しない）
-  [m_COFortuneTelling cond="!(('noNeedMessage' in mp) && (mp.noNeedMessage === 'true' || mp.noNeedMessage === true))"]
-
+  ; 占い演出、メッセージ出力（mp.noNeedNoticeがtrueなら表示しない）
+  [if exp="!(('noNeedNotice' in mp) && (mp.noNeedNotice === 'true' || mp.noNeedNotice === true))"]
+    [j_cutin1]
+    [m_COFortuneTelling]
+  [endif]
 [endmacro]
 
 
@@ -589,6 +591,7 @@
 [endmacro]
 
 
+; 役職COするかを問うボタンオブジェクトを設定する（TODO:現状は占い師のみ考慮しているが、他の役職もここに追加する想定）
 ; @param characterId 判定対象のキャラクターID。必須。
 [macro name="j_setCORoleToButtonObjects"]
   [iscript]
@@ -622,6 +625,7 @@
 [endmacro]
 
 
+; 占い結果COするかを問うボタンオブジェクトを設定する
 ; @param characterId 判定対象のキャラクターID。必須。
 [macro name="j_setFrotuneTellerResultCOToButtonObjects"]
   ; COするしないボタン表示
@@ -1177,17 +1181,6 @@
     ; 敗北
     [playse storage="chiin1.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
   [endif]
-[endmacro]
-
-
-; TODO 現状使っていないマクロ。完全に不要になったら消す。
-[macro name="j_displayRoles"]
-役職公開[r]
-ずんだもん：[emb exp="f.characterObjects.zundamon.role.roleName"]、
-四国めたん：[emb exp="f.characterObjects.metan.role.roleName"]、
-春日部つむぎ：[emb exp="f.characterObjects.tsumugi.role.roleName"]、
-雨晴はう：[emb exp="f.characterObjects.hau.role.roleName"]、
-波音リツ：[emb exp="f.characterObjects.ritsu.role.roleName"][p]
 [endmacro]
 
 

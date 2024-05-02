@@ -327,42 +327,17 @@ MEMO 最終的には以下の構成のHTMLが生成される。
   ; 役職結果COをする役職ID格納用変数を初期化しておく
   [eval exp="f.resultCORoleId = ''"]
 
-  ; TODO メッセージを出すか、出すならその出し方を検討する
-  ;[j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
-  ;[m_askFortuneTellerCO canCOFortuneTellerStatus="&f.canCOFortuneTellerStatus"]
-
   ; プレイヤーのCO役職が占い師の場合（真・騙り共用）
+  ; 結果COボタンを表示、騙りなら結果騙りも行う
   [call storage="./fortuneTellingForPC.ks" target="*startAskResultCO" cond="f.playerCORoleId === ROLE_ID_FORTUNE_TELLER"]
 
-  ; MEMO:「[if] PCが未COの場合 [else] PCがCO済みの場合 [endif]」の順に入れ替えると「[if]文内のスクリプトが多すぎます」エラーが出る。
-  ; 今後このあたりの行数や処理数を増やすときは要注意
-  [if exp="f.playerCORoleId === ''"]
-    ; PCが未COの場合
-    ; 役職COボタンを表示する
-    [call storage="./askCORole.ks" target="*startAskCORole"]
- 
-    ; 役職COする場合（ここに来るルートでresultCORoleIdに役職IDが格納済みなら、PCが未COかつ役職COしたいと確定する）
-    [if exp="f.resultCORoleId !== ''"]
-      ; キャラクターオブジェクトにCOした役職IDを格納する
-      [eval exp="f.characterObjects[f.playerCharacterId].CORoleId = f.resultCORoleId"]
-      ; 共通および各キャラの視点オブジェクトを更新する
-      [j_cloneRolePerspectiveForCO characterId="&f.characterObjects[f.playerCharacterId].characterId" CORoleId="&f.resultCORoleId"]
-      ; TODO 「その役職をCOできない役職」をゼロ更新する。今は占い師COしかないので村人で決め打ちしている
-      [eval exp="tf.tmpZeroRoleIds = [ROLE_ID_VILLAGER]"]
-      [j_updateCommonPerspective characterId="&f.characterObjects[f.playerCharacterId].characterId" zeroRoleIds="&tf.tmpZeroRoleIds"]
-    [endif]
-    
-  [endif]
+  ; プレイヤーが役職未COの場合
+  ; 役職COボタンを表示、役職COするなら前日までの結果COも行う、視点オブジェクトを更新
+  [call storage="./askCORole.ks" target="*startAskCORole" cond="f.playerCORoleId === ''"]
 
-  ; 占い師の役職結果CO（「役職COしない」「結果COしない」を選んだときはCOしない）
-  [if exp="f.resultCORoleId === ROLE_ID_FORTUNE_TELLER"]
-    ; 占いカットイン発生
-    [j_cutin1]
-
-    ; 指定した占い師のCOを実行する（メッセージは当日分のみ表示）
-    [j_COFortuneTelling fortuneTellerId="&f.playerCharacterId"]
-  [endif]
-  ; NOTE:役職が増えたときはここにelsifで増やしていく
+  ; 占い師の役職結果CO（（メッセージは当日分のみ表示）「役職COしない」「結果COしない」を選んだときはCOしない）
+  [j_COFortuneTelling fortuneTellerId="&f.playerCharacterId" cond="f.resultCORoleId === ROLE_ID_FORTUNE_TELLER"]
+  ; NOTE:役職が増えたときはここにcondでマクロを増やしていく
 
 *COPhasePlayer_end
 [return]

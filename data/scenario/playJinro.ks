@@ -117,17 +117,17 @@
 ; NPCにCO候補者がいるフラグを初期化する
 [eval exp="f.notExistCOCandidateNPC = false"]
 
-
 ; 【チュートリアル】
 [call storage="tutorial.ks" target="COPhase" cond="sf.tutorialMode && !f.doneTutorial.COPhase"]
 
 *COPhasePlayer
-
+; PC（占い師、人狼、狂人）による占いCOフェイズ
 [call storage="./jinroSubroutines.ks" target="*COPhasePlayer"]
 
+; COフェイズ終了判定
 ; f.notExistCOCandidateNPCがtrueなら、COフェイズ終了(NPCにCO候補者がいないため、これ以上COする者はいないとする)
+; falseなら、COフェイズ継続(まだNPCにCO候補者がいるので、NPCのCOを確認する)
 [jump target="*discussionPhase" cond="f.notExistCOCandidateNPC"]
-; f.notExistCOCandidateNPCがfalseなら、COフェイズ継続(まだNPCにCO候補者がいるので、NPCのCOを確認する)
 
 *COPhaseNPC
 ; NPC（占い師、人狼、狂人）による占いCOフェイズ
@@ -163,13 +163,10 @@
   ……沈黙が流れた。これ以上、COしたい者はいないようだ。[p]
 
   [j_setIsNeedToAskPCWantToCO]
-  [if exp="!tf.isNeedToAskPCWantToCO"]
-    ; COフェイズ終了(PCはCO確認する必要がない状態のため、これ以上COする者はいないとする)
-    [jump target="*discussionPhase"]
-  [else]
-    ; COフェイズ継続(NPCにCO者がいないことを受けて、PCのCOを確認する)
-    [jump target="*COPhasePlayer"]
-  [endif]
+  ; COフェイズ終了(PCはCO確認する必要がない状態のため、これ以上COする者はいないとする)
+  [jump target="*discussionPhase" cond="!tf.isNeedToAskPCWantToCO"]
+  ; COフェイズ継続(NPCにCO者がいないことを受けて、PCのCOを確認する)
+  [jump target="*COPhasePlayer"]
 
 [else]
   ; CO候補者がいるなら、そのキャラクターの行動を開始する
@@ -198,9 +195,6 @@
     [eval exp="tf.fakeFortuneTelledDay = f.day - 1"]
     [j_fakeFortuneTellingCOMultipleDays fortuneTellerId="&f.COCandidateId" fakeFortuneTelledDay="&tf.fakeFortuneTelledDay"]
   [endif]
-
-  ; 占いカットイン発生
-  [j_cutin1]
 
   ; 指定した占い師のCOを実行する（メッセージは当日分のみ表示）
   [j_COFortuneTelling fortuneTellerId="&f.COCandidateId"]

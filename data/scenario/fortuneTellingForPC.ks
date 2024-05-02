@@ -126,7 +126,7 @@
   [jump target="*fakeFortuneTellingCOMultipleDays_loopend" cond="f.fakeFortuneTelledDay >= f.lastDay"]
 
   ; メッセージを表示しないでCOしたことにする（メッセージ表示が必要な、前日の分のCOは呼び元側で行う）
-  [j_COFortuneTelling fortuneTellerId="&f.playerCharacterId" day="&f.fakeFortuneTelledDay" noNeedMessage="true"]
+  [j_COFortuneTelling fortuneTellerId="&f.playerCharacterId" day="&f.fakeFortuneTelledDay" noNeedNotice="true"]
 
   ; 次の日の騙り占いを行う
   [eval exp="f.fakeFortuneTelledDay++"]
