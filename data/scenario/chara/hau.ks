@@ -9,11 +9,12 @@
   [eval exp="tf.characterId = CHARACTER_ID_HAU"]
 
   ; キャラ画像のデフォルト座標をゲーム変数に格納する
-  ; 画面内への登場時の定位置はleft="796" top="143"
   [iscript]
     f.defaultPosition[tf.characterId] = {
-      side: 'right', // デフォルト待機位置
-      left: 1807, // デフォルト座標（left）
+      //side: 'right', // デフォルト待機位置
+      //left: 1807, // デフォルト座標（left）
+      side: 'left', // デフォルト待機位置
+      left: -1082, // デフォルト座標（left）
       top: 159, // デフォルト座標（top）
       width: 556, // 画像の幅（画面幅1280pxの中での幅）
       haight: 940, // 画像の高さ（画面高さ720pxの中での高さ）
@@ -35,7 +36,7 @@
 
   ; キャラクターの登録
   ; だいたいtf.characterIdを参照してくれるが、storageとjnameには正確な文字列を入れること
-  [chara_new name="&tf.characterId" storage="chara/hau/normal.png" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" jname="雨晴はう"]
+  [chara_new name="&tf.characterId" storage="chara/hau/normal.png" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" jname="雨晴はう" reflect="true" ]
   [chara_face name="&tf.characterId" face="astonished" storage="chara/hau/astonished.png"]
   [chara_face name="&tf.characterId" face="laughing" storage="chara/hau/laughing.png"]
   [chara_face name="&tf.characterId" face="normal" storage="chara/hau/normal.png"]

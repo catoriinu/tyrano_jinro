@@ -9,11 +9,12 @@
   [eval exp="tf.characterId = CHARACTER_ID_RITSU"]
 
   ; キャラ画像のデフォルト座標をゲーム変数に格納する
-  ; 画面内への登場時の定位置はleft="765" top="111"
   [iscript]
     f.defaultPosition[tf.characterId] = {
-      side: 'right', // デフォルト待機位置
-      left: 1765, // デフォルト座標（left）
+      //side: 'right', // デフォルト待機位置
+      //left: 1775, // デフォルト座標（left）
+      side: 'left', // デフォルト待機位置
+      left: -1133, // デフォルト座標（left）
       top: 124, // デフォルト座標（top）
       width: 640, // 画像の幅（画面幅1280pxの中での幅）
       haight: 960, // 画像の高さ（画面高さ720pxの中での高さ）
@@ -35,7 +36,7 @@
 
   ; キャラクターの登録
   ; だいたいtf.characterIdを参照してくれるが、storageとjnameには正確な文字列を入れること
-  [chara_new name="&tf.characterId" storage="chara/ritsu/normal.png" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" jname="波音リツ"]
+  [chara_new name="&tf.characterId" storage="chara/ritsu/normal.png" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" jname="波音リツ" reflect="true" ]
   [chara_face name="&tf.characterId" face="angry" storage="chara/ritsu/angry.png"]
   [chara_face name="&tf.characterId" face="astonished" storage="chara/ritsu/astonished.png"]
   [chara_face name="&tf.characterId" face="blank" storage="chara/ritsu/blank.png"]

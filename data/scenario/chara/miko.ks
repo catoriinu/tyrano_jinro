@@ -9,7 +9,6 @@
   [eval exp="tf.characterId = 'miko'"]
 
   ; キャラ画像のデフォルト座標をゲーム変数に格納する
-  ; 画面内への登場時の定位置はleft="796" top="143"
   [iscript]
     f.defaultPosition[tf.characterId] = {
       side: 'right', // デフォルト待機位置
