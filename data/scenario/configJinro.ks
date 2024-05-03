@@ -23,13 +23,14 @@
   tf.tmp_bgm_vol   = sf.config.current_bgm_vol;
   tf.tmp_se_vol    = sf.config.current_se_vol;
   tf.tmp_voice_vol = sf.config.current_voice_vol;
-  tf.tmp_ch_speed_reverse = String(100 - sf.config.current_ch_speed);
+  tf.tmp_ch_speed_reverse = String(105 - sf.config.current_ch_speed);
   /*
    * tf.tmp_ch_speed_reverseについて：
    * ティラノの[configdelay]のspeedは「次の1文字を表示するまでのミリ秒」であり、値が小さいほど表示が早くなる。
    * それをスライダーで表すと、左の方が早くなり直感に反する。
-   * なので、スライダーが0（左）なら最も遅い（speed="100"）、スライダーが100（右）なら最も早い（speed="0"）になるようにするため、
-   * 一時変数には、100からシステム変数を引いた値を入れておく。
+   * なので、スライダーが0（左）なら最も遅い（speed="105"）、スライダーが100（右）なら最も早い（speed="5"）になるようにするため、
+   * 一時変数には、105からシステム変数を引いた値を入れておく。
+   * （※105の5は処理の猶予時間。猶予0だと変数格納が間に合わないエラーが多発したため）
    */
 
   /* 画像類のパス */
@@ -329,10 +330,10 @@
 
 *ch_speed_change
 
-; 一時変数に格納されているのはスライダーで設定したvalue。そこから100を引くことで[configdelay]のspeedに設定したい値（この時点では数値型）になる。
+; 一時変数に格納されているのはスライダーで設定したvalue。105からそれを引くことで[configdelay]のspeedに設定したい値（この時点では数値型）になる。
 ; このファイルの「tf.tmp_ch_speed_reverseについて」のコメント参照
 [iscript]
-  sf.config.current_ch_speed = 100 - parseInt(tf.tmp_ch_speed_reverse);
+  sf.config.current_ch_speed = 105 - parseInt(tf.tmp_ch_speed_reverse);
   // 数字の0だと無視される仕様なので必ず文字列変換すること
   tf.tmp_ch_speed = String(sf.config.current_ch_speed);
 [endscript]
