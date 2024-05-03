@@ -10,7 +10,7 @@ if (!('theaterProgress' in TYRANO.kag.variable.sf)) {
   TYRANO.kag.variable.sf.theaterProgress = {
     'p01': {
       'e01': {
-        'c01': THEATER_UNLOCKED
+        'c01': THEATER_UNLOCKED,
       }
     }
   }
@@ -47,10 +47,11 @@ function getEpisodes(
  * @param {String} pageId ページID
  * @param {String} episodeId エピソードID
  * @param {String} chapterId チャプターID
+ * @param {any} defaultProgress 進捗が存在しない場合に返却する値
  * @returns {Number} シアター進捗定数
  */
-function getTheaterProgress(pageId, episodeId, chapterId) {
-  // 進捗状況内に進捗があればそれを、なければ未解放を格納する
+function getTheaterProgress(pageId, episodeId, chapterId, defaultProgress = THEATER_LOCKED) {
+  // 進捗状況内に進捗があればそれを、なければデフォルト値を返却する
   const theaterProgress = TYRANO.kag.variable.sf.theaterProgress;
   if (
     pageId in theaterProgress &&
@@ -59,5 +60,29 @@ function getTheaterProgress(pageId, episodeId, chapterId) {
   ) {
     return theaterProgress[pageId][episodeId][chapterId];
   }
-  return THEATER_LOCKED;
+  return defaultProgress;
+}
+
+
+/**
+ * 指定された複数のチャプターの進捗が、すべて指定の進捗状況である場合にのみtrueを返す
+ * ※3重ループで全パターンチェックする実装なので、要素を渡しすぎた場合はパフォーマンスが落ちるので注意
+ * @param {Number} シアター進捗定数
+ * @param {Array} pageIdList ページID配列
+ * @param {Array} episodeIdList エピソードID配列
+ * @param {Array} chapterIdList チャプターID配列
+ * @returns {Boolean} true: 全チャプターが満たしている / false: 満たしていないチャプターがある
+ */
+function everyProgressMatch(targetProgress, pageIdList, episodeIdList, chapterIdList) {
+  console.log('everyProgressMatch targetProgress=' + targetProgress);
+  for (let pageId of pageIdList) {
+    for (let episodeId of episodeIdList) {
+      for (let chapterId of chapterIdList) {
+        let progress = getTheaterProgress(pageId, episodeId, chapterId);
+        console.log(pageId + '_' + episodeId + '_' + chapterId + '=' + progress);
+        if (progress !== targetProgress) return false;
+      }
+    }
+  }
+  return true;
 }

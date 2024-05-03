@@ -139,6 +139,8 @@
 
   ; 視聴済みに更新する
   [t_updateProgressWatched pageId="&mp.pageId" episodeId="&mp.episodeId" chapterId="&mp.chapterId"]
+  ; 視聴終了時に解放すべきシアター進捗があれば解放する
+  [call storage="theater/unlockProgress.ks" target="*start"]
 
   [eval exp="f.quickShowEpisodeWindow = true"]
 
