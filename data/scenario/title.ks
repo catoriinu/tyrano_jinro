@@ -3,7 +3,7 @@
 
 [clearstack]
 [bg storage="voivojinrou_green.png" time="100" wait="true"]
-[bg storage="voivojinrou_title_v2.png" time="100"]
+[bg storage="voivojinrou_title_v3.png" time="100"]
 [wait time="100"]
 
 *start 
