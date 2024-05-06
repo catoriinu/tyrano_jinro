@@ -36,16 +36,15 @@ if (!f.quickShowEpisodeWindow) {
 [position layer="message0" frame="message_window_none.png"]
 
 
-; シアター枠画像
-[image storage="theater/theater_rectangle.png" layer="0" name="theater1" x="12" y="6"]
-[image storage="theater/theater_rectangle.png" layer="0" name="theater1" x="249" y="6"]
-[image storage="theater/theater_rectangle.png" layer="0" name="theater1" x="486" y="6"]
-[image storage="theater/theater_rectangle.png" layer="0" name="theater1" x="723" y="6"]
-
-[image storage="theater/theater_rectangle.png" layer="0" name="theater1" x="12" y="260"]
-[image storage="theater/theater_rectangle.png" layer="0" name="theater1" x="249" y="260"]
-[image storage="theater/theater_rectangle.png" layer="0" name="theater1" x="486" y="260"]
-[image storage="theater/theater_rectangle.png" layer="0" name="theater1" x="723" y="260"]
+; エピソード選択用画像
+[t_imageTheaterRectangle pageId="&f.displayPageId" episodeId="e01"]
+[t_imageTheaterRectangle pageId="&f.displayPageId" episodeId="e02"]
+[t_imageTheaterRectangle pageId="&f.displayPageId" episodeId="e03"]
+[t_imageTheaterRectangle pageId="&f.displayPageId" episodeId="e04"]
+[t_imageTheaterRectangle pageId="&f.displayPageId" episodeId="e05"]
+[t_imageTheaterRectangle pageId="&f.displayPageId" episodeId="e06"]
+[t_imageTheaterRectangle pageId="&f.displayPageId" episodeId="e07"]
+[t_imageTheaterRectangle pageId="&f.displayPageId" episodeId="e08"]
 
 ; サムネ画像
 [image storage="&f.episodeList.e01.thumbnail" layer="0" left="24.5" top="19" width="200" height="112.5" name="thumbnail"]
@@ -59,15 +58,15 @@ if (!f.quickShowEpisodeWindow) {
 [image storage="&f.episodeList.e08.thumbnail" layer="0" left="735.5" top="274" width="200" height="112.5" name="thumbnail"]
 
 ; シアタータイトル文字（全角24文字まで）
-[ptext layer="0" text="&f.episodeList.e01.title" face="MPLUSRounded" size="24" x="29" y="136" width="200"]
-[ptext layer="0" text="&f.episodeList.e02.title" face="MPLUSRounded" size="24" x="264" y="136" width="200"]
-[ptext layer="0" text="&f.episodeList.e03.title" face="MPLUSRounded" size="24" x="501" y="136" width="200"]
-[ptext layer="0" text="&f.episodeList.e04.title" face="MPLUSRounded" size="24" x="738" y="136" width="200"]
+[ptext layer="0" text="&f.episodeList.e01.title" face="MPLUSRounded" size="24" x="29" y="138" width="200"]
+[ptext layer="0" text="&f.episodeList.e02.title" face="MPLUSRounded" size="24" x="264" y="138" width="200"]
+[ptext layer="0" text="&f.episodeList.e03.title" face="MPLUSRounded" size="24" x="501" y="138" width="200"]
+[ptext layer="0" text="&f.episodeList.e04.title" face="MPLUSRounded" size="24" x="738" y="138" width="200"]
 
-[ptext layer="0" text="&f.episodeList.e05.title" face="MPLUSRounded" size="24" x="29" y="391" width="200"]
-[ptext layer="0" text="&f.episodeList.e06.title" face="MPLUSRounded" size="24" x="264" y="391" width="200"]
-[ptext layer="0" text="&f.episodeList.e07.title" face="MPLUSRounded" size="24" x="501" y="391" width="200"]
-[ptext layer="0" text="&f.episodeList.e08.title" face="MPLUSRounded" size="24" x="738" y="391" width="200"]
+[ptext layer="0" text="&f.episodeList.e05.title" face="MPLUSRounded" size="24" x="29" y="393" width="200"]
+[ptext layer="0" text="&f.episodeList.e06.title" face="MPLUSRounded" size="24" x="264" y="393" width="200"]
+[ptext layer="0" text="&f.episodeList.e07.title" face="MPLUSRounded" size="24" x="501" y="393" width="200"]
+[ptext layer="0" text="&f.episodeList.e08.title" face="MPLUSRounded" size="24" x="738" y="393" width="200"]
 
 [layopt visible="true" layer="0"]
 

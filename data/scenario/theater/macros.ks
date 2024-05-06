@@ -155,3 +155,38 @@
   ; TODO BGMを元に戻す
 
 [endmacro]
+
+
+; シアター画面のエピソード選択用画像表示用マクロ
+; @param pageId
+; @param episodeId
+[macro name="t_imageTheaterRectangle"]
+  [iscript]
+    // e01～e08までのエピソード選択用画像の表示位置を定義
+    tf.episodeCoodinate = {
+      'e01':{x: 12, y: 6},
+      'e02':{x: 249,y: 6},
+      'e03':{x: 486, y: 6},
+      'e04':{x: 723, y: 6},
+      'e05':{x: 12, y: 260},
+      'e06':{x: 249, y: 260},
+      'e07':{x: 486, y: 260},
+      'e08':{x: 723, y: 260},
+    }
+  [endscript]
+
+  ; 解決編の進捗を一時変数に取得
+  [t_isProgressUnlocked pageId="&mp.pageId" episodeId="&mp.episodeId" chapterId="c02"]
+  [t_isProgressWatched  pageId="&mp.pageId" episodeId="&mp.episodeId" chapterId="c02"]
+
+  [if exp="tf.isProgressWatched"]
+    ; 解決編が視聴済みなら金枠
+    [image storage="theater/theater_gold_rectangle.png" layer="0" name="theater1" x="&tf.episodeCoodinate[mp.episodeId].x" y="&tf.episodeCoodinate[mp.episodeId].y"]
+  [elsif exp="tf.isProgressUnlocked"]
+    ; 解決編が解放済みだが未視聴なら銀枠（導入編の進捗は考慮しなくてよい。プレイヤーが解放条件を満たすか、導入編を見るかしないといけない、ということを銀枠は示している）
+    [image storage="theater/theater_silver_rectangle.png" layer="0" name="theater1" x="&tf.episodeCoodinate[mp.episodeId].x" y="&tf.episodeCoodinate[mp.episodeId].y"]
+  [else]
+    ; 解決編が未解放なら通常枠
+    [image storage="theater/theater_normal_rectangle.png" layer="0" name="theater1" x="&tf.episodeCoodinate[mp.episodeId].x" y="&tf.episodeCoodinate[mp.episodeId].y"]
+  [endif]
+[endmacro]
