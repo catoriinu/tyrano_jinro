@@ -10,12 +10,14 @@
   ; キャラ画像のデフォルト座標をゲーム変数に格納する
   [iscript]
     f.defaultPosition[tf.characterId] = {
-      side: 'right', // デフォルト待機位置
-      left: -1070, // デフォルト座標（left）
-      top: 140, // デフォルト座標（top）
-      width: 522, // 画像の幅（画面幅1280pxの中での幅）
-      haight: 958, // 画像の高さ（画面高さ720pxの中での高さ）
-      widthCenter: 261, // 画像の幅の中央(反転しない状態で)
+      //side: 'right', // デフォルト待機位置
+      //left: 1819, // デフォルト座標（left）
+      side: 'left', // デフォルト待機位置
+      left: -1052, // デフォルト座標（left）
+      top: 162, // デフォルト座標（top）
+      width: 516, // 画像の幅（画面幅1280pxの中での幅）
+      haight: 946, // 画像の高さ（画面高さ720pxの中での高さ）
+      widthCenter: 249, // 画像の幅の中央(反転しない状態で)
     }
     // キャラクターのイメージカラーのカラーコード
     f.color.character[tf.characterId] = '#b7b6bb';

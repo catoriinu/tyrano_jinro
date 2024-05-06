@@ -28,7 +28,13 @@ const PARTICIPANTS_LIST = [
   {characterId: CHARACTER_ID_TSUMUGI,  name: '春日部つむぎ'},
   {characterId: CHARACTER_ID_HAU,      name: '雨晴はう'},
   {characterId: CHARACTER_ID_RITSU,    name: '波音リツ'},
-//  {characterId: CHARACTER_ID_MOCHIKO,  name: 'もち子さん'},
+  {characterId: CHARACTER_ID_TAKEHIRO, name: '玄野武宏'},
+  {characterId: CHARACTER_ID_KOTARO,   name: '白上虎太郎'},
+  {characterId: CHARACTER_ID_RYUSEI,   name: '青山龍星'},
+  {characterId: CHARACTER_ID_HIMARI,   name: '冥鳴ひまり'},
+  {characterId: CHARACTER_ID_SORA,     name: '九州そら'},
+  {characterId: CHARACTER_ID_MESUO,    name: '剣崎雌雄'},
+  {characterId: CHARACTER_ID_MOCHIKO,  name: 'もち子さん'},
 //  {characterId: CHARACTER_ID_MIKO,     name: '櫻歌ミコ'},
 ];
 
