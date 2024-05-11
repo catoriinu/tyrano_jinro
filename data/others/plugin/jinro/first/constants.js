@@ -38,6 +38,28 @@ const PARTICIPANTS_LIST = [
 //  {characterId: CHARACTER_ID_MIKO,     name: '櫻歌ミコ'},
 ];
 
+// 実装済みキャラクターの参加ステータス
+const PARTICIPATE_AS_PC = 'pc';
+const PARTICIPATE_AS_NPC = 'npc';
+const NOT_PARTICIPATE = 'not';
+// 初回起動時のみ、デフォルト設定値を入れる
+if (!('participantStatus' in TYRANO.kag.variable.sf)) {
+  TYRANO.kag.variable.sf.participantStatus = {
+    [CHARACTER_ID_ZUNDAMON]: PARTICIPATE_AS_PC,
+    [CHARACTER_ID_METAN]:    PARTICIPATE_AS_NPC,
+    [CHARACTER_ID_TSUMUGI]:  PARTICIPATE_AS_NPC,
+    [CHARACTER_ID_HAU]:      PARTICIPATE_AS_NPC,
+    [CHARACTER_ID_RITSU]:    PARTICIPATE_AS_NPC,
+    [CHARACTER_ID_TAKEHIRO]: NOT_PARTICIPATE,
+    [CHARACTER_ID_KOTARO]:   NOT_PARTICIPATE,
+    [CHARACTER_ID_RYUSEI]:   NOT_PARTICIPATE,
+    [CHARACTER_ID_HIMARI]:   NOT_PARTICIPATE,
+    [CHARACTER_ID_SORA]:     NOT_PARTICIPATE,
+    [CHARACTER_ID_MESUO]:    NOT_PARTICIPATE,
+    [CHARACTER_ID_MOCHIKO]:  NOT_PARTICIPATE,
+  }
+}
+
 // 役職ID
 const ROLE_ID_VILLAGER       = 'villager'; // 村人
 const ROLE_ID_WEREWOLF       = 'werewolf'; // 人狼

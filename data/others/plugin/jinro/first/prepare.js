@@ -49,7 +49,13 @@ function fillAndSortParticipantObjectList(participantsNumber, participantObjectL
   // 以下の各オブジェクトから、扱いやすくするためにキャラクターID配列にして取り出す
   const confirmedParticipantsIdList = participantObjectList.map(obj => obj.characterId); // 引数時点で参加確定済みの参加者
   const allCharacterIdList = PARTICIPANTS_LIST.map(obj => obj.characterId); // 実装済みの全キャラクター
-  const candidatesIdList = allCharacterIdList.filter(cId => !confirmedParticipantsIdList.includes(cId)); // 候補者（＝全キャラから確定済みを除いた残りのキャラクター）
+  const candidatesIdList = allCharacterIdList.filter(cId => 
+    // 全キャラのうちから、参加確定済みを除いた残り
+    !confirmedParticipantsIdList.includes(cId) &&
+    // かつ、参加ステータスがNPCであるキャラ
+    cId in TYRANO.kag.variable.sf.participantStatus &&
+    TYRANO.kag.variable.sf.participantStatus[cId] === PARTICIPATE_AS_NPC
+  );
 
   // 未確定の参加者の人数分、候補者のうちからランダムに参加者として選出する
   for (let i = 0; i < unconfirmedParticipantsNumber; i++) {
