@@ -255,13 +255,25 @@
 ; キャラの表示位置は、PC：画面左側、NPC：画面右側とする。同じ側には一人しか出ない（ので、例えばNPC1が右側にいるときNPC2が喋る場合、NPC1が退場してからNPC2が登場する）
 ; すでにそのキャラがchara_newで登録,およびその表情がchara_faceで登録済みである前提とする。
 ; @param characterId 登場させたいキャラのキャラクターID。必須。
-; @param face 登場させたいキャラのface。基本的に必須。
+; @param face 登場させたいキャラのface。未指定の場合は表情は変えない。
+; @param side 画面のどちら側に登場させるか。'left'で左側。それ以外または未指定の場合は右側。
 [macro name="m_changeCharacter"]
+  [iscript]
+    // マクロの引数を一時変数に保持しておく。別マクロを呼ぶ際にmpが上書きされ、戻ってきたときに参照できなくなるため
+    tf.cc = clone(mp)
 
-  ; マクロの引数を一時変数に保持しておく。別マクロを呼ぶ際にmpが上書きされ、戻ってきたときに参照できなくなるため
-  [eval exp="tf.cc = clone(mp)"]
-  ; そのキャラがデフォルトで登場する位置を格納する（exitCharacterマクロでtf.side変数を上書きするため、tc.cc配下に保持しておく）
-  [eval exp="tf.cc.side = f.defaultPosition[tf.cc.characterId].side"] 
+    // exitCharacterマクロでtf.side変数を上書きしてしまうため、tc.cc配下に保持しておく
+    tf.cc.counterSide = 'right';
+    if (!(('side' in tf.cc) && tf.cc.side == 'left')) {
+      tf.cc.side = 'right';
+      tf.cc.counterSide = 'left';
+    }
+  [endscript]
+
+  ; 自分自身がすでに登場済み、かつ逆側に登場させる場合、まず自分自身を退場させる
+  [if exp="f.displayedCharacter[tf.cc.counterSide].characterId == tf.cc.characterId"]
+    [m_exitCharacter characterId="&tf.cc.characterId"]
+  [endif]
 
   ; その位置に既に登場しているキャラがいる場合
   [if exp="f.displayedCharacter[tf.cc.side].isDisplay"]
@@ -301,13 +313,20 @@
 
   [eval exp="console.log('★enter ' + mp.characterId)"]
 
+  ; sideに合わせて、キャラクター画像を移動させるべき量を格納する
+  [eval exp="tf.moveLeft = '-=1000'" cond="mp.side == 'right'"]
+  [eval exp="tf.moveLeft = '+=1000'" cond="mp.side == 'left'"]
+
+  ; sideがleftの場合のみ、一度leftOnDefautLeftの位置に移動させる。デフォルトの待機位置がleftOnDefautRightなので。
+  [chara_move name="&mp.characterId" time="1" left="&f.defaultPosition[tf.characterId].leftOnDefautLeft" wait="true" cond="mp.side == 'left'"]
+
   ; 表情を変える
   ; MEMO 「そのキャラの今の表情」を取得可能であれば、「今の表情と違う場合のみ」にしたい。が、HTML要素内に表情の情報がimgのパスくらいしかなかったので無理そう。
   [chara_mod name="&mp.characterId" face="&mp.face" time="1" wait="false"]
 
-  ; sideに合わせて、キャラクター画像を移動させるべき量を格納する
-  [eval exp="tf.moveLeft = '-=1000'" cond="mp.side == 'right'"]
-  [eval exp="tf.moveLeft = '+=1000'" cond="mp.side == 'left'"]
+  ; 画面の内側向きになるように画像の向きを変える 
+  [chara_mod name="&mp.characterId" reflect="false" time="1" wait="false" cond="mp.side == 'right'"]
+  [chara_mod name="&mp.characterId" reflect="true" time="1" wait="false" cond="mp.side == 'left'"]
 
   ; sideがrightなら画面右から右側に、leftなら画面左から左側にスライドインしてくる
   [chara_move name="&mp.characterId" time="600" anim="true" left="&tf.moveLeft" wait="false" effect="easeOutExpo"]
@@ -336,8 +355,8 @@
 
   [eval exp="console.log('★exit ' + mp.characterId)"]
 
-  ; そのキャラをデフォルトの位置に移動させる
-  [chara_move name="&mp.characterId" time="600" left="&f.defaultPosition[mp.characterId].left" wait="false"]
+  ; そのキャラをデフォルトの待機位置に移動させる
+  [chara_move name="&mp.characterId" time="600" left="&f.defaultPosition[mp.characterId].leftOnDefautRight" wait="false"]
 
   ; 表示キャラオブジェクトを更新する
   [eval exp="f.displayedCharacter[tf.side] = new DisplayedCharacterSingle()"]
@@ -349,7 +368,6 @@
 ; キャラクター表示状態リセットマクロ
 ; 左のキャラクターの表情をノーマルに戻し、右のキャラクターを退場させるマクロ
 ; フェイズの転換時にリセットするために使う
-; @param characterId 退場させたいキャラのキャラクターID。必須。
 [macro name="m_resetDisplayCharacter"]
   [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 
@@ -363,7 +381,8 @@
 ; @param characterId 発言者のキャラクターID。指定しない場合はnameが必須になる。
 ; @param name 発言者のキャラクター名。characterIdが指定されている場合そちらが優先。
 ; @param face 発言者のface。指定がなければそのまま。
-; @param side 発言者が登場する位置。指定がなければそのまま。
+; @param side 発言者が登場する位置。'left'で左側。それ以外または未指定の場合は右側。
+; NOTE 使いづらかったら変える。
 [macro name="m_changeCharacterFrameName"]
 
   [iscript]
@@ -378,6 +397,8 @@
     if (!('characterId' in tf.ccfn)) {
       tf.ccfn.characterId = getCharacterIdByName(tf.ccfn.name);
     }
+
+    tf.ccfn.side = (('side' in tf.ccfn) && tf.ccfn.side == 'left') ? 'left' : 'right';
 
     // マクロの引数にnameが未指定なら、characterIdをもとに取得してくる
     if (!('name' in tf.ccfn)) {
@@ -396,9 +417,9 @@
 
   ; マクロの引数にfaceが未指定なら、faceを渡さない=表情はそのままにする。
   [if exp="'face' in tf.ccfn"]
-    [m_changeCharacter characterId="&tf.ccfn.characterId" face="&tf.ccfn.face"]
+    [m_changeCharacter characterId="&tf.ccfn.characterId" side="&tf.ccfn.side" face="&tf.ccfn.face"]
   [else]
-    [m_changeCharacter characterId="&tf.ccfn.characterId"]
+    [m_changeCharacter characterId="&tf.ccfn.characterId" side="&tf.ccfn.side"]
   [endif]
   [m_changeFrameWithId characterId="&tf.ccfn.characterId"]
   # &tf.ccfn.speaker

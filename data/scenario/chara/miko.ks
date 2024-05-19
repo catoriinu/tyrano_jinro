@@ -13,7 +13,7 @@
     f.defaultPosition[tf.characterId] = {
       side: 'right', // デフォルト待機位置
       left: 1768, // デフォルト座標（left）
-      top: 143, // デフォルト座標（top）
+      top: 143, // キャラが登場したときのtopの値
       width: 641, // 画像の幅（画面幅1280pxの中での幅）
       haight: 960, // 画像の高さ（画面高さ720pxの中での高さ）
       widthCenter: 320, // 画像の幅の中央(反転しない状態で)
