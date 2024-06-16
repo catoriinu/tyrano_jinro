@@ -52,6 +52,9 @@
 [endnowait]
 [layopt layer="message0" visible="true"]
 
+; 人狼ゲーム中フラグを初期化する
+[eval exp="f.inJinroGame = false"]
+
 [jump storage="&f.displayEpisode.introChapter.storage"]
 [s]
 
@@ -66,6 +69,9 @@
 [stopbgm]
 [endnowait]
 [layopt layer="message0" visible="true"]
+
+; 人狼ゲーム中フラグを初期化する
+[eval exp="f.inJinroGame = false"]
 
 [jump storage="&f.displayEpisode.outroChapter.storage"]
 [s]

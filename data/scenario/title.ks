@@ -15,6 +15,9 @@
 ; TODO ゲーム開始時にリセットするようにするなど、仕様を変えるならここも修正すること
 [eval exp="tf.system.backlog = [];"]
 
+; 人狼ゲーム中フラグを初期化する
+[eval exp="f.inJinroGame = false"]
+
 [eval exp="tf.buttonColor = CLASS_GLINK_DEFAULT"]
 [glink color="&tf.buttonColor" size="30" width="300" x="488" y="480" name="buttonhover" text="プレイ" target="*gamestart"]
 [glink color="&tf.buttonColor" size="30" width="300" x="488" y="590" name="buttonhover" text="カスタムプレイ" target="*selectStage"]

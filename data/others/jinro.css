@@ -45,6 +45,7 @@
 
 .btn_voivo:hover {
     background-color: #69876E;
+    color: #e9f1e7;
 }
 
 .btn_voivo:hover::after {
@@ -96,7 +97,7 @@
     border:solid 3px rgba(0,0,0,0.82);
     width: 1262px;
     height: 124px;
-    padding: 10px 7px;
+    padding: 3px 7px;
     border-radius: 20px 20px 20px 20px / 20px 20px 20px 20px;
 }
 
@@ -136,6 +137,7 @@ input:checked + label {
 }
 .radioLabel:hover,.checkLabel:hover {
     background-color: #69876E;
+    color: #e9f1e7;
 }
 .radioLabel:hover::after,.checkLabel:hover::after {
     border: 1px solid #4C614F;
@@ -144,7 +146,7 @@ input:checked + label {
 
 .openedVoteDaycounter {
     display: inline-block;
-    padding: 5px 12px;
+    padding: 0px 12px;
 }
 .openedVoteDaycounter button {
     position: relative;
@@ -179,7 +181,7 @@ input:checked + label {
 .dchStatusContainer {
     display: flex;
     flex-direction: row;
-    height: 570px;
+    height: 584px;
 }
 
 .statusBox {

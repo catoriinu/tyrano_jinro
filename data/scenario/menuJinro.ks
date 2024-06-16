@@ -1,65 +1,23 @@
-; 以下は、ステータス画面からメニュー画面に遷移する場合のシナリオ
-*menuJinroMainFromStatus
-[cm]
-[j_clearFixButton]
-
-; ここで表示するステータスボタンはただのステータス画面再表示ボタンであり、fix属性ではないかつrole="sleepgame"指定もしていない
-; 通常画面→ステータス画面→メニュー画面と遷移してきた場合、通常画面でsleepしている状態のため、fix属性のボタンを押したり、再度sleepgameすることはできない。
-; 同様の理由で、タイトル画面に戻る場合以外は[breakgame]してはいけない。通常画面に戻れなくなるため。
-[j_displayFixButton status="nofix"]
-
-[bg storage="black.png" time="100" wait="true"]
-[ptext layer="1" x="310" y="100" text="テスト用メニュー画面" color="white" size="60"]
-[layopt layer="1" visible="true"]
-
-
-*menuJinroButtonFromStatus
-[glink color="blue" size="28" x="300" y="240" width="500" text="現在の変数を出力" target="*exportJsonFromStatus"]
-[glink color="blue" size="28" x="300" y="350" width="500" text="タイトルに戻る" target="*returnTitleFromStatus"]
-[s]
-
-
-*exportJsonFromStatus
-[j_saveJson]
-[jump target="*menuJinroButtonFromStatus"]
-[s]
-
-*returnTitleFromStatus
-[j_clearFixButton]
-[eval exp="f.doneSaveButton = false"]
-[breakgame]
-[m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
-[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
-[layopt layer="message0" visible="false"]
-[freeimage layer="1"]
-[jump storage="title.ks"]
-[s]
-
-
-
-
-; 以下は、通常画面からメニュー画面に遷移する場合のシナリオ
-; [button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="868" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
-; で呼び出すこと
-
+; 人狼ゲーム中にメニュー画面を表示するシナリオ
 *menuJinroMain
 [cm]
-[clearfix]
-[bg storage="black.png" time="100" wait="true"]
-[ptext layer="1" x="310" y="100" text="テスト用メニュー画面" color="white" size="60"]
-[layopt layer="1" visible="true"]
+[j_saveFixButton buf="menu"]
+[j_clearFixButton]
 
+*returnFromConfig
 
 *menuJinroButton
-[glink color="blue" size="28" x="300" y="240" width="500" text="現在の変数を出力" target="*exportJson"]
-[glink color="blue" size="28" x="300" y="350" width="500" text="タイトルに戻る" target="*returnTitle"]
-[glink color="blue" size="28" x="300" y="460" width="500" text="ゲームを再開する" target="*awake"]
-[s]
+; ボタンとその背景
+[html top="130" left="413.813" name="pause_menu_button_window"]
+[endhtml]
+[eval exp="tf.buttonColor = CLASS_GLINK_DEFAULT"]
+; TODO:「現在の変数を出力」はテスト時限定の表示とする。リリース版では非表示にし、「コンフィグ」をy="320"にする
+; TODO:エピソードから人狼ゲームを始めた時は、「シアターに戻る」を表示する
+[glink color="&tf.buttonColor" size="30" width="400" x="439" y="180"name="buttonhover" text="タイトルに戻る" target="*returnTitle"]
+[glink color="&tf.buttonColor" size="30" width="400" x="439" y="273.3" name="buttonhover" text="現在の変数を出力" target="*exportJson"]
+[glink color="&tf.buttonColor" size="30" width="400" x="439" y="366.6" name="buttonhover" text="コンフィグ" target="*config"]
+[glink color="&tf.buttonColor" size="30" width="400" x="439" y="460" name="buttonhover" text="メニューを閉じる" target="*closeMenu"]
 
-
-*exportJson
-[j_saveJson]
-[jump target="*menuJinroButton"]
 [s]
 
 
@@ -78,6 +36,21 @@
 [s]
 
 
-*awake
+*config
+; コールスタックのクリア。コンフィグ画面の「もどる」はfixボタンなので、クリアしておかないとボタンが有効にならないため
+[clearstack]
+; コンフィグ
+[jump storage="configJinro.ks"]
+[s]
+
+
+*exportJson
+[j_saveJson]
+[jump target="*menuJinroButton"]
+[s]
+
+
+*closeMenu
+[j_loadFixButton buf="menu"]
 [awakegame]
 [s]

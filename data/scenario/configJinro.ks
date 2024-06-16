@@ -70,8 +70,8 @@
 [layopt layer="message1" visible="true"]
 [current layer="message1"]
 
-; 画面右上の「戻る」ボタン
-[button fix="true" graphic="button/button_return_normal.png" enterimg="button/button_return_hover.png" target="*return" x="1143" y="23" width="114" height="103"]
+; 画面右上の「もどる」ボタン
+[button fix="true" graphic="button/button_return_normal.png" enterimg="button/button_return_hover.png" target="*return" x="1143" y="17" width="114" height="103"]
 
 [jump target="*config_page"]
 
@@ -200,7 +200,9 @@
 
 ; チャプター再生中ならポーズメニュー画面に戻る
 [jump storage="theater/pauseMenu.ks" cond="f.chapterStorage != null"]
-; TODO 人狼ゲーム中ならステータス画面に戻る
+; TODO 人狼ゲーム中ならメニュー画面に戻る
+[jump storage="menuJinro.ks" target="*returnFromConfig" cond="f.inJinroGame"]
+
 ; それ以外ならタイトル画面に戻る
 [jump storage="title.ks"]
 

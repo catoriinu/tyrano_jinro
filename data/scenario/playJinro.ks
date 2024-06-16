@@ -24,6 +24,9 @@
       endInstruction: false,
     }
   }
+  // 人狼ゲーム中フラグ
+  // 人狼ゲームを終了、中断する場合は必ずfalseに戻すこと（タイトル画面に戻る場合はそこで初期化しているので不要）
+  f.inJinroGame = true
 [endscript]
 
 
@@ -46,8 +49,8 @@
 ;このゲームで登場する全キャラクターを宣言、表情登録
 [call storage="./chara/common.ks" target="*registerAllCharacters"]
 
-; ステータス、バックログボタン表示
-[j_displayFixButton status="true" backlog="true"]
+; ステータス、バックログ、メニューボタン表示
+[j_displayFixButton status="true" backlog="true" menu="true"]
 
 [playse storage="dodon.ogg" buf="1" loop="false" volume="40" sprite_time="50-20000"]
 [m_changeFrameWithId]
@@ -296,9 +299,6 @@
 ; 生存者である、かつプレイヤー以外のキャラクターIDをボタンオブジェクトに格納する
 ; 開発者用設定：独裁者モードならプレイヤーも投票対象にできるようにする
 [j_setCharacterToButtonObjects onlySurvivor="true" needPC="&tf.needPC"]
-
-; メニューボタン非表示
-[j_clearFixButton menu="true"]
 
 ; 選択肢ボタン表示と入力受付
 [eval exp="tf.doSlideInCharacter = true"]
