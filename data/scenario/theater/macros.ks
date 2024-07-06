@@ -142,10 +142,15 @@
   ; 視聴終了時に解放すべきシアター進捗があれば解放する
   [call storage="theater/unlockProgress.ks" target="*start"]
 
-  [eval exp="f.quickShowEpisodeWindow = true"]
-
-  ; 再生中のチャプターのファイルパスを初期化
-  [eval exp="f.chapterStorage = null"]
+  [iscript]
+    // 戻ったときにエピソードウィンドウを開くための設定
+    f.displayPageId = mp.pageId;
+    f.displayEpisodeId = mp.episodeId;
+    f.quickShowEpisodeWindow = true;
+    
+    // 再生中のチャプターのファイルパスを初期化
+    f.chapterStorage = null;
+  [endscript]
 
   [j_clearFixButton]
   [m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
