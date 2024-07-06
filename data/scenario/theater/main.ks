@@ -9,15 +9,10 @@
 ; シアター画面ではテキストは瞬間表示
 [nowait]
 
-
-[bg storage="bg_fafafa.png" time="300"]
-
-; シアター一覧の1ページ目の情報を取得
-[eval exp="f.displayPageId = 'p01'"]
-
-*loadEpisodeList
-[freeimage layer="0"]
-[loadEpisodeList pageId="&f.displayPageId"]
+; ボイス停止（エピソードから戻ってきたとき用）
+[stopse buf="0"]
+[playbgm storage="fun_fun_Ukelele_1loop.ogg" volume="20" loop="true" restart="false"]
+[bg storage="bg_fafafa.png" time="100"]
 
 [iscript]
 // 即座にエピソードウィンドウを開くフラグについて
@@ -25,11 +20,17 @@
 if (!('quickShowEpisodeWindow' in f)) {
   f.quickShowEpisodeWindow = false;
 }
-// falseの場合のみエピソードIDを初期化する（trueの場合は開くエピソードIDがすでに格納済みのはず）
+// falseの場合のみ、開くページIDとエピソードIDを初期化する（trueの場合はすでに格納済み）
 if (!f.quickShowEpisodeWindow) {
+  f.displayPageId = 'p01';
   f.displayEpisodeId = '';
 }
 [endscript]
+
+
+*loadEpisodeList
+[freeimage layer="0"]
+[loadEpisodeList pageId="&f.displayPageId"]
 
 ;メッセージウィンドウの設定、文字が表示される領域を調整
 [position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="220" page="fore"]
@@ -96,7 +97,7 @@ if (!f.quickShowEpisodeWindow) {
 
 ;メッセージウィンドウの表示
 [layopt layer="message0" visible="true"]
-
+#
 視聴したいシアターを選択してください。[r]
 人狼ゲームで特定の条件を満たすと解決編が解放されます。
 [s]
@@ -146,7 +147,7 @@ if (!f.quickShowEpisodeWindow) {
 *showEpisodeWindow
 [eval exp="f.quickShowEpisodeWindow = false"]
 
-; そのエピソードの導入編が解放済みなら、エピソードウィンドウ表示。chapterIdは導入編で固定
+; そのエピソードの導入編が解放済みなら、エピソードウィンドウ表示
 [t_isProgressLocked pageId="&f.displayPageId" episodeId="&f.displayEpisodeId" chapterId="c01"]
 [jump storage="theater/episodeWindow.ks" target="*start" cond="!tf.isProgressLocked"]
 
@@ -164,4 +165,14 @@ if (!f.quickShowEpisodeWindow) {
 [layopt layer="message0" visible="false"]
 [freeimage layer="0"]
 [jump storage="title.ks"]
+[s]
+
+
+*returnFromSituationPlay
+[iscript]
+  f.inJinroGame = false;
+  f.isSituationPlay = false;
+  f.quickShowEpisodeWindow = true;
+[endscript]
+[jump storage="theater/main.ks" target="*start"]
 [s]

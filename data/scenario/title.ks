@@ -9,14 +9,20 @@
 *start 
 [ptext layer="1" x="1050" y="684" text="ver.0.11.0" color="white" size="24"]
 [layopt layer="1" visible="true"]
+; ボイス停止（人狼ゲームから戻ってきたとき用）
+[stopse buf="0"]
 [playbgm storage="fun_fun_Ukelele_1loop.ogg" volume="20" loop="true" restart="false"]
 
-; タイトル画面に戻ってきたらバックログをリセットする
-; TODO ゲーム開始時にリセットするようにするなど、仕様を変えるならここも修正すること
-[eval exp="tf.system.backlog = [];"]
-
-; 人狼ゲーム中フラグを初期化する
-[eval exp="f.inJinroGame = false"]
+; 変数の初期化
+[iscript]
+  // タイトル画面に戻ってきたらバックログをリセットする
+  // TODO ゲーム開始時にリセットするようにするなど、仕様を変えるならここも修正すること
+  tf.system.backlog = [];
+  // 人狼ゲーム中フラグ
+  f.inJinroGame = false;
+  // シチュエーションプレイで人狼ゲームを開始したフラグ
+  f.isSituationPlay = false;
+[endscript]
 
 [eval exp="tf.buttonColor = CLASS_GLINK_DEFAULT"]
 [glink color="&tf.buttonColor" size="30" width="300" x="488" y="480" name="buttonhover" text="プレイ" target="*gamestart"]

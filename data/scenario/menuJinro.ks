@@ -11,15 +11,34 @@
 [html top="130" left="413.813" name="pause_menu_button_window"]
 [endhtml]
 [eval exp="tf.buttonColor = CLASS_GLINK_DEFAULT"]
-; TODO:「現在の変数を出力」はテスト時限定の表示とする。リリース版では非表示にし、「コンフィグ」をy="320"にする
-; TODO:エピソードから人狼ゲームを始めた時は、「シアターに戻る」を表示する
-[glink color="&tf.buttonColor" size="30" width="400" x="439" y="180"name="buttonhover" text="タイトルに戻る" target="*returnTitle"]
-[glink color="&tf.buttonColor" size="30" width="400" x="439" y="273.3" name="buttonhover" text="現在の変数を出力" target="*exportJson"]
-[glink color="&tf.buttonColor" size="30" width="400" x="439" y="366.6" name="buttonhover" text="コンフィグ" target="*config"]
-[glink color="&tf.buttonColor" size="30" width="400" x="439" y="460" name="buttonhover" text="メニューを閉じる" target="*closeMenu"]
+
+
+[if exp="f.isSituationPlay"]
+  [glink color="&tf.buttonColor" size="30" width="400" x="439" y="180" name="buttonhover" text="シアターに戻る" target="*returnTheater"]
+  [glink color="&tf.buttonColor" size="30" width="400" x="439" y="273.3" name="buttonhover" text="タイトルに戻る" target="*returnTitle"]
+  [glink color="&tf.buttonColor" size="30" width="400" x="439" y="366.6" name="buttonhover" text="コンフィグ" target="*config"]
+  [glink color="&tf.buttonColor" size="30" width="400" x="439" y="460" name="buttonhover" text="メニューを閉じる" target="*closeMenu"]
+[else]
+  [glink color="&tf.buttonColor" size="30" width="400" x="439" y="180" name="buttonhover" text="タイトルに戻る" target="*returnTitle"]
+  [glink color="&tf.buttonColor" size="30" width="400" x="439" y="320" name="buttonhover" text="コンフィグ" target="*config"]
+  [glink color="&tf.buttonColor" size="30" width="400" x="439" y="460" name="buttonhover" text="メニューを閉じる" target="*closeMenu"]
+[endif]
+; TODO:「現在の変数を出力」はテスト時限定の表示とする
+[glink color="&tf.buttonColor" size="26" width="450" x="412" y="600" name="buttonhover" text="テスト用 現在の変数を出力" target="*exportJson"]
 
 [s]
 
+
+*returnTheater
+[j_clearFixButton]
+[breakgame]
+[m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
+[m_exitCharacter characterId="&f.displayedCharacter.right.characterId" time="1"]
+[layopt layer="message0" visible="false"]
+[freeimage layer="1"]
+
+[jump storage="theater/main.ks" target="*returnFromSituationPlay"]
+[s]
 
 *returnTitle
 [j_clearFixButton]
@@ -28,8 +47,8 @@
 ; 「タイトルに戻る」のようにsleepgame中に別シナリオにジャンプしたい場合は、[breakgame]で停止データを削除しなければならない。
 ; しないでジャンプするとずっとsleepgame中の扱いになり、fix=trueのボタンがクリックできなくなる。
 [breakgame]
-[m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
-[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+[m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
+[m_exitCharacter characterId="&f.displayedCharacter.right.characterId" time="1"]
 [layopt layer="message0" visible="false"]
 [freeimage layer="1"]
 [jump storage="title.ks"]
@@ -44,13 +63,13 @@
 [s]
 
 
-*exportJson
-[j_saveJson]
-[jump target="*menuJinroButton"]
-[s]
-
-
 *closeMenu
 [j_loadFixButton buf="menu"]
 [awakegame]
+[s]
+
+
+*exportJson
+[j_saveJson]
+[jump target="*menuJinroButton"]
 [s]

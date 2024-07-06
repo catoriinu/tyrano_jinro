@@ -148,12 +148,9 @@
   [eval exp="f.chapterStorage = null"]
 
   [j_clearFixButton]
-  [m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
-  [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+  [m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
+  [m_exitCharacter characterId="&f.displayedCharacter.right.characterId" time="1"]
   [layopt layer="message0" visible="false"]
-  ; TODO ボイスを停止する
-  ; TODO BGMを元に戻す
-
 [endmacro]
 
 

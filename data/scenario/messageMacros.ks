@@ -352,10 +352,15 @@
 ; 退場マクロ
 ; 現在登場しているキャラを退場させる
 ; @param characterId 退場させたいキャラのキャラクターID。必須。
+; @param time 退場にかかる時間（[chara_move]のtime）。指定しなければデフォルト600ミリ秒
 [macro name="m_exitCharacter"]
-
-  ; そのキャラがどちらのサイドに表示されているかを取得する
   [iscript]
+    // timeのデフォルト値設定
+    if (!('time' in mp)) {
+      mp.time = 600;
+    }
+
+    // そのキャラがどちらのサイドに表示されているかを取得する
     tf.side = (function(){
       if (f.displayedCharacter.right.isDisplay && f.displayedCharacter.right.characterId == mp.characterId) return 'right';
       if (f.displayedCharacter.left.isDisplay  && f.displayedCharacter.left.characterId  == mp.characterId) return 'left';
@@ -368,7 +373,7 @@
   [eval exp="console.log('★exit ' + mp.characterId)"]
 
   ; そのキャラをデフォルトの待機位置に移動させる
-  [chara_move name="&mp.characterId" time="600" left="&f.defaultPosition[mp.characterId].leftOnDefautRight" wait="false"]
+  [chara_move name="&mp.characterId" time="&mp.time" left="&f.defaultPosition[mp.characterId].leftOnDefautRight" wait="false"]
 
   ; 表示キャラオブジェクトを更新する
   [eval exp="f.displayedCharacter[tf.side] = new DisplayedCharacterSingle()"]

@@ -119,8 +119,9 @@ function enterCharacter(characterId, face, side) {
  * 退場マクロ
  * 現在登場しているキャラを退場させる
  * @param characterId 退場させたいキャラのキャラクターID。必須。
+ * @param time 退場にかかる時間（[chara_move]のtime）。指定しなければデフォルト600ミリ秒
  */
-function exitCharacter(characterId) {
+function exitCharacter(characterId, time = 600) {
 
   // そのキャラがどちらのサイドに表示されているかを取得する
   let side = (function(){
@@ -136,7 +137,7 @@ function exitCharacter(characterId) {
   // そのキャラをデフォルトの位置に移動させる
   TYRANO.kag.ftag.startTag('chara_move', {
     name: characterId,
-    time: 600,
+    time: time,
     left: TYRANO.kag.stat.f.defaultPosition[characterId].leftOnDefautRight,
     wait: 'false',
   });

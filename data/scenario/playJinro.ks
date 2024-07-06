@@ -39,7 +39,7 @@
 [layopt layer="message0" visible="true"]
 
 ;キャラクターの名前が表示される文字領域
-[ptext name="chara_name_area" layer="message0" face="にくまるフォント" color="0x28332a" size=36 x=175 y=505]
+[ptext name="chara_name_area" layer="message0" face="にくまるフォント" color="0x28332a" size="36" x="175" y="505"]
 
 ;上記で定義した領域がキャラクターの名前表示であることを宣言（これがないと#の部分でエラーになります）
 [chara_config ptext="chara_name_area"]
@@ -463,14 +463,20 @@ NPCが役職能力を実行しています……[p]
 [a_checkAchievedConditions]
 [a_displayAchievedEpisodes]
 
+[if exp="f.isSituationPlay"]
+シアターに戻ります。[p]
+[else]
 タイトルに戻ります。[p]
+[endif]
 
-; タイトル画面に戻る前に、キャラの退場、メッセージ枠の削除、ボタンの削除を行う
+; シアターまたはタイトル画面に戻る前に、キャラの退場、メッセージ枠の削除、ボタンの削除を行う
 [j_clearFixButton]
-[m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
-[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+[m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
+[m_exitCharacter characterId="&f.displayedCharacter.right.characterId" time="1"]
 [layopt layer="message0" visible="false"]
 ; 勝利陣営キャラクターのレイヤーを消去する。タイトルロゴが表示しきるのを待つため少し長めのtimeを設定
 [freeimage layer="1" time="700" wait="false"]
+
+[jump storage="theater/main.ks" target="*returnFromSituationPlay" cond="f.isSituationPlay"]
 [jump storage="title.ks"]
 [s]

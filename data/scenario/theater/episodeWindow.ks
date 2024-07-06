@@ -88,6 +88,9 @@
 [endnowait]
 [layopt layer="message0" visible="true"]
 
+; シチュエーションプレイで人狼ゲームを開始したフラグ（人狼ゲーム終了時にエピソード画面に戻ってくるため）
+[eval exp="f.isSituationPlay = true"]
+
 [t_registerSituationParticipants]
 [j_prepareJinroGame participantsNumber="&f.displayEpisode.situation.participantsNumber" preload="true"]
 
