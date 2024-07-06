@@ -1398,7 +1398,7 @@
     [playse storage="shock1.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
     ; 昨夜の襲撃結果が襲撃成功の場合
     ; キャラを登場させ、メッセージ表示
-    [m_changeCharacter characterId="&f.bitingObjectLastNight.targetId" face="normal"]
+    [m_changeCharacter characterId="&f.bitingObjectLastNight.targetId" face="lose"]
     [emb exp="f.characterObjects[f.bitingObjectLastNight.targetId].name + 'は無残な姿で発見されました……。'"][p]
 
     ; 噛まれたということは人狼ではないので、視点オブジェクトを更新する（TODO：人狼以外にも噛まれない役職が増えたら修正する）
@@ -1417,7 +1417,7 @@
   [bg storage="living_day_nc238325.jpg" time="1000" wait="true" effect="fadeInUp"]
 
   ; PCが生存していれば再度画面に登場させる
-  [m_changeCharacter characterId="&f.playerCharacterId" face="normal" cond="f.characterObjects[f.playerCharacterId].isAlive"]
+  [m_changeCharacter characterId="&f.playerCharacterId" face="normal" side="left" cond="f.characterObjects[f.playerCharacterId].isAlive"]
 
 [endmacro]
 

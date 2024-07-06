@@ -50,5 +50,6 @@
   [chara_face name="&tf.characterId" face="smug" storage="chara/zundamon/smug.png"]
   [chara_face name="&tf.characterId" face="surprised" storage="chara/zundamon/surprised.png"]
   [chara_face name="&tf.characterId" face="troubled" storage="chara/zundamon/troubled.png"]
+  [chara_face name="&tf.characterId" face="lose" storage="chara/zundamon/sad.png"]
   [chara_show name="&tf.characterId" face="normal" time="0" wait="true" left="&f.defaultPosition[tf.characterId].leftOnDefautRight" top="&f.defaultPosition[tf.characterId].top"]
 [return]

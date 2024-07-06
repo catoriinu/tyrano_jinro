@@ -48,5 +48,6 @@
   [chara_face name="&tf.characterId" face="sad" storage="chara/tsumugi/sad.png"]
   [chara_face name="&tf.characterId" face="smug" storage="chara/tsumugi/smug.png"]
   [chara_face name="&tf.characterId" face="wrysmile" storage="chara/tsumugi/wrysmile.png"]
+  [chara_face name="&tf.characterId" face="lose" storage="chara/tsumugi/sad.png"]
   [chara_show name="&tf.characterId" face="normal" time="0" wait="true" left="&f.defaultPosition[tf.characterId].leftOnDefautRight" top="&f.defaultPosition[tf.characterId].top"]
 [return]

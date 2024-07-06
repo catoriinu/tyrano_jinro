@@ -17,10 +17,12 @@
   [iscript]
     // 発言者名を表示するためだけにアクションオブジェクトを作成する
     f.actionObject = new Action(mp.characterId);
+
+    tf.side = 'left';
+    tf.messageStorage = './message/' + mp.characterId + '.ks';
+    tf.messageTarget = '*noticeRole_' + mp.roleId;
   [endscript]
 
-  [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
-  [eval exp="tf.messageTarget = '*noticeRole_' + mp.roleId"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
 [endmacro]
 
@@ -28,8 +30,11 @@
 ; シーン：真占い師で、占い実行結果を知ったときの反応
 ; 事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 [macro name="m_announcedFortuneTellingResult"]
-  [eval exp="tf.messageStorage = './message/' + f.actionObject.characterId + '.ks'"]
-  [eval exp="tf.messageTarget = '*announcedFortuneTellingResult_' + f.actionObject.result"]
+  [iscript]
+    tf.side = 'left';
+    tf.messageStorage = './message/' + f.actionObject.characterId + '.ks';
+    tf.messageTarget = '*announcedFortuneTellingResult_' + f.actionObject.result;
+  [endscript]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
 [endmacro]
 
@@ -51,10 +56,12 @@
   [iscript]
     tf.targetLabel = getLabelForCOFortuneTelling(f.actionObject);
     console.log(tf.targetLabel);
+
+    tf.side = 'left';
+    tf.messageStorage = './message/' + f.actionObject.characterId + '.ks';
+    tf.messageTarget = '*COFortuneTelling' + tf.targetLabel;
   [endscript]
 
-  [eval exp="tf.messageStorage = './message/' + f.actionObject.characterId + '.ks'"]
-  [eval exp="tf.messageTarget = '*COFortuneTelling' + tf.targetLabel"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
 [endmacro]
 
@@ -65,10 +72,12 @@
   [iscript]
     tf.targetLabel = getLabelForDoAction(f.actionObject);
     console.log(tf.targetLabel);
+
+    tf.side = 'left';
+    tf.messageStorage = './message/' + f.actionObject.characterId + '.ks';
+    tf.messageTarget = '*doAction' + tf.targetLabel;
   [endscript]
 
-  [eval exp="tf.messageStorage = './message/' + f.actionObject.characterId + '.ks'"]
-  [eval exp="tf.messageTarget = '*doAction' + tf.targetLabel"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
 [endmacro]
 
@@ -79,10 +88,11 @@
   [iscript]
     tf.targetLabel = getLabelForDoActionReaction(f.actionObject);
     console.log(tf.targetLabel);
-  [endscript]
 
-  [eval exp="tf.messageStorage = './message/' + f.actionObject.targetId + '.ks'"]
-  [eval exp="tf.messageTarget = '*doAction_reaction' + tf.targetLabel"]
+    tf.side = 'right';
+    tf.messageStorage = './message/' + f.actionObject.targetId + '.ks';
+    tf.messageTarget = '*doAction_reaction' + tf.targetLabel;
+  [endscript]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
 [endmacro]
 
@@ -93,10 +103,11 @@
   [iscript]
     // 発言者名を表示するためだけにアクションオブジェクトを作成する
     f.actionObject = new Action(mp.characterId);
-  [endscript]
 
-  [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
-  [eval exp="tf.messageTarget = '*chooseWhoToBite'"]
+    tf.side = 'left';
+    tf.messageStorage = './message/' + mp.characterId + '.ks';
+    tf.messageTarget = '*chooseWhoToBite';
+  [endscript]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
 [endmacro]
 
@@ -107,10 +118,11 @@
   [iscript]
     // 発言者名を表示するためだけにアクションオブジェクトを作成する
     f.actionObject = new Action(mp.characterId);
-  [endscript]
 
-  [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
-  [eval exp="tf.messageTarget = '*executed'"]
+    tf.side = 'left';
+    tf.messageStorage = './message/' + mp.characterId + '.ks';
+    tf.messageTarget = '*executed';
+  [endscript]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
   [m_exitCharacter characterId="&mp.characterId"]
 [endmacro]
@@ -366,14 +378,13 @@
 
 
 ; キャラクター表示状態リセットマクロ
-; 左のキャラクターの表情をノーマルに戻し、右のキャラクターを退場させるマクロ
+; 右のキャラクターを退場させ、（生きているなら）プレイヤーキャラクターをノーマルの表情で左に登場させる
 ; フェイズの転換時にリセットするために使う
 [macro name="m_resetDisplayCharacter"]
   [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 
-  [if exp="f.displayedCharacter.left.isDisplay"]
-    [m_changeCharacter characterId="&f.displayedCharacter.left.characterId" face="normal"]
-  [endif]
+  [m_changeCharacter characterId="&f.playerCharacterId" face="normal" side="left" cond="f.characterObjects[f.playerCharacterId].isAlive"]
+  [m_exitCharacter characterId="&f.displayedCharacter.left.characterId" cond="!(f.characterObjects[f.playerCharacterId].isAlive)"]
 [endmacro]
 
 

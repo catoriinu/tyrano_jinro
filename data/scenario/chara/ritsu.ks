@@ -48,5 +48,6 @@
   [chara_face name="&tf.characterId" face="normal" storage="chara/ritsu/normal.png"]
   [chara_face name="&tf.characterId" face="scorn" storage="chara/ritsu/scorn.png"]
   [chara_face name="&tf.characterId" face="troubled" storage="chara/ritsu/troubled.png"]
+  [chara_face name="&tf.characterId" face="lose" storage="chara/ritsu/astonished.png"]
   [chara_show name="&tf.characterId" face="normal" time="0" wait="true" left="&f.defaultPosition[tf.characterId].leftOnDefautRight" top="&f.defaultPosition[tf.characterId].top"]
 [return]
