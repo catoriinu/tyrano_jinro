@@ -463,6 +463,10 @@ NPCが役職能力を実行しています……[p]
 [a_checkAchievedConditions]
 [a_displayAchievedEpisodes]
 
+[iscript]
+outputLog();
+[endscript]
+
 [if exp="f.isSituationPlay"]
 シアターに戻ります。[p]
 [else]

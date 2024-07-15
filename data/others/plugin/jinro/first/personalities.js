@@ -2,17 +2,31 @@
  * @classdec 性格情報を格納するクラス
  * @param {String} name 性格の日本語名
  * @param {Number} logical 論理力
+ * @param {*} influenceMultiplier 
+ * @param {*} adjustmentInfluenceMultiplier 
+ * @param {*} registanceMultiplier 
+ * @param {*} adjustmentRegistanceMultiplier 
  * @param {Number} assertiveness 主張力
  * @param {Object} roleCOProbability 役職ごとのCO確率オブジェクト
  * @param {Object} impressiveActionList 信頼度に影響を与える行動リスト
  * @param {Object} feelingBorder 感情の境界値オブジェクト
  */
-function Personality(name, logical, assertiveness, roleCOProbability, impressiveReasonList, feelingBorder) {
+function Personality(
+  name,
+  logical,
+  influenceMultiplier,
+  adjustmentInfluenceMultiplier,
+  registanceMultiplier,
+  adjustmentRegistanceMultiplier,
+  assertiveness, roleCOProbability,
+  impressiveReasonList,
+  feelingBorder
+) {
   this.name = name;
-  // 未使用なのでコメントアウト
-  // this.active = active;
-  // this.hungry = hungry;
-  // this.egoistic = egoistic;
+  this.influenceMultiplier = influenceMultiplier;
+  this.adjustmentInfluenceMultiplier = adjustmentInfluenceMultiplier;
+  this.registanceMultiplier = registanceMultiplier;
+  this.adjustmentRegistanceMultiplier = adjustmentRegistanceMultiplier;
   this.logical = logical;
   this.assertiveness = assertiveness;
   this.roleCOProbability = roleCOProbability;
@@ -28,6 +42,15 @@ function Personality_tester() {
   return new Personality (
     'テスト用の性格', // name
     0.7, // logical 論理力(0～1)
+    1,
+    {
+      action: {}
+    },
+    1,
+    {
+      action: {},
+      actor: {}
+    },
     { // assertiveness 主張力（originalとcurrentは同値にすること）
       original: 1,  // 元々の値（毎日currentをoriginalで初期化する）
       current: 1,   // 現在の値（判定処理にはcurrentを用いる）
@@ -83,6 +106,15 @@ function Doll() {
   return new Personality (
     'テスト用の性格', // name
     0, // logical 論理力(0～1)
+    1,
+    {
+      action: {}
+    },
+    1,
+    {
+      action: {},
+      actor: {}
+    },
     { // assertiveness 主張力（originalとcurrentは同値にすること）
       original: 0,  // 元々の値（毎日currentをoriginalで初期化する）
       current: 0,   // 現在の値（判定処理にはcurrentを用いる）
@@ -135,10 +167,19 @@ function Doll() {
  * @classdec ずんだもんの性格クラス
  * 基本的にはPC自身なので最強の論理力プレイヤーとしておく
  */
-function Personality_tester() {
+function Personality_zundamon() {
   return new Personality (
     'ずんだもん', // name
     0.9, // logical 論理力(0～1)
+    1,
+    {
+      action: {}
+    },
+    1,
+    {
+      action: {},
+      actor: {}
+    },
     { // assertiveness 主張力（originalとcurrentは同値にすること）
       original: 1,  // 元々の値（毎日currentをoriginalで初期化する）
       current: 1,   // 現在の値（判定処理にはcurrentを用いる）
@@ -195,6 +236,15 @@ function Personality_metan() {
   return new Personality (
     '四国めたん', // name
     0.8, // logical 論理力(0～1)
+    1,
+    {
+      action: {}
+    },
+    1,
+    {
+      action: {},
+      actor: {}
+    },
     { // assertiveness 主張力（originalとcurrentは同値にすること）
       original: 1,  // 元々の値（毎日currentをoriginalで初期化する）
       current: 1,   // 現在の値（判定処理にはcurrentを用いる）
@@ -251,6 +301,15 @@ function Personality_tsumugi() {
   return new Personality (
     '春日部つむぎ', // name
     0.4, // logical 論理力(0～1)
+    1,
+    {
+      action: {}
+    },
+    1,
+    {
+      action: {},
+      actor: {}
+    },
     { // assertiveness 主張力（originalとcurrentは同値にすること）
       original: 1,  // 元々の値（毎日currentをoriginalで初期化する）
       current: 1,   // 現在の値（判定処理にはcurrentを用いる）
@@ -307,6 +366,15 @@ function Personality_hau() {
   return new Personality (
     '雨晴はう', // name
     0.75, // logical 論理力(0～1)
+    1,
+    {
+      action: {}
+    },
+    1,
+    {
+      action: {},
+      actor: {}
+    },
     { // assertiveness 主張力（originalとcurrentは同値にすること）
       original: 0.95,  // 元々の値（毎日currentをoriginalで初期化する）
       current: 0.95,   // 現在の値（判定処理にはcurrentを用いる）
@@ -363,6 +431,15 @@ function Personality_ritsu() {
   return new Personality (
     '波音リツ', // name
     0.7, // logical 論理力(0～1)
+    1,
+    {
+      action: {}
+    },
+    1,
+    {
+      action: {},
+      actor: {}
+    },
     { // assertiveness 主張力（originalとcurrentは同値にすること）
       original: 1,  // 元々の値（毎日currentをoriginalで初期化する）
       current: 1,   // 現在の値（判定処理にはcurrentを用いる）
