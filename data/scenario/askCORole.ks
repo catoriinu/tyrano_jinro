@@ -43,20 +43,28 @@
 
 *askFakeFortuneTellingResultMultipleDays
 
-  ; 騙り占いを行う最新の日の日付（＝前日）を入れる。
-  [eval exp="f.lastDay = f.day - 1"]
-  ; サブルーチン実行前に開始日が指定されていればそれを、されていなければ0（=初日）を入れる
-  [eval exp="f.fakeFortuneTelledDay = ('fakeFortuneTellingStartDay' in f) ? f.fakeFortuneTellingStartDay : 0"]
-  [eval exp="f.fakeFortuneTellingStartDay = f.fakeFortuneTelledDay"]
+  [iscript]
+    // 騙り占いを行う最新の日の日付（＝前日）を入れる。
+    f.lastDay = f.day - 1;
+    
+    // サブルーチン実行前に開始日が指定されていればそれを、されていなければ0（=初日）を入れる
+    f.fakeFortuneTelledDay = ('fakeFortuneTellingStartDay' in f) ? f.fakeFortuneTellingStartDay : 0;
+    f.fakeFortuneTellingStartDay = f.fakeFortuneTelledDay;
 
-  ; バックアップの上書き防止用フラグ
-  [eval exp="f.canceled = false"]
+    // バックアップの上書き防止用フラグ
+    f.canceled = false;
+
+    // サブルーチン内部で使うアクションオブジェクトを初期化
+    tf.tmpActionObject = {};
+  [endscript]
 
   *askFakeFortuneTellingResultMultipleDays_loopstart
 
-    [eval exp="f.fakeFortuneTelledDayMsg = f.fakeFortuneTelledDay + '日目の夜'"]
-    ; 昨夜の場合だけ、（昨夜）を追加してあげる。
-    [eval exp="f.fakeFortuneTelledDayMsg = f.fakeFortuneTelledDayMsg + '（昨夜）'" cond="f.fakeFortuneTelledDay == f.lastDay"]
+    [iscript]
+      // 昨夜の場合だけ、（昨夜）を追加してあげる。
+      const lastNight = (f.fakeFortuneTelledDay === f.lastDay) ? '（昨夜）' : '';
+      f.fakeFortuneTelledDayMsg = f.fakeFortuneTelledDay + '日目の夜' + lastNight;
+    [endscript]
     [m_fakeFortuneTelledDayMsg]
 
     ;「一つ前に戻る」を選んだときにロールバックできるよう、バックアップをとっておく。ただし「一つ前に戻る」で戻ってきた直後はバックアップしない。
@@ -69,11 +77,11 @@
     [call target="*start"]
 
     ; 「一つ前に戻る」
-    [jump target="*askFakeFortuneTellingResultMultipleDays_previousDay" cond="f.pcActionObject === null"]
+    [jump target="*askFakeFortuneTellingResultMultipleDays_previousDay" cond="tf.tmpActionObject === {}"]
 
     ; 騙り占い実行。占い結果をf.actionObjectに格納する
-    [j_fortuneTelling fortuneTellerId="&f.pcActionObject.characterId" day="&f.fakeFortuneTelledDay" characterId="&f.pcActionObject.targetId" result="&f.pcActionObject.result"]
-    [m_displayFakeFortuneTellingResult result="&f.pcActionObject.result"]
+    [j_fortuneTelling fortuneTellerId="&tf.tmpActionObject.characterId" day="&f.fakeFortuneTelledDay" characterId="&tf.tmpActionObject.targetId" result="&tf.tmpActionObject.result"]
+    [m_displayFakeFortuneTellingResult result="&tf.tmpActionObject.result"]
 
     ; 前日まで占い終わったらループ終了
     [jump target="*askFakeFortuneTellingResultMultipleDays_loopend" cond="f.fakeFortuneTelledDay >= f.lastDay"]
@@ -82,8 +90,10 @@
     [j_COFortuneTelling fortuneTellerId="&f.playerCharacterId" day="&f.fakeFortuneTelledDay" noNeedNotice="true"]
 
     ; 次の日の騙り占いを行う
-    [eval exp="f.fakeFortuneTelledDay++"]
-    [eval exp="f.canceled = false"]
+    [iscript]
+      f.fakeFortuneTelledDay++;
+      f.canceled = false;
+    [endscript]
     [jump target="*askFakeFortuneTellingResultMultipleDays_loopstart"]
 
   *askFakeFortuneTellingResultMultipleDays_loopend
@@ -147,7 +157,7 @@
 [s]
 
 *cancel
-[eval exp="f.pcActionObject = null"]
+  [eval exp="tf.tmpActionObject = {}"]
 [jump target="*end"]
 
 *input
@@ -158,7 +168,7 @@
   // TODO 今は占いしか騙れないのでACTION_FORTUNE_TELLING決め打ち
   const actionId = ACTION_FORTUNE_TELLING;
 
-  f.pcActionObject = new Action(f.playerCharacterId, actionId, f.selectedCharacterId, declarationResult);
+  tf.tmpActionObject = new Action(f.playerCharacterId, actionId, f.selectedCharacterId, declarationResult);
 [endscript]
 
 *end
