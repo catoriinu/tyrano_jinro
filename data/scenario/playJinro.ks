@@ -223,9 +223,6 @@
 *discussionPhase
 [clearstack]
 
-; アクションボタン表示
-[j_displayFixButton action="true" cond="f.characterObjects[f.playerCharacterId].isAlive"]
-
 [m_resetDisplayCharacter]
 [m_changeFrameWithId]
 #
@@ -233,6 +230,10 @@
 
 ; 【チュートリアル】
 [call storage="tutorial.ks" target="discussionPhase" cond="sf.tutorialMode && !f.doneTutorial.discussionPhase"]
+
+[eval exp="f.isDoingAction = false"]
+; アクションボタン表示
+[j_displayFixButton action="true" cond="f.characterObjects[f.playerCharacterId].isAlive"]
 
 *startDiscussionLoop
 
@@ -243,6 +244,7 @@
 ; NPCのアクション実行者がいるか、いるならアクションとその対象を格納する
 [j_decideDoActionByNPC]
 
+*returnFromActionButton
 ; 現在のラウンド数と次のNPCのアクションを表示する
 [m_displayRoundAndNextActionInDiscussionPhase]
 
@@ -252,7 +254,6 @@
   [j_doAction actionObject="&f.doActionObject"]
 [endif]
 
-[m_resetDisplayCharacter]
 ; 議論フェイズを繰り返す
 [jump target="*startDiscussionLoop"]
 

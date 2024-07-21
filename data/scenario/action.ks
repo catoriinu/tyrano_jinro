@@ -56,6 +56,11 @@
 ; fixボタンを再表示
 [j_loadFixButton buf="action"]
 
+; アクション実行中でない（つまりラウンド表示中にアクションボタンを押したとき）なら、アクション実行者を表示しなおす位置のラベルにジャンプする
+[breakgame cond="!f.isDoingAction"]
+[jump storage="playJinro.ks" target="*returnFromActionButton" cond="!f.isDoingAction"]
+
+; アクション実行中ならawakegameして元の画面に戻る
 [awakegame]
 [return]
 

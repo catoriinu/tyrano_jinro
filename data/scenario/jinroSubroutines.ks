@@ -322,6 +322,10 @@ MEMO 最終的には以下の構成のHTMLが生成される。
 [j_setIsNeedToAskPCWantToCO]
 [jump target="*COPhasePlayer_end" cond="!tf.isNeedToAskPCWantToCO"]
 
+  ; プレイヤーに確認をとる場合
+  ; プレイヤーキャラクターを表示する
+  [m_changeCharacter characterId="&f.playerCharacterId" face="normal" side="left"]
+
   ; プレイヤーのCO役職IDを格納しておく。未COなら空文字
   [eval exp="f.playerCORoleId = f.characterObjects[f.playerCharacterId].CORoleId"]
   ; 役職結果COをする役職ID格納用変数を初期化しておく

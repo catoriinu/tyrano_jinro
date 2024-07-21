@@ -850,6 +850,9 @@
 ; @param actionObject アクションオブジェクト {characterId:アクション実行するキャラクターID, actionId:実行するアクションID, targetId:アクション対象のキャラクターID} 必須
 [macro name="j_doAction"]
   [iscript]
+    // アクション実行中フラグ
+    f.isDoingAction = true;
+
     // アクションボタン用変数の初期化（PCからのボタン先行入力を受け付けられるように消す。セリフとリアクションにはマクロ変数をcloneしたオブジェクト渡すのでこのタイミングで消して問題ない）
     f.doActionObject = {};
     f.pcActionObject = {};
@@ -878,6 +881,9 @@
 
   ; リアクションのセリフ表示
   [m_doAction_reaction actionObject="&f.actionObject"]
+
+  ; アクション実行中フラグを折る
+  [eval exp="f.isDoingAction = false"]
 [endmacro]
 
 
@@ -1415,10 +1421,6 @@
 
   [playbgm storage="nc282335.ogg" loop="true" volume="11" restart="false"]
   [bg storage="living_day_nc238325.jpg" time="1000" wait="true" effect="fadeInUp"]
-
-  ; PCが生存していれば再度画面に登場させる
-  [m_changeCharacter characterId="&f.playerCharacterId" face="normal" side="left" cond="f.characterObjects[f.playerCharacterId].isAlive"]
-
 [endmacro]
 
 

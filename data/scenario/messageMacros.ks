@@ -215,29 +215,50 @@
 
 ; シーン：現在のラウンド数と次のNPCのアクションを表示するシステムメッセージ
 [macro name="m_displayRoundAndNextActionInDiscussionPhase"]
+
+  [iscript]
+    // アクション実行者を判定する
+    tf.tmpDoActionObject = {};
+    // PCがアクションボタンでアクション指定済みならPC
+    if (Object.keys(f.pcActionObject).length > 0) {
+      tf.tmpDoActionObject = f.pcActionObject;
+    } else if (Object.keys(f.npcActionObject).length > 0) {
+      // PCがアクション未指定で、NPCでアクション実行者がいればそのNPC
+      tf.tmpDoActionObject = f.npcActionObject;
+    }
+
+    // アクション予告メッセージを作成する
+    tf.tmpMsg = '～誰も話そうとしていないようです～';
+    if (tf.tmpDoActionObject !== {}) {
+      const actorName = f.characterObjects[tf.tmpDoActionObject.characterId].name;
+      tf.tmpMsg = '～' + actorName + 'が話そうとしています';
+      
+      if (sf.j_development.dictatorMode) {
+        // 開発者用設定：独裁者モードなら、アクション実行者のアクション内容をメッセージに表示する
+        const actionName = ((tf.tmpDoActionObject.actionId == ACTION_TRUST) ? '信じる' : (tf.tmpDoActionObject.actionId == ACTION_SUSPECT) ? '疑う' : '？');
+        const targetName = f.characterObjects[tf.tmpDoActionObject.targetId].name;
+        tf.tmpMsg += '（' + targetName + 'に' + actionName + '）～';
+      } else {
+        tf.tmpMsg += '～';
+      }
+    }
+  [endscript]
+
+  ; アクション実行者がいるなら左に表示する。いないなら左のキャラクターを退場させる
+  [m_changeCharacter characterId="&tf.tmpDoActionObject.characterId" face="normal" side="left" cond="Object.keys(tf.tmpDoActionObject).length >= 1"]
+  [m_exitCharacter characterId="&f.displayedCharacter.left.characterId" cond="Object.keys(tf.tmpDoActionObject).length === 0"]
+  ; 右のキャラクターは必ず退場させる
+  [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+
   [m_changeFrameWithId]
   #
   ; TODO 画面上のどこかに常に、あるいはメニュー画面内に表示しておけるとベスト
+  ; メモ：プレイヤーがアクション選択→発言しないを繰り返すと複数回ラウンドが表示されるが、バックログには1回分しか残らない。次に進んだときに記録されるため？
   ～ラウンド[emb exp="f.doActionCount"]/[emb exp="sf.j_development.maxDoActionCount"]～[r]
 
-  ; ここはバックログに記録しない。プレイヤーがアクション実行すると、実際にはアクションしなかったことになる可能性があるため
+  ; アクション予告メッセージはバックログに記録しない。プレイヤーがアクション実行すると、実際にはアクションしなかったことになる可能性があるため
   [nolog]
-
-    [if exp="f.doActionCandidateId != ''"]
-    ～[emb exp="f.characterObjects[f.npcActionObject.characterId].name"]が話そうとしています
-      ; 開発者用設定：独裁者モードなら、アクション実行者のアクション内容をメッセージに表示する
-      [if exp="sf.j_development.dictatorMode"]
-        [iscript]
-          tf.tmpDoActionMessage = ((f.npcActionObject.actionId == ACTION_TRUST) ? '信じる' : (f.npcActionObject.actionId == ACTION_SUSPECT) ? '疑う' : '？');
-        [endscript]
-        （[emb exp="f.characterObjects[f.npcActionObject.targetId].name"]に[emb exp="tf.tmpDoActionMessage"]）
-      [endif]
-    [else]
-    ～誰も話そうとしていないようです
-    [endif]
-    ～[p]
-
-  ; ここまでログを記録しない
+    [emb exp="tf.tmpMsg"][p]
   [endnolog]
 [endmacro]
 
@@ -264,7 +285,7 @@
 
 
 ; 登場しているキャラクターを交代する。既に登場しているキャラクターの場合は表情のみ変える。
-; キャラの表示位置は、PC：画面左側、NPC：画面右側とする。同じ側には一人しか出ない（ので、例えばNPC1が右側にいるときNPC2が喋る場合、NPC1が退場してからNPC2が登場する）
+; 同じキャラは同時に二人は出ない（ので、例えばNPC1が右側にいるときNPC1が左側に登場する場合、右側からNPC1が退場してから左側からNPC1が登場する）
 ; すでにそのキャラがchara_newで登録,およびその表情がchara_faceで登録済みである前提とする。
 ; @param characterId 登場させたいキャラのキャラクターID。必須。
 ; @param face 登場させたいキャラのface。未指定の場合は表情は変えない。
@@ -387,9 +408,9 @@
 ; フェイズの転換時にリセットするために使う
 [macro name="m_resetDisplayCharacter"]
   [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
-
-  [m_changeCharacter characterId="&f.playerCharacterId" face="normal" side="left" cond="f.characterObjects[f.playerCharacterId].isAlive"]
-  [m_exitCharacter characterId="&f.displayedCharacter.left.characterId" cond="!(f.characterObjects[f.playerCharacterId].isAlive)"]
+  [m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
+  ;[m_changeCharacter characterId="&f.playerCharacterId" face="normal" side="left" cond="f.characterObjects[f.playerCharacterId].isAlive"]
+  ;[m_exitCharacter characterId="&f.displayedCharacter.left.characterId" cond="!(f.characterObjects[f.playerCharacterId].isAlive)"]
 [endmacro]
 
 
