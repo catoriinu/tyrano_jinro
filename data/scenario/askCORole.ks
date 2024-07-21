@@ -77,7 +77,7 @@
     [call target="*start"]
 
     ; 「一つ前に戻る」
-    [jump target="*askFakeFortuneTellingResultMultipleDays_previousDay" cond="tf.tmpActionObject === {}"]
+    [jump target="*askFakeFortuneTellingResultMultipleDays_previousDay" cond="Object.keys(tf.tmpActionObject).length === 0"]
 
     ; 騙り占い実行。占い結果をf.actionObjectに格納する
     [j_fortuneTelling fortuneTellerId="&tf.tmpActionObject.characterId" day="&f.fakeFortuneTelledDay" characterId="&tf.tmpActionObject.targetId" result="&tf.tmpActionObject.result"]
