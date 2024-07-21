@@ -351,7 +351,7 @@
   [eval exp="tf.moveLeft = '+=1000'" cond="mp.side == 'left'"]
 
   ; sideがleftの場合のみ、一度leftOnDefautLeftの位置に移動させる。デフォルトの待機位置がleftOnDefautRightなので。
-  [chara_move name="&mp.characterId" time="1" left="&f.defaultPosition[tf.characterId].leftOnDefautLeft" wait="true" cond="mp.side == 'left'"]
+  [chara_move name="&mp.characterId" time="1" left="&f.defaultPosition[mp.characterId].leftOnDefautLeft" wait="true" cond="mp.side == 'left'"]
 
   ; 表情を変える
   ; MEMO 「そのキャラの今の表情」を取得可能であれば、「今の表情と違う場合のみ」にしたい。が、HTML要素内に表情の情報がimgのパスくらいしかなかったので無理そう。
