@@ -8,7 +8,6 @@
  * @param {*} adjustmentRegistanceMultiplier 
  * @param {Number} assertiveness 主張力
  * @param {Object} roleCOProbability 役職ごとのCO確率オブジェクト
- * @param {Object} impressiveActionList 信頼度に影響を与える行動リスト
  * @param {Object} feelingBorder 感情の境界値オブジェクト
  */
 function Personality(
@@ -19,7 +18,6 @@ function Personality(
   registanceMultiplier,
   adjustmentRegistanceMultiplier,
   assertiveness, roleCOProbability,
-  impressiveReasonList,
   feelingBorder
 ) {
   this.name = name;
@@ -30,7 +28,6 @@ function Personality(
   this.logical = logical;
   this.assertiveness = assertiveness;
   this.roleCOProbability = roleCOProbability;
-  this.impressiveReasonList = impressiveReasonList;
   this.feelingBorder = feelingBorder;
 }
 
@@ -67,29 +64,6 @@ function Personality_tester() {
       [ROLE_ID_MADMAN]: {
         [ROLE_ID_FORTUNE_TELLER]: 0.8
       }
-    },
-    // impressiveReasonList {信頼度に影響を与える理由: {value: 値（絶対値とする）, arithmetic: 現在の信頼度とvalueとの計算方法}
-    {
-      [ACTION_SUSPECT]: { // 疑う
-        value: 0.3,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_TRUST]: { // 信じる
-        value: 0.3,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_ASK]: { // 聞き出す MEMO:試験用に信頼度を最大にできるようにする
-        value: 1,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_VOTE]: { // 投票
-        value: 0.1,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_FORTUNE_TELLING]: { // 占う
-        value: 0.4,
-        arithmetic: ARITHMETIC_ADDITION
-      },
     },
     { // feelingBorder {hate:仲間度がこれ未満ならhate状態, love:仲間度がこれ超過ならlove状態}
       hate: 0.3,
@@ -132,29 +106,6 @@ function Doll() {
         [ROLE_ID_FORTUNE_TELLER]: 0
       }
     },
-    // impressiveReasonList {信頼度に影響を与える理由: {value: 値（絶対値とする）, arithmetic: 現在の信頼度とvalueとの計算方法}
-    {
-      [ACTION_SUSPECT]: { // 疑う
-        value: 0.2,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_TRUST]: { // 信じる
-        value: 0.2,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_ASK]: { // 聞き出す MEMO:試験用に信頼度を最大にできるようにする
-        value: 1,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_VOTE]: { // 投票
-        value: 0.1,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_FORTUNE_TELLING]: { // 占う
-        value: 0.3,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-    },
     { // feelingBorder {hate:仲間度がこれ未満ならhate状態, love:仲間度がこれ超過ならlove状態}
       hate: 0.2,
       love: 0.8
@@ -165,13 +116,13 @@ function Doll() {
 
 /**
  * @classdec ずんだもんの性格クラス
- * 基本的にはPC自身なので最強の論理力プレイヤーとしておく
+ * 基本的にはPC自身なので論理力は高めで、影響力は少し強め。その他は標準のままとする
  */
 function Personality_zundamon() {
   return new Personality (
     'ずんだもん', // name
-    0.9, // logical 論理力(0～1)
-    1,
+    0.8, // logical 論理力(0～1)
+    1.2,
     {
       action: {}
     },
@@ -197,29 +148,6 @@ function Personality_zundamon() {
         [ROLE_ID_FORTUNE_TELLER]: 0.9
       }
     },
-    // impressiveReasonList {信頼度に影響を与える理由: {value: 値（絶対値とする）, arithmetic: 現在の信頼度とvalueとの計算方法}
-    {
-      [ACTION_SUSPECT]: { // 疑う
-        value: 0.5,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_TRUST]: { // 信じる
-        value: 0.5,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_ASK]: { // 聞き出す MEMO:試験用に信頼度を最大にできるようにする
-        value: 1,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_VOTE]: { // 投票
-        value: 0.2,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_FORTUNE_TELLING]: { // 占う
-        value: 0.4,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-    },
     { // feelingBorder {hate:仲間度がこれ未満ならhate状態, love:仲間度がこれ超過ならlove状態}
       hate: 0.3,
       love: 0.7
@@ -230,7 +158,7 @@ function Personality_zundamon() {
 
 /**
  * @classdec 四国めたんの性格クラス
- * 論理力強めの正統派プレイヤー。ただし信じられるとすぐに味方だと思う。
+ * 論理力強め。ただし信じられるとすぐに味方だと思ってしまうチョロイン。役職CO率は正統派。
  */
 function Personality_metan() {
   return new Personality (
@@ -240,9 +168,11 @@ function Personality_metan() {
     {
       action: {}
     },
-    1,
+    0.95,
     {
-      action: {},
+      action: {
+        [ACTION_TRUST]: 0.6
+      },
       actor: {}
     },
     { // assertiveness 主張力（originalとcurrentは同値にすること）
@@ -261,29 +191,6 @@ function Personality_metan() {
       [ROLE_ID_MADMAN]: {
         [ROLE_ID_FORTUNE_TELLER]: 0.8
       }
-    },
-    // impressiveReasonList {信頼度に影響を与える理由: {value: 値（絶対値とする）, arithmetic: 現在の信頼度とvalueとの計算方法}
-    {
-      [ACTION_SUSPECT]: { // 疑う
-        value: 0.2,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_TRUST]: { // 信じる
-        value: 0.5,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_ASK]: { // 聞き出す MEMO:試験用に信頼度を最大にできるようにする
-        value: 1,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_VOTE]: { // 投票
-        value: 0.1,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_FORTUNE_TELLING]: { // 占う
-        value: 0.5,
-        arithmetic: ARITHMETIC_ADDITION
-      },
     },
     { // feelingBorder {hate:仲間度がこれ未満ならhate状態, love:仲間度がこれ超過ならlove状態}
       hate: 0.3,
@@ -295,30 +202,30 @@ function Personality_metan() {
 
 /**
  * @classdec 春日部つむぎの性格クラス
- * 主張力が高い。論理力は低く、議論で心が動きやすい。
+ * ギャルなので主張力と影響力が強い。反面、論理力と抵抗力は低め。役職CO率は中途半端。
  */
 function Personality_tsumugi() {
   return new Personality (
     '春日部つむぎ', // name
     0.4, // logical 論理力(0～1)
-    1,
+    1.1,
     {
       action: {}
     },
-    1,
+    0.9,
     {
       action: {},
       actor: {}
     },
     { // assertiveness 主張力（originalとcurrentは同値にすること）
-      original: 1,  // 元々の値（毎日currentをoriginalで初期化する）
-      current: 1,   // 現在の値（判定処理にはcurrentを用いる）
-      decrease: 0.2 // 減少値（発言一回ごとに減少値分currentを減らす）
+      original: 1.1,  // 元々の値（毎日currentをoriginalで初期化する）
+      current: 1.1,   // 現在の値（判定処理にはcurrentを用いる）
+      decrease: 0.25 // 減少値（発言一回ごとに減少値分currentを減らす）
     },
     // COProbability {自身のRoleId : その役職としてCOする可能性}
     {
       [ROLE_ID_FORTUNE_TELLER]: {
-        [ROLE_ID_FORTUNE_TELLER]: 0.75
+        [ROLE_ID_FORTUNE_TELLER]: 0.8
       },
       [ROLE_ID_WEREWOLF]: {
         [ROLE_ID_FORTUNE_TELLER]: 0.5
@@ -326,29 +233,6 @@ function Personality_tsumugi() {
       [ROLE_ID_MADMAN]: {
         [ROLE_ID_FORTUNE_TELLER]: 0.6
       }
-    },
-    // impressiveReasonList {信頼度に影響を与える理由: {value: 値（絶対値とする）, arithmetic: 現在の信頼度とvalueとの計算方法}
-    {
-      [ACTION_SUSPECT]: { // 疑う
-        value: 0.4,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_TRUST]: { // 信じる
-        value: 0.4,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_ASK]: { // 聞き出す MEMO:試験用に信頼度を最大にできるようにする
-        value: 1,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_VOTE]: { // 投票
-        value: 0.15,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_FORTUNE_TELLING]: { // 占う
-        value: 0.5,
-        arithmetic: ARITHMETIC_ADDITION
-      },
     },
     { // feelingBorder {hate:仲間度がこれ未満ならhate状態, love:仲間度がこれ超過ならlove状態}
       hate: 0.3,
@@ -360,24 +244,27 @@ function Personality_tsumugi() {
 
 /**
  * @classdec 雨晴はうの性格クラス
- * 論理寄り。主張力が低めで、人外の場合は潜伏しがち。疑うによる影響が大きい。
+ * 論理寄り。主張力は低め。役職COについて、人外の場合は潜伏しがち。占いと疑うへの抵抗力が低い。
  */
 function Personality_hau() {
   return new Personality (
     '雨晴はう', // name
-    0.75, // logical 論理力(0～1)
+    0.7, // logical 論理力(0～1)
     1,
     {
       action: {}
     },
     1,
     {
-      action: {},
+      action: {
+        [ACTION_FORTUNE_TELLING]: 0.8,
+        [ACTION_SUSPECT]: 0.8,
+      },
       actor: {}
     },
     { // assertiveness 主張力（originalとcurrentは同値にすること）
-      original: 0.95,  // 元々の値（毎日currentをoriginalで初期化する）
-      current: 0.95,   // 現在の値（判定処理にはcurrentを用いる）
+      original: 0.9,  // 元々の値（毎日currentをoriginalで初期化する）
+      current: 0.9,   // 現在の値（判定処理にはcurrentを用いる）
       decrease: 0.3 // 減少値（発言一回ごとに減少値分currentを減らす）
     },
     // COProbability {自身のRoleId : その役職としてCOする可能性}
@@ -389,31 +276,8 @@ function Personality_hau() {
         [ROLE_ID_FORTUNE_TELLER]: 0.05
       },
       [ROLE_ID_MADMAN]: {
-        [ROLE_ID_FORTUNE_TELLER]: 0.2
+        [ROLE_ID_FORTUNE_TELLER]: 0.1
       }
-    },
-    // impressiveReasonList {信頼度に影響を与える理由: {value: 値（絶対値とする）, arithmetic: 現在の信頼度とvalueとの計算方法}
-    {
-      [ACTION_SUSPECT]: { // 疑う
-        value: 0.5,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_TRUST]: { // 信じる
-        value: 0.25,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_ASK]: { // 聞き出す MEMO:試験用に信頼度を最大にできるようにする
-        value: 1,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_VOTE]: { // 投票
-        value: 0.08,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_FORTUNE_TELLING]: { // 占う
-        value: 0.3,
-        arithmetic: ARITHMETIC_ADDITION
-      },
     },
     { // feelingBorder {hate:仲間度がこれ未満ならhate状態, love:仲間度がこれ超過ならlove状態}
       hate: 0.2,
@@ -425,17 +289,19 @@ function Personality_hau() {
 
 /**
  * @classdec 波音リツの性格クラス
- * 役持ちの場合COしがち。頑固で、議論の影響を与えにくく受けにくい。
+ * 頑固で、議論の影響を与えにくく受けにくい。疑うの影響力だけ高い。役持ちの場合COしがち。HATEになりやすくLOVEになりにくい
  */
 function Personality_ritsu() {
   return new Personality (
     '波音リツ', // name
-    0.7, // logical 論理力(0～1)
+    0.6, // logical 論理力(0～1)
     1,
     {
-      action: {}
+      action: {
+        [ACTION_SUSPECT]: 1.2
+      }
     },
-    1,
+    1.2,
     {
       action: {},
       actor: {}
@@ -454,35 +320,12 @@ function Personality_ritsu() {
         [ROLE_ID_FORTUNE_TELLER]: 0.8
       },
       [ROLE_ID_MADMAN]: {
-        [ROLE_ID_FORTUNE_TELLER]: 0.95
+        [ROLE_ID_FORTUNE_TELLER]: 0.9
       }
     },
-    // impressiveReasonList {信頼度に影響を与える理由: {value: 値（絶対値とする）, arithmetic: 現在の信頼度とvalueとの計算方法}
-    {
-      [ACTION_SUSPECT]: { // 疑う
-        value: 0.2,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_TRUST]: { // 信じる
-        value: 0.2,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_ASK]: { // 聞き出す MEMO:試験用に信頼度を最大にできるようにする
-        value: 1,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_VOTE]: { // 投票
-        value: 0.05,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-      [ACTION_FORTUNE_TELLING]: { // 占う
-        value: 0.2,
-        arithmetic: ARITHMETIC_ADDITION
-      },
-    },
     { // feelingBorder {hate:仲間度がこれ未満ならhate状態, love:仲間度がこれ超過ならlove状態}
-      hate: 0.3,
-      love: 0.7
+      hate: 0.35,
+      love: 0.75
     }
   );
 }
