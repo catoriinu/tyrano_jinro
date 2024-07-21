@@ -382,6 +382,7 @@
 [j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
 [if exp="f.canCOFortuneTellerStatus == 1 || f.canCOFortuneTellerStatus == 2"]
 
+  [m_changeCharacter characterId="&f.playerCharacterId" face="normal" side="left"]
   [m_askFortuneTellingTarget isFortuneTeller="true"]
 
   ; 占いカットイン発生
