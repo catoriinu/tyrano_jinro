@@ -31,7 +31,7 @@
       alive: 'normal.png',
       lose: 'sad.png',
       win: {
-        [FACTION_VILLAGERS]: 'blank.png', // TODO 笑顔の表情増やしたい
+        [FACTION_VILLAGERS]: 'normal.png', // TODO 笑顔の表情増やしたい
         [FACTION_WEREWOLVES]: 'smug.png',
       },
       draw: 'panicked.png',

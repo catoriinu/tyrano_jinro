@@ -911,7 +911,7 @@ function updateReliabirityForVote(character, action, influenceMultiplier) {
     if (voteTargetId === action.targetId) {
       // 投票したキャラが自分と同じキャラに投票したなら、
       // 投票したキャラへの信頼度を上げる
-      utility.updateReliability(0.05, action.characterId);
+      utility.updateReliability(0.1, action.characterId);
     }
 
     if (utility.sameFactionPossivility[action.characterId] > utility.sameFactionPossivility[action.targetId]) {
