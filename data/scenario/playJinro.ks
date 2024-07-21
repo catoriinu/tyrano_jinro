@@ -278,7 +278,9 @@
 ; ここはバックログに記録しない。記録する必要がないシステムメッセージのため
 [nolog]
 
-[if exp="!f.characterObjects[f.playerCharacterId].isAlive"]
+[if exp="f.characterObjects[f.playerCharacterId].isAlive"]
+  [m_changeCharacter characterId="&f.playerCharacterId" face="thinking" side="left"]
+[else]
   プレイヤーが退場済みなので投票できません。[l][r]
   [jump target="*skipPlayerVote" cond="!sf.j_development.dictatorMode"]
   が、独裁者モードなので投票できます。[p]
@@ -305,7 +307,7 @@
 [eval exp="tf.doSlideInCharacter = true"]
 [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 
-; NPCを退場させる（PCの投票先、または（PCが投票していない場合）直前に発言したキャラが残っているため。退場させないと、処刑先のキャラが喋るまでそのままになってしまう）
+; 右側のキャラを退場させる（PCの投票先のキャラが残っているため。退場させないと、処刑先のキャラが喋るまでそのままになってしまう）
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 
 ; ボタンで選択した投票先キャラクターIDを、プレイヤーの投票履歴に入れる
@@ -346,13 +348,7 @@
 #
 [emb exp="f.characterObjects[f.electedIdList[0]].name + 'は追放されました。'"][p]
 
-; 処刑後の反応（TODO 誰が発言するかを決定するマクロ等が必要）
-[if exp="f.characterObjects.ai.isAlive"]
-  [m_afterExecution characterId="ai"]
-[elsif exp="f.characterObjects.hiyori.isAlive"]
-  [m_afterExecution characterId="hiyori"]
-[endif]
-
+; TODO: 処刑後の反応（誰が発言するかを決定するマクロ等が必要）
 
 ; 勝敗判定
 [j_judgeWinnerFactionAndJump storage="playJinro.ks" target="*gameOver"]

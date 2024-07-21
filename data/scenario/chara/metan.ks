@@ -31,7 +31,7 @@
       alive: 'normal.png',
       lose: 'sad.png',
       win: {
-        [FACTION_VILLAGERS]: 'normal.png', // TODO 笑顔の表情増やしたい
+        [FACTION_VILLAGERS]: 'happy.png',
         [FACTION_WEREWOLVES]: 'smug.png',
       },
       draw: 'panicked.png',
@@ -48,6 +48,7 @@
   [chara_face name="&tf.characterId" face="sad" storage="chara/metan/sad.png"]
   [chara_face name="&tf.characterId" face="serious" storage="chara/metan/serious.png"]
   [chara_face name="&tf.characterId" face="smug" storage="chara/metan/smug.png"]
+  [chara_face name="&tf.characterId" face="happy" storage="chara/metan/happy.png"]
   [chara_face name="&tf.characterId" face="lose" storage="chara/metan/sad.png"]
   [chara_show name="&tf.characterId" face="normal" time="0" wait="true" left="&f.defaultPosition[tf.characterId].leftOnDefautRight" top="&f.defaultPosition[tf.characterId].top"]
 [return]
