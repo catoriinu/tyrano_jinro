@@ -24,11 +24,13 @@
 ; 「導入編を見る」ボタン
 [glink color="&tf.buttonColor" size="26" width="300" x="488" y="395" text="導入編を見る" target="*startIntro"]
 
-; 「このシチュエーションでプレイする」ボタンまたはプレイできない理由を表示
-[if exp="f.displayEpisode.cantPlayReason === null"]
+; EpisodeモデルのepisodePlayButtonTypeに従ってボタン表示またはプレイできない理由を表示
+[if exp="f.displayEpisode.episodePlayButtonType === 'このシチュエーションでプレイする' || f.displayEpisode.episodePlayButtonType === null"]
   [glink color="&tf.buttonColor" size="26" width="450" x="412.9" y="480" text="このシチュエーションでプレイする" target="*startSituationPlay"]
+[elsif exp="f.displayEpisode.episodePlayButtonType === 'チュートリアルをプレイする'"]
+  [glink color="&tf.buttonColor" size="26" width="450" x="412.9" y="480" text="チュートリアルをプレイする" target="*startTutorialPlay"]
 [else]
-  [ptext layer="1" page="back" text="&f.displayEpisode.cantPlayReason" face="MPLUSRounded" size="30" x="180" y="480" width="920" align="center"]
+  [ptext layer="1" page="back" text="&f.displayEpisode.episodePlayButtonType" face="MPLUSRounded" size="30" x="180" y="480" width="920" align="center"]
 [endif]
 
 
@@ -95,6 +97,25 @@
 [j_prepareJinroGame participantsNumber="&f.displayEpisode.situation.participantsNumber" preload="true"]
 
 [jump storage="playJinro.ks"]
+[s]
+
+
+; チュートリアル用ラベル
+; MEMO 現在のところ、p01_e01でしか考慮していないので他で呼ぶ場合は要修正
+*startTutorialPlay
+[free_filter layer="0"]
+[freeimage layer="1" page="fore"]
+[freeimage layer="1" page="back"]
+[freeimage layer="0"]
+[stopbgm]
+[endnowait]
+[layopt layer="message0" visible="true"]
+
+; シチュエーションプレイで人狼ゲームを開始したフラグ（人狼ゲーム終了時にエピソード画面に戻ってくるため）
+[eval exp="f.isSituationPlay = true"]
+
+; チュートリアル用ラベルにジャンプする。人狼ゲームの準備も含めてジャンプ先でやってくれる
+[jump storage="tutorial/tutorialSubroutines.ks" target="*toFirstInstruction"]
 [s]
 
 

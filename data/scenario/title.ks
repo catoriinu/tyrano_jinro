@@ -28,18 +28,24 @@
   // タイトル画面のボタン表示を判定するためにシアター進捗を取得していく
   // 初回起動時
   tf.isFirstStartup = (getTheaterProgress('p01', 'e01', 'c01') === THEATER_LOCKED);
-  // ページ1クリア済み
-  tf.isPage01Cleared = (getTheaterProgress('p01', 'e08', 'c02') === THEATER_WATCHED);
+  // チュートリアル未クリア
+  tf.isTutolialNotCleared = (getTheaterProgress('p01', 'e01', 'c02') === THEATER_LOCKED);
+  // ページ1未クリア
+  tf.isPage01NotCleared = (getTheaterProgress('p01', 'e08', 'c02') === THEATER_WATCHED);
 
   // ボタンの色
   tf.buttonColor = CLASS_GLINK_DEFAULT;
 [endscript]
 
-; タイトル画面のボタン表示。予期せぬパターンがあると大変なので、面倒でもelsifで場合分けしておくこと。
+; タイトル画面のボタン表示。予期せぬパターンがあると大変なので、面倒でもelsifで場合分けしておくこと
 [if exp="tf.isFirstStartup"]
   [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイスタート" target="*firstPlayStart"]
   [glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
-[elsif exp="!tf.isPage01Cleared"]
+[elsif exp="tf.isTutolialNotCleared"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="138" y="500" name="buttonhover" text="シアター" target="*theater"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイスタート" target="*firstPlayStart"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
+[elsif exp="tf.isPage01NotCleared"]
   [glink color="&tf.buttonColor" size="30" width="300" x="138" y="500" name="buttonhover" text="シアター" target="*theater"]
   [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイ" target="*gamestart"]
   [glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
@@ -119,5 +125,8 @@
 [freeimage layer="1"]
 [stopbgm]
 
-[jump storage="theater/p01/e01_c01.ks"]
+; 初回起動時なら「誰がずんだもちを食べたのだ？」導入編に飛ばす
+[jump storage="theater/p01/e01_c01.ks" cond="tf.isFirstStartup"]
+; それ以外でここに来た場合（は導入編は見終わったがまだチュートリアルをクリアしていない場合のみ）は、チュートリアルモードのまま人狼をプレイさせる
+[jump storage="tutorial/tutorialSubroutines.ks" target="*toFirstInstruction"]
 [s]

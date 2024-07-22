@@ -15,6 +15,7 @@
     forceStatusButton: false,
     statusButton: false,
     endInstruction: false,
+    secondInstruction: false,
   }
 
   // 「誰がずんだもちを食べたのだ？」のエピソード情報から参加者情報を取得して、人狼ゲームの準備に利用する

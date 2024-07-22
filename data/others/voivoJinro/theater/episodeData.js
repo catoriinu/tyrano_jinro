@@ -16,7 +16,7 @@ function episodeData(pageId, episodeId) {
                         '誰がずんだもちを食べたのだ？',
                         'theater/p01_01_darega.png',
                         '【解放条件】<br>チュートリアルで勝利する',
-                        null,
+                        'チュートリアルをプレイする',
                         new Chapter(
                             'c01',
                             'theater/p01/e01_c01.ks'
@@ -48,7 +48,7 @@ function episodeData(pageId, episodeId) {
                         'わたくしの千里眼―サウザンドアイ―に死角なし！',
                         'theater/p01_02_watakushino.png',
                         '【解放条件】<br>ずんだもん：村人、四国めたん：占い師でゲームに勝利する',
-                        null,
+                        'このシチュエーションでプレイする',
                         new Chapter(
                             'c01',
                             'theater/p01/e02_c01.ks'
@@ -80,7 +80,7 @@ function episodeData(pageId, episodeId) {
                         'えだまめカレーを布教するのだ！',
                         'theater/p01_03_zundacurry.png',
                         '【解放条件】<br>ずんだもん：狂人、春日部つむぎ：人狼でゲームに勝利する',
-                        null,
+                        'このシチュエーションでプレイする',
                         new Chapter(
                             'c01',
                             'theater/p01/e03_c01.ks'
@@ -112,7 +112,7 @@ function episodeData(pageId, episodeId) {
                         'ニンニクマシマシ幸せマシマシ',
                         'theater/p01_04_irereba.png',
                         '【解放条件】<br>ずんだもん：占い師、雨晴はう：人狼でゲームに勝利する',
-                        null,
+                        'このシチュエーションでプレイする',
                         new Chapter(
                             'c01',
                             'theater/p01/e04_c01.ks'
@@ -144,7 +144,7 @@ function episodeData(pageId, episodeId) {
                         '欠陥住宅？',
                         'theater/p01_05_kekkan.png',
                         '【解放条件】<br>ずんだもん：占い師、波音リツ：人狼でゲームに勝利する',
-                        null,
+                        'このシチュエーションでプレイする',
                         new Chapter(
                             'c01',
                             'theater/p01/e05_c01.ks'

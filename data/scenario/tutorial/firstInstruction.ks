@@ -1,4 +1,15 @@
 *instruction
+
+[iscript]
+  // 初回起動時
+  tf.isFirstStartup = (getTheaterProgress('p01', 'e01', 'c01') === THEATER_LOCKED);
+  // チュートリアル未クリア
+  tf.isTutolialNotCleared = (getTheaterProgress('p01', 'e01', 'c02') === THEATER_LOCKED);
+  // TODO チュートリアルクリア後はどっちのルートにすべき？
+[endscript]
+[jump target="*secondInstruction" cond="!tf.isFirstStartup && tf.isTutolialNotCleared"]
+
+
 [m_changeCharacterFrameName name="ずんだもん"]
 …って、人狼って悪者なんじゃないのだ！？[r]
 このままだと僕が犯人ってことにされるのだ！[p]
@@ -22,7 +33,7 @@
 …だけで理解できるなら、人狼ゲームの説明はスキップしますね。[p]
 
 ちなみにこの説明を含めたオープニングは見返せますからね。[r]
-後ほどシアターモードから「誰がずんだもちを食べたのだ？」の「このシチュエーションでプレイする」を選べばOKです。[p]
+後ほどシアターモードから「誰がずんだもちを食べたのだ？」の「チュートリアルをプレイする」を選べばOKです。[p]
 
 [m_changeCharacterFrameName name="ずんだもん"]
 お姉さんは誰に向かって喋ってるのだ？[p]
@@ -32,8 +43,8 @@
 
 ということで、あなたに人狼ゲームのルール説明をしてもよろしいでしょうか？[p]
 
-[glink text="説明して" target="continueInstruction"]
-[glink text="スキップして" target="skipInstruction"]
+[glink text="説明して" target="*continueInstruction"]
+[glink text="スキップして" target="*skipInstruction"]
 [s]
 
 *continueInstruction
@@ -532,11 +543,14 @@
 …ここでは私はインストラクターのお姉さんです。[r]
 それ以上でもそれ以下でもありません。[p]
 
-心配いりません。いつかまた、どこかで会えますよ。[r]
+心配いりません。いつかまた、きっと会えますよ。[r]
 でも、今はまだ、おあずけです。[p]
 
 そのときはきっと、ずんだもんちゃんも私を知っているはず。[r]
 …ここではないどこかで、また会いましょう。[p]
+
+; 右側のキャラ退場
+[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 
 [m_changeCharacterFrameName name="ずんだもん"]
 ま、待つのだっ！[p]
@@ -549,12 +563,79 @@
 
 [eval exp="f.tutorialList.endInstruction = true"]
 
-; 右側のキャラ退場、枠リセット
-[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+; 枠リセット
 [m_changeFrameWithId]
 #
 
 ; secondDayDayPhase内のタグに戻り、secondDayDayPhaseの元々の呼び出し元にreturnする
 [jump target="*returnFromEndInstruction"]
+
+[return]
+
+
+*secondInstruction
+
+[m_changeCharacterFrameName name="ずんだもん" side="left"]
+…ってこの状況、前にもあった気がするのだ。[r]
+もし僕の記憶が正しければこのあと…。[p]
+
+[m_changeCharacterFrameName name="？？？" characterId="mochiko"]
+お困りの方がいればどこにでも駆けつけます！[r]
+インストラクターのお姉さん、颯爽登場です！[p]
+
+[m_changeCharacterFrameName name="？？？" characterId="mochiko"]
+あ、あれ、おかしいなぁ…？[r]
+あんまり驚いてくれませんね…。[p]
+
+[m_changeCharacterFrameName name="ずんだもん" side="left"]
+前にも同じような状況があったのだ。[r]
+夢かもしれないけど、確かに見覚えがあるのだ。[p]
+
+[m_changeCharacterFrameName name="？？？" characterId="mochiko"]
+ふぅん、なるほど…。[r]
+それじゃあ人狼ゲームとボイボ人狼の説明も要らないですか？[p]
+
+[eval exp="f.tutorialList.secondInstruction = true"]
+
+[glink text="説明して" target="*continueInstruction"]
+[glink text="スキップして" target="*skipSecondInstruction"]
+[s]
+
+*skipSecondInstruction
+
+[m_changeCharacterFrameName name="？？？" characterId="mochiko"]
+了解しました。[r]
+でも、せっかくなのでヒントを差し上げます。[p]
+
+この状況に見覚えがあると言っていましたよね。[r]
+であれば、他にも以前と同じことがあるかもしれません。[p]
+
+例えば、ずんだもんちゃんの味方の人が誰なのか、とか。[p]
+
+その人に信頼してもらえるように、積極的に行動してみてはいかがでしょうか。[p]
+
+あなたが諦めない限り、未来はきっと変えられます。[r]
+だって未来は、未だ来てないから「未来」なんですから。[p]
+
+[m_changeCharacterFrameName name="ずんだもん" side="left"]
+お姉さん、ありがとうなのだ！[p]
+
+[m_changeCharacterFrameName name="？？？" characterId="mochiko"]
+ふふっ。ではまたいつか。[r]
+今度は別の形で会えるといいですね。[p]
+
+; 右側のキャラ退場
+[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+
+[m_changeCharacterFrameName name="ずんだもん" side="left"]
+…よし、今度こそ僕の無実を証明してやるのだ！[p]
+
+; 枠リセット
+[m_changeFrameWithId]
+#
+
+[iscript]
+  f.tutorialList = {};
+[endscript]
 
 [return]
