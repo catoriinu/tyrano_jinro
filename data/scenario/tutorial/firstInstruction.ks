@@ -22,7 +22,7 @@
 …だけで理解できるなら、人狼ゲームの説明はスキップしますね。[p]
 
 ちなみにこの説明を含めたオープニングは見返せますからね。[r]
-後ほどシアターモードから「誰がずんだもちを食べたのだ！」を選べばOKです。[p]
+後ほどシアターモードから「誰がずんだもちを食べたのだ？」の「このシチュエーションでプレイする」を選べばOKです。[p]
 
 [m_changeCharacterFrameName name="ずんだもん"]
 お姉さんは誰に向かって喋ってるのだ？[p]
@@ -136,6 +136,11 @@
 
 [eval exp="f.tutorialList.instruction = true"]
 
+; 右側のキャラ退場、枠リセット
+[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+[m_changeFrameWithId]
+#
+
 [return]
 
 
@@ -172,6 +177,11 @@
 さあ、どうしますか？[p]
 
 [eval exp="f.tutorialList.COPhase = true"]
+
+; 右側のキャラ退場、枠リセット
+[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+[m_changeFrameWithId]
+#
 
 [return]
 
@@ -254,6 +264,11 @@
 
 [eval exp="f.tutorialList.discussionPhase = true"]
 
+; 右側のキャラ退場、枠リセット
+[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+[m_changeFrameWithId]
+#
+
 [return]
 
 
@@ -291,6 +306,11 @@
 
 [eval exp="f.tutorialList.votePhase = true"]
 
+; 右側のキャラ退場、枠リセット
+[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+[m_changeFrameWithId]
+#
+
 [return]
 
 
@@ -320,6 +340,11 @@
 ここまで来たら、とことんやってやるのだー！[p]
 
 [eval exp="f.tutorialList.firstDayNightPhase = true"]
+
+; 右側のキャラ退場、枠リセット
+[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+[m_changeFrameWithId]
+#
 
 [return]
 
@@ -469,7 +494,7 @@
 
 これらの情報を活用して、人狼ゲームを有利に進めましょう！[p]
 
-もとの画面に戻るには、もう一度「ステータス」ボタンを押してくださいね。[p]
+もとの画面に戻るには、「もどる」ボタンを押してくださいね。[p]
 
 ; freeレイヤーのz-indexを正しい値に戻す。ボタン操作も可能になる。
 [iscript]
@@ -477,6 +502,11 @@
 [endscript]
 
 [eval exp="f.tutorialList.statusButton = true"]
+
+; 右側のキャラ退場、枠リセット
+[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+[m_changeFrameWithId]
+#
 
 [return]
 
@@ -519,7 +549,12 @@
 
 [eval exp="f.tutorialList.endInstruction = true"]
 
+; 右側のキャラ退場、枠リセット
+[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+[m_changeFrameWithId]
+#
+
 ; secondDayDayPhase内のタグに戻り、secondDayDayPhaseの元々の呼び出し元にreturnする
-[jump target="returnFromEndInstruction"]
+[jump target="*returnFromEndInstruction"]
 
 [return]

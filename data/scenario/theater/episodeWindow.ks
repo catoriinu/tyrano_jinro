@@ -62,7 +62,7 @@
 [endnowait]
 [layopt layer="message0" visible="true"]
 
-[jump storage="&f.displayEpisode.introChapter.storage"]
+[jump storage="&f.displayEpisode.introChapter.storage" target="*start"]
 [s]
 
 
@@ -75,7 +75,7 @@
 [endnowait]
 [layopt layer="message0" visible="true"]
 
-[jump storage="&f.displayEpisode.outroChapter.storage"]
+[jump storage="&f.displayEpisode.outroChapter.storage" target="*start"]
 [s]
 
 

@@ -1,6 +1,6 @@
 ;一番最初に呼び出されるファイル
 
-[title name="ボイボ人狼 ver.0.9.0"]
+[title name="ボイボ人狼 ver.0.11.0"]
 
 [stop_keyconfig]
 
@@ -38,9 +38,18 @@
 ; キーフレーム定義読み込み
 [call storage="keyframe.ks"]
 
-; コンフィグ用初期設定
+
 [iscript]
-// 初回起動時
+// デバッグモード
+sf.isDebugMode = true;
+
+// シナリオ変数初期設定
+// シアター含む、全てのゲーム進捗の初期化
+if (!('theaterProgress' in sf)) {
+  resetTheaterProgressToDefault();
+}
+
+// コンフィグ用初期設定
 if (!('config' in sf)) {
   console.log("★RESET config★");
   sf.config = {

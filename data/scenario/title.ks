@@ -22,17 +22,39 @@
   f.inJinroGame = false;
   // シチュエーションプレイで人狼ゲームを開始したフラグ
   f.isSituationPlay = false;
+  // シアターで即座にエピソードウィンドウを開くフラグを初期化（タイトルに戻ってきたら次にシアターを開いてもウィンドウを開いてほしくないため）
+  f.quickShowEpisodeWindow = false;
+
+  // タイトル画面のボタン表示を判定するためにシアター進捗を取得していく
+  // 初回起動時
+  tf.isFirstStartup = (getTheaterProgress('p01', 'e01', 'c01') === THEATER_LOCKED);
+  // ページ1クリア済み
+  tf.isPage01Cleared = (getTheaterProgress('p01', 'e08', 'c02') === THEATER_WATCHED);
+
+  // ボタンの色
+  tf.buttonColor = CLASS_GLINK_DEFAULT;
 [endscript]
 
-[eval exp="tf.buttonColor = CLASS_GLINK_DEFAULT"]
-[glink color="&tf.buttonColor" size="30" width="300" x="488" y="480" name="buttonhover" text="プレイ" target="*gamestart"]
-[glink color="&tf.buttonColor" size="30" width="300" x="488" y="590" name="buttonhover" text="カスタムプレイ" target="*selectStage"]
-[glink color="&tf.buttonColor" size="30" width="300" x="158" y="540" name="buttonhover" text="シアター" target="*theater"]
-[glink color="&tf.buttonColor" size="30" width="300" x="818" y="540" name="buttonhover" text="コンフィグ" target="*config"]
+; タイトル画面のボタン表示。予期せぬパターンがあると大変なので、面倒でもelsifで場合分けしておくこと。
+[if exp="tf.isFirstStartup"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイスタート" target="*firstPlayStart"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
+[elsif exp="!tf.isPage01Cleared"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="138" y="500" name="buttonhover" text="シアター" target="*theater"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイ" target="*gamestart"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
+[else]
+  [glink color="&tf.buttonColor" size="30" width="300" x="138" y="500" name="buttonhover" text="シアター" target="*theater"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイ" target="*gamestart"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="610" name="buttonhover" text="カスタムプレイ" target="*selectStage"]
+[endif]
 
-[glink color="black" size="15" x="1152" y="684" text="開発者用" name="buttonhover" target="*developerSettings"]
-[glink color="black" size="15" x="1136" y="642" text="進捗初期化" name="buttonhover" target="*resetProgress"]
-
+; デバッグ系ボタン表示
+[if exp="sf.isDebugMode"]
+  [glink color="black" size="15" x="1152" y="684" text="開発者用" name="buttonhover" target="*developerSettings"]
+  [glink color="black" size="15" x="1136" y="642" text="進捗初期化" name="buttonhover" target="*resetProgress"]
+[endif]
 
 [iscript]
   // ボタンにカーソルが乗ったときの処理
@@ -90,4 +112,12 @@
 [clearvar exp="sf.theaterProgress"]
 [ptext layer="1" x="310" y="100" text="シアター進捗の初期化完了 再起動してください" color="black" size="60"]
 [layopt layer="1" visible="true"]
+[s]
+
+
+*firstPlayStart
+[freeimage layer="1"]
+[stopbgm]
+
+[jump storage="theater/p01/e01_c01.ks"]
 [s]

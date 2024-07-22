@@ -15,12 +15,7 @@
 [bg storage="bg_fafafa.png" time="100"]
 
 [iscript]
-// 即座にエピソードウィンドウを開くフラグについて
-// 初回のみ初期値falseを入れる
-if (!('quickShowEpisodeWindow' in f)) {
-  f.quickShowEpisodeWindow = false;
-}
-// falseの場合のみ、開くページIDとエピソードIDを初期化する（trueの場合はすでに格納済み）
+// 即座にエピソードウィンドウを開くフラグがfalseの場合のみ、開くページIDとエピソードIDを初期化する（trueの場合はすでに格納済み）
 if (!f.quickShowEpisodeWindow) {
   f.displayPageId = 'p01';
   f.displayEpisodeId = '';

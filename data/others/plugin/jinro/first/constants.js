@@ -139,11 +139,14 @@ const BUTTON_MARGIN_HEIGHT = 30 // ボタンの上下の余白
 
 // 開発者用設定のシステム変数設定
 // 初回起動時のみ、デフォルト設定値を入れる
-if (!('j_development' in TYRANO.kag.variable.sf)) {
+function resetJDevelopmentSettingToDefault() {
   TYRANO.kag.variable.sf.j_development = {
     dictatorMode: false,
     doShuffle: true,
     maxDoActionCount: MAX_DO_ACTION_COUNT,
     thinking: 'default'
   }
+}
+if (!('j_development' in TYRANO.kag.variable.sf)) {
+  resetJDevelopmentSettingToDefault();
 }

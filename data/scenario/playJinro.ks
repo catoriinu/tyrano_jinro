@@ -8,22 +8,10 @@
 
 
 [iscript]
-  // TODO 【チュートリアル】
-  sf.tutorialMode = false;
-  if (sf.tutorialMode) {
-    f.doneTutorial = {
-      instruction: false,
-      COPhase: false,
-      discussionPhase: false,
-      votePhase: false,
-      firstDayNightPhase: false,
-      secondDayDayPhase: false,
-      thankStatusButton: false,
-      forceStatusButton: false,
-      statusButton: false,
-      endInstruction: false,
-    }
-  }
+  // チュートリアルリストの定義。チュートリアルを行いたい場合は事前に同名変数に格納しておくこと
+  f.tutorialList = ('tmpTutorialList' in f) ? clone(f.tmpTutorialList) : {};
+  f.tmpTutorialList = {};
+
   // 人狼ゲーム中フラグ
   // 人狼ゲームを終了、中断する場合は必ずfalseに戻すこと（タイトル画面に戻る場合はそこで初期化しているので不要）
   f.inJinroGame = true
@@ -69,7 +57,7 @@
 [m_noticeRole characterId="&f.playerCharacterId" roleId="&f.characterObjects[f.playerCharacterId].role.roleId"]
 
 ; 【チュートリアル】
-[call storage="tutorial.ks" target="instruction" cond="sf.tutorialMode && !f.doneTutorial.instruction"]
+[call storage="tutorial/firstInstruction.ks" target="*instruction" cond="('instruction' in f.tutorialList) && !f.tutorialList.instruction"]
 
 
 ; 占い師なら初日占い実行
@@ -100,7 +88,7 @@
 
 
 ; 【チュートリアル】
-[call storage="tutorial.ks" target="secondDayDayPhase" cond="sf.tutorialMode && f.doneTutorial.firstDayNightPhase && !f.doneTutorial.secondDayDayPhase"]
+[call storage="tutorial/firstInstruction.ks" target="*secondDayDayPhase" cond="('secondDayDayPhase' in f.tutorialList) && f.tutorialList.firstDayNightPhase && !f.tutorialList.secondDayDayPhase"]
 
 
 [m_changeFrameWithId]
@@ -121,7 +109,7 @@
 [eval exp="f.notExistCOCandidateNPC = false"]
 
 ; 【チュートリアル】
-[call storage="tutorial.ks" target="COPhase" cond="sf.tutorialMode && !f.doneTutorial.COPhase"]
+[call storage="tutorial/firstInstruction.ks" target="*COPhase" cond="('COPhase' in f.tutorialList) && !f.tutorialList.COPhase"]
 
 *COPhasePlayer
 ; PC（占い師、人狼、狂人）による占いCOフェイズ
@@ -229,7 +217,7 @@
 ～議論フェイズ～[p]
 
 ; 【チュートリアル】
-[call storage="tutorial.ks" target="discussionPhase" cond="sf.tutorialMode && !f.doneTutorial.discussionPhase"]
+[call storage="tutorial/firstInstruction.ks" target="discussionPhase" cond="('discussionPhase' in f.tutorialList) && !f.tutorialList.discussionPhase"]
 
 [eval exp="f.isDoingAction = false"]
 ; アクションボタン表示
@@ -269,7 +257,7 @@
 ～投票フェイズ～[p]
 
 ; 【チュートリアル】
-[call storage="tutorial.ks" target="votePhase" cond="sf.tutorialMode && !f.doneTutorial.votePhase"]
+[call storage="tutorial/firstInstruction.ks" target="*votePhase" cond="('votePhase' in f.tutorialList) && !f.tutorialList.votePhase"]
 
 ; 投票フェイズ
 ; NPCの投票先を決める
@@ -367,7 +355,7 @@
 
 
 ; 【チュートリアル】
-[call storage="tutorial.ks" target="firstDayNightPhase" cond="sf.tutorialMode && !f.doneTutorial.firstDayNightPhase"]
+[call storage="tutorial/firstInstruction.ks" target="*firstDayNightPhase" cond="('firstDayNightPhase' in f.tutorialList) && !f.tutorialList.firstDayNightPhase"]
 
 
 [m_changeFrameWithId]

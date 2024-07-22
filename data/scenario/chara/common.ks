@@ -30,6 +30,8 @@
   [call storage="./chara/himari.ks" target="*executeCharaNewAndCharaFace" cond="f.participantsIdList.includes(CHARACTER_ID_HIMARI)"]
   [call storage="./chara/sora.ks" target="*executeCharaNewAndCharaFace" cond="f.participantsIdList.includes(CHARACTER_ID_SORA)"]
   [call storage="./chara/mesuo.ks" target="*executeCharaNewAndCharaFace" cond="f.participantsIdList.includes(CHARACTER_ID_MESUO)"]
-  [call storage="./chara/mochiko.ks" target="*executeCharaNewAndCharaFace" cond="f.participantsIdList.includes(CHARACTER_ID_MOCHIKO)"]
+  ; TODO チュートリアル時だけ読み込めるようにしたい
+  [call storage="./chara/mochiko.ks" target="*executeCharaNewAndCharaFace"]
+  ;[call storage="./chara/mochiko.ks" target="*executeCharaNewAndCharaFace" cond="f.participantsIdList.includes(CHARACTER_ID_MOCHIKO)"]
   [call storage="./chara/miko.ks" target="*executeCharaNewAndCharaFace" cond="f.participantsIdList.includes(CHARACTER_ID_MIKO)"]
 [return]

@@ -5,12 +5,15 @@ const THEATER_UNLOCKED = 1; // 解放済みで未視聴
 const THEATER_WATCHED = 2;  // 視聴済み
 
 
-// 初回起動時のみ、シアター進捗の初期化
-if (!('theaterProgress' in TYRANO.kag.variable.sf)) {
+/**
+ * シアター進捗の初期化
+ * 初回起動時やリセット時に呼ぶ
+ */
+function resetTheaterProgressToDefault() {
   TYRANO.kag.variable.sf.theaterProgress = {
     'p01': {
       'e01': {
-        'c01': THEATER_UNLOCKED,
+        'c01': THEATER_LOCKED,
       }
     }
   }

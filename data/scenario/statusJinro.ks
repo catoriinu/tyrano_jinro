@@ -143,7 +143,7 @@
 
 
 ; 【チュートリアル】
-[call storage="tutorial.ks" target="statusButton" cond="sf.tutorialMode && !f.doneTutorial.statusButton"]
+[call storage="tutorial/firstInstruction.ks" target="*statusButton" cond="('statusButton' in f.tutorialList) && !f.tutorialList.statusButton"]
 
 [s]
 

@@ -1,5 +1,6 @@
 ; タイトル：誰がずんだもちを食べたのだ？（導入編）
 
+*start
 ; ここからチャプターごとに設定が必要な項目
 [iscript]
 // このチャプターを表す通し番号
@@ -213,6 +214,15 @@ tf.playbgmParams = {
 ; チャプターここまで
 *end
 
+; 初回プレイ時用の特殊処理
+[iscript]
+  tf.isFirstStartup = (getTheaterProgress('p01', 'e01', 'c01') === THEATER_LOCKED);
+[endscript]
+
 [t_teardownChapter pageId="&f.pageId" episodeId="&f.episodeId" chapterId="&f.chapterId"]
+
+; 初回プレイ時は直接チュートリアルモードでシチュエーションプレイを始める
+[jump storage="tutorial/tutorialSubroutines.ks" target="*toFirstInstruction" cond="tf.isFirstStartup"]
+
 [jump storage="theater/main.ks" target="*start"]
 [s]
