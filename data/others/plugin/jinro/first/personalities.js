@@ -157,6 +157,48 @@ function Personality_zundamon() {
 
 
 /**
+ * @classdec ずんだもん（強化）の性格クラス
+ * 通常のずんだもんよりも影響力、抵抗力がとても高い
+ */
+function Personality_zundamon_enhanced() {
+  return new Personality (
+    'ずんだもん（強化）', // name
+    0.8, // logical 論理力(0～1)
+    1.5,
+    {
+      action: {}
+    },
+    1.2,
+    {
+      action: {},
+      actor: {}
+    },
+    { // assertiveness 主張力（originalとcurrentは同値にすること）
+      original: 1,  // 元々の値（毎日currentをoriginalで初期化する）
+      current: 1,   // 現在の値（判定処理にはcurrentを用いる）
+      decrease: 0.1 // 減少値（発言一回ごとに減少値分currentを減らす）
+    },
+    // COProbability {自身のRoleId : その役職としてCOする可能性}
+    {
+      [ROLE_ID_FORTUNE_TELLER]: {
+        [ROLE_ID_FORTUNE_TELLER]: 0.95
+      },
+      [ROLE_ID_WEREWOLF]: {
+        [ROLE_ID_FORTUNE_TELLER]: 0.1
+      },
+      [ROLE_ID_MADMAN]: {
+        [ROLE_ID_FORTUNE_TELLER]: 0.9
+      }
+    },
+    { // feelingBorder {hate:仲間度がこれ未満ならhate状態, love:仲間度がこれ超過ならlove状態}
+      hate: 0.3,
+      love: 0.7
+    }
+  );
+}
+
+
+/**
  * @classdec 四国めたんの性格クラス
  * 論理力強め。ただし信じられるとすぐに味方だと思ってしまうチョロイン。役職CO率は正統派。
  */
