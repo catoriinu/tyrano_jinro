@@ -34,8 +34,8 @@
 ; pos_mode:キャラの初期位置はキャラ宣言時に全指定するのでfalse
 [chara_config pos_mode="false" memory="true" time="200"]
 
-;このゲームで登場する全キャラクターを宣言、表情登録
-[call storage="./chara/common.ks" target="*registerAllCharacters"]
+;このゲームで登場するキャラクターを宣言、表情登録
+[call storage="./chara/common.ks" target="*registerCharactersFromParticipantsIdList"]
 
 ; ステータス、バックログ、メニューボタン表示
 [j_displayFixButton status="true" backlog="true" menu="true"]

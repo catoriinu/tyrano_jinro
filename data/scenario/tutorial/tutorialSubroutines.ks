@@ -3,8 +3,12 @@
 *toFirstInstruction
 
 [iscript]
+  // 本当の初回起動時のみ、tf.isFirstStartupが立っている。2回目以降は折れている。
+  const needFirstInstruction = ('isFirstStartup' in tf) ? tf.isFirstStartup : false;
+
   // 初回プレイ用チュートリアルリストを格納する
   f.tmpTutorialList = {
+    needFirstInstruction: needFirstInstruction,
     instruction: false,
     COPhase: false,
     discussionPhase: false,

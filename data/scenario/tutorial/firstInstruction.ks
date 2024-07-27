@@ -1,13 +1,12 @@
 *instruction
 
 [iscript]
-  // 初回起動時
-  tf.isFirstStartup = (getTheaterProgress('p01', 'e01', 'c01') === THEATER_LOCKED);
-  // チュートリアル未クリア
-  tf.isTutolialNotCleared = (getTheaterProgress('p01', 'e01', 'c02') === THEATER_LOCKED);
-  // TODO チュートリアルクリア後はどっちのルートにすべき？
+  // もち子さんの立ち絵を追加で登録する
+  tf.registerCharacterList = [CHARACTER_ID_MOCHIKO];
 [endscript]
-[jump target="*secondInstruction" cond="!tf.isFirstStartup && tf.isTutolialNotCleared"]
+[call storage="./chara/common.ks" target="*addRegisterCharacters"]
+; 本当の初回起動時以外は2回目以降用のシナリオにジャンプさせる
+[jump target="*secondInstruction" cond="!f.tutorialList.needFirstInstruction"]
 
 
 [m_changeCharacterFrameName name="ずんだもん"]

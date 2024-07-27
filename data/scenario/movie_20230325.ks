@@ -23,8 +23,9 @@
 ; pos_mode:キャラの初期位置はキャラ宣言時に全指定するのでfalse
 [chara_config pos_mode="false" memory="true" time="200"]
 
-;このゲームで登場する全キャラクターを宣言、表情登録
-[call storage="./chara/common.ks" target="*registerAllCharacters"]
+;このゲームで登場するキャラクターを宣言、表情登録
+[eval exp="tf.registerCharacterList = array(CHARACTER_ID_MOCHIKO, CHARACTER_ID_MIKO)"]
+[call storage="./chara/common.ks" target="*registerCharacters"]
 
 ; ゲーム準備js読み込み
 [loadjs storage="plugin/jinro/macro/prepareGame.js"]

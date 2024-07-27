@@ -119,8 +119,8 @@
   [eval exp="tf.chapterSkiped = false"]
 
   ;このシナリオで登場する全キャラクターを宣言、表情登録
-  [eval exp="f.participantsIdList = mp.actorsList"]
-  [call storage="./chara/common.ks" target="*registerAllCharacters"]
+  [eval exp="tf.registerCharacterList = mp.actorsList"]
+  [call storage="./chara/common.ks" target="*registerCharacters"]
 
   ; ボタン表示
   [j_displayFixButton backlog="true" pauseMenu="true"]
