@@ -217,7 +217,7 @@
 ～議論フェイズ～[p]
 
 ; 【チュートリアル】
-[call storage="tutorial/firstInstruction.ks" target="discussionPhase" cond="('discussionPhase' in f.tutorialList) && !f.tutorialList.discussionPhase"]
+[call storage="tutorial/firstInstruction.ks" target="*discussionPhase" cond="('discussionPhase' in f.tutorialList) && !f.tutorialList.discussionPhase"]
 
 [eval exp="f.isDoingAction = false"]
 ; アクションボタン表示
@@ -226,7 +226,7 @@
 *startDiscussionLoop
 
 ; アクション実行上限回数以上の場合は議論フェイズを終了する
-[jump target="*votePhase" cond="f.doActionCount >= sf.j_development.maxDoActionCount"]
+[jump target="*endDiscussionPhase" cond="f.doActionCount >= sf.j_development.maxDoActionCount"]
 [eval exp="f.doActionCount++"]
 
 ; NPCのアクション実行者がいるか、いるならアクションとその対象を格納する
@@ -245,11 +245,14 @@
 ; 議論フェイズを繰り返す
 [jump target="*startDiscussionLoop"]
 
+*endDiscussionPhase
+; アクションボタン非表示
+[j_clearFixButton action="true"]
+
+
+; 投票フェイズ
 *votePhase
 [clearstack]
-
-; アクションボタン非表示
-[j_clearFixButton action="true" cond="f.characterObjects[f.playerCharacterId].isAlive"]
 
 [m_resetDisplayCharacter]
 [m_changeFrameWithId]
@@ -259,37 +262,42 @@
 ; 【チュートリアル】
 [call storage="tutorial/firstInstruction.ks" target="*votePhase" cond="('votePhase' in f.tutorialList) && !f.tutorialList.votePhase"]
 
-; 投票フェイズ
-; NPCの投票先を決める
-[j_decideVote]
-
 ; ここはバックログに記録しない。記録する必要がないシステムメッセージのため
 [nolog]
 
-[if exp="f.characterObjects[f.playerCharacterId].isAlive"]
-  [m_changeCharacter characterId="&f.playerCharacterId" face="thinking" side="left"]
-[else]
-  プレイヤーが退場済みなので投票できません。[l][r]
-  [jump target="*skipPlayerVote" cond="!sf.j_development.dictatorMode"]
-  が、独裁者モードなので投票できます。[p]
-[endif]
-
-; プレイヤーの投票先を決める
 [m_changeFrameWithId]
 # 
-投票するキャラクターを選択してください。
-[eval exp="tf.needPC = false"]
+[if exp="f.characterObjects[f.playerCharacterId].isAlive"]
+  [m_changeCharacter characterId="&f.playerCharacterId" face="thinking" side="left"]
+  投票するキャラクターを選択してください。
+[else]
+  あなたは退場済みなので投票できません。
+  [if exp="sf.j_development.dictatorMode"]
+    [r]
+    が、独裁者モードなので投票できます。
+  [endif]
+[endif]
 
 [if exp="sf.j_development.dictatorMode"]
   [r]
   独裁者モードのため、プレイヤーの投票先を追放します。
-  [eval exp="tf.needPC = true"]
 [endif]
 [p]
 
+; 再投票時はここに戻ってくる
+*returnForRevote
+
+; NOTE: デバッグモードのときのみ、ここでNPCの投票先を決める
+; ここで決めると、プレイヤーの投票時にNPCの投票先が見えてしまうが、開発中は見えた方が再投票を起こしやすいのであえてそうしておく
+[j_decideVote cond="sf.isDebugMode"]
+
+; プレイヤーの投票をスキップする条件：プレイヤーが退場済み、かつ独裁者モードではない
+[jump target="*skipPlayerVote" cond="!f.characterObjects[f.playerCharacterId].isAlive && !sf.j_development.dictatorMode"]
+
+; プレイヤーの投票
 ; 生存者である、かつプレイヤー以外のキャラクターIDをボタンオブジェクトに格納する
 ; 開発者用設定：独裁者モードならプレイヤーも投票対象にできるようにする
-[j_setCharacterToButtonObjects onlySurvivor="true" needPC="&tf.needPC"]
+[j_setCharacterToButtonObjects onlySurvivor="true" needPC="&sf.j_development.dictatorMode"]
 
 ; 選択肢ボタン表示と入力受付
 [eval exp="tf.doSlideInCharacter = true"]
@@ -307,6 +315,9 @@
 ; ここまでログを記録しない
 [endnolog]
 
+; デバッグモードでないなら、ここでNPCの投票先を決める
+[j_decideVote cond="!sf.isDebugMode"]
+
 ; 票を集計する
 [j_countVote]
 
@@ -319,7 +330,7 @@
   [if exp="f.revoteCount < MAX_REVOTE_COUNT"]
     再投票です。[r]
     あと[emb exp="MAX_REVOTE_COUNT - f.revoteCount"]回で決着しない場合は引き分けです。[p]
-    [jump target="*votePhase"]
+    [jump target="*returnForRevote"]
   [else]
     ; 再投票上限を越えた場合は引き分け処理
     投票で決着がつきませんでした。[p]
@@ -331,6 +342,7 @@
 ; 処刑セリフと処刑処理（TODO 今はこの順番だが、処刑ごとの演出がどうなるかによっては逆にしてもいい）
 [j_execution characterId="&f.electedIdList[0]"]
 [m_executed characterId="&f.electedIdList[0]"]
+
 ; 処刑メッセージ
 [m_changeFrameWithId]
 #
