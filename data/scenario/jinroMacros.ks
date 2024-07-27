@@ -7,6 +7,7 @@
 ; @param characterId キャラクターID。必須
 ; @param roleId 役職ID。指定しない場合、役職はランダムに決定される
 ; @param personalityName 性格名。指定しない場合、キャラクターのデフォルトの性格になる
+; @param adjustParameters 性格調整用のパラメータオブジェクト。なければ無調整。
 ; @param isPlayer プレイヤーキャラクターかどうか。指定した時点で、他のキャラの登録は初期化される ※キーを指定した時点でtrue扱いになるので注意
 [macro name="j_registerParticipant"]
   [iscript]
@@ -18,7 +19,8 @@
     const characterId = mp.characterId;
     const roleId = ('roleId' in mp) ? mp.roleId : null;
     const personalityName = ('personalityName' in mp) ? mp.personalityName : null;
-    tf.tmpParticipantObjectList.push(new Participant(characterId, roleId, personalityName));
+    const adjustParameters = ('adjustParameters' in mp) ? mp.adjustParameters : {};
+    tf.tmpParticipantObjectList.push(new Participant(characterId, roleId, personalityName, adjustParameters));
   [endscript]
 [endmacro]
 

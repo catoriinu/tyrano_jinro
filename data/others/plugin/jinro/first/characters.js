@@ -3,6 +3,7 @@
  * @param {String} characterId キャラクターID
  * @param {String} roleId 役職ID
  * @param {String} personalityName 性格クラス名（指定がなければキャラクターIDが性格クラス名になる）
+ * @param {Object} adjustParameters 性格調整用のパラメータオブジェクト。なければ無調整。
  * @prop {String} characterId キャラクターID
  * @prop {String} name キャラクターの名前
  * @prop {Object} role 役職オブジェクト
@@ -17,12 +18,12 @@
  * @prop {Object} reliability 信頼度オブジェクト {characterId:0以上1以下かつ小数点第二位までの数値,...}
  * @prop {Object} voteHistory 投票履歴オブジェクト {day:[1回目の投票先characterId,2回目(再投票)の投票先characterId,...],...}
  */
-function Character(characterId, roleId, personalityName = null) {
+function Character(characterId, roleId, personalityName = null, adjustParameters = {}) {
   this.characterId = characterId;
   this.name = PARTICIPANTS_LIST.find(participant => participant.characterId === characterId).name;
   this.personality = (function(){
     const name = personalityName ? personalityName : characterId;
-    return getPersonality(name);
+    return getPersonality(name, adjustParameters);
   })();
   this.role = roleAssignment(roleId);
   this.fakeRole = {};

@@ -2,10 +2,10 @@
  * @classdec 性格情報を格納するクラス
  * @param {String} name 性格の日本語名
  * @param {Number} logical 論理力
- * @param {*} influenceMultiplier 
- * @param {*} adjustmentInfluenceMultiplier 
- * @param {*} registanceMultiplier 
- * @param {*} adjustmentRegistanceMultiplier 
+ * @param {Number} influenceMultiplier 影響力。倍率なので基準は1
+ * @param {Object} adjustmentInfluenceMultiplier 影響力調整オブジェクト。アクションごとに影響力に倍率を掛けられる
+ * @param {Number} registanceMultiplier 抵抗力。倍率なので基準は1
+ * @param {Object} adjustmentRegistanceMultiplier 抵抗力調整オブジェクト。アクションや実行者ごとに抵抗力に倍率を掛けられる
  * @param {Number} assertiveness 主張力
  * @param {Object} roleCOProbability 役職ごとのCO確率オブジェクト
  * @param {Object} feelingBorder 感情の境界値オブジェクト
@@ -74,47 +74,6 @@ function Personality_tester() {
 
 
 /**
- * @classdec テスト用の性格クラス
- */
-function Doll() {
-  return new Personality (
-    'テスト用の性格', // name
-    0, // logical 論理力(0～1)
-    1,
-    {
-      action: {}
-    },
-    1,
-    {
-      action: {},
-      actor: {}
-    },
-    { // assertiveness 主張力（originalとcurrentは同値にすること）
-      original: 0,  // 元々の値（毎日currentをoriginalで初期化する）
-      current: 0,   // 現在の値（判定処理にはcurrentを用いる）
-      decrease: 0 // 減少値（発言一回ごとに減少値分currentを減らす）
-    },
-    // COProbability {自身のRoleId : その役職としてCOする可能性}
-    {
-      [ROLE_ID_FORTUNE_TELLER]: {
-        [ROLE_ID_FORTUNE_TELLER]: 0
-      },
-      [ROLE_ID_WEREWOLF]: {
-        [ROLE_ID_FORTUNE_TELLER]: 0
-      },
-      [ROLE_ID_MADMAN]: {
-        [ROLE_ID_FORTUNE_TELLER]: 0
-      }
-    },
-    { // feelingBorder {hate:仲間度がこれ未満ならhate状態, love:仲間度がこれ超過ならlove状態}
-      hate: 0.2,
-      love: 0.8
-    }
-  );
-}
-
-
-/**
  * @classdec ずんだもんの性格クラス
  * 基本的にはPC自身なので論理力は高めで、影響力は少し強め。その他は標準のままとする
  */
@@ -127,48 +86,6 @@ function Personality_zundamon() {
       action: {}
     },
     1,
-    {
-      action: {},
-      actor: {}
-    },
-    { // assertiveness 主張力（originalとcurrentは同値にすること）
-      original: 1,  // 元々の値（毎日currentをoriginalで初期化する）
-      current: 1,   // 現在の値（判定処理にはcurrentを用いる）
-      decrease: 0.1 // 減少値（発言一回ごとに減少値分currentを減らす）
-    },
-    // COProbability {自身のRoleId : その役職としてCOする可能性}
-    {
-      [ROLE_ID_FORTUNE_TELLER]: {
-        [ROLE_ID_FORTUNE_TELLER]: 0.95
-      },
-      [ROLE_ID_WEREWOLF]: {
-        [ROLE_ID_FORTUNE_TELLER]: 0.1
-      },
-      [ROLE_ID_MADMAN]: {
-        [ROLE_ID_FORTUNE_TELLER]: 0.9
-      }
-    },
-    { // feelingBorder {hate:仲間度がこれ未満ならhate状態, love:仲間度がこれ超過ならlove状態}
-      hate: 0.3,
-      love: 0.7
-    }
-  );
-}
-
-
-/**
- * @classdec ずんだもん（強化）の性格クラス
- * 通常のずんだもんよりも影響力、抵抗力がとても高い
- */
-function Personality_zundamon_enhanced() {
-  return new Personality (
-    'ずんだもん（強化）', // name
-    0.8, // logical 論理力(0～1)
-    1.5,
-    {
-      action: {}
-    },
-    1.2,
     {
       action: {},
       actor: {}
@@ -375,15 +292,26 @@ function Personality_ritsu() {
 
 /**
  * 性格クラスを取得する。引数には、キャラクターIDまたは性格クラス名そのものを渡されることを想定。
- * @param {string} name 性格クラス名。その名前の性格クラスが定義されていればそれを、なければテスト用の性格クラスを返却する。
+ * @param {String} name 性格クラス名。その名前の性格クラスが定義されていればそれを、なければテスト用の性格クラスを返却する。
+ * @param {Object} adjustParameters 性格調整用のパラメータオブジェクト。なければ無調整。
  * @returns {Personality} 性格クラス
  */
-function getPersonality(name = 'tester') {
+function getPersonality(name = 'tester', adjustParameters = {}) {
+  let personality = {};
+  // 性格クラスを取得する
   // 名前被りを避けるために接頭辞を付ける
   const personalityFunctionName = 'Personality_' + name;
   if (typeof window[personalityFunctionName] === 'function') {
-    return new window[personalityFunctionName]();
+    personality = new window[personalityFunctionName]();
+  } else {
+    // 未定義ならテスト用の性格を返却する
+    personality = new Personality_tester();
   }
-  // 未定義ならテスト用の性格を返却する
-  return new Personality_tester();
+
+  // 性格調整を行う
+  for (let key of Object.keys(adjustParameters)) {
+    personality[key] = adjustParameters[key];
+  }
+  
+  return personality;
 }

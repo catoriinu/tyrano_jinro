@@ -4,11 +4,13 @@
  * @param {String} characterId キャラクターID。必須
  * @param {String} roleId 役職ID。指定しない場合、役職はランダムに決定される
  * @param {String} personalityName 性格名。指定しない場合、キャラクターのデフォルトの性格になる
+ * @param {Object} adjustParameters 性格調整用のパラメータオブジェクト。なければ無調整。
  */
-function Participant(characterId, roleId = null, personalityName = null) {
+function Participant(characterId, roleId = null, personalityName = null, adjustParameters = {}) {
   this.characterId = characterId;
   this.roleId = roleId;
   this.personalityName = personalityName;
+  this.adjustParameters = adjustParameters;
 }
 
 
@@ -109,6 +111,7 @@ function initializeCharacterObjectsForJinro(villagersRoleIdList, participantObje
     const characterId = participantObjectList[i].characterId;
     const roleId = participantObjectList[i].roleId;
     const personalityName = participantObjectList[i].personalityName;
+    const adjustParameters = participantObjectList[i].adjustParameters;
   
     if (roleId) {
       if (!unconfirmedRoleIdList.includes(roleId)) {
@@ -117,7 +120,7 @@ function initializeCharacterObjectsForJinro(villagersRoleIdList, participantObje
       }
 
       // キャラクターオブジェクトを生成。配役した役職IDと参加者オブジェクトは、それぞれ未確定用の配列から取り除く
-      tmpCharacterObjects[characterId] = new Character(characterId, roleId, personalityName);
+      tmpCharacterObjects[characterId] = new Character(characterId, roleId, personalityName, adjustParameters);
       unconfirmedRoleIdList.splice(unconfirmedRoleIdList.findIndex(rId => rId === roleId), 1);
       unconfirmedParticipantObjectList.splice(unconfirmedParticipantObjectList.findIndex(obj => obj.characterId === characterId), 1);
     }
@@ -136,9 +139,10 @@ function initializeCharacterObjectsForJinro(villagersRoleIdList, participantObje
     const characterId = unconfirmedParticipantObjectList[i].characterId;
     const roleId = unconfirmedRoleIdList[i]; // participant.roleIdがnullなので、未確定の役職配列から取得する
     const personalityName = unconfirmedParticipantObjectList[i].personalityName;
+    const adjustParameters = unconfirmedParticipantObjectList[i].adjustParameters;
 
     // キャラクターオブジェクトを生成。これ以降未確定の役職配列と参加者配列は参照しないので、取り除く処理は省略する
-    tmpCharacterObjects[characterId] = new Character(characterId, roleId, personalityName);
+    tmpCharacterObjects[characterId] = new Character(characterId, roleId, personalityName, adjustParameters);
   }
 
   // 参加者のキャラクターID配列（並び順の基準になるので、この後の並び替えと同時にキャラクターIDをpushしていく）

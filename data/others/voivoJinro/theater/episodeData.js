@@ -36,7 +36,9 @@ function episodeData(pageId, episodeId) {
                         new Situation(
                             5,
                             [
-                                new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_WEREWOLF, 'zundamon_enhanced'),
+                                new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_WEREWOLF, null,
+                                    {influenceMultiplier: 1.5, registanceMultiplier: 1.2}
+                                ),
                                 new Participant(CHARACTER_ID_METAN, ROLE_ID_MADMAN),
                             ],
                         ),
