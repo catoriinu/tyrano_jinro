@@ -31,7 +31,7 @@
   // チュートリアル未クリア
   tf.isTutolialNotCleared = (getTheaterProgress('p01', 'e01', 'c02') === THEATER_LOCKED);
   // ページ1未クリア
-  tf.isPage01NotCleared = (getTheaterProgress('p01', 'e08', 'c02') === THEATER_WATCHED);
+  tf.isPage01NotCleared = (getTheaterProgress('p01', 'e08', 'c02') !== THEATER_WATCHED);
 
   // ボタンの色
   tf.buttonColor = CLASS_GLINK_DEFAULT;
@@ -47,11 +47,11 @@
   [glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
 [elsif exp="tf.isPage01NotCleared"]
   [glink color="&tf.buttonColor" size="30" width="300" x="138" y="500" name="buttonhover" text="シアター" target="*theater"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイ" target="*gamestart"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイスタート" target="*gamestart"]
   [glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
 [else]
   [glink color="&tf.buttonColor" size="30" width="300" x="138" y="500" name="buttonhover" text="シアター" target="*theater"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイ" target="*gamestart"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイスタート" target="*gamestart"]
   [glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
   [glink color="&tf.buttonColor" size="30" width="300" x="488" y="610" name="buttonhover" text="カスタムプレイ" target="*selectStage"]
 [endif]
