@@ -44,23 +44,6 @@
   [emb exp="f.fakeFortuneTelledDayMsg"]の占い先は……
 [return]
 
-
-; シーン：偽の占い対象を入力した後、それを表示しつつそのCO結果を決めることを促すシステムメッセージ
-*displayFakeFortuneTellingTarget
-  [emb exp="f.characterObjects[f.selectedButtonId].name"]をどちらとCOする？
-[return]
-
-
-; シーン：入力した偽の占いCO結果を表示するシステムメッセージ
-*displayFakeFortuneTellingResult_true
-  人狼だったと言うことにした。[p]
-[return]
-
-*displayFakeFortuneTellingResult_false
-  人狼ではなかったと言うことにした。[p]
-[return]
-
-
 ; シーン：ゲームの勝敗判定結果を表示するシステムメッセージ
 *displayWinnerFaction_villagers
   村人陣営の勝利！[p]

@@ -81,7 +81,6 @@
 
     ; 騙り占い実行。占い結果をf.actionObjectに格納する
     [j_fortuneTelling fortuneTellerId="&tf.tmpActionObject.characterId" day="&f.fakeFortuneTelledDay" characterId="&tf.tmpActionObject.targetId" result="&tf.tmpActionObject.result"]
-    [m_displayFakeFortuneTellingResult result="&tf.tmpActionObject.result"]
 
     ; 前日まで占い終わったらループ終了
     [jump target="*askFakeFortuneTellingResultMultipleDays_loopend" cond="f.fakeFortuneTelledDay >= f.lastDay"]
