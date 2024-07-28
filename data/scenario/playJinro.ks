@@ -375,15 +375,13 @@
 [m_changeFrameWithId]
 #
 
-; 村人
-[if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_VILLAGER"]
-  村人なので役職能力を実行できません。[p]
+; 村人、狂人
+[if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_VILLAGER || f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_MADMAN"]
+  夜に実行できる役職能力はありません。[p]
 [endif]
 
-; 真占い師であれば
-[j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
-[if exp="f.canCOFortuneTellerStatus == 1 || f.canCOFortuneTellerStatus == 2"]
-
+; 占い師
+[if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_FORTUNE_TELLER"]
   [m_changeCharacter characterId="&f.playerCharacterId" face="normal" side="left"]
   [m_askFortuneTellingTarget isFortuneTeller="true"]
 
@@ -395,56 +393,49 @@
 
   ; 占い結果に合わせてセリフ出力
   [m_announcedFortuneTellingResult]
-
 [endif]
 
-; 人狼の場合のみ
-[if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_WEREWOLF"]
+; 人狼かつ今日の襲撃が未実行の場合（NPCが先に襲撃したケースを考慮して一応判定しているが、現状未実行はありえない）
+[if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_WEREWOLF && f.isBiteEnd != true"]
+  [m_chooseWhoToBite characterId="&f.playerCharacterId"]
 
-  [if exp="f.isBiteEnd != true"]
+  [iscript]
+    // 夜時間開始時の生存者である、かつ人狼以外であるキャラクターID配列を選択肢候補変数に格納する。
+    tf.candidateCharacterIds = getValuesFromObjectArray(
+      getIsWerewolvesObjects(
+        getSurvivorObjects(f.characterObjectsHistory[f.day]),
+        false
+      ),
+      'characterId'
+    );
+  [endscript]
 
-    [m_chooseWhoToBite characterId="&f.playerCharacterId"]
+  ; 選択肢ボタン表示と入力受付
+  [j_setCharacterToButtonObjects characterIds="&tf.candidateCharacterIds"]
+  [eval exp="tf.doSlideInCharacter = true"]
+  [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 
-    [iscript]
-      ; 夜時間開始時の生存者である、かつ人狼以外であるキャラクターID配列を選択肢候補変数に格納する。
-      tf.candidateCharacterIds = getValuesFromObjectArray(
-        getIsWerewolvesObjects(
-          getSurvivorObjects(f.characterObjectsHistory[f.day]),
-          false
-        ),
-        'characterId'
-      );
-    [endscript]
+  ; 襲撃実行
+  [j_biting biterId="&f.playerCharacterId" characterId="&f.selectedButtonId"]
+  [m_exitCharacter characterId="&f.selectedButtonId"]
 
-    ; 選択肢ボタン表示と入力受付
-    [j_setCharacterToButtonObjects characterIds="&tf.candidateCharacterIds"]
-    [eval exp="tf.doSlideInCharacter = true"]
-    [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
+  ; キャラ画像解放
+  [freeimage layer="1" time="400" wait="false"]
 
-    ; 噛み実行
-    [j_biting biterId="&f.playerCharacterId" characterId="&f.selectedButtonId"]
-    [m_exitCharacter characterId="&f.selectedButtonId"]
-
-    ; キャラ画像解放
-    [freeimage layer="1" time="400" wait="false"]
-
-    ; 噛み実行済みフラグを立てる
-    [eval exp="f.isBiteEnd = true"]
-  [endif]
+  ; 襲撃実行済みフラグを立てる
+  [eval exp="f.isBiteEnd = true"]
 [endif]
+
 
 *nightPhaseNPC
-[m_changeFrameWithId]
-#
-NPCが役職能力を実行しています……[p]
 
 ; 占い師（真のみ）の占い実行
 [j_nightPhaseFortuneTellingForNPC]
 
-; 噛み未実行なら（＝PCが人狼ではないなら）噛み実行
+; 襲撃未実行なら（＝PCが人狼ではないなら）襲撃実行
 [if exp="!f.isBiteEnd"]
   [j_nightPhaseBitingForNPC]
-  ; 噛まれたキャラクターを退場させる（噛み実行マクロ内でf.targetCharacterIdは格納済み）
+  ; 襲撃されたキャラクターを退場させる（襲撃実行マクロ内でf.targetCharacterIdは格納済み）
   [m_exitCharacter characterId="&f.targetCharacterId"]
 [endif]
 
