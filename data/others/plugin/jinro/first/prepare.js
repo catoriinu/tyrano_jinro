@@ -100,6 +100,16 @@ function initializeCharacterObjectsForJinro(villagersRoleIdList, participantObje
     return;
   }
 
+  // 開発者モード：「NPCの思考方針」によってlogicalを調整する。logicalを上書きすることで仲間度の算出結果が変わる。
+  const adjustlogicalObject = {};
+  if (TYRANO.kag.variable.sf.j_development.thinking === DECISION_LOGICAL) {
+    // 「論理的」の場合、全キャラクターのlogicalを0.9999に上書きする（1だと仲間度の計算に全く信頼度が反映されなくなってしまうため）
+    adjustlogicalObject.logical = 0.9999;
+  } else if (TYRANO.kag.variable.sf.j_development.thinking === DECISION_EMOTIONAL) {
+    // 「感情的」の場合、全キャラクターのlogicalを0.0001に上書きする（0だと仲間度の計算に全く同陣営割合が反映されなくなってしまうため）
+    adjustlogicalObject.logical = 0.0001;
+  }
+
   // 引数をcloneし、未確定の役職配列、未確定の参加者オブジェクト配列とする。オリジナルの引数も後で必要となるため
   let unconfirmedRoleIdList = clone(villagersRoleIdList);
   let unconfirmedParticipantObjectList = clone(participantObjectList);
@@ -111,7 +121,7 @@ function initializeCharacterObjectsForJinro(villagersRoleIdList, participantObje
     const characterId = participantObjectList[i].characterId;
     const roleId = participantObjectList[i].roleId;
     const personalityName = participantObjectList[i].personalityName;
-    const adjustParameters = participantObjectList[i].adjustParameters;
+    const adjustParameters = Object.assign(participantObjectList[i].adjustParameters, adjustlogicalObject);
   
     if (roleId) {
       if (!unconfirmedRoleIdList.includes(roleId)) {
@@ -139,7 +149,7 @@ function initializeCharacterObjectsForJinro(villagersRoleIdList, participantObje
     const characterId = unconfirmedParticipantObjectList[i].characterId;
     const roleId = unconfirmedRoleIdList[i]; // participant.roleIdがnullなので、未確定の役職配列から取得する
     const personalityName = unconfirmedParticipantObjectList[i].personalityName;
-    const adjustParameters = unconfirmedParticipantObjectList[i].adjustParameters;
+    const adjustParameters = Object.assign(unconfirmedParticipantObjectList[i].adjustParameters, adjustlogicalObject);
 
     // キャラクターオブジェクトを生成。これ以降未確定の役職配列と参加者配列は参照しないので、取り除く処理は省略する
     tmpCharacterObjects[characterId] = new Character(characterId, roleId, personalityName, adjustParameters);
@@ -161,18 +171,6 @@ function initializeCharacterObjectsForJinro(villagersRoleIdList, participantObje
     if (TYRANO.kag.stat.f.participantsIdList.length == 1) {
       characterObjects[characterId].isPlayer = true;
       TYRANO.kag.stat.f.playerCharacterId = characterId;
-    }
-
-    // 開発者モード：「NPCの思考方針」によるlogicalの上書き処理。logicalを上書きすることで仲間度の算出結果が変わる。
-    // 「性格準拠」の場合、何もしない（最初にcontinueすることを明示しておく）
-    if (TYRANO.kag.variable.sf.j_development.thinking == 'default') continue;
-
-    if (TYRANO.kag.variable.sf.j_development.thinking == 'logical') {
-      // 「論理的」の場合、全キャラクターのlogicalを0.9999に上書きする（1だと仲間度の計算に全く信頼度が反映されなくなってしまうため）
-      characterObjects[characterId].personality.logical = 0.9999;
-    } else if (TYRANO.kag.variable.sf.j_development.thinking == 'emotional') {
-      // 「感情的」の場合、全キャラクターのlogicalを0.0001に上書きする（0だと仲間度の計算に全く同陣営割合が反映されなくなってしまうため）
-      characterObjects[characterId].personality.logical = 0.0001;
     }
   }
 
