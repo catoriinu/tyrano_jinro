@@ -114,6 +114,8 @@
 *COPhasePlayer
 ; PC（占い師、人狼、狂人）による占いCOフェイズ
 [call storage="./jinroSubroutines.ks" target="*COPhasePlayer"]
+; 右側のキャラを退場させる（PCのCO先のキャラが残っているため。退場させないと、CO先のキャラが喋るまでそのままになってしまう）
+[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 
 ; COフェイズ終了判定
 ; f.notExistCOCandidateNPCがtrueなら、COフェイズ終了(NPCにCO候補者がいないため、これ以上COする者はいないとする)
