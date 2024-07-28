@@ -7,7 +7,7 @@
 [wait time="100"]
 
 *start 
-[ptext layer="1" x="1050" y="684" text="ver.0.11.0" color="white" size="24"]
+[ptext layer="1" x="5" y="685" text="ver.0.2.0(0.11.0)" color="white" size="24"]
 [layopt layer="1" visible="true"]
 ; ボイス停止（人狼ゲームから戻ってきたとき用）
 [stopse buf="0"]
@@ -53,13 +53,13 @@
   [glink color="&tf.buttonColor" size="30" width="300" x="138" y="500" name="buttonhover" text="シアター" target="*theater"]
   [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイスタート" target="*gamestart"]
   [glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="610" name="buttonhover" text="カスタムプレイ" target="*selectStage"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="600" name="buttonhover" text="カスタムプレイ" target="*selectStage"]
 [endif]
 
 ; デバッグ系ボタン表示
 [if exp="sf.isDebugMode"]
-  [glink color="black" size="15" x="1152" y="684" text="開発者用" name="buttonhover" target="*developerSettings"]
-  [glink color="black" size="15" x="1136" y="642" text="進捗初期化" name="buttonhover" target="*resetProgress"]
+  [glink color="black" size="15" x="1125" y="4" width="90" text="進捗リセット" name="buttonhover" target="*resetProgress"]
+  [glink color="black" size="15" x="1125" y="40" width="90" text="開発者用" name="buttonhover" target="*developerSettings"]
 [endif]
 
 [iscript]
@@ -98,6 +98,7 @@
 ;テストファイルへジャンプする
 [jump storage="movie_20230325.ks"]
 
+
 *developerSettings
 [freeimage layer="1"]
 ; 開発者用設定画面へジャンプする
@@ -109,14 +110,67 @@
 ; シアターへジャンプする
 [jump storage="theater/main.ks"]
 
+
 *config
 [freeimage layer="1"]
 ; コンフィグ画面へジャンプする
 [jump storage="configJinro.ks"]
 
+
 *resetProgress
+[html top="130" left="413.813" name="pause_menu_button_window"]
+[endhtml]
+[glink color="&tf.buttonColor" size="26" width="400" x="439" y="153" name="buttonhover" text="設定含めて完全初期化" target="*resetAll"]
+[glink color="&tf.buttonColor" size="26" width="400" x="439" y="238" name="buttonhover" text="シアターのみ初期化" target="*resetTheater"]
+[glink color="&tf.buttonColor" size="26" width="400" x="439" y="323" name="buttonhover" text="チュートリアル完了後" target="*resetAfterTutorial"]
+[glink color="&tf.buttonColor" size="26" width="400" x="439" y="408" name="buttonhover" text="エンディング後" target="*resetAfterEnding"]
+[glink color="&tf.buttonColor" size="26" width="400" x="439" y="493" name="buttonhover" text="何もしない" target="*start"]
+[s]
+
+*resetAll
+[clearvar]
+[jump target="*doneReset"]
+
+*resetTheater
 [clearvar exp="sf.theaterProgress"]
-[ptext layer="1" x="310" y="100" text="シアター進捗の初期化完了 再起動してください" color="black" size="60"]
+[jump target="*doneReset"]
+
+*resetAfterTutorial
+[iscript]
+sf.theaterProgress = 
+  {
+    'p01': {
+      'e01': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
+      'e02': {'c01': THEATER_UNLOCKED},
+      'e03': {'c01': THEATER_UNLOCKED},
+      'e04': {'c01': THEATER_UNLOCKED},
+      'e05': {'c01': THEATER_UNLOCKED},
+      'e06': {'c01': THEATER_UNLOCKED},
+      'e07': {'c01': THEATER_UNLOCKED},
+    }
+  }
+[endscript]
+[jump target="*doneReset"]
+
+*resetAfterEnding
+[iscript]
+sf.theaterProgress = 
+  {
+    'p01': {
+      'e01': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
+      'e02': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
+      'e03': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
+      'e04': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
+      'e05': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
+      'e06': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
+      'e07': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
+      'e08': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
+    }
+  }
+[endscript]
+
+*doneReset
+[ptext layer="1" x="181" y="490" text="リセット完了 再起動してください" color="black" size="60"]
 [layopt layer="1" visible="true"]
 [s]
 

@@ -53,9 +53,9 @@ if (!('theaterProgress' in sf)) {
 if (!('config' in sf)) {
   console.log("★RESET config★");
   sf.config = {
-    current_bgm_vol:    TG.config.defaultBgmVolume, // BGM音量
-    current_se_vol:     TG.config.defaultSeVolume, // SE音量
-    current_voice_vol:  TG.config.defaultSeVolume, // VOICE音量 デフォルトではSEと同じ
+    current_bgm_vol:    70, // TG.config.defaultBgmVolume, // BGM音量
+    current_se_vol:     70, // TG.config.defaultSeVolume, // SE音量
+    current_voice_vol:  70, // TG.config.defaultSeVolume, // VOICE音量 デフォルトではSEと同じ
     current_ch_speed:   TG.config.chSpeed, // テキスト表示速度
     current_auto_speed: TG.config.autoSpeed, // オート時のテキスト表示速度 現在未使用
     mute_bgm:   false,
