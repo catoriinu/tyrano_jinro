@@ -31,27 +31,15 @@ if (!f.quickShowEpisodeWindow) {
 [position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="220" page="fore"]
 [position layer="message0" frame="message_window_none.png"]
 
-
-; エピソード選択用画像
-[t_imageTheaterRectangle pageId="&f.displayPageId" episodeId="e01"]
-[t_imageTheaterRectangle pageId="&f.displayPageId" episodeId="e02"]
-[t_imageTheaterRectangle pageId="&f.displayPageId" episodeId="e03"]
-[t_imageTheaterRectangle pageId="&f.displayPageId" episodeId="e04"]
-[t_imageTheaterRectangle pageId="&f.displayPageId" episodeId="e05"]
-[t_imageTheaterRectangle pageId="&f.displayPageId" episodeId="e06"]
-[t_imageTheaterRectangle pageId="&f.displayPageId" episodeId="e07"]
-[t_imageTheaterRectangle pageId="&f.displayPageId" episodeId="e08"]
-
-; サムネ画像
-[image storage="&f.episodeList.e01.thumbnail" layer="0" left="24.5" top="19" width="200" height="112.5" name="thumbnail"]
-[image storage="&f.episodeList.e02.thumbnail" layer="0" left="261.5" top="19" width="200" height="112.5" name="thumbnail"]
-[image storage="&f.episodeList.e03.thumbnail" layer="0" left="498.5" top="19" width="200" height="112.5" name="thumbnail"]
-[image storage="&f.episodeList.e04.thumbnail" layer="0" left="735.5" top="19" width="200" height="112.5" name="thumbnail"]
-
-[image storage="&f.episodeList.e05.thumbnail" layer="0" left="24.5" top="274" width="200" height="112.5" name="thumbnail"]
-[image storage="&f.episodeList.e06.thumbnail" layer="0" left="261.5" top="274" width="200" height="112.5" name="thumbnail"]
-[image storage="&f.episodeList.e07.thumbnail" layer="0" left="498.5" top="274" width="200" height="112.5" name="thumbnail"]
-[image storage="&f.episodeList.e08.thumbnail" layer="0" left="735.5" top="274" width="200" height="112.5" name="thumbnail"]
+; サムネイル
+[t_imageTheaterThumbnail pageId="&f.displayPageId" episodeId="e01"]
+[t_imageTheaterThumbnail pageId="&f.displayPageId" episodeId="e02"]
+[t_imageTheaterThumbnail pageId="&f.displayPageId" episodeId="e03"]
+[t_imageTheaterThumbnail pageId="&f.displayPageId" episodeId="e04"]
+[t_imageTheaterThumbnail pageId="&f.displayPageId" episodeId="e05"]
+[t_imageTheaterThumbnail pageId="&f.displayPageId" episodeId="e06"]
+[t_imageTheaterThumbnail pageId="&f.displayPageId" episodeId="e07"]
+[t_imageTheaterThumbnail pageId="&f.displayPageId" episodeId="e08"]
 
 ; シアタータイトル文字（全角24文字まで）
 [ptext layer="0" text="&f.episodeList.e01.title" face="MPLUSRounded" size="24" x="29" y="138" width="200"]
