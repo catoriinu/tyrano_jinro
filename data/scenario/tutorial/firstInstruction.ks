@@ -42,8 +42,24 @@
 
 ということで、あなたに人狼ゲームのルール説明をしてもよろしいでしょうか？[p]
 
-[glink text="説明して" target="*continueInstruction"]
-[glink text="スキップして" target="*skipInstruction"]
+[iscript]
+  // ボタン生成（初回用）
+  f.buttonObjects = [];
+  f.buttonObjects.push(new Button(
+    'continueInstruction',
+    '説明して',
+    'center',
+    CLASS_GLINK_DEFAULT
+  ));
+  f.buttonObjects.push(new Button(
+    'skipInstruction',
+    'スキップして',
+    'center',
+    CLASS_GLINK_DEFAULT
+  ));
+[endscript]
+[call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
+[jump target="&f.selectedButtonId"]
 [s]
 
 *continueInstruction
@@ -594,10 +610,27 @@
 ふぅん、なるほど…。[r]
 それじゃあ人狼ゲームとボイボ人狼の説明も要らないですか？[p]
 
-[eval exp="f.tutorialList.secondInstruction = true"]
+[iscript]
+  // チュートリアルリストのフラグ立て
+  f.tutorialList.secondInstruction = true;
 
-[glink text="説明して" target="*continueInstruction"]
-[glink text="スキップして" target="*skipSecondInstruction"]
+  // ボタン生成（2回目以降用）
+  f.buttonObjects = [];
+  f.buttonObjects.push(new Button(
+    'continueInstruction',
+    '説明して',
+    'center',
+    CLASS_GLINK_DEFAULT
+  ));
+  f.buttonObjects.push(new Button(
+    'skipSecondInstruction',
+    'スキップして',
+    'center',
+    CLASS_GLINK_DEFAULT
+  ));
+[endscript]
+[call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
+[jump target="&f.selectedButtonId"]
 [s]
 
 *skipSecondInstruction
