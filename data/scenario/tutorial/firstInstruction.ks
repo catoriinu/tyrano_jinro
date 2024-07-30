@@ -5,6 +5,11 @@
   tf.registerCharacterList = [CHARACTER_ID_MOCHIKO];
 [endscript]
 [call storage="./chara/common.ks" target="*addRegisterCharacters"]
+; もち子さんにフィルターをかける
+; MEMO: フィルターをかけた責任としてチュートリアルが完了する箇所でfree_filterしておくこと。
+; ただしプレイヤー途中でゲームを抜けてしまうことを防ぐことはできないので、次に立ち絵を読み込んだタイミングでもfree_filterしておくこと。
+[filter name="mochiko" brightness="15"]
+
 ; 本当の初回起動時以外は2回目以降用のシナリオにジャンプさせる
 [jump target="*secondInstruction" cond="!f.tutorialList.needFirstInstruction"]
 
@@ -14,13 +19,14 @@
 このままだと僕が犯人ってことにされるのだ！[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko"]
-いいえ、それは違いますよ。[r]
-人狼ゲームで勝てばいいんです。[p]
+いいえ、それは違います。[r]
+人狼ゲームで勝てばいいんですよ。[p]
 
 [m_changeCharacterFrameName name="ずんだもん"]
 この声は！[p]
 
-…誰の声なのだ？[p]
+; メモ：もち子さん登場
+…どちら様なのだ？[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko"]
 …私は…。[p]
@@ -172,13 +178,14 @@
 
 *skipInstruction
 
+[m_changeCharacterFrameName name="？？？" characterId="mochiko"]
+了解です！スピードもち子さんはクールに去ります！[p]
+
 [iscript]
   f.tutorialList = {};
 [endscript]
 
-[m_changeCharacterFrameName name="？？？" characterId="mochiko"]
-了解です！スピードもち子さんはクールに去ります！[p]
-
+[free_filter name="mochiko"]
 [return]
 
 
@@ -372,6 +379,7 @@
 [m_changeFrameWithId]
 #
 
+[free_filter name="mochiko"]
 [return]
 
 
@@ -670,4 +678,5 @@
   f.tutorialList = {};
 [endscript]
 
+[free_filter name="mochiko"]
 [return]
