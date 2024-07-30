@@ -67,7 +67,7 @@
 
 
 *COFortuneTelling_false_neutral_alive
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_positive"]
@@ -208,7 +208,7 @@
 ; シーン：「疑う」アクション実行時
 ; NOTE:事前にf.actionObjectにアクションオブジェクトを格納しておくこと
 *doAction_suspect_logical
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 [add_playselist storage="chara/metan/026_四国めたん（ノーマル）_X、足掻いても無駄….mp3"]
@@ -254,7 +254,7 @@
 
 ; シーン：「信じる」アクション実行時
 *doAction_trust_logical
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 [add_playselist storage="chara/metan/035_四国めたん（ノーマル）_Xとわたくしが手を….mp3"]
@@ -354,7 +354,7 @@
 
 ; シーン：「信じる」アクションの実行対象になった時
 *doAction_reaction_trust_neutral
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 

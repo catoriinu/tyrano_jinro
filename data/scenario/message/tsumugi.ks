@@ -25,7 +25,7 @@
 ; シーン：前日の占い結果をCOするときのセリフ
 ; NOTE:事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 *COFortuneTelling_true_neutral_alive
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_positive"]
@@ -67,7 +67,7 @@
 
 
 *COFortuneTelling_false_neutral_alive
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_positive"]
@@ -241,7 +241,7 @@
 
 
 *doAction_suspect_emotional
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 [add_playselist storage="chara/tsumugi/026_春日部つむぎ（ノーマル）_Xってもしかして人….mp3"]
@@ -351,7 +351,7 @@
 
 
 *doAction_reaction_suspect_hate
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
@@ -391,7 +391,7 @@
 
 
 *doAction_reaction_trust_hate
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 

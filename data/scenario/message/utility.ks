@@ -21,12 +21,12 @@
 ; 事前準備：
 ; f.actionObject = アクションオブジェクト。必須
 ; tf.reaction = リアクションの場合はtrueを指定する。通常の場合は未指定でよい
-; tf.face = キャラクターの表情差分名。未指定の場合、normalになる
+; tf.face = キャラクターの表情差分名。未指定の場合、「通常」になる
 ; tf.side = キャラクターをどちら側に登場させるか。'left'なら左側。未指定やそれ以外の場合は右側
 *prepareMessage
   [iscript]
     // 表情差分名を設定
-    tf.tmpFace = ('face' in tf && tf.face !== '') ? tf.face : 'normal';
+    tf.tmpFace = ('face' in tf && tf.face !== '') ? tf.face : '通常';
     tf.face = '';
 
     // 自分のキャラクターID、対象キャラクターの呼び方を取得するための一時変数を設定

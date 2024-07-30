@@ -82,7 +82,7 @@
       
       if (tf.doSlideInCharacter) {
         // 表示中のキャラを画面外に出してから、ホバーされたキャラを登場させる
-        changeCharacter(f.selectedButtonId, 'normal');
+        changeCharacter(f.selectedButtonId, '通常');
       }
 
       // glinkのenterse属性だと細かい設定ができないため独自に設定（特にbufがデフォルトだと他で鳴っている効果音を打ち消してしまう）
