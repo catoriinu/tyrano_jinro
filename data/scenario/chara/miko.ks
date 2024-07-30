@@ -23,7 +23,7 @@
   [endscript]
 
   [chara_new name="&tf.characterId" storage="chara/miko/normal.png" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" jname="櫻歌ミコ"]
-  [chara_face name="&tf.characterId" face="normal" storage="chara/miko/normal.png"]
+  [chara_face name="&tf.characterId" face="通常" storage="chara/miko/normal.png"]
   [chara_face name="&tf.characterId" face="gao" storage="chara/miko/gao.png"]
   [chara_face name="&tf.characterId" face="excite" storage="chara/miko/wakuwaku.png"]
   [chara_face name="&tf.characterId" face="smile" storage="chara/miko/笑顔.png"]
@@ -33,5 +33,5 @@
   [chara_face name="&tf.characterId" face="astonished" storage="chara/miko/astonished.png"]
   [chara_face name="&tf.characterId" face="embarrassed" storage="chara/miko/embarrassed.png"]
   [chara_face name="&tf.characterId" face="gao_smile" storage="chara/miko/gao_smile.png"]
-  [chara_show name="&tf.characterId" face="normal" time="0" wait="true" left="&f.defaultPosition[tf.characterId].left" top="&f.defaultPosition[tf.characterId].top"]
+  [chara_show name="&tf.characterId" face="通常" time="0" wait="true" left="&f.defaultPosition[tf.characterId].left" top="&f.defaultPosition[tf.characterId].top"]
 [return]

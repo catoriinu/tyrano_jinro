@@ -132,7 +132,7 @@
 ; @param characterId 発言者のキャラクターID。必須
 ; @param face 発言者の表情。（TODO）
 [macro name="m_afterExecution"]
-  [m_changeCharacter characterId="&mp.characterId" face="normal"]
+  [m_changeCharacter characterId="&mp.characterId" face="通常"]
   [m_changeFrameWithId characterId="&mp.characterId"]
   # &f.speaker[f.characterObjects[mp.characterId].name]
   [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
@@ -224,7 +224,7 @@
   [endscript]
 
   ; アクション実行者がいるなら左に表示する。いないなら左のキャラクターを退場させる
-  [m_changeCharacter characterId="&tf.tmpDoActionObject.characterId" face="normal" side="left" cond="Object.keys(tf.tmpDoActionObject).length >= 1"]
+  [m_changeCharacter characterId="&tf.tmpDoActionObject.characterId" face="通常" side="left" cond="Object.keys(tf.tmpDoActionObject).length >= 1"]
   [m_exitCharacter characterId="&f.displayedCharacter.left.characterId" cond="Object.keys(tf.tmpDoActionObject).length === 0"]
   ; 右のキャラクターは必ず退場させる
   [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
@@ -388,7 +388,7 @@
 [macro name="m_resetDisplayCharacter"]
   [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
   [m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
-  ;[m_changeCharacter characterId="&f.playerCharacterId" face="normal" side="left" cond="f.characterObjects[f.playerCharacterId].isAlive"]
+  ;[m_changeCharacter characterId="&f.playerCharacterId" face="通常" side="left" cond="f.characterObjects[f.playerCharacterId].isAlive"]
   ;[m_exitCharacter characterId="&f.displayedCharacter.left.characterId" cond="!(f.characterObjects[f.playerCharacterId].isAlive)"]
 [endmacro]
 

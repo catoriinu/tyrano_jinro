@@ -37,7 +37,7 @@ tf.playbgmParams = {
 [playse storage="chara/zundamon/01-01/001_ずんだもん（なみだめ）_うわあ！？ない！な….ogg" sprite_time="50-20000"]
 うわあああ！？ない！ないのだ！[p]
 
-[m_changeCharacterFrameName name="四国めたん" face="normal"]
+[m_changeCharacterFrameName name="四国めたん" face="通常"]
 [playse storage="chara/metan/01-01/002_四国めたん（ノーマル）_どうしたのよずんだ….ogg" sprite_time="50-20000"]
 どうしたのよずんだもん、朝から騒々しいわね。[p]
 
@@ -76,7 +76,7 @@ tf.playbgmParams = {
 [playse storage="chara/zundamon/01-01/010_ずんだもん（ノーマル）_のだ！？.ogg" sprite_time="50-20000"]
 のだ！？[p]
 
-[m_changeCharacterFrameName name="四国めたん" face="normal"]
+[m_changeCharacterFrameName name="四国めたん" face="通常"]
 [playse storage="chara/metan/01-01/011_四国めたん（ノーマル）_そもそも、ちゃんと….ogg" sprite_time="50-20000"]
 そもそも、ちゃんと名前は書いておいたの？[r]
 書いてなければ文句は言えないわよ。[p]
@@ -170,7 +170,7 @@ tf.playbgmParams = {
 [playse storage="chara/ritsu/01-01/029_波音リツ（ノーマル）_ああ、それなら私に….ogg" sprite_time="50-20000"]
 ああ、それなら私にいい考えがある。[p]
 
-[m_changeCharacterFrameName name="ずんだもん" face="normal"]
+[m_changeCharacterFrameName name="ずんだもん" face="通常"]
 [playse storage="chara/zundamon/01-01/030_ずんだもん（ノーマル）_もしかして犯人を探….ogg" sprite_time="50-20000"]
 もしかして犯人を探す方法があるのだ？[p]
 
@@ -182,7 +182,7 @@ tf.playbgmParams = {
 [playse storage="chara/zundamon/01-01/032_ずんだもん（ノーマル）_えっ？　.ogg" sprite_time="50-20000"]
 えっ？[p]
 
-[m_changeCharacterFrameName name="四国めたん" face="normal"]
+[m_changeCharacterFrameName name="四国めたん" face="通常"]
 [playse storage="chara/metan/01-01/033_四国めたん（ノーマル）_それがいいわ。「揉….ogg" sprite_time="50-20000"]
 それがいいわ。[r]
 「揉め事は人狼ゲームで決すべし」。ボイボ寮の掟よね。[p]

@@ -38,6 +38,6 @@
   ; だいたいtf.characterIdを参照してくれるが、storageとjnameには正確な文字列を入れること
   ; 元画像が左向き（右側用の立ち絵）ならreflect="false"、逆ならreflect="true"とすること
   [chara_new name="&tf.characterId" storage="chara/takehiro/normal.png" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" jname="玄野武宏" reflect="true" ]
-  [chara_face name="&tf.characterId" face="normal" storage="chara/takehiro/normal.png"]
-  [chara_show name="&tf.characterId" face="normal" time="0" wait="true" left="&f.defaultPosition[tf.characterId].left" top="&f.defaultPosition[tf.characterId].top"]
+  [chara_face name="&tf.characterId" face="通常" storage="chara/takehiro/normal.png"]
+  [chara_show name="&tf.characterId" face="通常" time="0" wait="true" left="&f.defaultPosition[tf.characterId].left" top="&f.defaultPosition[tf.characterId].top"]
 [return]

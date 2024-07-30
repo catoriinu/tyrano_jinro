@@ -332,7 +332,7 @@ MEMO 最終的には以下の構成のHTMLが生成される。
 
   ; プレイヤーに確認をとる場合
   ; プレイヤーキャラクターを表示する
-  [m_changeCharacter characterId="&f.playerCharacterId" face="normal" side="left"]
+  [m_changeCharacter characterId="&f.playerCharacterId" face="通常" side="left"]
 
   ; プレイヤーのCO役職IDを格納しておく。未COなら空文字
   [eval exp="f.playerCORoleId = f.characterObjects[f.playerCharacterId].CORoleId"]

@@ -382,7 +382,7 @@
 
 ; 占い師
 [if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_FORTUNE_TELLER"]
-  [m_changeCharacter characterId="&f.playerCharacterId" face="normal" side="left"]
+  [m_changeCharacter characterId="&f.playerCharacterId" face="通常" side="left"]
   [m_askFortuneTellingTarget isFortuneTeller="true"]
 
   ; 占いカットイン発生

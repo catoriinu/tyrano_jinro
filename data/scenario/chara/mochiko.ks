@@ -35,7 +35,7 @@
   [endscript]
 
   [chara_new name="&tf.characterId" storage="chara/mochiko/normal.png" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" jname="もち子さん" reflect="&f.defaultPosition[tf.characterId].reflect"]
-  [chara_face name="&tf.characterId" face="普通" storage="chara/mochiko/normal.png"]
+  [chara_face name="&tf.characterId" face="通常" storage="chara/mochiko/normal.png"]
   [chara_face name="&tf.characterId" face="笑顔" storage="chara/mochiko/smile.png"]
   [chara_face name="&tf.characterId" face="驚き泣き" storage="chara/mochiko/surprise.png"]
   [chara_face name="&tf.characterId" face="苦笑" storage="chara/mochiko/wry_smile.png"]
@@ -48,5 +48,5 @@
   [chara_face name="&tf.characterId" face="伏し目" storage="chara/mochiko/downcast_eyes.png"]
   [chara_face name="&tf.characterId" face="ドヤ顔" storage="chara/mochiko/doyagao.png"]
   [chara_face name="&tf.characterId" face="説明" storage="chara/mochiko/instruction.png"]
-  [chara_show name="&tf.characterId" face="普通" time="0" wait="true" left="&f.defaultPosition[tf.characterId].leftOnDefautRight" top="&f.defaultPosition[tf.characterId].top"]
+  [chara_show name="&tf.characterId" face="通常" time="0" wait="true" left="&f.defaultPosition[tf.characterId].leftOnDefautRight" top="&f.defaultPosition[tf.characterId].top"]
 [return]
