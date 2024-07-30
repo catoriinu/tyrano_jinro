@@ -8,39 +8,45 @@
 ; tf.noNeedStop = true（boolean型。2階層分表示したいときの第1階層でtrueにすること。省略した場合サブルーチン内の[s]タグで止まる。サブルーチン内で初期化するので必要なら毎回指定すること）
 ; MEMO:ボタンの表示・消去は呼び元で行うこと。サブルーチン内で行うと、2階層分表示したいときにちらつくため。
 *glinkFromButtonObjects
+[iscript]
+  // キャラ画像のスライドインを行うか
+  tf.doSlideInCharacter = ('doSlideInCharacter' in tf) ? tf.doSlideInCharacter : false;
+  // 選択肢ボタン表示ループ
+  tf.buttonCount = f.buttonObjects.length;
+  // 背景を表示するサイドは、1つ目のボタンのsideを基準にする
+  tf.side = f.buttonObjects[0].side;
+  // ボタンの背景の高さ
+  tf.top = BUTTON_RANGE_Y_LOWER / (tf.buttonCount + 1) + BUTTON_RANGE_Y_UPPER - BUTTON_MARGIN_HEIGHT;
 
-; キャラ画像のスライドインを行うか
-[eval exp="tf.doSlideInCharacter = ('doSlideInCharacter' in tf) ? tf.doSlideInCharacter : false"]
+  // ボタンを表示するサイドによって、背景とボタンを表示する位置およびそれぞれのクラス名を入れ分ける
+  if (tf.side === 'left') {
+    tf.x = 285;
+    tf.left = 260;
+    tf.class = 'left_button_window';
+  } else if (tf.side === 'right') {
+    tf.x = 665;
+    tf.left = 640;
+    tf.class = 'right_button_window';
+  } else {
+    tf.side = 'center';
+    tf.x = 488;
+    tf.left = 463.813;
+    tf.class = 'center_button_window'
+  }
 
-; 選択肢ボタン表示ループ
-[eval exp="tf.buttonCount = f.buttonObjects.length"]
-; 背景を表示するサイドは、1つ目のボタンのsideを基準にする
-[eval exp="tf.side = f.buttonObjects[0].side"]
+  // ループ用カウンター
+  tf.cnt = 0;
+[endscript]
 
 ; ボタンの背景を表示（まずは位置だけ）
-[eval exp="tf.top = BUTTON_RANGE_Y_LOWER / (tf.buttonCount + 1) + BUTTON_RANGE_Y_UPPER - BUTTON_MARGIN_HEIGHT"]
-; ボタンを表示するサイドによって、背景とボタンを表示する位置およびそれぞれのクラス名を入れ分ける
-[if exp="tf.side == 'left'"]
-  [eval exp="tf.class = 'left_button_window'"]
-  [html top="&tf.top" left="260" name="&tf.class"]
-  [eval exp="tf.x = 285"]
-[elsif exp="tf.side == 'right'"]
-  [eval exp="tf.class = 'right_button_window'"]
-  [html top="&tf.top" left="640" name="&tf.class"]
-  [eval exp="tf.x = 665"]
-[else]
-  [eval exp="tf.side = 'center'"]
-  [eval exp="tf.class = 'center_button_window'"]
-  [html top="&tf.top" left="463.813" name="&tf.class"]
-  [eval exp="tf.x = 488"]
-[endif]
+[html top="&tf.top" left="&tf.left" name="&tf.class"]
 [endhtml]
 
-[eval exp="tf.cnt = 0"]
 *loopstart
-  ; y座標計算。範囲を(ボタン数+1)等分し、上限点と下限点を除く点に順番に配置することで、常に間隔が均等になる。式 = (範囲下限 * (tf.cnt + 1)) / (tf.buttonCount + 1) + (範囲上限)
-  [eval exp="tf.y = (BUTTON_RANGE_Y_LOWER * (tf.cnt + 1)) / (tf.buttonCount + 1) + BUTTON_RANGE_Y_UPPER"]
-  [iscript] 
+  [iscript]
+    // y座標計算。範囲を(ボタン数+1)等分し、上限点と下限点を除く点に順番に配置することで、常に間隔が均等になる。式 = (範囲下限 * (tf.cnt + 1)) / (tf.buttonCount + 1) + (範囲上限)
+    tf.y = (BUTTON_RANGE_Y_LOWER * (tf.cnt + 1)) / (tf.buttonCount + 1) + BUTTON_RANGE_Y_UPPER;
+
     // glinkのname（＝ボタンのclass要素）に設定するクラス名を格納する
     tf.glink_name = [
       'buttonhover', // ボタンにカーソルが乗ったときの処理を設定する用
@@ -101,13 +107,15 @@
 [endif]
 
 *glinkFromButtonObjects_end
-[eval exp="console.log('button clicked side=' + f.selectedSide + ' id=' + f.selectedButtonId)"]
+[iscript]
+  console.log('button clicked side=' + f.selectedSide + ' id=' + f.selectedButtonId);
 
-; ボタン用変数の初期化
-[eval exp="f.buttonObjects = []"]
-[eval exp="tf.side = ''"]
-[eval exp="tf.noNeedStop = false"]
-[eval exp="tf.doSlideInCharacter = false"]
+  // ボタン用変数の初期化
+  f.buttonObjects = []
+  tf.side = ''
+  tf.noNeedStop = false
+  tf.doSlideInCharacter = false
+[endscript]
 [return]
 
 
