@@ -25,23 +25,28 @@
     // ステータス画面等の立ち絵
     f.statusFace[tf.characterId] = {
       alive: 'normal.png',
-      lose: 'sad.png',
+      lose: 'cry.png',
       win: {
-        [FACTION_VILLAGERS]: 'happy.png',
-        [FACTION_WEREWOLVES]: 'smug.png',
+        [FACTION_VILLAGERS]: 'smile.png',
+        [FACTION_WEREWOLVES]: 'plotting.png',
       },
-      draw: 'panicked.png',
+      draw: 'surprise.png',
     };
   [endscript]
 
   [chara_new name="&tf.characterId" storage="chara/mochiko/normal.png" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" jname="もち子さん" reflect="&f.defaultPosition[tf.characterId].reflect"]
-  [chara_face name="&tf.characterId" face="normal" storage="chara/mochiko/normal.png"]
-  [chara_face name="&tf.characterId" face="smile" storage="chara/mochiko/笑顔.png"]
-  [chara_face name="&tf.characterId" face="surprise" storage="chara/mochiko/驚き泣き.png"]
-  [chara_face name="&tf.characterId" face="wry_smile" storage="chara/mochiko/苦笑.png"]
-  [chara_face name="&tf.characterId" face="introduce" storage="chara/mochiko/紹介.png"]
-  [chara_face name="&tf.characterId" face="heart" storage="chara/mochiko/heart.png"]
-  [chara_face name="&tf.characterId" face="plotting" storage="chara/mochiko/plotting.png"]
-  [chara_face name="&tf.characterId" face="tired" storage="chara/mochiko/tired.png"]
-  [chara_show name="&tf.characterId" face="normal" time="0" wait="true" left="&f.defaultPosition[tf.characterId].leftOnDefautRight" top="&f.defaultPosition[tf.characterId].top"]
+  [chara_face name="&tf.characterId" face="普通" storage="chara/mochiko/normal.png"]
+  [chara_face name="&tf.characterId" face="笑顔" storage="chara/mochiko/smile.png"]
+  [chara_face name="&tf.characterId" face="驚き泣き" storage="chara/mochiko/surprise.png"]
+  [chara_face name="&tf.characterId" face="苦笑" storage="chara/mochiko/wry_smile.png"]
+  [chara_face name="&tf.characterId" face="紹介" storage="chara/mochiko/introduce.png"]
+  [chara_face name="&tf.characterId" face="ハート目" storage="chara/mochiko/heart.png"]
+  [chara_face name="&tf.characterId" face="企む" storage="chara/mochiko/plotting.png"]
+  [chara_face name="&tf.characterId" face="げっそり" storage="chara/mochiko/tired.png"]
+  [chara_face name="&tf.characterId" face="怒り" storage="chara/mochiko/tired.png"]
+  [chara_face name="&tf.characterId" face="悲しみ" storage="chara/mochiko/cry.png"]
+  [chara_face name="&tf.characterId" face="伏し目" storage="chara/mochiko/downcast_eyes.png"]
+  [chara_face name="&tf.characterId" face="ドヤ顔" storage="chara/mochiko/doyagao.png"]
+  [chara_face name="&tf.characterId" face="説明" storage="chara/mochiko/instruction.png"]
+  [chara_show name="&tf.characterId" face="普通" time="0" wait="true" left="&f.defaultPosition[tf.characterId].leftOnDefautRight" top="&f.defaultPosition[tf.characterId].top"]
 [return]
