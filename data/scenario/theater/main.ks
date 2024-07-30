@@ -71,11 +71,18 @@ if (!f.quickShowEpisodeWindow) {
 [clickable width="210" height="234" x="731" y="268" color="0x333333" opacity="0" mouseopacity="40" target="*episodeWindow_e08"]
 
 ; ボタン類
-[eval exp="tf.buttonColor = CLASS_GLINK_DEFAULT"]
+[iscript]
+  tf.buttonColor = CLASS_GLINK_DEFAULT;
+  tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
+[endscript]
 [glink color="&tf.buttonColor" size="30" width="270" x="975" y="438" text="タイトルに戻る" target="*returnTitle"]
+
+; 以下、選択中のページのみボタンの色を変える
+[glink color="&tf.selectedButtonColor" size="30" width="270" x="975" y="338" text="1期・2期" target="*loadEpisodeList" exp="f.displayPageId = 'p01'" cond="f.displayPageId === 'p01'"]
+[glink color="&tf.buttonColor" size="30" width="270" x="975" y="338" text="1期・2期" target="*loadEpisodeList" exp="f.displayPageId = 'p01'" cond="f.displayPageId !== 'p01'"]
+
 ; TODO sf.theaterProgressのpageIdを参照して出し分けるべき。以下のように現在表示してよいページID一覧を取得するなど
 ; TYRANO.kag.stat.f.availablePageIdList = Object.keys(TYRANO.kag.variable.sf.theaterProgress);
-[glink color="&tf.buttonColor" size="30" width="270" x="975" y="338" text="1期・2期" target="*loadEpisodeList" exp="f.displayPageId = 'p01'"]
 ;[glink color="&tf.buttonColor" size="30" width="270" x="975" y="38" text="もち子ミコ" target="*loadEpisodeList" exp="f.theaterListPage = 99"]
 
 ;メッセージウィンドウの表示
