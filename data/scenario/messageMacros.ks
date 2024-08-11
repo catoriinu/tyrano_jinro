@@ -295,7 +295,8 @@
 
       ; 表情の指定があり、かつ今の表情と違う場合、表情を変える
       [if exp="'face' in tf.cc && f.displayedCharacter[tf.cc.side].face != tf.cc.face"]
-        [chara_mod name="&tf.cc.characterId" face="&tf.cc.face" time="500" wait="false"]
+        ;[chara_mod name="&tf.cc.characterId" face="&tf.cc.face" time="500" wait="false"]
+        [chara_mod name="&tf.cc.characterId" face="&tf.cc.face" time="0" wait="false"]
         ; 表示キャラオブジェクトを更新する
         [eval exp="f.displayedCharacter[tf.cc.side].face = tf.cc.face"]
       [endif]

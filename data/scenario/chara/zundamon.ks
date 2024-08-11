@@ -15,14 +15,14 @@
       width: 550, // 画像の幅（画面幅1280pxの中での幅）
       haight: 733, // 画像の高さ（画面高さ720pxの中での高さ）
       widthCenter: 258, // 画像の中央（立ち絵の見た目の中央の位置。画像の左端からのpxで指定）
-      top: 135, // キャラが登場したときのtopの値
+      top: 145,//135, // キャラが登場したときのtopの値
       leftOnLeft: -100, // キャラが左側に登場したときのleftの値
       leftOnRight: 831, // キャラが右側に登場したときのleftの値
       reflect: false, // キャラが右側に登場したときの立ち絵の向き。立ち絵が左向きならfalse, 右向きならtrueを指定する
     }
     // キャラが左(右)側から登場する直前の待機位置のleftの値。絶対値を上げるほど画面の遠くで待機する
-    f.defaultPosition[tf.characterId].leftOnDefautLeft = f.defaultPosition[tf.characterId].leftOnLeft - 1000;
-    f.defaultPosition[tf.characterId].leftOnDefautRight = f.defaultPosition[tf.characterId].leftOnRight + 1000;
+    f.defaultPosition[tf.characterId].leftOnDefautLeft = f.defaultPosition[tf.characterId].leftOnLeft - 1090;
+    f.defaultPosition[tf.characterId].leftOnDefautRight = f.defaultPosition[tf.characterId].leftOnRight + 1090;
 
     // キャラクターのイメージカラーのカラーコード
     f.color.character[tf.characterId] = '#67ef65';
