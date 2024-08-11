@@ -35,7 +35,7 @@ const PARTICIPANTS_LIST = [
   {characterId: CHARACTER_ID_SORA,     name: '九州そら'},
   {characterId: CHARACTER_ID_MESUO,    name: '剣崎雌雄'},
   {characterId: CHARACTER_ID_MOCHIKO,  name: 'もち子さん'},
-//  {characterId: CHARACTER_ID_MIKO,     name: '櫻歌ミコ'},
+  {characterId: CHARACTER_ID_MIKO,     name: '櫻歌ミコ'},
 ];
 
 // 実装済みキャラクターの参加ステータス

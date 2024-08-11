@@ -43,7 +43,7 @@
   [chara_face name="&tf.characterId" face="ハート目" storage="chara/mochiko/heart.png"]
   [chara_face name="&tf.characterId" face="企む" storage="chara/mochiko/plotting.png"]
   [chara_face name="&tf.characterId" face="げっそり" storage="chara/mochiko/tired.png"]
-  [chara_face name="&tf.characterId" face="怒り" storage="chara/mochiko/tired.png"]
+  [chara_face name="&tf.characterId" face="怒り" storage="chara/mochiko/angry.png"]
   [chara_face name="&tf.characterId" face="悲しみ" storage="chara/mochiko/cry.png"]
   [chara_face name="&tf.characterId" face="伏し目" storage="chara/mochiko/downcast_eyes.png"]
   [chara_face name="&tf.characterId" face="ドヤ顔" storage="chara/mochiko/doyagao.png"]

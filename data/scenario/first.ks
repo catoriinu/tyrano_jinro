@@ -48,6 +48,10 @@ sf.isDebugMode = true;
 if (!('theaterProgress' in sf)) {
   resetTheaterProgressToDefault();
 }
+// 紹介動画表示用の進捗
+if (sf.isDebugMode) {
+  setTheaterProgressForP99();
+}
 
 // コンフィグ用初期設定
 if (!('config' in sf)) {

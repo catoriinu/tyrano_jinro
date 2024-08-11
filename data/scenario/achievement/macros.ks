@@ -31,6 +31,12 @@
         console.log('★★★episode');
         console.log(episode);
 
+        // 解決編がない場合（おまけ動画など）は即continue
+        if (episode.outroChapter == null) {
+          console.log('★undefined isAchievedCondition');
+          continue;
+        }
+
         // 解決編の解放条件の達成チェックを行う。未達成ならcontinue
         if (!isAchievedCondition(episode.outroChapter.achievementCondition, f.resultCondition)) {
           console.log('★false isAchievedCondition');

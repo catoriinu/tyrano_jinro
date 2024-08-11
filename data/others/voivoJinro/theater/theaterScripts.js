@@ -20,6 +20,21 @@ function resetTheaterProgressToDefault() {
 }
 
 
+function setTheaterProgressForP99() {
+  Object.assign(TYRANO.kag.variable.sf.theaterProgress,
+    {
+      'p99': {
+        'e02': {
+          'c01': THEATER_UNLOCKED,
+        },
+        'e03': {
+          'c01': THEATER_UNLOCKED,
+        }
+      }
+    }
+  )
+}
+
 /**
  * 表示したいページ配下のエピソード情報を取得する
  * この時点では「シアター進捗に存在するエピソード」をすべて取得するので、チャプターごとに非表示にするのは別で行うこと

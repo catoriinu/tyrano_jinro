@@ -83,7 +83,9 @@ if (!f.quickShowEpisodeWindow) {
 
 ; TODO sf.theaterProgressのpageIdを参照して出し分けるべき。以下のように現在表示してよいページID一覧を取得するなど
 ; TYRANO.kag.stat.f.availablePageIdList = Object.keys(TYRANO.kag.variable.sf.theaterProgress);
-;[glink color="&tf.buttonColor" size="30" width="270" x="975" y="38" text="もち子ミコ" target="*loadEpisodeList" exp="f.theaterListPage = 99"]
+[glink color="&tf.selectedButtonColor" size="30" width="270" x="975" y="38" text="紹介動画" target="*loadEpisodeList" exp="f.displayPageId = 'p99'" cond="sf.isDebugMode && f.displayPageId === 'p99'"]
+[glink color="&tf.buttonColor" size="30" width="270" x="975" y="38" text="紹介動画" target="*loadEpisodeList" exp="f.displayPageId = 'p99'" cond="sf.isDebugMode && f.displayPageId !== 'p99'"]
+
 
 ;メッセージウィンドウの表示
 [layopt layer="message0" visible="true"]

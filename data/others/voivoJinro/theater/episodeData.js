@@ -248,22 +248,39 @@ function episodeData(pageId, episodeId) {
                     return;
             }
         // おまけ
-        case 'omake':
-            case 'e02':
-                return new Episode(
-                    pageId,
-                    episodeId,
-                    '【ゲーム】ボイボ人狼 #2【絶賛開発中】',
-                    'theater/紹介動画02サムネ.png',
-                    '解決編はありません',
-                    '紹介動画の元ネタです',
-                    new Chapter(
-                        'c01',
-                        'theater/page99/movie_20230814.ks'
-                    ),
-                    null,
-                    null,
-                );
+        case 'p99':
+            switch (episodeId) {
+                case 'e02':
+                    return new Episode(
+                        pageId,
+                        episodeId,
+                        '【ゲーム】ボイボ人狼 #2【絶賛開発中】',
+                        'theater/紹介動画02サムネ.png',
+                        '解決編はありません',
+                        '紹介動画の元ネタです',
+                        new Chapter(
+                            'c01',
+                            'theater/page99/movie_20230814.ks'
+                        ),
+                        null,
+                        null,
+                    );
+                case 'e03':
+                    return new Episode(
+                        pageId,
+                        episodeId,
+                        '【ゲーム】ボイボ人狼 #3【開発終盤！】',
+                        'theater/シアターサムネ仮01.png',
+                        '解決編はありません',
+                        '紹介動画の元ネタです',
+                        new Chapter(
+                            'c01',
+                            'theater/page99/movie_20240803.ks'
+                        ),
+                        null,
+                        null,
+                    );
+            }
         default:
             alert('存在しないpageIdが指定されました pageId' + pageId);
             return;
