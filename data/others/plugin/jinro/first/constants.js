@@ -8,12 +8,18 @@ const CHARACTER_ID_MIKI   = 'miki'; // ミキ
 const CHARACTER_ID_YU     = 'yu'; // ユウ
 const CHARACTER_ID_DUMMY  = 'dummy'; // ダミー
 const CHARACTER_ID_ZUNDAMON = 'zundamon'; // ずんだもん
-const CHARACTER_ID_METAN    = 'metan'; // 四国めたん
-const CHARACTER_ID_TSUMUGI  = 'tsumugi'; // 春日部つむぎ
-const CHARACTER_ID_HAU      = 'hau'; // 雨晴はう
-const CHARACTER_ID_RITSU    = 'ritsu'; // 波音リツ
-const CHARACTER_ID_MOCHIKO  = 'mochiko'; // もち子さん
-const CHARACTER_ID_MIKO     = 'miko'; // 櫻歌ミコ
+const CHARACTER_ID_METAN    = 'metan';    // 四国めたん
+const CHARACTER_ID_TSUMUGI  = 'tsumugi';  // 春日部つむぎ
+const CHARACTER_ID_HAU      = 'hau';      // 雨晴はう
+const CHARACTER_ID_RITSU    = 'ritsu';    // 波音リツ
+const CHARACTER_ID_TAKEHIRO = 'takehiro'; // 玄野武宏
+const CHARACTER_ID_KOTARO   = 'kotaro';   // 白上虎太郎
+const CHARACTER_ID_RYUSEI   = 'ryusei';   // 青山龍星
+const CHARACTER_ID_HIMARI   = 'himari';   // 冥鳴ひまり
+const CHARACTER_ID_SORA     = 'sora';     // 九州そら
+const CHARACTER_ID_MESUO    = 'mesuo';    // 剣崎雌雄
+const CHARACTER_ID_MOCHIKO  = 'mochiko';  // もち子さん
+const CHARACTER_ID_MIKO     = 'miko';     // 櫻歌ミコ
 
 // 登場する全てのキャラクターIDと名前、およびその基本的な序列
 const PARTICIPANTS_LIST = [
@@ -22,9 +28,37 @@ const PARTICIPANTS_LIST = [
   {characterId: CHARACTER_ID_TSUMUGI,  name: '春日部つむぎ'},
   {characterId: CHARACTER_ID_HAU,      name: '雨晴はう'},
   {characterId: CHARACTER_ID_RITSU,    name: '波音リツ'},
-//  {characterId: CHARACTER_ID_MOCHIKO,  name: 'もち子さん'},
-//  {characterId: CHARACTER_ID_MIKO,     name: '櫻歌ミコ'},
+  {characterId: CHARACTER_ID_TAKEHIRO, name: '玄野武宏'},
+  {characterId: CHARACTER_ID_KOTARO,   name: '白上虎太郎'},
+  {characterId: CHARACTER_ID_RYUSEI,   name: '青山龍星'},
+  {characterId: CHARACTER_ID_HIMARI,   name: '冥鳴ひまり'},
+  {characterId: CHARACTER_ID_SORA,     name: '九州そら'},
+  {characterId: CHARACTER_ID_MESUO,    name: '剣崎雌雄'},
+  {characterId: CHARACTER_ID_MOCHIKO,  name: 'もち子さん'},
+  {characterId: CHARACTER_ID_MIKO,     name: '櫻歌ミコ'},
 ];
+
+// 実装済みキャラクターの参加ステータス
+const PARTICIPATE_AS_PC = 'pc';
+const PARTICIPATE_AS_NPC = 'npc';
+const NOT_PARTICIPATE = 'not';
+// 初回起動時のみ、デフォルト設定値を入れる
+if (!('participantStatus' in TYRANO.kag.variable.sf)) {
+  TYRANO.kag.variable.sf.participantStatus = {
+    [CHARACTER_ID_ZUNDAMON]: PARTICIPATE_AS_PC,
+    [CHARACTER_ID_METAN]:    PARTICIPATE_AS_NPC,
+    [CHARACTER_ID_TSUMUGI]:  PARTICIPATE_AS_NPC,
+    [CHARACTER_ID_HAU]:      PARTICIPATE_AS_NPC,
+    [CHARACTER_ID_RITSU]:    PARTICIPATE_AS_NPC,
+    [CHARACTER_ID_TAKEHIRO]: NOT_PARTICIPATE,
+    [CHARACTER_ID_KOTARO]:   NOT_PARTICIPATE,
+    [CHARACTER_ID_RYUSEI]:   NOT_PARTICIPATE,
+    [CHARACTER_ID_HIMARI]:   NOT_PARTICIPATE,
+    [CHARACTER_ID_SORA]:     NOT_PARTICIPATE,
+    [CHARACTER_ID_MESUO]:    NOT_PARTICIPATE,
+    [CHARACTER_ID_MOCHIKO]:  NOT_PARTICIPATE,
+  }
+}
 
 // 役職ID
 const ROLE_ID_VILLAGER       = 'villager'; // 村人
@@ -105,11 +139,14 @@ const BUTTON_MARGIN_HEIGHT = 30 // ボタンの上下の余白
 
 // 開発者用設定のシステム変数設定
 // 初回起動時のみ、デフォルト設定値を入れる
-if (!('j_development' in TYRANO.kag.variable.sf)) {
+function resetJDevelopmentSettingToDefault() {
   TYRANO.kag.variable.sf.j_development = {
     dictatorMode: false,
     doShuffle: true,
     maxDoActionCount: MAX_DO_ACTION_COUNT,
     thinking: 'default'
   }
+}
+if (!('j_development' in TYRANO.kag.variable.sf)) {
+  resetJDevelopmentSettingToDefault();
 }

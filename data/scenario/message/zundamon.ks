@@ -24,7 +24,7 @@
 ; シーン：初日、役職を告知されたときの反応
 ; 備考：PCのみ想定
 *noticeRole_villager
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [playse storage="chara/zundamon/001_ずんだもん（ノーマル）_僕は村人なのだ。悪….mp3"]
 
@@ -94,7 +94,7 @@
 
 
 *announcedFortuneTellingResult_false
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
@@ -161,7 +161,7 @@
 
 
 *COFortuneTelling_false_neutral_alive
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -355,7 +355,7 @@
 
 ; シーン：「信じる」アクション実行時
 *doAction_trust_logical
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 
@@ -445,7 +445,7 @@
 
 ; シーン：「信じる」アクションの実行対象になった時
 *doAction_reaction_trust_neutral
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 

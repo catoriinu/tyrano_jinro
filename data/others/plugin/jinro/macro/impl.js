@@ -7,11 +7,21 @@
  * すでにそのキャラがchara_newで登録,およびその表情がchara_faceで登録済みである前提とする。
  * @param characterId 登場させたいキャラのキャラクターID。必須。
  * @param face 登場させたいキャラのface。基本的に必須。
+ * @param side 画面のどちら側に登場させるか。'left'で左側。それ以外または未指定の場合は右側。
  */
-function changeCharacter(characterId, face = null) {
+function changeCharacter(characterId, face = null, side = 'right') {
 
-  // そのキャラがデフォルトで登場する位置を格納する（マクロ側と違い、単に変数名の短縮のため）
-  let side = TYRANO.kag.stat.f.defaultPosition[characterId].side;
+  // そのキャラがデフォルトで登場する位置を格納する（'left'か'right'しか許容しない）
+  let counterSide = 'right'
+  if (side != 'left') {
+    side = 'right';
+    counterSide = 'left';
+  }
+  
+  // 自分自身がすでに登場済み、かつ逆側に登場させる場合、まず自分自身を退場させる
+  if (TYRANO.kag.stat.f.displayedCharacter[counterSide].characterId == characterId) {
+    exitCharacter(characterId);
+  }
 
   // その位置に既に登場しているキャラがいる場合
   if (TYRANO.kag.stat.f.displayedCharacter[side].isDisplay) {
@@ -55,6 +65,20 @@ function enterCharacter(characterId, face, side) {
 
   console.log('★enter ' + characterId);
 
+  // sideに合わせて、キャラクター画像を移動させるべき量を格納する（左側の場合は次のif文で書き換える）
+  let left = TYRANO.kag.stat.f.defaultPosition[characterId].leftOnRight;
+
+  // sideがleftの場合のみ、一度leftOnDefautLeftの位置に移動させる。デフォルトの待機位置がleftOnDefautRightなので。
+  if (side == 'left') {
+    TYRANO.kag.ftag.startTag("chara_move",{
+      name: characterId,
+      time: 1,
+      left: TYRANO.kag.stat.f.defaultPosition[characterId].leftOnDefautLeft,
+      wait: "true",
+    });
+    left = TYRANO.kag.stat.f.defaultPosition[characterId].leftOnLeft;
+  }
+
   // 表情を変える
   // MEMO 「そのキャラの今の表情」を取得可能であれば、「今の表情と違う場合のみ」にしたい。が、HTML要素内に表情の情報がimgのパスくらいしかなかったので無理そう。
   TYRANO.kag.ftag.startTag('chara_mod', {
@@ -64,18 +88,21 @@ function enterCharacter(characterId, face, side) {
     wait: 'false'
   });
 
-  // sideに合わせて、キャラクター画像を移動させるべき量を格納する
-  let moveLeft = '-=1000';
-  if (side == 'left') {
-    moveLeft = '+=1000';
-  }
+  // 画面の内側向きになるように画像の向きを変える 
+  let reflect = (side == 'left') ? 'true' : 'false';
+  TYRANO.kag.ftag.startTag('chara_mod', {
+    name: characterId,
+    reflect: reflect,
+    time: 1,
+    wait: 'false'
+  });
 
   // sideがrightなら画面右から右側に、leftなら画面左から左側にスライドインしてくる
   TYRANO.kag.ftag.startTag("chara_move",{
     name: characterId,
     time: 600,
     anim: "true",
-    left: moveLeft,
+    left: left,
     wait: "false",
     effect: "easeOutExpo"
   });
@@ -92,8 +119,9 @@ function enterCharacter(characterId, face, side) {
  * 退場マクロ
  * 現在登場しているキャラを退場させる
  * @param characterId 退場させたいキャラのキャラクターID。必須。
+ * @param time 退場にかかる時間（[chara_move]のtime）。指定しなければデフォルト600ミリ秒
  */
-function exitCharacter(characterId) {
+function exitCharacter(characterId, time = 600) {
 
   // そのキャラがどちらのサイドに表示されているかを取得する
   let side = (function(){
@@ -109,8 +137,8 @@ function exitCharacter(characterId) {
   // そのキャラをデフォルトの位置に移動させる
   TYRANO.kag.ftag.startTag('chara_move', {
     name: characterId,
-    time: 600,
-    left: TYRANO.kag.stat.f.defaultPosition[characterId].left,
+    time: time,
+    left: TYRANO.kag.stat.f.defaultPosition[characterId].leftOnDefautRight,
     wait: 'false',
   });
 

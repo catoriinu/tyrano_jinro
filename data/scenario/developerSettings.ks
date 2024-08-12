@@ -5,7 +5,7 @@
 [ptext layer="1" x="410" y="28" text="開発者用設定画面" color="white" edge="0x00FF00" size="60"]
 [ptext layer="1" x="165" y="153" text="独裁者モード" color="white" size="36"]
 [ptext layer="1" x="149" y="253" text="役職シャッフル" color="white" size="36"]
-[ptext layer="1" x="55" y="353" text="議論フェーズのラウンド数" color="white" size="36"]
+[ptext layer="1" x="55" y="353" text="議論フェイズのラウンド数" color="white" size="36"]
 [ptext layer="1" x="153" y="453" text="NPCの思考方針" color="white" size="36"]
 [layopt layer="1" visible="true"]
 
@@ -26,7 +26,7 @@
 [eval exp="tf.doShuffle_false = !sf.j_development.doShuffle ? 'red' : 'blue'"]
 [glink color="&tf.doShuffle_false" size="30" x="995" width="80" y="250" text="固定" target="*displayButtons" exp="sf.j_development.doShuffle = false"]
 
-; 議論フェーズのラウンド数
+; 議論フェイズのラウンド数
 [eval exp="tf.maxDoActionCount_0 = (sf.j_development.maxDoActionCount == 0) ? 'red' : 'blue'"]
 [glink color="&tf.maxDoActionCount_0" size="30" x="540" width="30" y="350" text="0" target="*displayButtons" exp="sf.j_development.maxDoActionCount = 0"]
 [eval exp="tf.maxDoActionCount_default = (sf.j_development.maxDoActionCount == MAX_DO_ACTION_COUNT) ? 'red' : 'blue'"]

@@ -5,12 +5,10 @@
 ; ステータス画面から戻るときに復元すべきボタン状況を保存しておく。
 ; これはsleepgameをしてステータス画面を開いた瞬間に一度だけ行うこと。
 ; （ステータス画面→メニュー画面→2度目のステータス画面の方では行わない。awakegameするときに復元するのは、あくまで最初に開いた瞬間の状態なので）
-[j_saveFixButton buf="status" cond="!('doneSaveButton' in f) || !f.doneSaveButton"]
-[eval exp="f.doneSaveButton = true"]
-
+[j_saveFixButton buf="status"]
 ; [clearfix]でfixボタンが全て消えてしまっているので、ボタン表示フラグを一旦全てfalseにしたうえで、必要なボタンを再表示する
 [j_clearFixButton]
-[j_displayFixButton menu="true" backlog="true" status="nofix_click"]
+[j_displayFixButton backlog="true" status="nofix_click"]
 
 [html]
 <div class="main">
@@ -142,6 +140,11 @@
 ; キャラクタ－画像を表示
 [j_setDchForStatus winnerFaction="&f.winnerFaction"]
 [call storage="jinroSubroutines.ks" target="*displayCharactersHorizontallyForStatus"]
+
+
+; 【チュートリアル】
+[call storage="tutorial/firstInstruction.ks" target="*statusButton" cond="('statusButton' in f.tutorialList) && !f.tutorialList.statusButton"]
+
 [s]
 
 
@@ -149,8 +152,5 @@
 ; ボタンの画像の表示状況は[awakegame]することで復元されるが、f.displaingButton内の変数は復元されないので、変数の復元のために以下を行う
 ; ステータス画面表示時に保存しておいた状態を復元する（メニューボタンの状態も消去される）
 [j_loadFixButton buf="status"]
-; ステータスボタンをノーマル状態に明示的に上書きする（メニュー画面を一度開いていた場合は'nofix'が入ったままのため）
-[j_displayFixButton status="true"]
-[eval exp="f.doneSaveButton = false"]
 [awakegame]
 [s]

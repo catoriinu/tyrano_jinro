@@ -7,27 +7,38 @@
 [start_keyconfig]
 
 
+[iscript]
+  // チュートリアルリストの定義。チュートリアルを行いたい場合は事前に同名変数に格納しておくこと
+  f.tutorialList = ('tmpTutorialList' in f) ? clone(f.tmpTutorialList) : {};
+  f.tmpTutorialList = {};
+
+  // 人狼ゲーム中フラグ
+  // 人狼ゲームを終了、中断する場合は必ずfalseに戻すこと（タイトル画面に戻る場合はそこで初期化しているので不要）
+  f.inJinroGame = true
+[endscript]
+
+
 [bg storage="living_night_close_nc238328.jpg" time="300"]
 
 ;メッセージウィンドウの設定、文字が表示される領域を調整
-[position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="210" page="fore"]
+[position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="220" page="fore"]
 
 ;メッセージウィンドウの表示
 [layopt layer="message0" visible="true"]
 
 ;キャラクターの名前が表示される文字領域
-[ptext name="chara_name_area" layer="message0" face="にくまるフォント" color="0x28332a" size=36 x=175 y=505]
+[ptext name="chara_name_area" layer="message0" face="にくまるフォント" color="0x28332a" size="36" x="175" y="505"]
 
 ;上記で定義した領域がキャラクターの名前表示であることを宣言（これがないと#の部分でエラーになります）
 [chara_config ptext="chara_name_area"]
 ; pos_mode:キャラの初期位置はキャラ宣言時に全指定するのでfalse
 [chara_config pos_mode="false" memory="true" time="200"]
 
-;このゲームで登場する全キャラクターを宣言、表情登録
-[call storage="./chara/common.ks" target="*registerAllCharacters"]
+;このゲームで登場するキャラクターを宣言、表情登録
+[call storage="./chara/common.ks" target="*registerCharactersFromParticipantsIdList"]
 
-; ステータス、バックログボタン表示
-[j_displayFixButton status="true" backlog="true"]
+; ステータス、バックログ、メニューボタン表示
+[j_displayFixButton status="true" backlog="true" menu="true"]
 
 [playse storage="dodon.ogg" buf="1" loop="false" volume="40" sprite_time="50-20000"]
 [m_changeFrameWithId]
@@ -44,6 +55,10 @@
 
 ; プレイヤーの役職確認セリフ出力
 [m_noticeRole characterId="&f.playerCharacterId" roleId="&f.characterObjects[f.playerCharacterId].role.roleId"]
+
+; 【チュートリアル】
+[call storage="tutorial/firstInstruction.ks" target="*instruction" cond="('instruction' in f.tutorialList) && !f.tutorialList.instruction"]
+
 
 ; 占い師なら初日占い実行
 [if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_FORTUNE_TELLER"]
@@ -71,6 +86,11 @@
 [clearstack]
 [playbgm storage="nc282335.ogg" loop="true" volume="11" restart="false"]
 
+
+; 【チュートリアル】
+[call storage="tutorial/firstInstruction.ks" target="*secondDayDayPhase" cond="('secondDayDayPhase' in f.tutorialList) && f.tutorialList.firstDayNightPhase && !f.tutorialList.secondDayDayPhase"]
+
+
 [m_changeFrameWithId]
 #
 ～COフェイズ～[p]
@@ -88,13 +108,19 @@
 ; NPCにCO候補者がいるフラグを初期化する
 [eval exp="f.notExistCOCandidateNPC = false"]
 
+; 【チュートリアル】
+[call storage="tutorial/firstInstruction.ks" target="*COPhase" cond="('COPhase' in f.tutorialList) && !f.tutorialList.COPhase"]
+
 *COPhasePlayer
-
+; PC（占い師、人狼、狂人）による占いCOフェイズ
 [call storage="./jinroSubroutines.ks" target="*COPhasePlayer"]
+; 右側のキャラを退場させる（PCのCO先のキャラが残っているため。退場させないと、CO先のキャラが喋るまでそのままになってしまう）
+[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 
+; COフェイズ終了判定
 ; f.notExistCOCandidateNPCがtrueなら、COフェイズ終了(NPCにCO候補者がいないため、これ以上COする者はいないとする)
+; falseなら、COフェイズ継続(まだNPCにCO候補者がいるので、NPCのCOを確認する)
 [jump target="*discussionPhase" cond="f.notExistCOCandidateNPC"]
-; f.notExistCOCandidateNPCがfalseなら、COフェイズ継続(まだNPCにCO候補者がいるので、NPCのCOを確認する)
 
 *COPhaseNPC
 ; NPC（占い師、人狼、狂人）による占いCOフェイズ
@@ -130,13 +156,10 @@
   ……沈黙が流れた。これ以上、COしたい者はいないようだ。[p]
 
   [j_setIsNeedToAskPCWantToCO]
-  [if exp="!tf.isNeedToAskPCWantToCO"]
-    ; COフェイズ終了(PCはCO確認する必要がない状態のため、これ以上COする者はいないとする)
-    [jump target="*discussionPhase"]
-  [else]
-    ; COフェイズ継続(NPCにCO者がいないことを受けて、PCのCOを確認する)
-    [jump target="*COPhasePlayer"]
-  [endif]
+  ; COフェイズ終了(PCはCO確認する必要がない状態のため、これ以上COする者はいないとする)
+  [jump target="*discussionPhase" cond="!tf.isNeedToAskPCWantToCO"]
+  ; COフェイズ継続(NPCにCO者がいないことを受けて、PCのCOを確認する)
+  [jump target="*COPhasePlayer"]
 
 [else]
   ; CO候補者がいるなら、そのキャラクターの行動を開始する
@@ -166,9 +189,6 @@
     [j_fakeFortuneTellingCOMultipleDays fortuneTellerId="&f.COCandidateId" fakeFortuneTelledDay="&tf.fakeFortuneTelledDay"]
   [endif]
 
-  ; 占いカットイン発生
-  [j_cutin1]
-
   ; 指定した占い師のCOを実行する（メッセージは当日分のみ表示）
   [j_COFortuneTelling fortuneTellerId="&f.COCandidateId"]
 
@@ -193,22 +213,28 @@
 *discussionPhase
 [clearstack]
 
-; アクションボタン表示
-[j_displayFixButton action="true" cond="f.characterObjects[f.playerCharacterId].isAlive"]
-
 [m_resetDisplayCharacter]
 [m_changeFrameWithId]
 #
 ～議論フェイズ～[p]
+
+; 【チュートリアル】
+[call storage="tutorial/firstInstruction.ks" target="*discussionPhase" cond="('discussionPhase' in f.tutorialList) && !f.tutorialList.discussionPhase"]
+
+[eval exp="f.isDoingAction = false"]
+; アクションボタン表示
+[j_displayFixButton action="true" cond="f.characterObjects[f.playerCharacterId].isAlive"]
+
 *startDiscussionLoop
 
 ; アクション実行上限回数以上の場合は議論フェイズを終了する
-[jump target="*votePhase" cond="f.doActionCount >= sf.j_development.maxDoActionCount"]
+[jump target="*endDiscussionPhase" cond="f.doActionCount >= sf.j_development.maxDoActionCount"]
 [eval exp="f.doActionCount++"]
 
 ; NPCのアクション実行者がいるか、いるならアクションとその対象を格納する
 [j_decideDoActionByNPC]
 
+*returnFromActionButton
 ; 現在のラウンド数と次のNPCのアクションを表示する
 [m_displayRoundAndNextActionInDiscussionPhase]
 
@@ -218,59 +244,68 @@
   [j_doAction actionObject="&f.doActionObject"]
 [endif]
 
-[m_resetDisplayCharacter]
 ; 議論フェイズを繰り返す
 [jump target="*startDiscussionLoop"]
 
+*endDiscussionPhase
+; アクションボタン非表示
+[j_clearFixButton action="true"]
+
+
+; 投票フェイズ
 *votePhase
 [clearstack]
-
-; アクションボタン非表示
-[j_clearFixButton action="true" cond="f.characterObjects[f.playerCharacterId].isAlive"]
 
 [m_resetDisplayCharacter]
 [m_changeFrameWithId]
 #
 ～投票フェイズ～[p]
 
-; 投票フェイズ
-; NPCの投票先を決める
-[j_decideVote]
+; 【チュートリアル】
+[call storage="tutorial/firstInstruction.ks" target="*votePhase" cond="('votePhase' in f.tutorialList) && !f.tutorialList.votePhase"]
 
 ; ここはバックログに記録しない。記録する必要がないシステムメッセージのため
 [nolog]
 
-[if exp="!f.characterObjects[f.playerCharacterId].isAlive"]
-  プレイヤーが退場済みなので投票できません。[l][r]
-  [jump target="*skipPlayerVote" cond="!sf.j_development.dictatorMode"]
-  が、独裁者モードなので投票できます。[p]
-[endif]
-
-; プレイヤーの投票先を決める
 [m_changeFrameWithId]
 # 
-投票するキャラクターを選択してください。
-[eval exp="tf.needPC = false"]
+[if exp="f.characterObjects[f.playerCharacterId].isAlive"]
+  [m_changeCharacter characterId="&f.playerCharacterId" face="thinking" side="left"]
+  投票するキャラクターを選択してください。
+[else]
+  あなたは退場済みなので投票できません。
+  [if exp="sf.j_development.dictatorMode"]
+    [r]
+    が、独裁者モードなので投票できます。
+  [endif]
+[endif]
 
 [if exp="sf.j_development.dictatorMode"]
   [r]
   独裁者モードのため、プレイヤーの投票先を追放します。
-  [eval exp="tf.needPC = true"]
 [endif]
 [p]
 
+; 再投票時はここに戻ってくる
+*returnForRevote
+
+; NOTE: デバッグモードのときのみ、ここでNPCの投票先を決める
+; ここで決めると、プレイヤーの投票時にNPCの投票先が見えてしまうが、開発中は見えた方が再投票を起こしやすいのであえてそうしておく
+[j_decideVote cond="sf.isDebugMode"]
+
+; プレイヤーの投票をスキップする条件：プレイヤーが退場済み、かつ独裁者モードではない
+[jump target="*skipPlayerVote" cond="!f.characterObjects[f.playerCharacterId].isAlive && !sf.j_development.dictatorMode"]
+
+; プレイヤーの投票
 ; 生存者である、かつプレイヤー以外のキャラクターIDをボタンオブジェクトに格納する
 ; 開発者用設定：独裁者モードならプレイヤーも投票対象にできるようにする
-[j_setCharacterToButtonObjects onlySurvivor="true" needPC="&tf.needPC"]
-
-; メニューボタン非表示
-[j_clearFixButton menu="true"]
+[j_setCharacterToButtonObjects onlySurvivor="true" needPC="&sf.j_development.dictatorMode"]
 
 ; 選択肢ボタン表示と入力受付
 [eval exp="tf.doSlideInCharacter = true"]
 [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 
-; NPCを退場させる（PCの投票先、または（PCが投票していない場合）直前に発言したキャラが残っているため。退場させないと、処刑先のキャラが喋るまでそのままになってしまう）
+; 右側のキャラを退場させる（PCの投票先のキャラが残っているため。退場させないと、処刑先のキャラが喋るまでそのままになってしまう）
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 
 ; ボタンで選択した投票先キャラクターIDを、プレイヤーの投票履歴に入れる
@@ -281,6 +316,9 @@
 *skipPlayerVote
 ; ここまでログを記録しない
 [endnolog]
+
+; デバッグモードでないなら、ここでNPCの投票先を決める
+[j_decideVote cond="!sf.isDebugMode"]
 
 ; 票を集計する
 [j_countVote]
@@ -294,7 +332,7 @@
   [if exp="f.revoteCount < MAX_REVOTE_COUNT"]
     再投票です。[r]
     あと[emb exp="MAX_REVOTE_COUNT - f.revoteCount"]回で決着しない場合は引き分けです。[p]
-    [jump target="*votePhase"]
+    [jump target="*returnForRevote"]
   [else]
     ; 再投票上限を越えた場合は引き分け処理
     投票で決着がつきませんでした。[p]
@@ -306,18 +344,13 @@
 ; 処刑セリフと処刑処理（TODO 今はこの順番だが、処刑ごとの演出がどうなるかによっては逆にしてもいい）
 [j_execution characterId="&f.electedIdList[0]"]
 [m_executed characterId="&f.electedIdList[0]"]
+
 ; 処刑メッセージ
 [m_changeFrameWithId]
 #
 [emb exp="f.characterObjects[f.electedIdList[0]].name + 'は追放されました。'"][p]
 
-; 処刑後の反応（TODO 誰が発言するかを決定するマクロ等が必要）
-[if exp="f.characterObjects.ai.isAlive"]
-  [m_afterExecution characterId="ai"]
-[elsif exp="f.characterObjects.hiyori.isAlive"]
-  [m_afterExecution characterId="hiyori"]
-[endif]
-
+; TODO: 処刑後の反応（誰が発言するかを決定するマクロ等が必要）
 
 ; 勝敗判定
 [j_judgeWinnerFactionAndJump storage="playJinro.ks" target="*gameOver"]
@@ -334,19 +367,22 @@
 ; なお、この問題は[clearstack]では解決しなかったが、おまじないとして各フェイズの最初に追加しておく。
 [jump target="*nightPhaseNPC" cond="!f.characterObjectsHistory[f.day][f.playerCharacterId].isAlive"]
 
+
+; 【チュートリアル】
+[call storage="tutorial/firstInstruction.ks" target="*firstDayNightPhase" cond="('firstDayNightPhase' in f.tutorialList) && !f.tutorialList.firstDayNightPhase"]
+
+
 [m_changeFrameWithId]
 #
-プレイヤーの行動です。[p]
 
-; 村人
-[if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_VILLAGER"]
-  村人なので行動できません。[p]
+; 村人、狂人
+[if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_VILLAGER || f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_MADMAN"]
+  夜に実行できる役職能力はありません。[p]
 [endif]
 
-; 真占い師であれば
-[j_setCanCOFortuneTellerStatus characterId="&f.playerCharacterId"]
-[if exp="f.canCOFortuneTellerStatus == 1 || f.canCOFortuneTellerStatus == 2"]
-
+; 占い師
+[if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_FORTUNE_TELLER"]
+  [m_changeCharacter characterId="&f.playerCharacterId" face="通常" side="left"]
   [m_askFortuneTellingTarget isFortuneTeller="true"]
 
   ; 占いカットイン発生
@@ -357,56 +393,49 @@
 
   ; 占い結果に合わせてセリフ出力
   [m_announcedFortuneTellingResult]
-
 [endif]
 
-; 人狼の場合のみ
-[if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_WEREWOLF"]
+; 人狼かつ今日の襲撃が未実行の場合（NPCが先に襲撃したケースを考慮して一応判定しているが、現状未実行はありえない）
+[if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_WEREWOLF && f.isBiteEnd != true"]
+  [m_chooseWhoToBite characterId="&f.playerCharacterId"]
 
-  [if exp="f.isBiteEnd != true"]
+  [iscript]
+    // 夜時間開始時の生存者である、かつ人狼以外であるキャラクターID配列を選択肢候補変数に格納する。
+    tf.candidateCharacterIds = getValuesFromObjectArray(
+      getIsWerewolvesObjects(
+        getSurvivorObjects(f.characterObjectsHistory[f.day]),
+        false
+      ),
+      'characterId'
+    );
+  [endscript]
 
-    [m_chooseWhoToBite characterId="&f.playerCharacterId"]
+  ; 選択肢ボタン表示と入力受付
+  [j_setCharacterToButtonObjects characterIds="&tf.candidateCharacterIds"]
+  [eval exp="tf.doSlideInCharacter = true"]
+  [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 
-    [iscript]
-      ; 夜時間開始時の生存者である、かつ人狼以外であるキャラクターID配列を選択肢候補変数に格納する。
-      tf.candidateCharacterIds = getValuesFromObjectArray(
-        getIsWerewolvesObjects(
-          getSurvivorObjects(f.characterObjectsHistory[f.day]),
-          false
-        ),
-        'characterId'
-      );
-    [endscript]
+  ; 襲撃実行
+  [j_biting biterId="&f.playerCharacterId" characterId="&f.selectedButtonId"]
+  [m_exitCharacter characterId="&f.selectedButtonId"]
 
-    ; 選択肢ボタン表示と入力受付
-    [j_setCharacterToButtonObjects characterIds="&tf.candidateCharacterIds"]
-    [eval exp="tf.doSlideInCharacter = true"]
-    [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
+  ; キャラ画像解放
+  [freeimage layer="1" time="400" wait="false"]
 
-    ; 噛み実行
-    [j_biting biterId="&f.playerCharacterId" characterId="&f.selectedButtonId"]
-    [m_exitCharacter characterId="&f.selectedButtonId"]
-
-    ; キャラ画像解放
-    [freeimage layer="1" time="400" wait="false"]
-
-    ; 噛み実行済みフラグを立てる
-    [eval exp="f.isBiteEnd = true"]
-  [endif]
+  ; 襲撃実行済みフラグを立てる
+  [eval exp="f.isBiteEnd = true"]
 [endif]
+
 
 *nightPhaseNPC
-[m_changeFrameWithId]
-#
-NPCが行動しています……[p]
 
 ; 占い師（真のみ）の占い実行
 [j_nightPhaseFortuneTellingForNPC]
 
-; 噛み未実行なら（＝PCが人狼ではないなら）噛み実行
+; 襲撃未実行なら（＝PCが人狼ではないなら）襲撃実行
 [if exp="!f.isBiteEnd"]
   [j_nightPhaseBitingForNPC]
-  ; 噛まれたキャラクターを退場させる（噛み実行マクロ内でf.targetCharacterIdは格納済み）
+  ; 襲撃されたキャラクターを退場させる（襲撃実行マクロ内でf.targetCharacterIdは格納済み）
   [m_exitCharacter characterId="&f.targetCharacterId"]
 [endif]
 
@@ -420,18 +449,29 @@ NPCが行動しています……[p]
 *gameOver
 [fadeoutbgm time="1000"]
 [j_displayGameOverAndWinnerFaction]
+
 [a_convertResultToAchievementCondition]
 [a_checkAchievedConditions]
-[a_displayAchievedSituations]
+[a_displayAchievedEpisodes]
 
+[iscript]
+outputLog();
+[endscript]
+
+[if exp="f.isSituationPlay"]
+シアターに戻ります。[p]
+[else]
 タイトルに戻ります。[p]
+[endif]
 
-; タイトル画面に戻る前に、キャラの退場、メッセージ枠の削除、ボタンの削除を行う
+; シアターまたはタイトル画面に戻る前に、キャラの退場、メッセージ枠の削除、ボタンの削除を行う
 [j_clearFixButton]
-[m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
-[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+[m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
+[m_exitCharacter characterId="&f.displayedCharacter.right.characterId" time="1"]
 [layopt layer="message0" visible="false"]
 ; 勝利陣営キャラクターのレイヤーを消去する。タイトルロゴが表示しきるのを待つため少し長めのtimeを設定
 [freeimage layer="1" time="700" wait="false"]
+
+[jump storage="theater/main.ks" target="*returnFromSituationPlay" cond="f.isSituationPlay"]
 [jump storage="title.ks"]
 [s]

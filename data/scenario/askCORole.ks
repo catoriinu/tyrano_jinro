@@ -1,51 +1,70 @@
 ; 役職COサブルーチン
 
 *startAskCORole
+  ; 初期化
   [eval exp="f.askCOOnceMore = false"]
+  [eval exp="f.playerCORoleId = ''"]
 
-  ; 「（騙り）役職COしますか？」
+  ; （騙り）役職COをするか問うボタンを表示
+  まだ役職COしていません。役職COしますか？
   [j_setCORoleToButtonObjects]
   [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 
-  [if exp="f.selectedButtonId === 'FortuneTellerCO'"]
-    ; 「占い師COする」
-    [eval exp="f.playerCORoleId = ROLE_ID_FORTUNE_TELLER"]
-    ; 前日の分までの占い結果を、メッセージなしでCOしたことにする
-    [j_COFortuneTellingUntilTheLastDay fortuneTellerId="&f.playerCharacterId"]
-    [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'cancel'"]
+  ; ０）「役職COしない」を選んだ場合、f.playerCORoleIdは空文字のまま
+  ; １）「占い師COする」「騙り占い師COする」を選んだ場合、f.playerCORoleIdに占い師を入れる
+  [eval exp="f.playerCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId === 'FortuneTellerCO' || f.selectedButtonId === 'fakeFortuneTellerCO'"]
+  ; MEMO:役職が増えたときも、まずはここで暫定のf.playerCORoleIdを入れる。その後でボタンごとの処理を呼び出すこと。
 
-  [elsif exp="f.selectedButtonId === 'fakeFortuneTellerCO'"]
-    ; 「騙り占い師COする」
-    [eval exp="f.playerCORoleId = ROLE_ID_FORTUNE_TELLER"]
-    [call target="*askFakeFortuneTellingResultMultipleDays"]
-    [eval exp="f.resultCORoleId = ROLE_ID_FORTUNE_TELLER" cond="f.selectedButtonId !== 'cancel'"]
+  ; １－１）真占い師なら、前日の分までの占い結果をメッセージなしでCOしたことにする
+  [j_COFortuneTellingUntilTheLastDay fortuneTellerId="&f.playerCharacterId" cond="f.selectedButtonId === 'FortuneTellerCO'"]
 
-  [endif]
-  ; 「役職COしない」なら何もしない
+  ; １－２）騙り占い師なら、前日の分までの占い結果を騙っていく（※「一つ前に戻る」で戻ってくることがありうる）
+  [call target="*askFakeFortuneTellingResultMultipleDays" cond="f.selectedButtonId === 'fakeFortuneTellerCO'"]
 
-  ; 結果COの選択肢で「一つ前に戻る」で戻ってきた場合、役職COするかの選択肢をもう一度出す
+  ; 騙り結果COの選択肢で「一つ前に戻る」で戻ってきた場合、役職COするかの選択肢をもう一度出す
   [jump target="*startAskCORole" cond="f.askCOOnceMore === true"]
 
+  ; COした役職IDを格納する（「役職COしない」なら空文字）
+  [eval exp="f.resultCORoleId = f.playerCORoleId"]
+
+  ; 今回、役職COする場合
+  [if exp="f.resultCORoleId !== ''"]
+    ; キャラクターオブジェクトにCOした役職IDを格納する
+    [eval exp="f.characterObjects[f.playerCharacterId].CORoleId = f.resultCORoleId"]
+    ; 共通および各キャラの視点オブジェクトを更新する
+    [j_cloneRolePerspectiveForCO characterId="&f.characterObjects[f.playerCharacterId].characterId" CORoleId="&f.resultCORoleId"]
+    ; TODO 「その役職をCOできない役職」をゼロ更新する。今は占い師COしかないので村人で決め打ちしている
+    [eval exp="tf.tmpZeroRoleIds = [ROLE_ID_VILLAGER]"]
+    [j_updateCommonPerspective characterId="&f.characterObjects[f.playerCharacterId].characterId" zeroRoleIds="&tf.tmpZeroRoleIds"]
+  [endif]
 [return]
 
 
 
 *askFakeFortuneTellingResultMultipleDays
 
-  ; 騙り占いを行う最新の日の日付（＝前日）を入れる。
-  [eval exp="f.lastDay = f.day - 1"]
-  ; サブルーチン実行前に開始日が指定されていればそれを、されていなければ0（=初日）を入れる
-  [eval exp="f.fakeFortuneTelledDay = ('fakeFortuneTellingStartDay' in f) ? f.fakeFortuneTellingStartDay : 0"]
-  [eval exp="f.fakeFortuneTellingStartDay = f.fakeFortuneTelledDay"]
+  [iscript]
+    // 騙り占いを行う最新の日の日付（＝前日）を入れる。
+    f.lastDay = f.day - 1;
+    
+    // サブルーチン実行前に開始日が指定されていればそれを、されていなければ0（=初日）を入れる
+    f.fakeFortuneTelledDay = ('fakeFortuneTellingStartDay' in f) ? f.fakeFortuneTellingStartDay : 0;
+    f.fakeFortuneTellingStartDay = f.fakeFortuneTelledDay;
 
-  ; バックアップの上書き防止用フラグ
-  [eval exp="f.canceled = false"]
+    // バックアップの上書き防止用フラグ
+    f.canceled = false;
+
+    // サブルーチン内部で使うアクションオブジェクトを初期化
+    tf.tmpActionObject = {};
+  [endscript]
 
   *askFakeFortuneTellingResultMultipleDays_loopstart
 
-    [eval exp="f.fakeFortuneTelledDayMsg = f.fakeFortuneTelledDay + '日目の夜'"]
-    ; 昨夜の場合だけ、（昨夜）を追加してあげる。
-    [eval exp="f.fakeFortuneTelledDayMsg = f.fakeFortuneTelledDayMsg + '（昨夜）'" cond="f.fakeFortuneTelledDay == f.lastDay"]
+    [iscript]
+      // 昨夜の場合だけ、（昨夜）を追加してあげる。
+      const lastNight = (f.fakeFortuneTelledDay === f.lastDay) ? '（昨夜）' : '';
+      f.fakeFortuneTelledDayMsg = f.fakeFortuneTelledDay + '日目の夜' + lastNight;
+    [endscript]
     [m_fakeFortuneTelledDayMsg]
 
     ;「一つ前に戻る」を選んだときにロールバックできるよう、バックアップをとっておく。ただし「一つ前に戻る」で戻ってきた直後はバックアップしない。
@@ -58,21 +77,22 @@
     [call target="*start"]
 
     ; 「一つ前に戻る」
-    [jump target="*askFakeFortuneTellingResultMultipleDays_previousDay" cond="f.pcActionObject === null"]
+    [jump target="*askFakeFortuneTellingResultMultipleDays_previousDay" cond="Object.keys(tf.tmpActionObject).length === 0"]
 
     ; 騙り占い実行。占い結果をf.actionObjectに格納する
-    [j_fortuneTelling fortuneTellerId="&f.pcActionObject.characterId" day="&f.fakeFortuneTelledDay" characterId="&f.pcActionObject.targetId" result="&f.pcActionObject.result"]
-    [m_displayFakeFortuneTellingResult result="&f.pcActionObject.result"]
+    [j_fortuneTelling fortuneTellerId="&tf.tmpActionObject.characterId" day="&f.fakeFortuneTelledDay" characterId="&tf.tmpActionObject.targetId" result="&tf.tmpActionObject.result"]
 
     ; 前日まで占い終わったらループ終了
     [jump target="*askFakeFortuneTellingResultMultipleDays_loopend" cond="f.fakeFortuneTelledDay >= f.lastDay"]
 
     ; メッセージを表示しないでCOしたことにする（メッセージ表示が必要な、前日の分のCOは呼び元側で行う）
-    [j_COFortuneTelling fortuneTellerId="&f.playerCharacterId" day="&f.fakeFortuneTelledDay" noNeedMessage="true"]
+    [j_COFortuneTelling fortuneTellerId="&f.playerCharacterId" day="&f.fakeFortuneTelledDay" noNeedNotice="true"]
 
     ; 次の日の騙り占いを行う
-    [eval exp="f.fakeFortuneTelledDay++"]
-    [eval exp="f.canceled = false"]
+    [iscript]
+      f.fakeFortuneTelledDay++;
+      f.canceled = false;
+    [endscript]
     [jump target="*askFakeFortuneTellingResultMultipleDays_loopstart"]
 
   *askFakeFortuneTellingResultMultipleDays_loopend
@@ -136,7 +156,7 @@
 [s]
 
 *cancel
-[eval exp="f.pcActionObject = null"]
+  [eval exp="tf.tmpActionObject = {}"]
 [jump target="*end"]
 
 *input
@@ -147,7 +167,7 @@
   // TODO 今は占いしか騙れないのでACTION_FORTUNE_TELLING決め打ち
   const actionId = ACTION_FORTUNE_TELLING;
 
-  f.pcActionObject = new Action(f.playerCharacterId, actionId, f.selectedCharacterId, declarationResult);
+  tf.tmpActionObject = new Action(f.playerCharacterId, actionId, f.selectedCharacterId, declarationResult);
 [endscript]
 
 *end

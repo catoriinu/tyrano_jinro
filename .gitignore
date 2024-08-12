@@ -16,6 +16,15 @@ data/scenario/config.ks
 data/scenario/make.ks
 data/scenario/replay.ks
 data/scenario/tyrano.ks
+
+# ボイボ人狼のシナリオファイルはテンプレなどの一部のみ公開する
+data/scenario/theater/p??/*
+!data/scenario/theater/p01/e0x_c01_template.ks
+!data/scenario/theater/p01/e01_c01.ks
+!data/scenario/theater/p01/e01_c02.ks
+!data/scenario/theater/p01/e02_c01.ks
+!data/scenario/theater/p01/e02_c02.ks
+
 data/sound/
 data/system/
 data/video/

@@ -601,8 +601,13 @@ function Action (characterId = '', actionId = '', targetId = '', result = null, 
  */
 function updateReliabirityForAction(characterObjects, actionObject) {
 
-  console.log('execute testUpdateReliabirity actionObject:');
+  console.log('updateReliabirityForAction actionObject:');
   console.log(actionObject);
+
+  // アクションの実行者の影響力倍率を計算する（以降の処理で共通の値なので最初に行う）
+  // NOTE:実行者のいないアクションの場合は1（今のところ実行者のいないアクションはここに来ない）
+  const influenceMultiplier = calcInfluenceMultiplier(characterObjects[actionObject.characterId], actionObject);
+
   for (let cId of Object.keys(characterObjects)) {
 
     // 死亡済みキャラクターはスキップ（プレイヤーはスキップしない。リアクションのために信頼度更新が必要なので）
@@ -611,19 +616,19 @@ function updateReliabirityForAction(characterObjects, actionObject) {
     console.log('character:' + characterObjects[cId].name);
 
     if (actionObject.actionId == ACTION_SUSPECT) {
-      updateReliabirityForSucpect(characterObjects, cId, actionObject);
+      updateReliabirityForSucpect(characterObjects[cId], actionObject, influenceMultiplier);
     } else if (actionObject.actionId == ACTION_TRUST) {
-      updateReliabirityForTrust(characterObjects, cId, actionObject);
+      updateReliabirityForTrust(characterObjects[cId], actionObject, influenceMultiplier);
     } else if (actionObject.actionId == ACTION_ASK) {
       // TODO
     } else if (actionObject.actionId == ACTION_VOTE) {
-      updateReliabirityForVote(characterObjects, cId, actionObject);
+      updateReliabirityForVote(characterObjects[cId], actionObject, influenceMultiplier);
     } else if (actionObject.actionId == ACTION_FORTUNE_TELLING) {
       
       if (actionObject.result === true) {
-        updateReliabirityForFortuneTellingToWerewolves(characterObjects, cId, actionObject);
+        updateReliabirityForFortuneTellingToWerewolves(characterObjects[cId], actionObject, influenceMultiplier);
       } else if (actionObject.result === false) {
-        updateReliabirityForFortuneTellingToVillagers(characterObjects, cId, actionObject);
+        updateReliabirityForFortuneTellingToVillagers(characterObjects[cId], actionObject, influenceMultiplier);
       } else {
         // バグって占えておらず、resultにnullが入っていることがあった場合のために厳密比較にしておく
         alert('actionObject.resultに値が入っていません');
@@ -634,120 +639,67 @@ function updateReliabirityForAction(characterObjects, actionObject) {
     // そのためには投票もアクションオブジェクトを流用する必要がありそう。
     // →占いは集約完了、破綻は集約しない（相手がいるアクションについての信頼度集約のみにする方針。破綻は相手がいないため）
   }
+  // ログ出力
+  loggingObjects(characterObjects, actionObject);
 }
 
 
 /**
  * 「占う」で「人狼陣営（●）」とCOされた場合の信頼度更新を行う
- * @param {Array} characterObjects キャラクターオブジェクト配列（メソッド内で更新する）
- * @param {String} cId 信頼度更新を行うキャラクターID
- * @param {Object} actionObject 実行されたアクションオブジェクト
+ * @param {Object} character 信頼度更新を行うキャラクターオブジェクト
+ * @param {Object} action 実行されたアクションオブジェクト
+ * @param {Number} influenceMultiplier アクションの実行者の影響力倍率
  */
-function updateReliabirityForFortuneTellingToWerewolves(characterObjects, cId, actionObject) {
+function updateReliabirityForFortuneTellingToWerewolves(character, action, influenceMultiplier) {
 
-  // キャラクター自身がそのアクションで受ける影響の情報
-  const impressiveReason = characterObjects[cId].personality.impressiveReasonList[actionObject.actionId];
+  const utility = new calcReliabilityUtility(
+    character,
+    action,
+    influenceMultiplier
+  );
 
-  if (cId == actionObject.characterId) {
-    console.log('占ったキャラである場合' + actionObject.targetId + 'への信頼度を下げる');
+  if (character.characterId === action.characterId) {
     // 占ったキャラである場合
     // 占われたキャラへの信頼度を下げる
-    characterObjects[cId].reliability[actionObject.targetId] = calcUpdatedReliability(
-      characterObjects[cId].reliability[actionObject.targetId],
-      impressiveReason,
-      false,
-      1
-    );
+    utility.updateReliability(-1, action.targetId);
+    // TODO 占った瞬間に下げてないか？COしたときじゃなくないか？
 
-  } else if (cId == actionObject.targetId) {
-    console.log('占われたキャラである場合' + actionObject.characterId + 'への信頼度を下げる');
+  } else if (character.characterId === action.targetId) {
     // 占われたキャラである場合
     // 占ったキャラへの信頼度を下げる
-    characterObjects[cId].reliability[actionObject.characterId] = calcUpdatedReliability(
-      characterObjects[cId].reliability[actionObject.characterId],
-      impressiveReason,
-      false,
-      1.2
-    );
+    utility.updateReliability(-1, action.characterId);
 
   } else {
-    console.log('第三者である場合');
     // 第三者である場合
     // 占ったキャラと占われたキャラへの仲間度と感情を取得
-    const sameFactionPossivility = calcSameFactionPossivility(
-      characterObjects[cId],
-      characterObjects[cId].perspective,
-      [actionObject.characterId, actionObject.targetId]
-    );
-    const feelingForCharacter = getFeeling(characterObjects[cId], sameFactionPossivility[actionObject.characterId]);
-    const feelingForTarget = getFeeling(characterObjects[cId], sameFactionPossivility[actionObject.targetId]);
+    const feelingForCharacter = getFeeling(character, utility.sameFactionPossivility[action.characterId]);
+    const feelingForTarget = getFeeling(character, utility.sameFactionPossivility[action.targetId]);
 
-    if (feelingForCharacter == FEELING_HATE && feelingForTarget == FEELING_HATE) {
-      console.log(actionObject.characterId + 'への感情がhateである、かつ' + actionObject.targetId + 'への感情がhateなら、何もしない');
-      // 占ったキャラへの感情がhateである、かつ占われたキャラへの感情がhateなら
-      // 何もしない
-      // 人狼陣営同士の黒打ち、茶番だと考えるため
-
-    } else if (feelingForCharacter == FEELING_LOVE && feelingForTarget != FEELING_LOVE) {
-      console.log(actionObject.characterId + 'への感情がloveである、かつ' + actionObject.targetId + 'への感情がloveではないなら、' + actionObject.targetId + 'への信頼度を下げる');
+    // 感情による特殊処理
+    if (feelingForCharacter === FEELING_LOVE && feelingForTarget !== FEELING_LOVE) {
       // 占ったキャラへの感情がloveである、かつ占われたキャラへの感情がloveではないなら
       // 占われたキャラへの信頼度を下げる
-      characterObjects[cId].reliability[actionObject.targetId] = calcUpdatedReliability(
-        characterObjects[cId].reliability[actionObject.targetId],
-        impressiveReason,
-        false,
-        0.7
-      );
+      utility.updateReliability(-0.2, action.targetId);
 
-    } else if (feelingForCharacter != FEELING_LOVE && feelingForTarget == FEELING_LOVE) {
-      console.log(actionObject.characterId + 'への感情がloveではない、かつ' + actionObject.targetId + 'への感情がloveであるなら、' + actionObject.characterId + 'への信頼度を下げる');
+    } else if (feelingForCharacter !== FEELING_LOVE && feelingForTarget === FEELING_LOVE) {
       // 占ったキャラへの感情がloveではない、かつ占われたキャラへの感情がloveであるなら
       // 占ったキャラへの信頼度を下げる
-      characterObjects[cId].reliability[actionObject.characterId] = calcUpdatedReliability(
-        characterObjects[cId].reliability[actionObject.characterId],
-        impressiveReason,
-        false,
-        0.7
-      );
+      utility.updateReliability(-0.2, action.characterId);
+    }
+
+    if (utility.sameFactionPossivility[action.characterId] > utility.sameFactionPossivility[action.targetId]) {
+      // 占ったキャラの仲間度の方が高いなら
+      // 占ったキャラへの信頼度を上げる
+      utility.updateReliability(0.2, action.characterId);
+      // 占われたキャラへの信頼度を下げる
+      utility.updateReliability(-0.4, action.targetId);
 
     } else {
-
-      if (sameFactionPossivility[actionObject.characterId] > sameFactionPossivility[actionObject.targetId]) {
-        console.log(actionObject.characterId + 'の仲間度の方が高いなら、' + actionObject.characterId + 'への信頼度を上げ、' + actionObject.targetId + 'への信頼度を下げる');
-        // 占ったキャラの仲間度の方が高いなら
-        // 占ったキャラへの信頼度を上げる
-        characterObjects[cId].reliability[actionObject.characterId] = calcUpdatedReliability(
-          characterObjects[cId].reliability[actionObject.characterId],
-          impressiveReason,
-          true,
-          0.4
-        );
-        // 占われたキャラへの信頼度を下げる
-        characterObjects[cId].reliability[actionObject.targetId] = calcUpdatedReliability(
-          characterObjects[cId].reliability[actionObject.targetId],
-          impressiveReason,
-          false,
-          0.4
-        );
-
-      } else {
-        console.log(actionObject.targetId + 'の仲間度の方が高いなら、' + actionObject.characterId + 'への信頼度を下げ、' + actionObject.targetId + 'への信頼度を上げる');
-        // 占われたキャラの仲間度の方が高いなら
-        // 占ったキャラへの信頼度を下げる
-        characterObjects[cId].reliability[actionObject.characterId] = calcUpdatedReliability(
-          characterObjects[cId].reliability[actionObject.characterId],
-          impressiveReason,
-          false,
-          0.4
-        );
-        // 占われたキャラへの信頼度を上げる
-        characterObjects[cId].reliability[actionObject.targetId] = calcUpdatedReliability(
-          characterObjects[cId].reliability[actionObject.targetId],
-          impressiveReason,
-          true,
-          0.4
-        );
-      }
+      // 占われたキャラの仲間度の方が高いなら
+      // 占ったキャラへの信頼度を下げる
+      utility.updateReliability(-0.4, action.characterId);
+      // 占われたキャラへの信頼度を上げる
+      utility.updateReliability(0.2, action.targetId);
     }
   }
 }
@@ -755,215 +707,113 @@ function updateReliabirityForFortuneTellingToWerewolves(characterObjects, cId, a
 
 /**
  * 「占う」で「村人陣営（○）」とCOされた場合の信頼度更新を行う
- * @param {Array} characterObjects キャラクターオブジェクト配列（メソッド内で更新する）
- * @param {String} cId 信頼度更新を行うキャラクターID
- * @param {Object} actionObject 実行されたアクションオブジェクト
+ * @param {Object} character 信頼度更新を行うキャラクターオブジェクト
+ * @param {Object} action 実行されたアクションオブジェクト
+ * @param {Number} influenceMultiplier アクションの実行者の影響力倍率
  */
-function updateReliabirityForFortuneTellingToVillagers(characterObjects, cId, actionObject) {
+function updateReliabirityForFortuneTellingToVillagers(character, action, influenceMultiplier) {
 
-  // キャラクター自身がそのアクションで受ける影響の情報
-  const impressiveReason = characterObjects[cId].personality.impressiveReasonList[actionObject.actionId];
+  const utility = new calcReliabilityUtility(
+    character,
+    action,
+    influenceMultiplier
+  );
 
-  if (cId == actionObject.characterId) {
-    console.log('占ったキャラである場合' + actionObject.targetId + 'への信頼度を上げる');
+  if (character.characterId === action.characterId) {
     // 占ったキャラである場合
     // 占われたキャラへの信頼度を上げる
-    characterObjects[cId].reliability[actionObject.targetId] = calcUpdatedReliability(
-      characterObjects[cId].reliability[actionObject.targetId],
-      impressiveReason,
-      true,
-      0.8
-    );
+    utility.updateReliability(0.3, action.targetId);
+    // TODO 占った瞬間に上げてないか？COしたときじゃなくないか？
 
-  } else if (cId == actionObject.targetId) {
-    console.log('占われたキャラである場合' + actionObject.characterId + 'への信頼度を上げる');
+  } else if (character.characterId === action.targetId) {
     // 占われたキャラである場合
     // 占ったキャラへの信頼度を上げる
-    characterObjects[cId].reliability[actionObject.characterId] = calcUpdatedReliability(
-      characterObjects[cId].reliability[actionObject.characterId],
-      impressiveReason,
-      true,
-      1
-    );
+    utility.updateReliability(0.3, action.characterId);
 
   } else {
-    console.log('第三者である場合');
     // 第三者である場合
     // 占ったキャラと占われたキャラへの仲間度と感情を取得
-    const sameFactionPossivility = calcSameFactionPossivility(
-      characterObjects[cId],
-      characterObjects[cId].perspective,
-      [actionObject.characterId, actionObject.targetId]
-    );
-    const feelingForCharacter = getFeeling(characterObjects[cId], sameFactionPossivility[actionObject.characterId]);
-    const feelingForTarget = getFeeling(characterObjects[cId], sameFactionPossivility[actionObject.targetId]);
+    const feelingForCharacter = getFeeling(character, utility.sameFactionPossivility[action.characterId]);
+    const feelingForTarget = getFeeling(character, utility.sameFactionPossivility[action.targetId]);
 
-    if (feelingForCharacter == FEELING_HATE && feelingForTarget == FEELING_HATE) {
-      console.log(actionObject.characterId + 'への感情がhateである、かつ' + actionObject.targetId + 'への感情がhateであるなら、何もしない');
-      // 占ったキャラへの感情がhateである、かつ占われたキャラへの感情がhateであるなら
-      // 何もしない
-      // 人狼陣営同士の白打ち、茶番だと考えるため
+    let bonusValueForCharacter = 0;
+    let bonusValueForTarget = 0;
 
-    } else if (feelingForCharacter == FEELING_LOVE && feelingForTarget != FEELING_LOVE) {
-      console.log(actionObject.characterId + 'への感情がloveである、かつ' + actionObject.targetId + 'への感情がloveではないなら、' + actionObject.targetId + 'への信頼度を上げる');
+    // 感情による特殊処理
+    if (feelingForCharacter === FEELING_LOVE && feelingForTarget !== FEELING_LOVE) {
       // 占ったキャラへの感情がloveである、かつ占われたキャラへの感情がloveではないなら
       // 占われたキャラへの信頼度を上げる
-      characterObjects[cId].reliability[actionObject.targetId] = calcUpdatedReliability(
-        characterObjects[cId].reliability[actionObject.targetId],
-        impressiveReason,
-        true,
-        0.7
-      );
+      bonusValueForTarget += 0.1;
 
-    } else if (feelingForCharacter != FEELING_LOVE && feelingForTarget == FEELING_LOVE) {
-      console.log(actionObject.characterId + 'への感情がloveではない、かつ' + actionObject.targetId + 'への感情がloveであるなら、' + actionObject.characterId + 'への信頼度を上げる');
+    } else if (feelingForCharacter !== FEELING_LOVE && feelingForTarget === FEELING_LOVE) {
       // 占ったキャラへの感情がloveではない、かつ占われたキャラへの感情がloveであるなら
       // 占ったキャラへの信頼度を上げる
-      characterObjects[cId].reliability[actionObject.characterId] = calcUpdatedReliability(
-        characterObjects[cId].reliability[actionObject.characterId],
-        impressiveReason,
-        true,
-        0.7
-      );
-
-    } else {
-      console.log(actionObject.characterId + 'への信頼度を上げ、' + actionObject.targetId + 'への信頼度を上げる');
-      // 上記以外
-      // 占ったキャラへの信頼度を上げる
-      characterObjects[cId].reliability[actionObject.characterId] = calcUpdatedReliability(
-        characterObjects[cId].reliability[actionObject.characterId],
-        impressiveReason,
-        true,
-        0.4
-      );
-      // 占われたキャラへの信頼度を上げる
-      characterObjects[cId].reliability[actionObject.targetId] = calcUpdatedReliability(
-        characterObjects[cId].reliability[actionObject.targetId],
-        impressiveReason,
-        true,
-        0.4
-      );
+      bonusValueForCharacter += 0.1;
     }
+
+    // 占ったキャラへの信頼度を上げる
+    utility.updateReliability((0.1 + bonusValueForCharacter), action.characterId);
+    // 占われたキャラへの信頼度を上げる
+    utility.updateReliability((0.2 + bonusValueForTarget), action.targetId);
   }
 }
 
 
 /**
  * 「疑う」による信頼度更新を行う
- * @param {Array} characterObjects キャラクターオブジェクト配列（メソッド内で更新する）
- * @param {String} cId 信頼度更新を行うキャラクターID
- * @param {Object} actionObject 実行されたアクションオブジェクト
+ * @param {Object} character 信頼度更新を行うキャラクターオブジェクト
+ * @param {Object} action 実行されたアクションオブジェクト
+ * @param {Number} influenceMultiplier アクションの実行者の影響力倍率
  */
-function updateReliabirityForSucpect(characterObjects, cId, actionObject) {
+function updateReliabirityForSucpect(character, action, influenceMultiplier) {
+  const utility = new calcReliabilityUtility(
+    character,
+    action,
+    influenceMultiplier
+  );
 
-  // キャラクター自身がそのアクションで受ける影響の情報
-  const impressiveReason = characterObjects[cId].personality.impressiveReasonList[actionObject.actionId];
+  if (character.characterId === action.characterId) {
+    // プレイヤーの場合だけ下げる。
+    // NPCは、既に仲間度が低いから疑ったので下げる必要はないが、プレイヤーはリアクション判定時に仲間度を参照するため下げておく必要がある。
+    if (character.isPlayer) {
+      utility.updateReliability(-0.2, action.targetId);
+    }
 
-  if (cId == actionObject.characterId) {
-    console.log('疑ったキャラである場合' + actionObject.targetId + 'への信頼度を下げる');
-    // 疑ったキャラである場合
-    // 疑われたキャラへの信頼度を下げる
-    characterObjects[cId].reliability[actionObject.targetId] = calcUpdatedReliability(
-      characterObjects[cId].reliability[actionObject.targetId],
-      impressiveReason,
-      false,
-      0.3
-    );
-
-  } else if (cId == actionObject.targetId) {
-    console.log('疑われたキャラである場合' + actionObject.characterId + 'への信頼度を下げる');
+  } else if (character.characterId === action.targetId) {
     // 疑われたキャラである場合
     // 疑ったキャラへの信頼度を下げる
-    characterObjects[cId].reliability[actionObject.characterId] = calcUpdatedReliability(
-      characterObjects[cId].reliability[actionObject.characterId],
-      impressiveReason,
-      false,
-      1
-    );
+    utility.updateReliability(-0.3, action.characterId);
 
   } else {
     console.log('第三者である場合');
     // 第三者である場合
     // 疑ったキャラと疑われたキャラへの仲間度と感情を取得
-    const sameFactionPossivility = calcSameFactionPossivility(
-      characterObjects[cId],
-      characterObjects[cId].perspective,
-      [actionObject.characterId, actionObject.targetId]
-    );
-    const feelingForCharacter = getFeeling(characterObjects[cId], sameFactionPossivility[actionObject.characterId]);
-    const feelingForTarget = getFeeling(characterObjects[cId], sameFactionPossivility[actionObject.targetId]);
+    const feelingForCharacter = getFeeling(character, utility.sameFactionPossivility[action.characterId]);
+    const feelingForTarget = getFeeling(character, utility.sameFactionPossivility[action.targetId]);
 
-    if (feelingForCharacter == FEELING_HATE && feelingForTarget != FEELING_HATE) {
-      console.log(actionObject.characterId + 'への感情がhateである、かつ' + actionObject.targetId + 'への感情がhateではないなら、' + actionObject.targetId + 'への信頼度を上げる');
-      // 疑ったキャラへの感情がhateである、かつ疑われたキャラへの感情がhateではないなら
-      // 疑われたキャラへの信頼度を上げる
-      characterObjects[cId].reliability[actionObject.targetId] = calcUpdatedReliability(
-        characterObjects[cId].reliability[actionObject.targetId],
-        impressiveReason,
-        true,
-        0.5
-      );
+    // 感情による特殊処理
+    if (feelingForTarget === FEELING_HATE && feelingForCharacter !== FEELING_HATE) {
+      // 対象者がHATEであり、実行者がHATEでないなら、実行者への信頼度を上げる
+      utility.updateReliability(0.1, action.characterId);
 
-    } else if (feelingForCharacter == FEELING_LOVE && feelingForTarget != FEELING_LOVE) {
-      console.log(actionObject.characterId + 'への感情がloveである、かつ' + actionObject.targetId + 'への感情がloveではないなら、' + actionObject.targetId + 'への信頼度を下げる');
-      // 疑ったキャラへの感情がloveである、かつ疑われたキャラへの感情がloveではないなら
+    } else if (feelingForTarget === FEELING_LOVE && feelingForCharacter !== FEELING_LOVE) {
+      // 対象者がLOVEであり、実行者がLOVEでないなら、実行者への信頼度を下げる
+      utility.updateReliability(-0.1, action.characterId);
+    }
+
+    if (utility.sameFactionPossivility[action.characterId] > utility.sameFactionPossivility[action.targetId]) {
+      // 疑ったキャラの仲間度の方が高いなら
+      // 疑ったキャラへの信頼度を上げる
+      utility.updateReliability(0.1, action.characterId);
       // 疑われたキャラへの信頼度を下げる
-      characterObjects[cId].reliability[actionObject.targetId] = calcUpdatedReliability(
-        characterObjects[cId].reliability[actionObject.targetId],
-        impressiveReason,
-        false,
-        0.5
-      );
-
-    } else if (feelingForCharacter != FEELING_LOVE && feelingForTarget == FEELING_LOVE) {
-      console.log(actionObject.characterId + 'への感情がloveではない、かつ' + actionObject.targetId + 'への感情がloveであるなら、' + actionObject.characterId + 'への信頼度を下げる');
-      // 疑ったキャラへの感情がloveではない、かつ疑われたキャラへの感情がloveであるなら
-      // 疑ったキャラへの信頼度を下げる
-      characterObjects[cId].reliability[actionObject.characterId] = calcUpdatedReliability(
-        characterObjects[cId].reliability[actionObject.characterId],
-        impressiveReason,
-        false,
-        0.5
-      );
+      utility.updateReliability(-0.2, action.targetId);
 
     } else {
-
-      if (sameFactionPossivility[actionObject.characterId] > sameFactionPossivility[actionObject.targetId]) {
-        console.log(actionObject.characterId + 'の仲間度の方が高いなら、' + actionObject.characterId + 'への信頼度を上げ、' + actionObject.targetId + 'への信頼度を下げる');
-        // 疑ったキャラの仲間度の方が高いなら
-        // 疑ったキャラへの信頼度を上げる
-        characterObjects[cId].reliability[actionObject.characterId] = calcUpdatedReliability(
-          characterObjects[cId].reliability[actionObject.characterId],
-          impressiveReason,
-          true,
-          0.3
-        );
-        // 疑われたキャラへの信頼度を下げる
-        characterObjects[cId].reliability[actionObject.targetId] = calcUpdatedReliability(
-          characterObjects[cId].reliability[actionObject.targetId],
-          impressiveReason,
-          false,
-          0.3
-        );
-
-      } else {
-        console.log(actionObject.targetId + 'の仲間度の方が高いなら、' + actionObject.characterId + 'への信頼度を下げ、' + actionObject.targetId + 'への信頼度を上げる');
-        // 疑われたキャラの仲間度の方が高いなら
-        // 疑ったキャラへの信頼度を下げる
-        characterObjects[cId].reliability[actionObject.characterId] = calcUpdatedReliability(
-          characterObjects[cId].reliability[actionObject.characterId],
-          impressiveReason,
-          false,
-          0.3
-        );
-        // 疑われたキャラへの信頼度を上げる
-        characterObjects[cId].reliability[actionObject.targetId] = calcUpdatedReliability(
-          characterObjects[cId].reliability[actionObject.targetId],
-          impressiveReason,
-          true,
-          0.3
-        );
-      }
+      // 疑われたキャラの仲間度の方が高いなら
+      // 疑ったキャラへの信頼度を下げる
+      utility.updateReliability(-0.2, action.characterId);
+      // 疑われたキャラへの信頼度を上げる
+      utility.updateReliability(0.1, action.targetId);
     }
   }
 }
@@ -971,200 +821,177 @@ function updateReliabirityForSucpect(characterObjects, cId, actionObject) {
 
 /**
  * 「信じる」による信頼度更新を行う
- * @param {Array} characterObjects キャラクターオブジェクト配列（メソッド内で更新する）
- * @param {String} cId 信頼度更新を行うキャラクターID
- * @param {Object} actionObject 実行されたアクションオブジェクト
+ * @param {Object} character 信頼度更新を行うキャラクターオブジェクト
+ * @param {Object} action 実行されたアクションオブジェクト
+ * @param {Number} influenceMultiplier アクションの実行者の影響力倍率
  */
-function updateReliabirityForTrust(characterObjects, cId, actionObject) {
+function updateReliabirityForTrust(character, action, influenceMultiplier) {
 
-  // キャラクター自身がそのアクションで受ける影響の情報
-  const impressiveReason = characterObjects[cId].personality.impressiveReasonList[actionObject.actionId];
+  const utility = new calcReliabilityUtility(
+    character,
+    action,
+    influenceMultiplier
+  );
 
-  if (cId == actionObject.characterId) {
-    console.log('信じたキャラである場合' + actionObject.targetId + 'への信頼度を上げる');
-    // 信じたキャラである場合
-    // 信じられたキャラへの信頼度を上げる
-    characterObjects[cId].reliability[actionObject.targetId] = calcUpdatedReliability(
-      characterObjects[cId].reliability[actionObject.targetId],
-      impressiveReason,
-      true,
-      0.3
-    );
+  if (character.characterId === action.characterId) {
+    // プレイヤーの場合だけ上げる。
+    // NPCは、既に仲間度が高いから信じたので上げる必要はないが、プレイヤーはリアクション判定時に仲間度を参照するため上げておく必要がある。
+    if (character.isPlayer) {
+      utility.updateReliability(0.2, action.targetId);
+    }
 
-  } else if (cId == actionObject.targetId) {
-    console.log('信じられたキャラである場合' + actionObject.characterId + 'への信頼度を上げる');
+  } else if (character.characterId === action.targetId) {
     // 信じられたキャラである場合
     // 信じたキャラへの信頼度を上げる
-    characterObjects[cId].reliability[actionObject.characterId] = calcUpdatedReliability(
-      characterObjects[cId].reliability[actionObject.characterId],
-      impressiveReason,
-      true,
-      1
-    );
+    utility.updateReliability(0.3, action.characterId);
 
   } else {
     console.log('第三者である場合');
     // 第三者である場合
     // 信じたキャラと信じられたキャラへの仲間度と感情を取得
-    const sameFactionPossivility = calcSameFactionPossivility(
-      characterObjects[cId],
-      characterObjects[cId].perspective,
-      [actionObject.characterId, actionObject.targetId]
-    );
-    const feelingForCharacter = getFeeling(characterObjects[cId], sameFactionPossivility[actionObject.characterId]);
-    const feelingForTarget = getFeeling(characterObjects[cId], sameFactionPossivility[actionObject.targetId]);
+    const feelingForCharacter = getFeeling(character, utility.sameFactionPossivility[action.characterId]);
+    const feelingForTarget = getFeeling(character, utility.sameFactionPossivility[action.targetId]);
 
-    if (feelingForCharacter == FEELING_HATE && feelingForTarget == FEELING_HATE) {
-      console.log(actionObject.characterId + 'への感情がhateである、かつ' + actionObject.targetId + 'への感情がhateであるなら、何もしない');
-      // 信じたキャラへの感情がhateである、かつ信じられたキャラへの感情がhateであるなら
-      // 何もしない
+    let bonusValueForCharacter = 0;
+    let bonusValueForTarget = 0;
 
-    } else if (feelingForCharacter == FEELING_LOVE && feelingForTarget != FEELING_LOVE) {
-      console.log(actionObject.characterId + 'への感情がloveである、かつ' + actionObject.targetId + 'への感情がloveではないなら、' + actionObject.targetId + 'への信頼度を上げる');
+    // 感情による特殊処理
+    if (feelingForCharacter === FEELING_LOVE && feelingForTarget !== FEELING_LOVE) {
       // 信じたキャラへの感情がloveである、かつ信じられたキャラへの感情がloveではないなら
       // 信じられたキャラへの信頼度を上げる
-      characterObjects[cId].reliability[actionObject.targetId] = calcUpdatedReliability(
-        characterObjects[cId].reliability[actionObject.targetId],
-        impressiveReason,
-        true,
-        0.5
-      );
+      bonusValueForTarget += 0.1;
 
-    } else if (feelingForCharacter != FEELING_LOVE && feelingForTarget == FEELING_LOVE) {
-      console.log(actionObject.characterId + 'への感情がloveではない、かつ' + actionObject.targetId + 'への感情がloveであるなら、' + actionObject.characterId + 'への信頼度を上げる');
+    } else if (feelingForCharacter !== FEELING_LOVE && feelingForTarget === FEELING_LOVE) {
       // 信じたキャラへの感情がloveではない、かつ信じられたキャラへの感情がloveであるなら
-      // 信じたキャラへの信頼度をあげる
-      characterObjects[cId].reliability[actionObject.characterId] = calcUpdatedReliability(
-        characterObjects[cId].reliability[actionObject.characterId],
-        impressiveReason,
-        true,
-        0.5
-      );
-
-    } else {
-      console.log(actionObject.characterId + 'への信頼度を上げ、' + actionObject.targetId + 'への信頼度を上げる');
-      // 上記以外
       // 信じたキャラへの信頼度を上げる
-      characterObjects[cId].reliability[actionObject.characterId] = calcUpdatedReliability(
-        characterObjects[cId].reliability[actionObject.characterId],
-        impressiveReason,
-        true,
-        0.3
-      );
-      // 信じられたキャラへの信頼度を上げる
-      characterObjects[cId].reliability[actionObject.targetId] = calcUpdatedReliability(
-        characterObjects[cId].reliability[actionObject.targetId],
-        impressiveReason,
-        true,
-        0.3
-      );
+      bonusValueForCharacter += 0.1;
     }
+
+    // 信じたキャラへの信頼度を上げる
+    utility.updateReliability((0.1 + bonusValueForCharacter), action.characterId);
+    // 信じられたキャラへの信頼度を上げる
+    utility.updateReliability((0.2 + bonusValueForTarget), action.targetId);
   }
 }
 
 
 /**
  * 「投票」による信頼度更新を行う
- * @param {Array} characterObjects キャラクターオブジェクト配列（メソッド内で更新する）
- * @param {String} cId 信頼度更新を行うキャラクターID
- * @param {Object} actionObject 実行されたアクションオブジェクト
+ * @param {Object} character 信頼度更新を行うキャラクターオブジェクト
+ * @param {Object} action 実行されたアクションオブジェクト
+ * @param {Number} influenceMultiplier アクションの実行者の影響力倍率
  */
-function updateReliabirityForVote(characterObjects, cId, actionObject) {
+function updateReliabirityForVote(character, action, influenceMultiplier) {
 
-  // キャラクター自身がそのアクションで受ける影響の情報
-  const impressiveReason = characterObjects[cId].personality.impressiveReasonList[actionObject.actionId];
+  const utility = new calcReliabilityUtility(
+    character,
+    action,
+    influenceMultiplier
+  );
 
-  if (cId == actionObject.characterId) {
-    // 投票したキャラである場合、何もしない
+  if (character.characterId === action.characterId) {
+    // プレイヤーの場合だけ下げる。
     // 信頼度や仲間度が低いから投票したのであって、それ以上下げる必要はないため
-    console.log('投票したキャラである場合、何もしない');
-
-  } else if (cId == actionObject.targetId) {
-    console.log('投票されたキャラである場合' + actionObject.characterId + 'への信頼度を下げる');
-    // 投票されたキャラである場合
-    // 投票したキャラへの信頼度を下げる
-    characterObjects[cId].reliability[actionObject.characterId] = calcUpdatedReliability(
-      characterObjects[cId].reliability[actionObject.characterId],
-      impressiveReason,
-      false,
-      1
-    );
-
-  } else {
-    console.log('第三者である場合');
-    // 第三者である場合
-    // 投票したキャラと投票されたキャラへの仲間度と感情を取得
-    const sameFactionPossivility = calcSameFactionPossivility(
-      characterObjects[cId],
-      characterObjects[cId].perspective,
-      [actionObject.characterId, actionObject.targetId]
-    );
-    //const feelingForCharacter = getFeeling(characterObjects[cId], sameFactionPossivility[actionObject.characterId]);
-    //const feelingForTarget = getFeeling(characterObjects[cId], sameFactionPossivility[actionObject.targetId]);
-
-    // 投票先のキャラクターID（＝その日のvoteHistoryの末尾のID。最新の再投票先は末尾に追加されているため）を取得
-    let voteTargetId = characterObjects[cId].voteHistory[TYRANO.kag.stat.f.day].slice(-1)[0];
-
-    if (voteTargetId == actionObject.targetId) {
-      console.log(actionObject.characterId + 'が自分と同じ' + actionObject.targetId + 'に投票したなら、' + actionObject.characterId + 'への信頼度を上げる');
-      // 投票したキャラが自分と同じキャラに投票したなら、
-      // 投票したキャラへの信頼度を上げる
-      characterObjects[cId].reliability[actionObject.targetId] = calcUpdatedReliability(
-        characterObjects[cId].reliability[actionObject.targetId],
-        impressiveReason,
-        true,
-        0.5
-      );
+    if (character.isPlayer) {
+      utility.updateReliability(-0.1, action.targetId);
     }
 
-    if (sameFactionPossivility[actionObject.characterId] > sameFactionPossivility[actionObject.targetId]) {
-      console.log(actionObject.characterId + 'の仲間度の方が高いなら、' + actionObject.targetId + 'への信頼度を下げる');
+  } else if (character.characterId === action.targetId) {
+    // 投票されたキャラである場合
+    // 投票したキャラへの信頼度を下げる
+    utility.updateReliability(-0.15, action.characterId);
+
+  } else {
+    // 第三者である場合
+    // 投票したキャラと投票されたキャラへの仲間度と感情を取得
+
+    // 投票先のキャラクターID（＝その日のvoteHistoryの末尾のID。最新の再投票先は末尾に追加されているため）を取得
+    let voteTargetId = character.voteHistory[TYRANO.kag.stat.f.day].slice(-1)[0];
+
+    if (voteTargetId === action.targetId) {
+      // 投票したキャラが自分と同じキャラに投票したなら、
+      // 投票したキャラへの信頼度を上げる
+      utility.updateReliability(0.1, action.characterId);
+    }
+
+    if (utility.sameFactionPossivility[action.characterId] > utility.sameFactionPossivility[action.targetId]) {
       // 投票したキャラの仲間度の方が高いなら
+      // 投票したキャラへの信頼度を上げ、
       // 投票されたキャラへの信頼度を下げる
-      characterObjects[cId].reliability[actionObject.targetId] = calcUpdatedReliability(
-        characterObjects[cId].reliability[actionObject.targetId],
-        impressiveReason,
-        false,
-        0.3
-      );
+      utility.updateReliability(0.05, action.characterId);
+      utility.updateReliability(-0.1, action.targetId);
+
+    } else {
+      // 投票されたキャラの仲間度の方が高いなら
+      // 投票されたキャラへの信頼度を上げ、
+      // 投票したキャラへの信頼度を下げる
+      utility.updateReliability(0.05, action.targetId);
+      utility.updateReliability(-0.1, action.characterId);
     }
   }
 }
 
 
-/**
- * 更新後の信頼度を算出する
- * @param {Number} reliability 
- * @param {Object} impressiveReason 信頼度に影響を与える理由オブジェクト
- * @param {Boolean} isIncrease 信頼度を増加させるか。true:増加 / false:減少（デフォルト）
- * @param {Number} coeficient impressiveReason.valueを補正する係数（デフォルトは補正しない）
- * @returns updatedReliability 更新後の、相手の信頼度の値
- */
-function calcUpdatedReliability(reliability, impressiveReason, isIncrease = false, coeficient = 1) {
+function loggingObjects(characterObjects, actionObject) {
+  console.log('loggingCharacterObjects...');
 
-  // 更新後の、相手の信頼度の値
-  let updatedReliability = 0;
-  // 信頼度を更新する計算に使う値（信頼度に影響を与える理由の値に係数を掛ける。減少させる場合は負の値にする）
-  const value = isIncrease ? (impressiveReason.value * coeficient) : (-1 * impressiveReason.value * coeficient);
+  // アクションオブジェクトの中身をログ用配列に格納
+  //const actionObjectForLog = [actionObject.characterId, actionObject.actionId, actionObject.targetId];
 
-  // 信頼度に影響を与える理由をもとに、信頼度の更新差分を算出する
-  if (impressiveReason.arithmetic == ARITHMETIC_ADDITION) {
-    // 加算
-    updatedReliability = reliability + value;
-  } else if (impressiveReason.arithmetic == ARITHMETIC_MULTIPLICATION) {
-    // 乗算
-    updatedReliability = reliability * value;
+  const logObject = {};
+  const logArray = [];
+  if (!('logArrayList' in TYRANO.kag.stat.f)) {
+    TYRANO.kag.stat.f.logArrayList = [];
   }
 
-  console.log('before:' + reliability + ' after:' + updatedReliability);
+  // アクションオブジェクトの情報をログオブジェクトに格納
+  logObject.action = [actionObject.characterId, actionObject.actionId, actionObject.targetId, actionObject.result];
+  logArray.push(actionObject.characterId, actionObject.actionId, actionObject.targetId, actionObject.result)
 
-  // 更新後の値が1より大きくなる場合は1に、0より小さくなる場合は0にする。信頼度が取りうる値は0～1のため
-  if (updatedReliability > 1) {
-    updatedReliability = 1;
-  } else if (updatedReliability < 0) {
-    updatedReliability = 0;
+  for (let cId of TYRANO.kag.stat.f.participantsIdList) {
+    const characterObject = characterObjects[cId];
+  
+    // 仲間度
+    //logArray.push(cId, 'sameFactionPossivility');
+    const sameFactionPossivility = calcSameFactionPossivility(
+      characterObject,
+      characterObject.perspective
+    );
+    const sameFactionPossivilityLogObject = Object.assign({}, sameFactionPossivility);
+
+    for (let cId1 of TYRANO.kag.stat.f.participantsIdList) {
+      logArray.push(sameFactionPossivilityLogObject[cId1]);
+    }
+
+    // 信頼度
+    //logArray.push( 'reliability');
+    const reliabilityLogObject = Object.assign({}, characterObject.reliability);
+    for (let cId2 of TYRANO.kag.stat.f.participantsIdList) {
+      logArray.push(reliabilityLogObject[cId2]);
+    }
+
+    // 視点
+    //const perspectiveObject = Object.assign({}, characterObject.perspective);
+    //logArray.push(...(Object.values(perspectiveObject)));
+
+    // ログオブジェクトに格納
+    logObject[cId] = {
+      sameFactionPossivility: sameFactionPossivilityLogObject,
+      reliability: reliabilityLogObject,
+      //perspective: perspectiveObject
+    };
   }
-  return updatedReliability;
+  console.log(logObject);
+  TYRANO.kag.stat.f.logArrayList.push(logArray.join(','));
+  //const logString = logArray.join(',');
+  //console.log(logString);
+}
+
+function outputLog(){
+  console.log('実行者,アクション,対象者,結果,【仲間度】ずんだもん→ずんだもん,【仲間度】ずんだもん→四国めたん,【仲間度】ずんだもん→春日部つむぎ,【仲間度】ずんだもん→雨晴はう,【仲間度】ずんだもん→波音リツ,【信頼度】ずんだもん→ずんだもん,【信頼度】ずんだもん→四国めたん,【信頼度】ずんだもん→春日部つむぎ,【信頼度】ずんだもん→雨晴はう,【信頼度】ずんだもん→波音リツ,【仲間度】四国めたん→ずんだもん,【仲間度】四国めたん→四国めたん,【仲間度】四国めたん→春日部つむぎ,【仲間度】四国めたん→雨晴はう,【仲間度】四国めたん→波音リツ,【信頼度】四国めたん→ずんだもん,【信頼度】四国めたん→四国めたん,【信頼度】四国めたん→春日部つむぎ,【信頼度】四国めたん→雨晴はう,【信頼度】四国めたん→波音リツ,【仲間度】春日部つむぎ→ずんだもん,【仲間度】春日部つむぎ→四国めたん,【仲間度】春日部つむぎ→春日部つむぎ,【仲間度】春日部つむぎ→雨晴はう,【仲間度】春日部つむぎ→波音リツ,【信頼度】春日部つむぎ→ずんだもん,【信頼度】春日部つむぎ→四国めたん,【信頼度】春日部つむぎ→春日部つむぎ,【信頼度】春日部つむぎ→雨晴はう,【信頼度】春日部つむぎ→波音リツ,【仲間度】雨晴はう→ずんだもん,【仲間度】雨晴はう→四国めたん,【仲間度】雨晴はう→春日部つむぎ,【仲間度】雨晴はう→雨晴はう,【仲間度】雨晴はう→波音リツ,【信頼度】雨晴はう→ずんだもん,【信頼度】雨晴はう→四国めたん,【信頼度】雨晴はう→春日部つむぎ,【信頼度】雨晴はう→雨晴はう,【信頼度】雨晴はう→波音リツ,【仲間度】波音リツ→ずんだもん,【仲間度】波音リツ→四国めたん,【仲間度】波音リツ→春日部つむぎ,【仲間度】波音リツ→雨晴はう,【仲間度】波音リツ→波音リツ,【信頼度】波音リツ→ずんだもん,【信頼度】波音リツ→四国めたん,【信頼度】波音リツ→春日部つむぎ,【信頼度】波音リツ→雨晴はう,【信頼度】波音リツ→波音リツ');
+  for (let logString of TYRANO.kag.stat.f.logArrayList) {
+    console.log(logString);
+  }
 }
 
 

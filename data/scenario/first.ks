@@ -1,6 +1,6 @@
 ;一番最初に呼び出されるファイル
 
-[title name="ボイボ人狼 ver.0.9.0"]
+[title name="ボイボ人狼 ver.0.11.0"]
 
 [stop_keyconfig]
 
@@ -27,24 +27,39 @@
 ; ボイボ人狼用初期化
 [call storage="theater/macros.ks"]
 [call storage="achievement/macros.ks"]
-[loadjs storage="situations/Situation.js"]
-[loadjs storage="situations/CharacterCondition.js"]
-[loadjs storage="situations/AchievementCondition.js"]
-[loadjs storage="situations/page01.js"]
-[loadjs storage="theaterScripts.js"]
+[loadjs storage="voivoJinro/achievement/AchievementCondition.js"]
+[loadjs storage="voivoJinro/achievement/CharacterCondition.js"]
+[loadjs storage="voivoJinro/theater/Episode.js"]
+[loadjs storage="voivoJinro/theater/Chapter.js"]
+[loadjs storage="voivoJinro/theater/Situation.js"]
+[loadjs storage="voivoJinro/theater/theaterScripts.js"]
+[loadjs storage="voivoJinro/theater/episodeData.js"]
 
 ; キーフレーム定義読み込み
 [call storage="keyframe.ks"]
 
-; コンフィグ用初期設定
+
 [iscript]
-// 初回起動時
+// デバッグモード
+sf.isDebugMode = true;
+
+// シナリオ変数初期設定
+// シアター含む、全てのゲーム進捗の初期化
+if (!('theaterProgress' in sf)) {
+  resetTheaterProgressToDefault();
+}
+// 紹介動画表示用の進捗
+if (sf.isDebugMode) {
+  setTheaterProgressForP99();
+}
+
+// コンフィグ用初期設定
 if (!('config' in sf)) {
   console.log("★RESET config★");
   sf.config = {
-    current_bgm_vol:    TG.config.defaultBgmVolume, // BGM音量
-    current_se_vol:     TG.config.defaultSeVolume, // SE音量
-    current_voice_vol:  TG.config.defaultSeVolume, // VOICE音量 デフォルトではSEと同じ
+    current_bgm_vol:    70, // TG.config.defaultBgmVolume, // BGM音量
+    current_se_vol:     70, // TG.config.defaultSeVolume, // SE音量
+    current_voice_vol:  70, // TG.config.defaultSeVolume, // VOICE音量 デフォルトではSEと同じ
     current_ch_speed:   TG.config.chSpeed, // テキスト表示速度
     current_auto_speed: TG.config.autoSpeed, // オート時のテキスト表示速度 現在未使用
     mute_bgm:   false,
@@ -56,7 +71,7 @@ if (!('config' in sf)) {
 }
 tf.tmp_bgm_vol = sf.config.mute_bgm ? "0" : String(sf.config.current_bgm_vol);
 tf.tmp_se_vol = sf.config.mute_se ? "0" : String(sf.config.current_se_vol);
-tf.tmp_voice_vol = sf.config.mute_voice ? "0" : String(sf.config.tmp_voice_vol);
+tf.tmp_voice_vol = sf.config.mute_voice ? "0" : String(sf.config.current_voice_vol);
 tf.tmp_ch_speed = String(sf.config.current_ch_speed);
 [endscript]
 

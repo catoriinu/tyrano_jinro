@@ -14,44 +14,51 @@
 
 [macro name="a_checkAchievedConditions"]
   [iscript]
-    f.achievedSituations = [];
+    f.achievedEpisodes = [];
 
-    for (let pageKey of Object.keys(sf.theater)) {
-      for (let situationKey of Object.keys(sf.theater[pageKey])) {
-        const situation = sf.theater[pageKey][situationKey];
+    for (let pageId of Object.keys(sf.theaterProgress)) {
+      for (let episodeId of Object.keys(sf.theaterProgress[pageId])) {
+        const introProgress = getTheaterProgress(pageId, episodeId, 'c01');
+        const outroProgress = getTheaterProgress(pageId, episodeId, 'c02');
 
-        console.log('★★★situation');
-        console.log(situation);
-
-        // 達成チェック不要ならcontinue
-        if (!needCheckAchievementCondition(situation)) {
-          console.log('★false needCheckAchievementCondition');
+        // 達成チェックすべき条件（導入編が解放済み、かつ解決編がロック中である）を満たしていないならcontinue
+        if (!(introProgress !== THEATER_LOCKED && outroProgress === THEATER_LOCKED)) {
+          console.log('★false 達成チェックすべき条件（導入編が解放済み、かつ解決編がロック中である）を満たしていない');
           continue;
         }
-        // 達成チェックを行う。未達成ならcontinue
-        if (!isAchievedCondition(situation.achievementCondition, f.resultCondition)) {
+
+        const episode = episodeData(pageId, episodeId);
+        console.log('★★★episode');
+        console.log(episode);
+
+        // 解決編がない場合（おまけ動画など）は即continue
+        if (episode.outroChapter == null) {
+          console.log('★undefined isAchievedCondition');
+          continue;
+        }
+
+        // 解決編の解放条件の達成チェックを行う。未達成ならcontinue
+        if (!isAchievedCondition(episode.outroChapter.achievementCondition, f.resultCondition)) {
           console.log('★false isAchievedCondition');
           continue;
         }
         
-        // 条件を達成した場合
-        // システム変数のシチュエーションのoutroProgressをUNLOCKEDに更新する
-        sf.theater[pageKey][situationKey] = updateOutroProgress(situation, THEATER_UNLOCKED);
-        // 達成済みシチュエーション配列に追加する
-        f.achievedSituations.push(situation);
+        // 解放条件を達成した場合
+        // 解決編のシアター進捗を「解放済みだが未視聴」に更新する
+        sf.theaterProgress[pageId][episodeId].c02 = THEATER_UNLOCKED;
+        // 達成済みエピソード配列に追加する
+        f.achievedEpisodes.push(episode);
       }
     }
   [endscript]
 [endmacro]
 
 
-; 達成済みシチュエーションを画面上に表示する
-[macro name="a_displayAchievedSituations"]
+; 達成したエピソードを画面上に表示する
+[macro name="a_displayAchievedEpisodes"]
 
-  ; 達成済みシチュエーションがない場合、なにもせず終了する
-  [if exp="f.achievedSituations.length < 1"]
-    [jump target="*end_a_displayAchievedSituations"]
-  [endif]
+  ; 達成したエピソードがない場合、なにもせず終了する
+  [jump target="*end_a_displayAchievedEpisodes" cond="f.achievedEpisodes.length < 1"]
 
   ; 表示開始前の準備
   [j_saveFixButton buf="achieved"]
@@ -63,12 +70,12 @@
   [eval exp="tf.cnt = 0"]
   *loopstart
     ; 表示する
-    [eval exp="f.detailSituation = f.achievedSituations[tf.cnt]"]
+    [eval exp="f.displayEpisode = f.achievedEpisodes[tf.cnt]"]
     [call storage="achievement/achieveSituation.ks"]
 
-    ; 達成済みシチュエーションがまだある場合のみループ継続
+    ; 達成したエピソードがまだある場合のみループ継続
     [eval exp="tf.cnt++"]
-    [jump target="*loopstart" cond="tf.cnt < f.achievedSituations.length"]
+    [jump target="*loopstart" cond="tf.cnt < f.achievedEpisodes.length"]
     [jump target="*loopend"]
   *loopend
 
@@ -78,5 +85,5 @@
   [layopt layer="message0" visible="true"]
   [j_loadFixButton buf="achieved"]
 
-  *end_a_displayAchievedSituations
+  *end_a_displayAchievedEpisodes
 [endmacro]

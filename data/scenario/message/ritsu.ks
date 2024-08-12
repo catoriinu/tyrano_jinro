@@ -25,7 +25,7 @@
 ; シーン：前日の占い結果をCOするときのセリフ
 ; NOTE:事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 *COFortuneTelling_true_neutral_alive
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_positive"]
@@ -67,7 +67,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *COFortuneTelling_false_neutral_alive
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_positive"]
@@ -109,7 +109,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *COFortuneTelling_false_neutral_died
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -241,7 +241,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *doAction_suspect_emotional
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 [add_playselist storage="chara/ritsu/026_波音リツ（ノーマル）_Xはどうせ人狼でし….mp3"]
@@ -287,7 +287,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *doAction_trust_emotional
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 [add_playselist storage="chara/ritsu/035_波音リツ（ノーマル）_こう見えてもあたし….mp3"]
@@ -363,7 +363,7 @@ NGリストにぶち込んでやるわ。[p]
 
 ; シーン：「信じる」アクションの実行対象になった時
 *doAction_reaction_trust_neutral
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 

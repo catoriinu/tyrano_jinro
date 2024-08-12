@@ -13,19 +13,8 @@
 ; キーコンフィグの無効化
 [stop_keyconfig]
 
-; レイヤーモードの解放
-[free_layermode time="100" wait="true"]
-
-; カメラのリセット
-[reset_camera time="100" wait="true"]
-
-; 前景レイヤの中身をすべて空に
-[iscript]
-  $(".layer_camera").empty();
-[endscript]
-
 ; メニューボタン非表示
- [hidemenubutton]
+[hidemenubutton]
 
 [iscript]
   /* sf.configはfirst.ksで初期設定しておくこと */
@@ -34,13 +23,14 @@
   tf.tmp_bgm_vol   = sf.config.current_bgm_vol;
   tf.tmp_se_vol    = sf.config.current_se_vol;
   tf.tmp_voice_vol = sf.config.current_voice_vol;
-  tf.tmp_ch_speed_reverse = String(100 - sf.config.current_ch_speed);
+  tf.tmp_ch_speed_reverse = String(105 - sf.config.current_ch_speed);
   /*
    * tf.tmp_ch_speed_reverseについて：
    * ティラノの[configdelay]のspeedは「次の1文字を表示するまでのミリ秒」であり、値が小さいほど表示が早くなる。
    * それをスライダーで表すと、左の方が早くなり直感に反する。
-   * なので、スライダーが0（左）なら最も遅い（speed="100"）、スライダーが100（右）なら最も早い（speed="0"）になるようにするため、
-   * 一時変数には、100からシステム変数を引いた値を入れておく。
+   * なので、スライダーが0（左）なら最も遅い（speed="105"）、スライダーが100（右）なら最も早い（speed="5"）になるようにするため、
+   * 一時変数には、105からシステム変数を引いた値を入れておく。
+   * （※105の5は処理の猶予時間。猶予0だと変数格納が間に合わないエラーが多発したため）
    */
 
   /* 画像類のパス */
@@ -65,7 +55,7 @@
 [cm]
 
 ; コンフィグ用の背景を読み込んでトランジション
-[bg storage="&tf.img_path +'voivo_config_bg.png'" time="100"]
+[image storage="&tf.img_path +'voivo_config_bg.png'" layer="1" visible="true" left="0" top="0" width="1280" height="720" name="config_bg" time="100"]
 
 [ptext layer="1" x="490" y="30"  text="コンフィグ" color="#28332a" size="60"]
 [ptext layer="1" x="100" y="170" text="音量" color="#28332a" size="44"]
@@ -80,8 +70,8 @@
 [layopt layer="message1" visible="true"]
 [current layer="message1"]
 
-; 画面右上の「戻る」ボタン
-[button fix="true" graphic="button/button_return_normal.png" enterimg="button/button_return_hover.png" target="*backtitle" x="1143" y="23" width="114" height="103"]
+; 画面右上の「もどる」ボタン
+[button fix="true" graphic="button/button_return_normal.png" enterimg="button/button_return_hover.png" target="*return" x="1143" y="17" width="114" height="103"]
 
 [jump target="*config_page"]
 
@@ -181,34 +171,22 @@
 [glink color="&tf.mark20Color" size="26" width="180" x="710" y="520" text="下線" exp="sf.config.mark_size = preexp" preexp="20" target="*marker_button"]
 [glink color="&tf.mark100Color" size="26" width="180" x="940" y="520" text="塗りつぶし" exp="sf.config.mark_size = preexp" preexp="100" target="*marker_button"]
 
-
-[iscript]
-/*
-  // コンフィグに関わる設定を全て削除する。sf.configだけでなく下記のシステム変数まで削除しないと、config.tjsの設定を再読み込みしに行ってくれない。
-  delete sf.config;
-  delete sf._system_config_bgm_volume;
-  delete sf._system_config_se_volume;
-  delete sf._config_ch_speed;
-  console.log("config all deleted");
-*/
-[endscript]
 [s]
 
 
 ;--------------------------------------------------------------------------------
 ; コンフィグモードの終了
 ;--------------------------------------------------------------------------------
-*backtitle
+*return
 [cm]
 
 [endnolog]
 
 ;	テキスト速度のサンプル表示に使用していたメッセージレイヤを非表示に
 [layopt layer="message1" visible="false"]
-;[layopt layer="message0" visible="true"]
 [current layer="message0"]
 
-; 見出しのテキストを非表示に
+; 見出しのテキストと背景を非表示に
 [freeimage layer="1"]
 
 ; fixボタンをクリア
@@ -220,8 +198,12 @@
 ; コールスタックのクリア
 [clearstack]
 
-;	ゲーム復帰
-;[awakegame]
+; チャプター再生中ならポーズメニュー画面に戻る
+[jump storage="theater/pauseMenu.ks" cond="f.chapterStorage != null"]
+; TODO 人狼ゲーム中ならメニュー画面に戻る
+[jump storage="menuJinro.ks" target="*returnFromConfig" cond="f.inJinroGame"]
+
+; それ以外ならタイトル画面に戻る
 [jump storage="title.ks"]
 
 ;================================================================================
@@ -350,10 +332,10 @@
 
 *ch_speed_change
 
-; 一時変数に格納されているのはスライダーで設定したvalue。そこから100を引くことで[configdelay]のspeedに設定したい値（この時点では数値型）になる。
+; 一時変数に格納されているのはスライダーで設定したvalue。105からそれを引くことで[configdelay]のspeedに設定したい値（この時点では数値型）になる。
 ; このファイルの「tf.tmp_ch_speed_reverseについて」のコメント参照
 [iscript]
-  sf.config.current_ch_speed = 100 - parseInt(tf.tmp_ch_speed_reverse);
+  sf.config.current_ch_speed = 105 - parseInt(tf.tmp_ch_speed_reverse);
   // 数字の0だと無視される仕様なので必ず文字列変換すること
   tf.tmp_ch_speed = String(sf.config.current_ch_speed);
 [endscript]

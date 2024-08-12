@@ -1,105 +1,28 @@
 ; シアター用マクロファイル
 
-; シアター一覧画面に表示する、シアターの情報をゲーム変数に格納する
-; @param page シアター一覧のページ番号。必須。
-[macro name="loadTheaterList"]
+
+; @param pageId シアター一覧のページID。必須。
+[macro name="loadEpisodeList"]
 [iscript]
-  f.theaterList = {};
-  if (mp.page == 1) {
-    f.theaterList = clone(sf.theater[1]);
-  } else if (mp.page == 99) {
-    f.theaterList = {
-      1: {
-        title: '【ゲーム】ボイボ人狼 #2【絶賛開発中】',
-        thumbnail: 'theater/紹介動画02サムネ.png',
-        unlockCondition: '初めから解放されている',
-        situationParticipantsNumber: 0,
-        situationParticipants: [
-          new Participant('mochiko'),
-          new Participant('miko'),
-        ],
-        introStorage: 'theater/page99/movie_20230814.ks',
-        outroStorage: 'theater/page99/movie_20230814.ks',
-      },
-      2: {
-        title: '製作日誌#2',
-        thumbnail: 'theater/シアターサムネ仮03.png',
-        unlockCondition: '初めから解放されている',
-        situationParticipantsNumber: 0,
-        situationParticipants: [],
-        introStorage: 'theater/page99/movie_20230814.ks',
-        outroStorage: 'theater/page99/movie_20230814.ks',
-      },
-      3: {
-        title: '製作日誌#2',
-        thumbnail: 'theater/シアターサムネ仮03.png',
-        unlockCondition: '初めから解放されている',
-        situationParticipantsNumber: 0,
-        situationParticipants: [],
-        introStorage: 'theater/page99/movie_20230814.ks',
-        outroStorage: 'theater/page99/movie_20230814.ks',
-      },
-      4: {
-        title: '製作日誌#2',
-        thumbnail: 'theater/シアターサムネ仮03.png',
-        unlockCondition: '初めから解放されている',
-        situationParticipantsNumber: 0,
-        situationParticipants: [],
-        introStorage: 'theater/page99/movie_20230814.ks',
-        outroStorage: 'theater/page99/movie_20230814.ks',
-      },
-      5: {
-        title: '製作日誌#2',
-        thumbnail: 'theater/シアターサムネ仮03.png',
-        unlockCondition: '初めから解放されている',
-        situationParticipantsNumber: 0,
-        situationParticipants: [],
-        introStorage: 'theater/page99/movie_20230814.ks',
-        outroStorage: 'theater/page99/movie_20230814.ks',
-      },
-      6: {
-        title: '製作日誌#2',
-        thumbnail: 'theater/シアターサムネ仮03.png',
-        unlockCondition: '初めから解放されている',
-        situationParticipantsNumber: 0,
-        situationParticipants: [],
-        introStorage: 'theater/page99/movie_20230814.ks',
-        outroStorage: 'theater/page99/movie_20230814.ks',
-      },
-      7: {
-        title: '製作日誌#2',
-        thumbnail: 'theater/シアターサムネ仮03.png',
-        unlockCondition: '初めから解放されている',
-        situationParticipantsNumber: 0,
-        situationParticipants: [],
-        introStorage: 'theater/page99/movie_20230814.ks',
-        outroStorage: 'theater/page99/movie_20230814.ks',
-      },
-      8: {
-        title: '製作日誌#2',
-        thumbnail: 'theater/シアターサムネ仮03.png',
-        unlockCondition: '初めから解放されている',
-        situationParticipantsNumber: 0,
-        situationParticipants: [],
-        introStorage: 'theater/page99/movie_20230814.ks',
-        outroStorage: 'theater/page99/movie_20230814.ks',
-      },
-    }
-  }
+  f.episodeList = getEpisodes(mp.pageId);
 
-  // TODO テスト用に解放状況を書き換える
-  for (let i = 1; i < (Object.keys(f.theaterList).length + 1); i++) {
-    //updateIntroProgress(f.theaterList[i], THEATER_UNLOCKED);
-    //updateOutroProgress(f.theaterList[i], THEATER_UNLOCKED);
-  }
-
-  // 導入編が未解放のシアターは、タイトルとサムネイルを上書きする
-  console.log(f.theaterList);
-  for (let i = 1; i < (Object.keys(f.theaterList).length + 1); i++) {
-    console.log(i);
-    if (isIntroProgressLocked(f.theaterList[i])) {
-      updateTitle(f.theaterList[i], '？？？？？');
-      updateThumbnail(f.theaterList[i], 'theater/TVStaticColor01_10.png');
+  // （現在の）ボイボ人狼ではエピソード数は1ページにつき8つ（e01-e08）
+  const episodeIdList = ['e01', 'e02', 'e03', 'e04', 'e05', 'e06', 'e07', 'e08']
+  // 導入編が未解放（＝getEpisodesで取得できなかった）のエピソードは、代わりに未解放用のエピソードを格納する
+  console.log(f.episodeList);
+  for (let episodeId of episodeIdList) {
+    if (!(episodeId in f.episodeList)){
+      f.episodeList[episodeId] = new Episode(
+        mp.pageId,
+        episodeId,
+        '？？？？？',
+        'theater/TVStaticColor01_10.png',
+        '',
+        null,
+        null,
+        null,
+        null,
+       );
     }
   }
 [endscript]
@@ -110,23 +33,164 @@
 ; シアター詳細画面では、j_registerParticipantの代わりにこのマクロで登録すること
 [macro name="t_registerSituationParticipants"]
   [iscript]
-    tf.tmpParticipantObjectList = clone(f.theaterList[f.theaterDetailNum].situationParticipants);
+    tf.tmpParticipantObjectList = clone(f.displayEpisode.situation.participantsList);
   [endscript]
 [endmacro]
 
 
-; @param pageKey
-; @param situationKey
-[macro name="t_watchIntroProgress"]
+; 指定されたチャプターの進捗が「未解放」なら一時変数にtrueを格納する
+; @param pageId
+; @param episodeId
+; @param chapterId
+[macro name="t_isProgressLocked"]
   [iscript]
-    sf.theater[mp.pageKey][mp.situationKey] = updateIntroProgress(sf.theater[mp.pageKey][mp.situationKey], THEATER_WATCHED);
+    tf.isProgressLocked = (getTheaterProgress(mp.pageId, mp.episodeId, mp.chapterId) === THEATER_LOCKED);
   [endscript]
 [endmacro]
 
-; @param pageKey
-; @param situationKey
-[macro name="t_watchOutroProgress"]
+
+; 指定されたチャプターの進捗が「解放済みだが未視聴」なら一時変数にtrueを格納する
+; @param pageId
+; @param episodeId
+; @param chapterId
+[macro name="t_isProgressUnlocked"]
   [iscript]
-    sf.theater[mp.pageKey][mp.situationKey] = updateOutroProgress(sf.theater[mp.pageKey][mp.situationKey], THEATER_WATCHED);
+    tf.isProgressUnlocked = (getTheaterProgress(mp.pageId, mp.episodeId, mp.chapterId) === THEATER_UNLOCKED);
   [endscript]
+[endmacro]
+
+
+; 指定されたチャプターの進捗が「視聴済み」なら一時変数にtrueを格納する
+; @param pageId
+; @param episodeId
+; @param chapterId
+[macro name="t_isProgressWatched"]
+  [iscript]
+    tf.isProgressWatched = (getTheaterProgress(mp.pageId, mp.episodeId, mp.chapterId) === THEATER_WATCHED);
+  [endscript]
+[endmacro]
+
+
+; 指定されたチャプターの進捗を「視聴済み」に更新する
+; @param pageId
+; @param episodeId
+; @param chapterId
+[macro name="t_updateProgressWatched"]
+  [iscript]
+    sf.theaterProgress[mp.pageId][mp.episodeId][mp.chapterId] = THEATER_WATCHED;
+  [endscript]
+[endmacro]
+
+
+; チャプター視聴開始時の準備用マクロ
+; @param actorsList
+; @param bgParams
+; @param playbgmParams
+[macro name="t_setupChapter"]
+
+  [cm]
+  [clearfix]
+  [start_keyconfig]
+
+  ; 背景
+  [bg storage="&mp.bgParams.storage" time="300"]
+
+  ; BGM
+  [playbgm storage="&mp.playbgmParams.storage" loop="true" volume="&mp.playbgmParams.volume" restart="false"]
+
+  ;メッセージウィンドウの設定、文字が表示される領域を調整
+  [position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="220" page="fore"]
+
+  ;メッセージウィンドウの表示
+  [layopt layer="message0" visible="true"]
+
+  ;キャラクターの名前が表示される文字領域
+  [ptext name="chara_name_area" layer="message0" face="にくまるフォント" color="0x28332a" size="36" x="175" y="505"]
+
+  ;上記で定義した領域がキャラクターの名前表示であることを宣言（これがないと#の部分でエラーになります）
+  [chara_config ptext="chara_name_area"]
+  ; pos_mode:キャラの初期位置はキャラ宣言時に全指定するのでfalse
+  [chara_config pos_mode="false" memory="true" time="200"]
+
+  ; 再生中のチャプターのファイルパスを生成しておく（スキップからの再開のため・コンフィグでチャプター再生中と判定するため）
+  [eval exp="f.chapterStorage = 'theater/' + f.pageId + '/' + f.episodeId + '_' + f.chapterId + '.ks'"]
+
+  ; スキップした場合用の変数を初期化
+  [eval exp="tf.chapterSkiped = false"]
+
+  ;このシナリオで登場する全キャラクターを宣言、表情登録
+  [eval exp="tf.registerCharacterList = mp.actorsList"]
+  [call storage="./chara/common.ks" target="*registerCharacters"]
+
+  ; ボタン表示
+  [j_displayFixButton backlog="true" pauseMenu="true"]
+
+[endmacro]
+
+
+; チャプター視聴終了時の後片付け用マクロ
+; @param pageId
+; @param episodeId
+; @param chapterId
+[macro name="t_teardownChapter"]
+
+  ; キャラ名を消すための#
+  # 
+
+  ; 視聴済みに更新する
+  [t_updateProgressWatched pageId="&mp.pageId" episodeId="&mp.episodeId" chapterId="&mp.chapterId"]
+  ; 視聴終了時に解放すべきシアター進捗があれば解放する
+  [call storage="theater/unlockProgress.ks" target="*start"]
+
+  [iscript]
+    // 戻ったときにエピソードウィンドウを開くための設定
+    f.displayPageId = mp.pageId;
+    f.displayEpisodeId = mp.episodeId;
+    f.quickShowEpisodeWindow = true;
+    
+    // 再生中のチャプターのファイルパスを初期化
+    f.chapterStorage = null;
+  [endscript]
+
+  [j_clearFixButton]
+  [m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
+  [m_exitCharacter characterId="&f.displayedCharacter.right.characterId" time="1"]
+  [layopt layer="message0" visible="false"]
+[endmacro]
+
+
+; シアター画面のエピソード選択用の背景、サムネイル、進捗枠表示用マクロ
+; @param pageId
+; @param episodeId
+[macro name="t_imageTheaterThumbnail"]
+  [iscript]
+    // e01～e08までの画像の表示位置を定義
+    tf.episodeCoodinate = {
+      'e01':{x: 12,  y: 6,   thumbLeft: 24.5,  thumbTop: 19},
+      'e02':{x: 249, y: 6,   thumbLeft: 261.5, thumbTop: 19},
+      'e03':{x: 486, y: 6,   thumbLeft: 498.5, thumbTop: 19},
+      'e04':{x: 723, y: 6,   thumbLeft: 735.5, thumbTop: 19},
+      'e05':{x: 12,  y: 260, thumbLeft: 24.5,  thumbTop: 274},
+      'e06':{x: 249, y: 260, thumbLeft: 261.5, thumbTop: 274},
+      'e07':{x: 486, y: 260, thumbLeft: 498.5, thumbTop: 274},
+      'e08':{x: 723, y: 260, thumbLeft: 735.5, thumbTop: 274},
+    }
+  [endscript]
+  
+  ; 最も背景の長方形を表示
+  [image storage="theater/theater_normal_rectangle.png" layer="0" name="theater1" x="&tf.episodeCoodinate[mp.episodeId].x" y="&tf.episodeCoodinate[mp.episodeId].y"]
+  ; サムネイルを表示
+  [image storage="&f.episodeList[mp.episodeId].thumbnail" layer="0" left="&tf.episodeCoodinate[mp.episodeId].thumbLeft" top="&tf.episodeCoodinate[mp.episodeId].thumbTop" width="200" height="112.5" name="thumbnail"]
+
+  ; 解決編の進捗を一時変数に取得
+  [t_isProgressUnlocked pageId="&mp.pageId" episodeId="&mp.episodeId" chapterId="c02"]
+  [t_isProgressWatched  pageId="&mp.pageId" episodeId="&mp.episodeId" chapterId="c02"]
+
+  [if exp="tf.isProgressWatched"]
+    ; 解決編が視聴済みなら金枠
+    [image storage="theater/theater_gold_frame.png" layer="0" name="theater1" x="&tf.episodeCoodinate[mp.episodeId].x" y="&tf.episodeCoodinate[mp.episodeId].y"]
+  [elsif exp="tf.isProgressUnlocked"]
+    ; 解決編が解放済みだが未視聴なら銀枠（導入編の進捗は考慮しなくてよい。プレイヤーが解放条件を満たすか、導入編を見るかしないといけない、ということを銀枠は示している）
+    [image storage="theater/theater_silver_frame.png" layer="0" name="theater1" x="&tf.episodeCoodinate[mp.episodeId].x" y="&tf.episodeCoodinate[mp.episodeId].y"]
+  [endif]
 [endmacro]

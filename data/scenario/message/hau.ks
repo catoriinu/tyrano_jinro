@@ -53,7 +53,7 @@
 
 
 *COFortuneTelling_true_hate_alive
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_positive"]
@@ -362,7 +362,7 @@
 
 ; シーン：「信じる」アクションの実行対象になった時
 *doAction_reaction_trust_neutral
-[eval exp="tf.face = 'normal'"]
+[eval exp="tf.face = '通常'"]
 [eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 

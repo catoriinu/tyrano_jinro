@@ -4,11 +4,13 @@
  * @param {String} characterId キャラクターID。必須
  * @param {String} roleId 役職ID。指定しない場合、役職はランダムに決定される
  * @param {String} personalityName 性格名。指定しない場合、キャラクターのデフォルトの性格になる
+ * @param {Object} adjustParameters 性格調整用のパラメータオブジェクト。なければ無調整。
  */
-function Participant(characterId, roleId = null, personalityName = null) {
+function Participant(characterId, roleId = null, personalityName = null, adjustParameters = {}) {
   this.characterId = characterId;
   this.roleId = roleId;
   this.personalityName = personalityName;
+  this.adjustParameters = adjustParameters;
 }
 
 
@@ -49,7 +51,13 @@ function fillAndSortParticipantObjectList(participantsNumber, participantObjectL
   // 以下の各オブジェクトから、扱いやすくするためにキャラクターID配列にして取り出す
   const confirmedParticipantsIdList = participantObjectList.map(obj => obj.characterId); // 引数時点で参加確定済みの参加者
   const allCharacterIdList = PARTICIPANTS_LIST.map(obj => obj.characterId); // 実装済みの全キャラクター
-  const candidatesIdList = allCharacterIdList.filter(cId => !confirmedParticipantsIdList.includes(cId)); // 候補者（＝全キャラから確定済みを除いた残りのキャラクター）
+  const candidatesIdList = allCharacterIdList.filter(cId => 
+    // 全キャラのうちから、参加確定済みを除いた残り
+    !confirmedParticipantsIdList.includes(cId) &&
+    // かつ、参加ステータスがNPCであるキャラ
+    cId in TYRANO.kag.variable.sf.participantStatus &&
+    TYRANO.kag.variable.sf.participantStatus[cId] === PARTICIPATE_AS_NPC
+  );
 
   // 未確定の参加者の人数分、候補者のうちからランダムに参加者として選出する
   for (let i = 0; i < unconfirmedParticipantsNumber; i++) {
@@ -92,6 +100,16 @@ function initializeCharacterObjectsForJinro(villagersRoleIdList, participantObje
     return;
   }
 
+  // 開発者モード：「NPCの思考方針」によってlogicalを調整する。logicalを上書きすることで仲間度の算出結果が変わる。
+  const adjustlogicalObject = {};
+  if (TYRANO.kag.variable.sf.j_development.thinking === DECISION_LOGICAL) {
+    // 「論理的」の場合、全キャラクターのlogicalを0.9999に上書きする（1だと仲間度の計算に全く信頼度が反映されなくなってしまうため）
+    adjustlogicalObject.logical = 0.9999;
+  } else if (TYRANO.kag.variable.sf.j_development.thinking === DECISION_EMOTIONAL) {
+    // 「感情的」の場合、全キャラクターのlogicalを0.0001に上書きする（0だと仲間度の計算に全く同陣営割合が反映されなくなってしまうため）
+    adjustlogicalObject.logical = 0.0001;
+  }
+
   // 引数をcloneし、未確定の役職配列、未確定の参加者オブジェクト配列とする。オリジナルの引数も後で必要となるため
   let unconfirmedRoleIdList = clone(villagersRoleIdList);
   let unconfirmedParticipantObjectList = clone(participantObjectList);
@@ -103,6 +121,7 @@ function initializeCharacterObjectsForJinro(villagersRoleIdList, participantObje
     const characterId = participantObjectList[i].characterId;
     const roleId = participantObjectList[i].roleId;
     const personalityName = participantObjectList[i].personalityName;
+    const adjustParameters = Object.assign(participantObjectList[i].adjustParameters, adjustlogicalObject);
   
     if (roleId) {
       if (!unconfirmedRoleIdList.includes(roleId)) {
@@ -111,7 +130,7 @@ function initializeCharacterObjectsForJinro(villagersRoleIdList, participantObje
       }
 
       // キャラクターオブジェクトを生成。配役した役職IDと参加者オブジェクトは、それぞれ未確定用の配列から取り除く
-      tmpCharacterObjects[characterId] = new Character(characterId, roleId, personalityName);
+      tmpCharacterObjects[characterId] = new Character(characterId, roleId, personalityName, adjustParameters);
       unconfirmedRoleIdList.splice(unconfirmedRoleIdList.findIndex(rId => rId === roleId), 1);
       unconfirmedParticipantObjectList.splice(unconfirmedParticipantObjectList.findIndex(obj => obj.characterId === characterId), 1);
     }
@@ -130,9 +149,10 @@ function initializeCharacterObjectsForJinro(villagersRoleIdList, participantObje
     const characterId = unconfirmedParticipantObjectList[i].characterId;
     const roleId = unconfirmedRoleIdList[i]; // participant.roleIdがnullなので、未確定の役職配列から取得する
     const personalityName = unconfirmedParticipantObjectList[i].personalityName;
+    const adjustParameters = Object.assign(unconfirmedParticipantObjectList[i].adjustParameters, adjustlogicalObject);
 
     // キャラクターオブジェクトを生成。これ以降未確定の役職配列と参加者配列は参照しないので、取り除く処理は省略する
-    tmpCharacterObjects[characterId] = new Character(characterId, roleId, personalityName);
+    tmpCharacterObjects[characterId] = new Character(characterId, roleId, personalityName, adjustParameters);
   }
 
   // 参加者のキャラクターID配列（並び順の基準になるので、この後の並び替えと同時にキャラクターIDをpushしていく）
@@ -151,18 +171,6 @@ function initializeCharacterObjectsForJinro(villagersRoleIdList, participantObje
     if (TYRANO.kag.stat.f.participantsIdList.length == 1) {
       characterObjects[characterId].isPlayer = true;
       TYRANO.kag.stat.f.playerCharacterId = characterId;
-    }
-
-    // 開発者モード：「NPCの思考方針」によるlogicalの上書き処理。logicalを上書きすることで仲間度の算出結果が変わる。
-    // 「性格準拠」の場合、何もしない（最初にcontinueすることを明示しておく）
-    if (TYRANO.kag.variable.sf.j_development.thinking == 'default') continue;
-
-    if (TYRANO.kag.variable.sf.j_development.thinking == 'logical') {
-      // 「論理的」の場合、全キャラクターのlogicalを0.9999に上書きする（1だと仲間度の計算に全く信頼度が反映されなくなってしまうため）
-      characterObjects[characterId].personality.logical = 0.9999;
-    } else if (TYRANO.kag.variable.sf.j_development.thinking == 'emotional') {
-      // 「感情的」の場合、全キャラクターのlogicalを0.0001に上書きする（0だと仲間度の計算に全く同陣営割合が反映されなくなってしまうため）
-      characterObjects[characterId].personality.logical = 0.0001;
     }
   }
 

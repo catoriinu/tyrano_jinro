@@ -6,9 +6,9 @@
  * @param {Object|null} characterConditions {characterId: CharacterConditionオブジェクト, ...}形式のオブジェクト
  */
 function AchievementCondition(
-    isPlayerWin,
-    winnerFaction,
-    characterConditions,
+    isPlayerWin = null,
+    winnerFaction = null,
+    characterConditions = null,
 ) {
     this.isPlayerWin = isPlayerWin;
     this.winnerFaction = winnerFaction;

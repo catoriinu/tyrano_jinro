@@ -7,6 +7,7 @@
 ; @param characterId キャラクターID。必須
 ; @param roleId 役職ID。指定しない場合、役職はランダムに決定される
 ; @param personalityName 性格名。指定しない場合、キャラクターのデフォルトの性格になる
+; @param adjustParameters 性格調整用のパラメータオブジェクト。なければ無調整。
 ; @param isPlayer プレイヤーキャラクターかどうか。指定した時点で、他のキャラの登録は初期化される ※キーを指定した時点でtrue扱いになるので注意
 [macro name="j_registerParticipant"]
   [iscript]
@@ -18,7 +19,8 @@
     const characterId = mp.characterId;
     const roleId = ('roleId' in mp) ? mp.roleId : null;
     const personalityName = ('personalityName' in mp) ? mp.personalityName : null;
-    tf.tmpParticipantObjectList.push(new Participant(characterId, roleId, personalityName));
+    const adjustParameters = ('adjustParameters' in mp) ? mp.adjustParameters : {};
+    tf.tmpParticipantObjectList.push(new Participant(characterId, roleId, personalityName, adjustParameters));
   [endscript]
 [endmacro]
 
@@ -43,11 +45,13 @@
 
     // 登録が済んだらティラノの一時変数は初期化しておく
     tf.tmpParticipantObjectList = [];
+
+    // ボイスのプリロードが必要か判定しておく
+    tf.needPreloadVoice = (('preload' in mp) && (mp.preload === 'true' || mp.preload === true));
   [endscript]
 
-  [if exp="('preload' in mp) && (mp.preload === 'true' || mp.preload === true)"]
-    [call storage="message/utility.ks" target="preloadVoice"]
-  [endif]
+  ; 必要ならボイスをプリロードする
+  [call storage="message/utility.ks" target="*preloadVoice" cond="tf.needPreloadVoice"]
 [endmacro]
 
 
@@ -191,7 +195,7 @@
   [jump target="*fakeFortuneTellingCOMultipleDays_loopend" cond="tf.fakeFortuneTelledDay >= tf.lastDay"]
 
   ; メッセージを表示しないでCOしたことにする（メッセージ表示が必要な、前日の分のCOは呼び元側で行う）
-  [j_COFortuneTelling fortuneTellerId="&tf.fortuneTellerId" day="&tf.fakeFortuneTelledDay" noNeedMessage="true"]
+  [j_COFortuneTelling fortuneTellerId="&tf.fortuneTellerId" day="&tf.fakeFortuneTelledDay" noNeedNotice="true"]
 
   ; 次の日の騙り占いを行う
   [eval exp="tf.fakeFortuneTelledDay++"]
@@ -264,7 +268,7 @@
     [jump target="*j_COFortuneTellingUntilTheLastDay_loopend" cond="tf.CODay >= tf.lastDay"]
 
     ; メッセージなしでCOしたことにする
-    [j_COFortuneTelling fortuneTellerId="&tf.COFortuneTellerId" day="&tf.CODay" noNeedMessage="true"]
+    [j_COFortuneTelling fortuneTellerId="&tf.COFortuneTellerId" day="&tf.CODay" noNeedNotice="true"]
 
     ; 次の日の分をCOする
     [eval exp="tf.CODay++"]
@@ -404,7 +408,7 @@
 ; 占い師、占い騙り両対応。
 ; @param fortuneTellerId 取得したい占い師（騙り占い）のキャラクターID。必須
 ; @param [day] 取得したい占い日。指定しない場合、その占い師の最新の履歴を取得する。引数の渡し方（型）は0でも"0"でも可。
-; @param [noNeedMessage] 占いCOメッセージを表示しないか。trueなら表示しない（複数日分の占いCO時、前日以外の分は表示しないべき）
+; @param [noNeedNotice] 占いCO演出（カットインやメッセージ）を表示しないか。trueなら表示しない（複数日分の占いCO時、前日以外の分は表示しないべき）
 [macro name="j_COFortuneTelling"]
 
   [iscript]
@@ -448,9 +452,11 @@
     f.characterObjects[mp.fortuneTellerId].isDoneTodaysCO = true;
   [endscript]
 
-  ; メッセージ出力（mp.noNeedMessageがtrueなら表示しない）
-  [m_COFortuneTelling cond="!(('noNeedMessage' in mp) && (mp.noNeedMessage === 'true' || mp.noNeedMessage === true))"]
-
+  ; 占い演出、メッセージ出力（mp.noNeedNoticeがtrueなら表示しない）
+  [if exp="!(('noNeedNotice' in mp) && (mp.noNeedNotice === 'true' || mp.noNeedNotice === true))"]
+    [j_cutin1]
+    [m_COFortuneTelling]
+  [endif]
 [endmacro]
 
 
@@ -587,6 +593,7 @@
 [endmacro]
 
 
+; 役職COするかを問うボタンオブジェクトを設定する（TODO:現状は占い師のみ考慮しているが、他の役職もここに追加する想定）
 ; @param characterId 判定対象のキャラクターID。必須。
 [macro name="j_setCORoleToButtonObjects"]
   [iscript]
@@ -595,11 +602,9 @@
 
     // 占い師、騙り占い師COする
     if (characterObject.role.allowCORoles.includes(ROLE_ID_FORTUNE_TELLER)) {
-      let id = '';
-      if (characterObject.role.roleId === ROLE_ID_FORTUNE_TELLER) {
-        id = 'FortuneTellerCO';
-        text = '占い師COする';
-      } else {
+      let id = 'FortuneTellerCO';
+      let text = '占い師COする';
+      if (characterObject.role.roleId !== ROLE_ID_FORTUNE_TELLER) {
         id = 'fakeFortuneTellerCO';
         text = '騙り占い師COする';
       }
@@ -619,21 +624,31 @@
       CLASS_GLINK_DEFAULT
     ));
   [endscript]
-
 [endmacro]
 
 
+; 占い結果COするかを問うボタンオブジェクトを設定する
 ; @param characterId 判定対象のキャラクターID。必須。
 [macro name="j_setFrotuneTellerResultCOToButtonObjects"]
   ; COするしないボタン表示
   [iscript]
+    const roleId = f.characterObjects[f.playerCharacterId].role.roleId;
     f.buttonObjects = [];
+
+    // 占い結果、騙り占い結果COする
+    let id = 'FortuneTellerCO';
+    let text = '占い結果COする';
+    if (roleId !== ROLE_ID_FORTUNE_TELLER) {
+      id = 'fakeFortuneTellerCO';
+      text = '騙り占い結果COする';
+    }
     f.buttonObjects.push(new Button(
-      'FortuneTellerCO',
-      '占い結果COする',
+      id,
+      text,
       'center',
       CLASS_GLINK_DEFAULT
     ));
+
     f.buttonObjects.push(new Button(
       'noCO',
       '何もしない',
@@ -641,7 +656,6 @@
       CLASS_GLINK_DEFAULT
     ));
   [endscript]
-  [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 [endmacro]
 
 
@@ -716,7 +730,7 @@
 [endmacro]
 
 
-; 議論フェーズのアクションを誰が実行するかを判定し、実行するアクションオブジェクトをf.doActionObjectに入れる
+; 議論フェイズのアクションを誰が実行するかを判定し、実行するアクションオブジェクトをf.doActionObjectに入れる
 [macro name="j_setDoActionObject"]
   [iscript]
     // PCがアクションボタンでアクション指定済みならPC
@@ -838,6 +852,9 @@
 ; @param actionObject アクションオブジェクト {characterId:アクション実行するキャラクターID, actionId:実行するアクションID, targetId:アクション対象のキャラクターID} 必須
 [macro name="j_doAction"]
   [iscript]
+    // アクション実行中フラグ
+    f.isDoingAction = true;
+
     // アクションボタン用変数の初期化（PCからのボタン先行入力を受け付けられるように消す。セリフとリアクションにはマクロ変数をcloneしたオブジェクト渡すのでこのタイミングで消して問題ない）
     f.doActionObject = {};
     f.pcActionObject = {};
@@ -866,6 +883,9 @@
 
   ; リアクションのセリフ表示
   [m_doAction_reaction actionObject="&f.actionObject"]
+
+  ; アクション実行中フラグを折る
+  [eval exp="f.isDoingAction = false"]
 [endmacro]
 
 
@@ -1172,17 +1192,6 @@
 [endmacro]
 
 
-; TODO 現状使っていないマクロ。完全に不要になったら消す。
-[macro name="j_displayRoles"]
-役職公開[r]
-ずんだもん：[emb exp="f.characterObjects.zundamon.role.roleName"]、
-四国めたん：[emb exp="f.characterObjects.metan.role.roleName"]、
-春日部つむぎ：[emb exp="f.characterObjects.tsumugi.role.roleName"]、
-雨晴はう：[emb exp="f.characterObjects.hau.role.roleName"]、
-波音リツ：[emb exp="f.characterObjects.ritsu.role.roleName"][p]
-[endmacro]
-
-
 ; Fixレイヤーのボタンを表示する。表示中のボタンは指定されても再表示はしない。
 ; ボタンの消去は[j_clearFixButton]で行うこと。
 ; 以下のマクロ変数を全て省略すると、全てのボタンを表示する。
@@ -1190,6 +1199,7 @@
 ; @param menu メニューボタンを表示する
 ; @param backlog バックログボタンを表示する
 ; @param status ステータスボタンを表示する
+; @param pauseMenu ポーズメニューボタンを表示する（チャプター再生中用）
 ; ※引数に'ignore'を設定すると、引数を指定しなかった場合と同様にそのボタンには何もしない。'ignore'以外を渡すと通常のボタンを表示する
 ; ※以下は特殊なボタンを表示したい場合に設定する引数
 ; status="nofix": fix属性ではないかつrole="sleepgame"指定もしないステータスボタン
@@ -1203,10 +1213,12 @@
         action: null,
         menu: null,
         backlog: null,
-        status: null
+        status: null,
+        pauseMenu: null,
       };
     };
 
+    // TODO pauseMenuを追加すると多分未定義出る気がする。forで回すのはf.displaingButtonがいいかもしれない。
     for (let button in mp) {
       if (mp[button] === 'ignore') {
         // 'ignore'が渡されてきた場合、引数を指定しなかった場合と同様にそのボタンには何もしない
@@ -1217,7 +1229,7 @@
       }
     }
 
-    // 一つも引数に指定されていないなら、全て表示する。一つでも指定されているなら引数通りとする。
+    // 一つも引数に指定されていないなら、全て表示する。一つでも指定されているなら引数通りとする。(基本的に人狼中を想定しているので、pauseMenuは判定・表示対象外)
     if (!(('action' in mp) || ('menu' in mp) || ('backlog' in mp) || ('status' in mp))) {
       mp.action = 'normal';
       mp.menu = 'normal';
@@ -1229,20 +1241,18 @@
   [endscript]
 
   [if exp="!f.displaingButton.action && mp.action"]
-    [button graphic="button/button_action_normal.png" storage="action.ks" target="*start" x="23" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_action" enterimg="button/button_action_hover.png"]
+    [button graphic="button/button_action_normal.png" storage="action.ks" target="*start" x="23" y="17" width="100" height="100" fix="true" role="sleepgame" name="button_j_fix,button_j_action" enterimg="button/button_action_hover.png"]
     [eval exp="f.displaingButton.action = mp.action"]
   [endif]
 
   [if exp="!f.displaingButton.menu && mp.menu"]
-    ; ステータス画面→メニュー画面に遷移する用。ステータス画面自体がrole="sleepgame"で遷移する画面なので、そこから遷移するためのボタンにはfix属性やrole="sleepgame"を指定しない。
-    [button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMainFromStatus" x="868" y="23" width="114" height="103" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
     ; 通常画面→メニュー画面に遷移する用。
-    ;[button graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="868" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
+    [button cond="mp.menu === 'normal'" graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="1200" y="17" width="70" height="100" fix="true" role="sleepgame" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
     [eval exp="f.displaingButton.menu = mp.menu"]
   [endif]
 
   [if exp="!f.displaingButton.backlog && mp.backlog"]
-    [button graphic="button/button_backlog_normal.png" x="1006" y="23" width="114" height="103" fix="true" role="backlog" name="button_j_fix,button_j_backlog" enterimg="button/button_backlog_hover.png"]
+    [button graphic="button/button_backlog_normal.png" x="1118" y="17" width="70" height="100" fix="true" role="backlog" name="button_j_fix,button_j_backlog" enterimg="button/button_backlog_hover.png"]
     [eval exp="f.displaingButton.backlog = mp.backlog"]
   [endif]
 
@@ -1255,13 +1265,17 @@
 
   [if exp="!f.displaingButton.status && mp.status"]
     ; 通常画面→ステータス画面への遷移
-    [button cond="mp.status === 'normal'" graphic="button/button_status_normal.png" storage="statusJinro.ks" target="*statusJinroMain" x="1143" y="23" width="114" height="103" fix="true" role="sleepgame" name="button_j_fix,button_j_status" enterimg="button/button_status_hover.png"]
-    ; sleepgame中の画面（メニュー画面、アクション選択中）→ステータス画面への遷移
-    [button cond="mp.status === 'nofix'" graphic="button/button_status_normal.png" storage="statusJinro.ks" target="*statusJinroMain" x="1143" y="23" width="114" height="103" name="button_j_fix,button_j_status" enterimg="button/button_status_hover.png"]
+    [button cond="mp.status === 'normal'" graphic="button/button_status_normal.png" storage="statusJinro.ks" target="*statusJinroMain" x="1005" y="17" width="100" height="100" fix="true" role="sleepgame" name="button_j_fix,button_j_status" enterimg="button/button_status_hover.png"]
     ; ステータス画面→元の画面へ戻る遷移
-    [button cond="mp.status === 'nofix_click'" graphic="button/button_status_click.png" storage="statusJinro.ks" target="*awake" x="1143" y="23" width="114" height="103" enterimg="button/button_status_hover.png"]
+    [button cond="mp.status === 'nofix_click'" graphic="button/button_return_selected.png" storage="statusJinro.ks" target="*awake" x="1005" y="17" width="100" height="100" enterimg="button/button_return_hover.png"]
 
     [eval exp="f.displaingButton.status = mp.status"]
+  [endif]
+
+
+  [if exp="!f.displaingButton.pauseMenu && mp.pauseMenu"]
+    [button graphic="button/button_menu_normal.png" storage="theater/pauseMenu.ks" target="*start" x="1200" y="17" width="70" height="100" fix="true" role="sleepgame" name="button_j_fix,button_j_pauseMenu" enterimg="button/button_menu_hover.png"]
+    [eval exp="f.displaingButton.pauseMenu = mp.pauseMenu"]
   [endif]
 [endmacro]
 
@@ -1273,15 +1287,17 @@
 ; @param menu メニューボタンを消去する（※"false"を渡すとtrue判定になるので注意）
 ; @param backlog バックログボタンを消去する（※"false"を渡すとtrue判定になるので注意）
 ; @param status ステータスボタンを消去する（※"false"を渡すとtrue判定になるので注意）
+; @param pauseMenu ポーズメニューボタンを消去する（チャプター再生中用）（※"false"を渡すとtrue判定になるので注意）
 [macro name="j_clearFixButton"]
   [iscript]
     // [j_displayFixButton]は実行済みでf.displaingButtonは存在している前提とする。
     // 一つもマクロ変数に指定されていないなら、全て消去する。一つでも指定されているならマクロ変数通りとする。
-    if (!(('action' in mp) || ('menu' in mp) || ('backlog' in mp) || ('status' in mp))) {
+    if (!(('action' in mp) || ('menu' in mp) || ('backlog' in mp) || ('status' in mp) || ('pauseMenu' in mp))) {
       mp.action = true;
       mp.menu = true;
       mp.backlog = true;
       mp.status = true;
+      mp.pauseMenu = true;
     }
     console.log('消去');
     console.log(mp);
@@ -1306,6 +1322,11 @@
     [clearfix name="button_j_status"]
     [eval exp="f.displaingButton.status = null"]
   [endif]
+
+  [if exp="f.displaingButton.pauseMenu && mp.pauseMenu"]
+    [clearfix name="button_j_pauseMenu"]
+    [eval exp="f.displaingButton.pauseMenu = null"]
+  [endif]
 [endmacro]
 
 
@@ -1323,7 +1344,7 @@
 [endmacro]
 
 
-; 保存済みのTixレイヤーのボタンの表示ステータスを読み込み、復元するマクロ
+; 保存済みのFixレイヤーのボタンの表示ステータスを読み込み、復元するマクロ
 ; [j_saveFixButton]は実行済みでf.saveButtonは存在している前提とする。
 ; @param buf 必須。保存バッファ。任意のキー名を指定すること。保存済みのキー名から復元する。キーが存在しない場合はエラー（未考慮）
 [macro name="j_loadFixButton"]
@@ -1346,8 +1367,8 @@
       }
     }
   [endscript]
-  [j_clearFixButton action="&tf.tmpClearButton.action" menu="&tf.tmpClearButton.menu" backlog="&tf.tmpClearButton.backlog" status="&tf.tmpClearButton.status"]
-  [j_displayFixButton action="&tf.tmpDisplayButton.action" menu="&tf.tmpDisplayButton.menu" backlog="&tf.tmpDisplayButton.backlog" status="&tf.tmpDisplayButton.status"]
+  [j_clearFixButton action="&tf.tmpClearButton.action" menu="&tf.tmpClearButton.menu" backlog="&tf.tmpClearButton.backlog" status="&tf.tmpClearButton.status" pauseMenu="&tf.tmpClearButton.pauseMenu"]
+  [j_displayFixButton action="&tf.tmpDisplayButton.action" menu="&tf.tmpDisplayButton.menu" backlog="&tf.tmpDisplayButton.backlog" status="&tf.tmpDisplayButton.status" pauseMenu="&tf.tmpDisplayButton.pauseMenu"]
 [endmacro]
 
 
@@ -1385,7 +1406,7 @@
     [playse storage="shock1.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
     ; 昨夜の襲撃結果が襲撃成功の場合
     ; キャラを登場させ、メッセージ表示
-    [m_changeCharacter characterId="&f.bitingObjectLastNight.targetId" face="normal"]
+    [m_changeCharacter characterId="&f.bitingObjectLastNight.targetId" face="lose"]
     [emb exp="f.characterObjects[f.bitingObjectLastNight.targetId].name + 'は無残な姿で発見されました……。'"][p]
 
     ; 噛まれたということは人狼ではないので、視点オブジェクトを更新する（TODO：人狼以外にも噛まれない役職が増えたら修正する）
@@ -1402,10 +1423,6 @@
 
   [playbgm storage="nc282335.ogg" loop="true" volume="11" restart="false"]
   [bg storage="living_day_nc238325.jpg" time="1000" wait="true" effect="fadeInUp"]
-
-  ; PCが生存していれば再度画面に登場させる
-  [m_changeCharacter characterId="&f.playerCharacterId" face="normal" cond="f.characterObjects[f.playerCharacterId].isAlive"]
-
 [endmacro]
 
 
