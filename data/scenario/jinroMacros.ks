@@ -749,13 +749,13 @@
 
 ; NPCの中からアクション実行候補者、実行するアクション、アクションの対象キャラクターを決定し、
 ; f.doActionCandidateIdとf.npcActionObjectに格納する。
+; また、アクション実行しようとした全候補者をf.doActionAllCandidatesObjectに格納する（フラストレーション増加用）
 [macro name="j_decideDoActionByNPC"]
   [iscript]
     // 変数の初期化
     f.npcActionObject = {};
     f.doActionCandidateId = '';
-    let doActionCandidateIdArray = [];
-    let maxProbability = 0;
+    f.doActionAllCandidatesObject = {};
 
     for (let cId of Object.keys(f.characterObjects)) {
       // プレイヤー、死亡済みのキャラクターは除外
@@ -769,19 +769,14 @@
       // アクション実行したくない判定なら除外
       if (!doesAction) continue;
 
-      // アクション実行確率の値が現在保存中の最大の確率を超過していれば、キャラクターIDをアクション実行候補配列に格納する
-      if (probability > maxProbability) {
-        doActionCandidateIdArray = [cId];
-        maxProbability = probability;
-      } else if (probability == maxProbability) {
-        // アクション実行確率の値が現在の比較用の値と同値なら、キャラクターIDを候補配列に追加する
-        doActionCandidateIdArray.push(cId);
-      }
+      // アクション実行全候補者オブジェクトにcharacterId: probability形式で追加する
+      f.doActionAllCandidatesObject[cId] = probability;
     }
-    console.log('doActionCandidateIdArray:');
-    console.log(doActionCandidateIdArray);
+    console.log('f.doActionAllCandidatesObject:');
+    console.log(f.doActionAllCandidatesObject);
 
-    // アクション実行候補配列に候補が1人ならその対象を、複数ならランダムで、アクション実行候補者に決定する
+    // アクション実行全候補者オブジェクトに候補が1人ならその対象を、複数ならランダムで、アクション実行候補者に決定する
+    const doActionCandidateIdArray = getMaxKeys(f.doActionAllCandidatesObject);
     if (doActionCandidateIdArray.length == 1) {
       f.doActionCandidateId = doActionCandidateIdArray[0];
     } else if (doActionCandidateIdArray.length >= 2) {
@@ -872,6 +867,9 @@
     updateReliabirityForAction(f.characterObjects, f.actionObject);
     // アクション実行者の主張力を下げて、同日中は再発言しにくくする
     f.characterObjects[f.actionObject.characterId].personality.assertiveness.current -= f.characterObjects[f.actionObject.characterId].personality.assertiveness.decrease;
+
+    // アクション実行できなかったキャラのフラストレーションを溜める
+    increaseFrustration(f.characterObjects, f.participantsIdList, f.doActionAllCandidatesObject, f.actionObject.characterId);
 
     // アクション実行履歴オブジェクトに、アクションオブジェクトを保存する
     let timeStr = getTimeStr();

@@ -1184,3 +1184,25 @@ function getCharacterIdByReliability(characterObject, needsMax) {
 
   return targetCharacterId;
 }
+
+
+/**
+ * アクション実行できなかったキャラのフラストレーションを溜める
+ * @param {Object} characterObjects キャラクターオブジェクト
+ * @param {Array} participantsIdList 参加者のキャラクターID配列
+ * @param {Object} doActionAllCandidatesObject アクション実行全候補者オブジェクト
+ * @param {String} actorId アクション実行者のキャラクターID
+ */
+function increaseFrustration(characterObjects, participantsIdList, doActionAllCandidatesObject, actorId) {
+  // 生存者のキャラクターオブジェクト配列を取得
+  const survivorObjects = getSurvivorObjects(characterObjects);
+  // フラストレーション軽減用係数を事前に取得
+  const frustrationDecreasingRate = getFrustrationDecreasingRate(survivorObjects, participantsIdList);
+
+  for (let cId of Object.keys(doActionAllCandidatesObject)) {
+    // 実際に実行できたキャラは除外する
+    if (cId === actorId) continue;
+    // 「そのときの主張力 * 軽減用係数」の値を、実行者に対するフラストレーションとして溜める
+    characterObjects[cId].currentFrustration[actorId] += (doActionAllCandidatesObject[cId] * frustrationDecreasingRate);
+  }
+}
