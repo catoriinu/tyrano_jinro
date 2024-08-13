@@ -7,7 +7,8 @@
  * @param {Number} registanceMultiplier 抵抗力。倍率なので基準は1
  * @param {Object} adjustmentRegistanceMultiplier 抵抗力調整オブジェクト。アクションや実行者ごとに抵抗力に倍率を掛けられる
  * @param {Number} assertiveness 主張力
- * @param {Object} roleCOProbability 役職ごとのCO確率オブジェクト
+ * @param {Number} limitFrustration アクション実行を横取りされたときに溜まるフラストレーションの限界値。カウンターアクション判定用
+ * @param {Object} roleCOProbability 役職ごとのCO確率オブジェクト 
  * @param {Object} feelingBorder 感情の境界値オブジェクト
  */
 function Personality(
@@ -17,7 +18,9 @@ function Personality(
   adjustmentInfluenceMultiplier,
   registanceMultiplier,
   adjustmentRegistanceMultiplier,
-  assertiveness, roleCOProbability,
+  assertiveness,
+  limitFrustration,
+  roleCOProbability,
   feelingBorder
 ) {
   this.name = name;
@@ -27,6 +30,7 @@ function Personality(
   this.adjustmentRegistanceMultiplier = adjustmentRegistanceMultiplier;
   this.logical = logical;
   this.assertiveness = assertiveness;
+  this.limitFrustration = limitFrustration;
   this.roleCOProbability = roleCOProbability;
   this.feelingBorder = feelingBorder;
 }
@@ -53,6 +57,7 @@ function Personality_tester() {
       current: 1,   // 現在の値（判定処理にはcurrentを用いる）
       decrease: 0.3 // 減少値（発言一回ごとに減少値分currentを減らす）
     },
+    3,
     // COProbability {自身のRoleId : その役職としてCOする可能性}
     {
       [ROLE_ID_FORTUNE_TELLER]: {
@@ -95,6 +100,7 @@ function Personality_zundamon() {
       current: 1,   // 現在の値（判定処理にはcurrentを用いる）
       decrease: 0.1 // 減少値（発言一回ごとに減少値分currentを減らす）
     },
+    3,
     // COProbability {自身のRoleId : その役職としてCOする可能性}
     {
       [ROLE_ID_FORTUNE_TELLER]: {
@@ -139,6 +145,7 @@ function Personality_metan() {
       current: 1,   // 現在の値（判定処理にはcurrentを用いる）
       decrease: 0.3 // 減少値（発言一回ごとに減少値分currentを減らす）
     },
+    3,
     // COProbability {自身のRoleId : その役職としてCOする可能性}
     {
       [ROLE_ID_FORTUNE_TELLER]: {
@@ -181,6 +188,7 @@ function Personality_tsumugi() {
       current: 1.1,   // 現在の値（判定処理にはcurrentを用いる）
       decrease: 0.25 // 減少値（発言一回ごとに減少値分currentを減らす）
     },
+    3,
     // COProbability {自身のRoleId : その役職としてCOする可能性}
     {
       [ROLE_ID_FORTUNE_TELLER]: {
@@ -226,6 +234,7 @@ function Personality_hau() {
       current: 0.9,   // 現在の値（判定処理にはcurrentを用いる）
       decrease: 0.3 // 減少値（発言一回ごとに減少値分currentを減らす）
     },
+    3,
     // COProbability {自身のRoleId : その役職としてCOする可能性}
     {
       [ROLE_ID_FORTUNE_TELLER]: {
@@ -270,6 +279,7 @@ function Personality_ritsu() {
       current: 1,   // 現在の値（判定処理にはcurrentを用いる）
       decrease: 0.3 // 減少値（発言一回ごとに減少値分currentを減らす）
     },
+    3,
     // COProbability {自身のRoleId : その役職としてCOする可能性}
     {
       [ROLE_ID_FORTUNE_TELLER]: {

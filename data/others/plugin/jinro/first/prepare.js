@@ -180,6 +180,9 @@ function initializeCharacterObjectsForJinro(villagersRoleIdList, participantObje
   // 信頼度オブジェクトを各自のcharacterObject.reliabilityに格納する
   setDefaultReliability(characterObjects, TYRANO.kag.stat.f.participantsIdList);
 
+  // 現在のフラストレーションオブジェクトを各自のcharacterObject.currentFrustrationに格納する
+  setDefaultCurrentFrustration(characterObjects, TYRANO.kag.stat.f.participantsIdList);
+
   // キャラクターオブジェクト配列と役職ID配列をティラノのゲーム変数に格納する
   TYRANO.kag.stat.f.characterObjects = characterObjects;
   TYRANO.kag.stat.f.villagersRoleIdList = villagersRoleIdList;
@@ -267,6 +270,22 @@ function setReliability() {
   let max = 0.7;
   let min = 0.3;
   return Math.random() * (max - min) + min;
+}
+
+
+/**
+ * 初期状態の、各キャラの現在のフラストレーションオブジェクトを生成する
+ * @param {Array} characterObjects キャラクターオブジェクト配列。このメソッド内でcurrentFrustrationを更新する。
+ * @param {Array} participantsIdList 参加者のキャラクターID配列
+ */
+function setDefaultCurrentFrustration(characterObjects, participantsIdList) {
+  for (let characterId of Object.keys(characterObjects)) {
+    let currentFrustrationObject = {};
+    for (let i = 0; i < participantsIdList.length; i++) {
+      currentFrustrationObject[participantsIdList[i]] = 0;
+    }
+    characterObjects[characterId].currentFrustration = currentFrustrationObject;
+  }
 }
 
 

@@ -262,13 +262,28 @@ function daytimeInitialize() {
   // 再投票カウントを初期化する
   TYRANO.kag.stat.f.revoteCount = 0;
 
-  // ゲーム変数のキャラクターオブジェクトに対する初期化
-  for (let cId of Object.keys(TYRANO.kag.stat.f.characterObjects)) {
+  // 以下、生存者のキャラクターオブジェクトに対してのみ行う初期化
+  // 生存者のキャラクターオブジェクト配列を取得
+  const survivorObjects = getSurvivorObjects(TYRANO.kag.stat.f.characterObjects);
+  // フラストレーション軽減用係数を事前に取得
+  const frustrationDecreasingRate = getFrustrationDecreasingRate(survivorObjects, TYRANO.kag.stat.f.participantsIdList);
+
+  const survivorIdList = getValuesFromObjectArray(survivorObjects, 'characterId');
+  for (let cId of survivorIdList) {
     // 今日のCO済みフラグをfalseに戻す
     TYRANO.kag.stat.f.characterObjects[cId].isDoneTodaysCO = false;
 
     // 主張力のcurrentをoriginalと同値に戻す
     TYRANO.kag.stat.f.characterObjects[cId].personality.assertiveness.current = TYRANO.kag.stat.f.characterObjects[cId].personality.assertiveness.original;
+
+    // 現在のフラストレーションを軽減させる
+    // MEMO:軽減対象は生存者のみで十分だが、生存者かの判定をするのが面倒なので、全員一律で軽減させる。何らかの不都合が起きたら修正する
+    for (let targetId of TYRANO.kag.stat.f.participantsIdList) {
+      
+      TYRANO.kag.stat.f.characterObjects[cId].currentFrustration[targetId] *= frustrationDecreasingRate;
+    }
+    console.log(cId + ' currentFrustration:');
+    console.log(TYRANO.kag.stat.f.characterObjects[cId].currentFrustration);
   }
 }
 
@@ -332,6 +347,17 @@ function initializeDoActionHistoryForNow(doActionHistory, day, isDaytime) {
 
 function getTimeStr(isDaytime = TYRANO.kag.stat.f.isDaytime) {
   return isDaytime ? 'daytime' : 'night';
+}
+
+
+/**
+ * フラストレーション低減率を算出して返却する
+ * @param {Array} survivorObjects 生存者のキャラクターオブジェクト配列
+ * @param {Array} participantsIdList 参加者のキャラクターID配列
+ */
+function getFrustrationDecreasingRate(survivorObjects, participantsIdList) {
+  // 生存者数 / 全参加者数 する。すなわち全員生存時は1をとり、人数が減るごとに減っていく
+  return survivorObjects.length / participantsIdList.length;
 }
 
 
