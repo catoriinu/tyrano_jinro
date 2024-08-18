@@ -623,6 +623,8 @@ function updateReliabirityForAction(characterObjects, actionObject) {
       updateReliabirityForSucpect(characterObjects[cId], actionObject, influenceMultiplier);
     } else if (actionObject.actionId == ACTION_TRUST) {
       updateReliabirityForTrust(characterObjects[cId], actionObject, influenceMultiplier);
+    } else if (actionObject.actionId == ACTION_TALK_TOO_MUCH) {
+      updateReliabirityForTalkTooMuch(characterObjects[cId], actionObject, influenceMultiplier);
     } else if (actionObject.actionId == ACTION_ASK) {
       // TODO
     } else if (actionObject.actionId == ACTION_VOTE) {
@@ -643,8 +645,6 @@ function updateReliabirityForAction(characterObjects, actionObject) {
     // そのためには投票もアクションオブジェクトを流用する必要がありそう。
     // →占いは集約完了、破綻は集約しない（相手がいるアクションについての信頼度集約のみにする方針。破綻は相手がいないため）
   }
-  // TODO ACTION_TALK_TOO_MUCHも追加する
-
 
   // ログ出力
   loggingObjects(characterObjects, actionObject);
@@ -678,7 +678,7 @@ function updateReliabirityForFortuneTellingToWerewolves(character, action, influ
 
   } else {
     // 第三者である場合
-    // 占ったキャラと占われたキャラへの仲間度と感情を取得
+    // 占ったキャラと占われたキャラへの感情を取得
     const feelingForCharacter = getFeeling(character, utility.sameFactionPossivility[action.characterId]);
     const feelingForTarget = getFeeling(character, utility.sameFactionPossivility[action.targetId]);
 
@@ -792,9 +792,8 @@ function updateReliabirityForSucpect(character, action, influenceMultiplier) {
     utility.updateReliability(-0.3, action.characterId);
 
   } else {
-    console.log('第三者である場合');
     // 第三者である場合
-    // 疑ったキャラと疑われたキャラへの仲間度と感情を取得
+    // 疑ったキャラと疑われたキャラへの感情を取得
     const feelingForCharacter = getFeeling(character, utility.sameFactionPossivility[action.characterId]);
     const feelingForTarget = getFeeling(character, utility.sameFactionPossivility[action.targetId]);
 
@@ -853,9 +852,8 @@ function updateReliabirityForTrust(character, action, influenceMultiplier) {
     utility.updateReliability(0.3, action.characterId);
 
   } else {
-    console.log('第三者である場合');
     // 第三者である場合
-    // 信じたキャラと信じられたキャラへの仲間度と感情を取得
+    // 信じたキャラと信じられたキャラへの感情を取得
     const feelingForCharacter = getFeeling(character, utility.sameFactionPossivility[action.characterId]);
     const feelingForTarget = getFeeling(character, utility.sameFactionPossivility[action.targetId]);
 
@@ -878,6 +876,43 @@ function updateReliabirityForTrust(character, action, influenceMultiplier) {
     utility.updateReliability((0.1 + bonusValueForCharacter), action.characterId);
     // 信じられたキャラへの信頼度を上げる
     utility.updateReliability((0.2 + bonusValueForTarget), action.targetId);
+  }
+}
+
+
+/**
+ * 「喋りすぎ」による信頼度更新を行う
+ * @param {Object} character 信頼度更新を行うキャラクターオブジェクト
+ * @param {Object} action 実行されたアクションオブジェクト
+ * @param {Number} influenceMultiplier アクションの実行者の影響力倍率
+ */
+function updateReliabirityForTalkTooMuch(character, action, influenceMultiplier) {
+
+  const utility = new calcReliabilityUtility(
+    character,
+    action,
+    influenceMultiplier
+  );
+
+  if (character.characterId === action.characterId) {
+    // 「喋りすぎ」だと言ったキャラである場合
+    // 喋りすぎているキャラへの信頼度を下げる
+    utility.updateReliability(-0.1, action.targetId);
+
+    // 「喋りすぎ」を実行したキャラのフラストレーションを半分に軽減する
+    // TODO 本来この信頼度更新メソッドでやるべきことではないので、類似の処理が増えたら別メソッドに分けるなりする
+    TYRANO.kag.stat.f.characterObjects[action.characterId].currentFrustration[action.targetId] *= 0.5;
+
+  } else if (character.characterId === action.targetId) {
+    // 「喋りすぎ」だと言われたキャラである場合
+    // 何もしない
+
+  } else {
+    // 第三者である場合
+    // 喋りすぎているキャラへの信頼度を下げる
+    // 感情にかかわらず問答無用で下げる
+    utility.updateReliability(-0.05, action.targetId);
+
   }
 }
 
@@ -910,8 +945,6 @@ function updateReliabirityForVote(character, action, influenceMultiplier) {
 
   } else {
     // 第三者である場合
-    // 投票したキャラと投票されたキャラへの仲間度と感情を取得
-
     // 投票先のキャラクターID（＝その日のvoteHistoryの末尾のID。最新の再投票先は末尾に追加されているため）を取得
     let voteTargetId = character.voteHistory[TYRANO.kag.stat.f.day].slice(-1)[0];
 

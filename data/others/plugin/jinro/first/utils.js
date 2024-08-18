@@ -279,7 +279,6 @@ function daytimeInitialize() {
     // 現在のフラストレーションを軽減させる
     // MEMO:軽減対象は生存者のみで十分だが、生存者かの判定をするのが面倒なので、全員一律で軽減させる。何らかの不都合が起きたら修正する
     for (let targetId of TYRANO.kag.stat.f.participantsIdList) {
-      
       TYRANO.kag.stat.f.characterObjects[cId].currentFrustration[targetId] *= frustrationDecreasingRate;
     }
     console.log(cId + ' currentFrustration:');
