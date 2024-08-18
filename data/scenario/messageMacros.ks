@@ -67,32 +67,17 @@
 
 
 ; シーン：アクション実行時のセリフ
-; 事前にf.actionObjectにアクションオブジェクトを格納しておくこと
+; 事前にf.actionObjectとf.triggerActionObjectにアクションオブジェクトを格納しておくこと
 [macro name="m_doAction"]
   [iscript]
-    tf.targetLabel = getLabelForDoAction(f.actionObject);
+    tf.targetLabel = getLabelForDoAction(f.actionObject, f.triggerActionObject);
     console.log(tf.targetLabel);
 
-    tf.side = 'left';
+    tf.side = getSideForDoAction(f.actionObject, f.triggerActionObject);
     tf.messageStorage = './message/' + f.actionObject.characterId + '.ks';
     tf.messageTarget = '*doAction' + tf.targetLabel;
   [endscript]
 
-  [call storage="&tf.messageStorage" target="&tf.messageTarget"]
-[endmacro]
-
-
-; シーン：アクション実行対象になった時のセリフ
-; 事前にf.actionObjectにアクションオブジェクトを格納しておくこと
-[macro name="m_doAction_reaction"]
-  [iscript]
-    tf.targetLabel = getLabelForDoActionReaction(f.actionObject);
-    console.log(tf.targetLabel);
-
-    tf.side = 'right';
-    tf.messageStorage = './message/' + f.actionObject.targetId + '.ks';
-    tf.messageTarget = '*doAction_reaction' + tf.targetLabel;
-  [endscript]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
 [endmacro]
 
@@ -208,7 +193,7 @@
 
     // アクション予告メッセージを作成する
     tf.tmpMsg = '～誰も話そうとしていないようです～';
-    if (tf.tmpDoActionObject !== {}) {
+    if (Object.keys(tf.tmpDoActionObject).length > 0) {
       const actorName = f.characterObjects[tf.tmpDoActionObject.characterId].name;
       tf.tmpMsg = '～' + actorName + 'が話そうとしています';
       

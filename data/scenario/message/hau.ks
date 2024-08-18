@@ -323,7 +323,6 @@
 ; シーン：「疑う」アクションの実行対象になった時
 *doAction_reaction_suspect_neutral
 [eval exp="tf.face = 'astonished'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/hau/045_雨晴はう（ノーマル）_どうせ僕なんて、疑….mp3"]
@@ -336,7 +335,6 @@
 
 *doAction_reaction_suspect_love
 [eval exp="tf.face = 'sad'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/hau/046_雨晴はう（ノーマル）_…僕がどんなに頑張….mp3"]
@@ -349,7 +347,6 @@
 
 *doAction_reaction_suspect_hate
 [eval exp="tf.face = 'wrysmile'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/hau/047_雨晴はう（ノーマル）_はいはい、分かりま….mp3"]
@@ -363,7 +360,6 @@
 ; シーン：「信じる」アクションの実行対象になった時
 *doAction_reaction_trust_neutral
 [eval exp="tf.face = '通常'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/hau/048_雨晴はう（ノーマル）_ありがとうございま….mp3"]
@@ -376,7 +372,6 @@
 
 *doAction_reaction_trust_love
 [eval exp="tf.face = 'relieved'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/hau/049_雨晴はう（ノーマル）_あなたと一緒だと心….mp3"]
@@ -389,7 +384,6 @@
 
 *doAction_reaction_trust_hate
 [eval exp="tf.face = 'thinking'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/hau/050_雨晴はう（ノーマル）_…まあ、あなたのこ….mp3"]
@@ -404,6 +398,13 @@
 ; シーン：「聞き出す」アクションの実行対象になった時
 *doAction_reaction_ask
 ぼ、僕ではお役に立てなさそうです。ごめんなさい。[p]
+[return]
+
+
+; シーン：「喋りすぎ」アクション実行時
+*doAction_talkToMuch
+[call storage="./message/utility.ks" target="prepareMessage"]
+そろそろお口にチャックでお願いしますね。[p]
 [return]
 
 

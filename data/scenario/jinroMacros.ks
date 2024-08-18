@@ -730,65 +730,23 @@
 [endmacro]
 
 
-; 議論フェイズのアクションを誰が実行するかを判定し、実行するアクションオブジェクトをf.doActionObjectに入れる
-[macro name="j_setDoActionObject"]
-  [iscript]
-    // PCがアクションボタンでアクション指定済みならPC
-    if (Object.keys(f.pcActionObject).length > 0) {
-      f.doActionObject = f.pcActionObject;
-    } else if (Object.keys(f.npcActionObject).length > 0) {
-      // PCがアクション未指定で、NPCでアクション実行者がいればそのNPC
-      f.doActionObject = f.npcActionObject;
-    } else {
-      // どちらでもなければ実行なし
-      f.doActionObject = {};
-    }
-  [endscript]
-[endmacro]
-
-
 ; NPCの中からアクション実行候補者、実行するアクション、アクションの対象キャラクターを決定し、
 ; f.doActionCandidateIdとf.npcActionObjectに格納する。
-; また、アクション実行しようとした全候補者をf.doActionAllCandidatesObjectに格納する（フラストレーション増加用）
+; また、アクション実行しようとした候補者をf.actionCandidateObjects配列に格納する（フラストレーション増加用）
 [macro name="j_decideDoActionByNPC"]
   [iscript]
     // 変数の初期化
     f.npcActionObject = {};
-    f.doActionCandidateId = '';
-    f.doActionAllCandidatesObject = {};
-
-    for (let cId of Object.keys(f.characterObjects)) {
-      // プレイヤー、死亡済みのキャラクターは除外
-      if (f.characterObjects[cId].isPlayer) continue;
-      if (!f.characterObjects[cId].isAlive) continue;
-
-      // 現在の主張力をもとに、アクション実行確率とアクション実行したいかを取得する
-      console.log('キャラクター: ' + f.characterObjects[cId].name);
-      const [probability, doesAction] = randomDecide(f.characterObjects[cId].personality.assertiveness.current);
-
-      // アクション実行したくない判定なら除外
-      if (!doesAction) continue;
-
-      // アクション実行全候補者オブジェクトにcharacterId: probability形式で追加する
-      f.doActionAllCandidatesObject[cId] = probability;
-    }
-    console.log('f.doActionAllCandidatesObject:');
-    console.log(f.doActionAllCandidatesObject);
-
-    // アクション実行全候補者オブジェクトに候補が1人ならその対象を、複数ならランダムで、アクション実行候補者に決定する
-    const doActionCandidateIdArray = getMaxKeys(f.doActionAllCandidatesObject);
-    if (doActionCandidateIdArray.length == 1) {
-      f.doActionCandidateId = doActionCandidateIdArray[0];
-    } else if (doActionCandidateIdArray.length >= 2) {
-      f.doActionCandidateId = getRandomElement(doActionCandidateIdArray);
-    }
+    // アクション実行候補者を取得
+    f.actionCandidateObjects = getActionCandidateCharacter();
   [endscript]
-  
   ; アクション実行候補者がいなければマクロ終了
-  [jump target="*end_j_decideDoActionByNPC" cond="f.doActionCandidateId == ''"]
+  [jump target="*end_j_decideDoActionByNPC" cond="f.actionCandidateObjects.length === 0"]
 
   ; 実行するアクションとその対象を決定する
   [iscript]
+    f.doActionCandidateId = f.actionCandidateObjects[0].characterId;
+
     // 論理的な判断をするか感情的な判断をするか、論理力をもとに決める
     // MEMO ここで仲間度を用いないのは、仲間度のみに限定すると中途半端な対象しか選択されないため。
     // 論理力の低いキャラでも論理的な判断（＝そのキャラ視点における人狼ゲーム的な正解）で発言するチャンスを設けることで、プレイヤーを悩ませられると思う。
@@ -796,7 +754,7 @@
     const decision = isLogicalDecision ? DECISION_LOGICAL : DECISION_EMOTIONAL;
 
     // 実行するアクションを決める
-    // MEMO 選ばれるアクションは一旦ランダムとする。何らかの基準で比重を変えたい場合はここを修正する。
+    // TODO 選ばれるアクションは一旦ランダムとする。何らかの基準で比重を変えたい場合はここを修正する。
     const actionId = getRandomElement([ACTION_SUSPECT, ACTION_TRUST]);
 
     // アクションの対象を決める
@@ -842,48 +800,96 @@
 [endmacro]
 
 
-; 引数で受け取った、doActionObjectのアクションを実行する
-; 事前に[j_setDoActionObject]の実行が必要
-; @param actionObject アクションオブジェクト {characterId:アクション実行するキャラクターID, actionId:実行するアクションID, targetId:アクション対象のキャラクターID} 必須
+; アクション実行
+; TODO サブルーチン化したい
 [macro name="j_doAction"]
+  [iscript]
+    // 議論フェイズのアクションを誰が実行するかを判定し、実行するアクションオブジェクトをf.triggerActionObjectとf.actionObjectにcloneする
+    // プレイヤーがアクションボタンでアクション指定済みならプレイヤー
+    if (Object.keys(f.pcActionObject).length > 0) {
+      f.actionObject = clone(f.pcActionObject);
+      f.triggerActionObject = clone(f.pcActionObject);
+    } else if (Object.keys(f.npcActionObject).length > 0) {
+      // プレイヤーがアクション未指定で、NPCでアクション実行者がいればそのNPC
+      f.actionObject = clone(f.npcActionObject);
+      f.triggerActionObject = clone(f.npcActionObject);
+    } else {
+      // どちらでもなければ実行なし
+      f.actionObject = {};
+      f.triggerActionObject = {};
+    }
+  [endscript]
+  [jump target="*end_doAction" cond="Object.keys(f.actionObject).length === 0"]
+
   [iscript]
     // アクション実行中フラグ
     f.isDoingAction = true;
 
     // アクションボタン用変数の初期化（PCからのボタン先行入力を受け付けられるように消す。セリフとリアクションにはマクロ変数をcloneしたオブジェクト渡すのでこのタイミングで消して問題ない）
-    f.doActionObject = {};
     f.pcActionObject = {};
     f.npcActionObject = {};
 
-    f.actionObject = clone(mp.actionObject);
+    // アクション実行履歴オブジェクトに、トリガーアクションを0要素目とするアクションオブジェクト配列をpushする
+    const timeStr = getTimeStr();
+    f.doActionHistory[f.day][timeStr].push([f.triggerActionObject]);
 
+    // トリガーアクションで1回のみ行う処理はここでやる
+    // アクション実行者の主張力を下げて、同日中は再発言しにくくする
+    f.characterObjects[f.actionObject.characterId].personality.assertiveness.current -= f.characterObjects[f.actionObject.characterId].personality.assertiveness.decrease;
+    // アクション実行できなかったキャラのフラストレーションを溜める
+    increaseFrustration(f.characterObjects, f.participantsIdList, f.actionCandidateObjects, f.actionObject.characterId);
+  [endscript]
+
+  ; アクション実行、カウンターアクションがある限り続けて実行
+  *doActionImpl
+    [j_doActionImpl]
+  [jump target="*doActionImpl" cond="Object.keys(f.actionObject).length > 0"]
+
+  ; アクション実行中フラグを折る
+  [eval exp="f.isDoingAction = false"]
+
+  *end_doAction
+[endmacro]
+
+
+; アクション実行と、次のカウンターアクションを決定する
+; 事前にf.actionObjectにアクションオブジェクトを設定しておくこと
+; [j_doAction]から呼び出すこと
+[macro name="j_doActionImpl"]
+  [iscript]
     // アクション実行者がプレイヤーの場合、ここで判断基準IDを入れる
-    if (f.actionObject.characterId == f.playerCharacterId) {
+    if (f.actionObject.characterId === f.playerCharacterId) {
       // TODO 信じる：表の視点で同陣営割合が50%以上なら論理的な判断　疑う：表の視点で同陣営割合が50%未満なら論理的な判断
       f.actionObject.decision = DECISION_LOGICAL; //DECISION_EMOTIONAL;
     }
 
     // 全員の信頼度増減
     updateReliabirityForAction(f.characterObjects, f.actionObject);
-    // アクション実行者の主張力を下げて、同日中は再発言しにくくする
-    f.characterObjects[f.actionObject.characterId].personality.assertiveness.current -= f.characterObjects[f.actionObject.characterId].personality.assertiveness.decrease;
-
-    // アクション実行できなかったキャラのフラストレーションを溜める
-    increaseFrustration(f.characterObjects, f.participantsIdList, f.doActionAllCandidatesObject, f.actionObject.characterId);
 
     // アクション実行履歴オブジェクトに、アクションオブジェクトを保存する
-    let timeStr = getTimeStr();
-    f.doActionHistory[f.day][timeStr].push(f.actionObject);
+    const timeStr = getTimeStr();
+    f.doActionHistory[f.day][timeStr].slice(-1)[0].push(f.actionObject);
+ 
+    // 今回のトリガー起因のアクション実行履歴を取得する
+    const triggerActionHistory = f.doActionHistory[f.day][timeStr].slice(-1)[0];
+
+    // カウンターアクションを実行するか判定し、取得
+    f.counterActionObject = getCounterAction(triggerActionHistory);
   [endscript]
 
-  ; セリフ表示
-  [m_doAction actionObject="&f.actionObject"]
+  ; 実行するアクションのセリフ表示
+  [m_doAction]
 
-  ; リアクションのセリフ表示
-  [m_doAction_reaction actionObject="&f.actionObject"]
+  [iscript]
+    // MEMO プレイヤーが能動的にカウンターアクションを実行できるようにするなら、ここでボタン実行結果でf.counterActionObjectを上書きすべき
 
-  ; アクション実行中フラグを折る
-  [eval exp="f.isDoingAction = false"]
+    // 続けてカウンターアクションを実行するならf.actionObjectに移し替える
+    if (Object.keys(f.counterActionObject).length > 0) {
+      f.actionObject = clone(f.counterActionObject);
+    } else {
+      f.actionObject = {};
+    }
+  [endscript]
 [endmacro]
 
 

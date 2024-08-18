@@ -323,7 +323,6 @@ NGリストにぶち込んでやるわ。[p]
 ; シーン：「疑う」アクションの実行対象になった時
 *doAction_reaction_suspect_neutral
 [eval exp="tf.face = 'astonished'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/ritsu/045_波音リツ（ノーマル）_アンタがそう思うな….mp3"]
@@ -337,7 +336,6 @@ NGリストにぶち込んでやるわ。[p]
 
 *doAction_reaction_suspect_love
 [eval exp="tf.face = 'troubled'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/ritsu/046_波音リツ（ノーマル）_ふう、なんとか致命….mp3"]
@@ -350,7 +348,6 @@ NGリストにぶち込んでやるわ。[p]
 
 *doAction_reaction_suspect_hate
 [eval exp="tf.face = 'scorn'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/ritsu/047_波音リツ（ノーマル）_あたしを疑うの？も….mp3"]
@@ -364,7 +361,6 @@ NGリストにぶち込んでやるわ。[p]
 ; シーン：「信じる」アクションの実行対象になった時
 *doAction_reaction_trust_neutral
 [eval exp="tf.face = '通常'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/ritsu/048_波音リツ（ノーマル）_ふふ、嬉しいことを….mp3"]
@@ -377,7 +373,6 @@ NGリストにぶち込んでやるわ。[p]
 
 *doAction_reaction_trust_love
 [eval exp="tf.face = 'laughing'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/ritsu/049_波音リツ（ノーマル）_なんだ、ただの神か。.mp3"]
@@ -390,7 +385,6 @@ NGリストにぶち込んでやるわ。[p]
 
 *doAction_reaction_trust_hate
 [eval exp="tf.face = 'blank'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/ritsu/050_波音リツ（ノーマル）_あっそう。華麗にス….mp3"]
@@ -404,6 +398,13 @@ NGリストにぶち込んでやるわ。[p]
 ; シーン：「聞き出す」アクションの実行対象になった時
 *doAction_reaction_ask
 アンタに教えることなんて何もないわ。[p]
+[return]
+
+
+; シーン：「喋りすぎ」アクション実行時
+*doAction_talkToMuch
+[call storage="./message/utility.ks" target="prepareMessage"]
+半年ROMってなさい。[p]
 [return]
 
 

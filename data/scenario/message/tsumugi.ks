@@ -325,7 +325,6 @@
 ; シーン：「疑う」アクションの実行対象になった時
 *doAction_reaction_suspect_neutral
 [eval exp="tf.face = 'wrysmile'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/tsumugi/047_春日部つむぎ（ノーマル）_そんな風に思われて….mp3"]
@@ -339,7 +338,6 @@
 
 *doAction_reaction_suspect_love
 [eval exp="tf.face = 'regretful'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/tsumugi/048_春日部つむぎ（ノーマル）_あ…うん、今まで馴….mp3"]
@@ -352,7 +350,6 @@
 
 *doAction_reaction_suspect_hate
 [eval exp="tf.face = '通常'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/tsumugi/049_春日部つむぎ（ノーマル）_そっか、分かった。….mp3"]
@@ -366,7 +363,6 @@
 ; シーン：「信じる」アクションの実行対象になった時
 *doAction_reaction_trust_neutral
 [eval exp="tf.face = 'happy'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/tsumugi/050_春日部つむぎ（ノーマル）_マジ？なんか嬉しい….mp3"]
@@ -379,7 +375,6 @@
 
 *doAction_reaction_trust_love
 [eval exp="tf.face = 'smug'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/tsumugi/051_春日部つむぎ（ノーマル）_やった！きみに信じ….mp3"]
@@ -392,7 +387,6 @@
 
 *doAction_reaction_trust_hate
 [eval exp="tf.face = '通常'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/tsumugi/052_春日部つむぎ（ノーマル）_えー？もしきみが激….mp3"]
@@ -407,6 +401,13 @@
 ; シーン：「聞き出す」アクションの実行対象になった時
 *doAction_reaction_ask
 そんなの聞かれても、あーしには分かんないよ…。[p]
+[return]
+
+
+; シーン：「喋りすぎ」アクション実行時
+*doAction_talkToMuch
+[call storage="./message/utility.ks" target="prepareMessage"]
+あーしも言いたいことあったのに！[p]
 [return]
 
 

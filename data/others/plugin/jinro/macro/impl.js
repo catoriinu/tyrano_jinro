@@ -231,31 +231,36 @@ function getLabelForCOFortuneTelling(actionObject) {
 
 /**
  * [m_doAction]からのジャンプ先のtargetに指定するラベルを判定、返却する。
- * @param {Object} actionObject アクションオブジェクト
- * @returns {String} _{アクションID}_{判断基準}
+ * @param {Action} actionObject アクションオブジェクト
+ * @param {Action} triggerActionObject トリガーアクションオブジェクト
+ * @returns {String} _{アクションID}_{アクションによる}
  */
-function getLabelForDoAction(actionObject) {
-  let actionLabel = '_' + actionObject.actionId;
-  let decisionLabel = '_' + actionObject.decision;
+function getLabelForDoAction(actionObject, triggerActionObject) {
 
-  return actionLabel + decisionLabel;
-}
+  const actionId = actionObject.actionId;
+  const actionLabel = '_' + actionId;
 
+  if (actionId === ACTION_SUSPECT || actionId === ACTION_TRUST) {
+    // 「疑う」「信じる」
+    // _{アクションID}_{判断基準}
+    const decisionLabel = '_' + actionObject.decision;
+    return actionLabel + decisionLabel;
 
-/**
- * [m_doAction_reaction]からのジャンプ先のtargetに指定するラベルを判定、返却する。
- * @param {Object} actionObject アクションオブジェクト targetIdにリアクションの発言者、characterIdが元々の発言者。つまり呼び元は何も考えずアクションオブジェクトを渡せばよい。
- * @returns _{アクションID}_{対象者への感情}
- */
-function getLabelForDoActionReaction(actionObject) {
-  let characterId = actionObject.characterId;
-  let actionId = actionObject.actionId;
-  let targetId = actionObject.targetId;
+  } else if (actionId === ACTION_REACTION) {
+    // 「リアクション」
+    // _{アクションID}_{トリガーアクションID}_{対象者への感情}
+    const triggerActionLabel = '_' + triggerActionObject.actionId;
+    // リアクションなので、トリガーアクションの対象者から実行者への感情を取得する
+    const feelingLabel = '_' + getFeelingLabel(
+      triggerActionObject.targetId,
+      triggerActionObject.characterId
+    );
+    return actionLabel + triggerActionLabel + feelingLabel;
+  }
 
-  let actionLabel = '_' + actionId;
-  let feelingLabel = '_' + getFeelingLabel(targetId, characterId); // リアクションなので、対象者から実行者への感情を取得する
-
-  return actionLabel + feelingLabel;
+  // 上記以外
+  // _{アクションID}
+  return actionLabel;
 }
 
 
@@ -275,4 +280,26 @@ function getFeelingLabel(characterId, targetId) {
   );
 
   return getFeeling(characterObject, sameFactionPossivility[targetId]);
+}
+
+
+/**
+ * [m_doAction]実行時のキャラの立ち絵が登場するsideを判定、返却する。
+ * MEMO アクションやカウンターアクションが増えてきたらより詳細に実装する
+ * @param {Action} actionObject アクションオブジェクト
+ * @param {Action} triggerActionObject トリガーアクションオブジェクト
+ * @returns {String} 'left'または'right'
+ */
+function getSideForDoAction(actionObject, triggerActionObject) {
+
+  const actionId = actionObject.actionId;
+
+  if (actionId === ACTION_SUSPECT || actionId === ACTION_TRUST) {
+    // 「疑う」「信じる」
+    return 'left';
+
+  }
+
+  // 上記以外
+  return 'right';
 }

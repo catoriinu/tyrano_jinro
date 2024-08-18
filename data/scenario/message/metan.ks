@@ -313,7 +313,6 @@
 ; シーン：「疑う」アクションの実行対象になった時
 *doAction_reaction_suspect_neutral
 [eval exp="tf.face = 'blank'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/metan/041_四国めたん（ノーマル）_心外ね。あなたはも….mp3"]
@@ -326,7 +325,6 @@
 
 *doAction_reaction_suspect_love
 [eval exp="tf.face = 'panicked'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/metan/042_四国めたん（ノーマル）_わ、わたくしを裏切….mp3"]
@@ -340,7 +338,6 @@
 
 *doAction_reaction_suspect_hate
 [eval exp="tf.face = 'blank'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/metan/043_四国めたん（ノーマル）_そう、わたくしたち….mp3"]
@@ -355,7 +352,6 @@
 ; シーン：「信じる」アクションの実行対象になった時
 *doAction_reaction_trust_neutral
 [eval exp="tf.face = '通常'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/metan/044_四国めたん（ノーマル）_ふふ。わたくしがあ….mp3"]
@@ -368,7 +364,6 @@
 
 *doAction_reaction_trust_love
 [eval exp="tf.face = 'embarrassed'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/metan/045_四国めたん（ノーマル）_べ、別に嬉しくなん….mp3"]
@@ -381,7 +376,6 @@
 
 *doAction_reaction_trust_hate
 [eval exp="tf.face = 'panicked'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/metan/046_四国めたん（ノーマル）_まさか、あなたの口….mp3"]
@@ -391,10 +385,16 @@
 [stopse]
 [return]
 
-
 ; シーン：「聞き出す」アクションの実行対象になった時
 *doAction_reaction_ask
 わたくしに聞かないでちょうだい！[p]
+[return]
+
+
+; シーン：「喋りすぎ」アクション実行時
+*doAction_talkToMuch
+[call storage="./message/utility.ks" target="prepareMessage"]
+よく口が回るのね。[p]
 [return]
 
 

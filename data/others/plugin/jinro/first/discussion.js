@@ -580,14 +580,16 @@ function Button (id, text, side = 'center', color = '', addClasses = [], target 
  * @param {String} actionId 実行したアクションID
  * @param {String} targetId アクションの対象者のキャラクターID（対象をとらないアクションなら不要）
  * @param {Boolean} result アクションの結果。意味はアクションによって異なる。（占い=t:●/f:○, 処刑・襲撃=t:死亡/f:死亡せず）
+ * @param {Number} priority アクションの優先度。カウンターアクション判定用
  * @param {Boolean} isPublic 公開されたアクションか（例：占い=t:CO済み/f:未CO）
  * @param {String} decision そのアクションを実行した判断基準（任意）
  */
-function Action (characterId = '', actionId = '', targetId = '', result = null, isPublic = false, decision = '') {
+function Action (characterId = '', actionId = '', targetId = '', result = null, priority = 0, isPublic = false, decision = '') {
   this.characterId = characterId;
   this.actionId = actionId;
   this.targetId = targetId;
   this.result = result;
+  this.priority = priority
   this.isPublic = isPublic;
   this.decision = decision;
 }
@@ -612,6 +614,8 @@ function updateReliabirityForAction(characterObjects, actionObject) {
 
     // 死亡済みキャラクターはスキップ（プレイヤーはスキップしない。リアクションのために信頼度更新が必要なので）
     if (!characterObjects[cId].isAlive) continue;
+    // リアクションもスキップ。リアクションでは信頼度更新しないため
+    if (actionObject.actionId == ACTION_REACTION) continue;
 
     console.log('character:' + characterObjects[cId].name);
 
@@ -639,6 +643,9 @@ function updateReliabirityForAction(characterObjects, actionObject) {
     // そのためには投票もアクションオブジェクトを流用する必要がありそう。
     // →占いは集約完了、破綻は集約しない（相手がいるアクションについての信頼度集約のみにする方針。破綻は相手がいないため）
   }
+  // TODO ACTION_TALK_TOO_MUCHも追加する
+
+
   // ログ出力
   loggingObjects(characterObjects, actionObject);
 }
@@ -1190,19 +1197,163 @@ function getCharacterIdByReliability(characterObject, needsMax) {
  * アクション実行できなかったキャラのフラストレーションを溜める
  * @param {Object} characterObjects キャラクターオブジェクト
  * @param {Array} participantsIdList 参加者のキャラクターID配列
- * @param {Object} doActionAllCandidatesObject アクション実行全候補者オブジェクト
+ * @param {Object} actionCandidateObjects アクション実行全候補者配列 [アクション実行候補者オブジェクト{characterId: probability,...}]
  * @param {String} actorId アクション実行者のキャラクターID
  */
-function increaseFrustration(characterObjects, participantsIdList, doActionAllCandidatesObject, actorId) {
+function increaseFrustration(characterObjects, participantsIdList, actionCandidateObjects, actorId) {
+  console.log("start increaseFrustration actorId:" + actorId);
+
   // 生存者のキャラクターオブジェクト配列を取得
   const survivorObjects = getSurvivorObjects(characterObjects);
   // フラストレーション軽減用係数を事前に取得
   const frustrationDecreasingRate = getFrustrationDecreasingRate(survivorObjects, participantsIdList);
 
-  for (let cId of Object.keys(doActionAllCandidatesObject)) {
+  for (let candidateObject of actionCandidateObjects) {
     // 実際に実行できたキャラは除外する
-    if (cId === actorId) continue;
+    if (candidateObject.characterId === actorId) continue;
     // 「そのときの主張力 * 軽減用係数」の値を、実行者に対するフラストレーションとして溜める
-    characterObjects[cId].currentFrustration[actorId] += (doActionAllCandidatesObject[cId] * frustrationDecreasingRate);
+    characterObjects[candidateObject.characterId].currentFrustration[actorId] += (candidateObject.probability * frustrationDecreasingRate);
+    console.log("candidateObject:");
+    console.log(candidateObject);
   }
+}
+
+
+/**
+ * 実行するカウンターアクションを決定する
+ * @param {Array} triggerActionHistory 同一トリガーアクション内のアクション履歴配列
+ * @returns 
+ */
+function getCounterAction(triggerActionHistory) {
+  console.log("start getCounterAction");
+
+  // 同一トリガー内でアクション済みのキャラクターを取得する。アクション済みなら候補から外すため
+  const doneActionCharacterIds = getValuesFromObjectArray(triggerActionHistory, 'characterId');
+  // トリガーアクションオブジェクト（同一トリガー内で最初のアクション）
+  const triggerAction = triggerActionHistory[0];
+  // ラストアクションオブジェクト（同一トリガー内で直前に実行されたアクション）
+  const lastAction = triggerActionHistory.slice(-1)[0];
+
+  // 優先度0のカウンターアクションの実行判定
+  if (lastAction.priority <= 0) {
+    const counterActionForPriority0 = getCounterActionForPriority0(triggerAction, doneActionCharacterIds);
+    console.log("getCounterActionForPriority0 result:");
+    console.log(counterActionForPriority0);
+    if (counterActionForPriority0) return counterActionForPriority0;
+  }
+
+  // カウンターアクション実行候補者を、主張力でソートした状態で取得
+  const actionCandidateObjects = getActionCandidateCharacter(doneActionCharacterIds);
+  // 候補者が誰もいなければ終了
+  if (actionCandidateObjects.length === 0) {
+    console.log("getCounterAction result: No ActionCandidateCharacter");
+    return {};
+  }
+
+  // 優先度2のカウンターアクションの実行判定
+  if (lastAction.priority <= 2) {
+    const counterActionForPriority2 = getCounterActionForPriority2(triggerAction, actionCandidateObjects);
+    console.log("getCounterActionForPriority2 result:");
+    console.log(counterActionForPriority2);
+    if (counterActionForPriority2) return counterActionForPriority2;
+  }
+
+  console.log("getCounterAction result: No CounterAction");
+  return {};
+}
+
+
+/**
+ * 優先度0のカウンターアクションの実行判定
+ * @param {Action} triggerAction トリガーアクションオブジェクト
+ * @param {Array} doneActionCharacterIds アクション実行済みキャラクターID配列
+ * @returns 実行するアクションオブジェクト。何も実行しない場合undefined
+ */
+function getCounterActionForPriority0(triggerAction, doneActionCharacterIds) {
+  // トリガーアクションが「信じる」「疑う」のとき
+  if (triggerAction.actionId === ACTION_TRUST || triggerAction.actionId === ACTION_SUSPECT) {
+    // 「リアクション」
+    // 実行条件：トリガーアクションの対象者が同一トリガー内で未アクションである
+    if (!doneActionCharacterIds.includes(triggerAction.targetId)) {
+      return new Action(
+        triggerAction.targetId,
+        ACTION_REACTION,
+        triggerAction.characterId,
+        null,
+        0
+      );
+    }
+  }
+}
+
+
+/**
+ * 優先度2のカウンターアクションの実行判定
+ * @param {Action} triggerAction トリガーアクションオブジェクト
+ * @param {Array} actionCandidateObjects アクション実行候補者オブジェクト配列
+ * @returns 実行するアクションオブジェクト。何も実行しない場合undefined
+ */
+function getCounterActionForPriority2(triggerAction, actionCandidateObjects) {
+  // 実行候補者でループ
+  for (let candidateObject of actionCandidateObjects) {
+    const doCounterActorId = candidateObject.characterId;
+
+    // トリガーアクションが「信じる」「疑う」のとき
+    if (triggerAction.actionId === ACTION_TRUST || triggerAction.actionId === ACTION_SUSPECT) {
+      // 「喋りすぎ」
+      // 実行条件：トリガーアクションの実行者へのフラストレーションが限界値を超えている場合
+      const characterObject = TYRANO.kag.stat.f.characterObjects[doCounterActorId];
+      const currentFrustrationValue = characterObject.currentFrustration[triggerAction.characterId];
+      const limitFrustration = characterObject.personality.limitFrustration;
+      if (currentFrustrationValue > limitFrustration) {
+        return new Action(
+          doCounterActorId,
+          ACTION_TALK_TOO_MUCH,
+          triggerAction.characterId,
+          null,
+          2
+        );
+      }
+    }
+  }
+}
+
+
+/**
+ * アクション実行しようとしている全候補者を、主張力が高い順にソートして配列形式で返却する
+ * プレイヤー、死亡済みのキャラクターは自動的に除外する
+ * @param {Array} excludeCharacterIds 実行対象から明示的に除外するキャラクターID配列
+ * @returns [アクション実行候補者オブジェクト{characterId: probability,...}]
+ */
+function getActionCandidateCharacter(excludeCharacterIds = []) {
+  const characterObjects = TYRANO.kag.stat.f.characterObjects;
+  const actionCandidateObjects = [];
+
+  for (let cId of Object.keys(characterObjects)) {
+    // プレイヤー、死亡済みのキャラクターは除外
+    if (characterObjects[cId].isPlayer) continue;
+    if (!characterObjects[cId].isAlive) continue;
+
+    // 除外する配列に含まれるなら除外
+    if (excludeCharacterIds.includes(cId)) continue;
+
+    // 現在の主張力をもとに、アクション実行確率とアクション実行したいかを取得する
+    console.log('キャラクター: ' + characterObjects[cId].name);
+    const [probability, doesAction] = randomDecide(characterObjects[cId].personality.assertiveness.current);
+
+    // アクション実行したくない判定なら除外
+    if (!doesAction) continue;
+
+    // アクション実行全候補者配列に{characterId: probability}形式で追加する
+    actionCandidateObjects.push({
+      characterId: cId,
+      probability: probability
+    });
+  }
+
+  // probabilityの大きい順にソート（すなわち、配列の要素による逆順ソート）
+  actionCandidateObjects.sort((a, b) => b.probability - a.probability);
+  console.log('ActionCandidateCharacter result:');
+  console.log(actionCandidateObjects);
+  return actionCandidateObjects;
 }

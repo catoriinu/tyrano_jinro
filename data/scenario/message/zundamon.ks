@@ -412,7 +412,6 @@
 ; シーン：「疑う」アクションの実行対象になった時
 *doAction_reaction_suspect_neutral
 [eval exp="tf.face = 'surprised'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [playse storage="chara/zundamon/082_ずんだもん（ノーマル）_ぼ、僕は人狼じゃな….mp3"]
@@ -423,7 +422,6 @@
 
 *doAction_reaction_suspect_love
 [eval exp="tf.face = 'sad'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [playse storage="chara/zundamon/083_ずんだもん（ノーマル）_違うのだ！僕じゃな….mp3"]
@@ -434,7 +432,6 @@
 
 *doAction_reaction_suspect_hate
 [eval exp="tf.face = 'panicked'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [playse storage="chara/zundamon/084_ずんだもん（ノーマル）_そう言うオマエこそ….mp3"]
@@ -446,7 +443,6 @@
 ; シーン：「信じる」アクションの実行対象になった時
 *doAction_reaction_trust_neutral
 [eval exp="tf.face = '通常'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [playse storage="chara/zundamon/085_ずんだもん（ノーマル）_信じてくれてありが….mp3"]
@@ -457,7 +453,6 @@
 
 *doAction_reaction_trust_love
 [eval exp="tf.face = 'happy'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [playse storage="chara/zundamon/086_ずんだもん（ノーマル）_嬉しいのだ！そう言….mp3"]
@@ -468,7 +463,6 @@
 
 *doAction_reaction_trust_hate
 [eval exp="tf.face = 'panicked'"]
-[eval exp="tf.reaction = true"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [playse storage="chara/zundamon/087_ずんだもん（ノーマル）_…本当にそう思って….mp3"]
@@ -483,6 +477,12 @@
 もうなんにも分からないのだ……！[p]
 [return]
 
+
+; シーン：「喋りすぎ」アクション実行時
+*doAction_talkToMuch
+[call storage="./message/utility.ks" target="prepareMessage"]
+お前ばっかりズルいのだ！僕にも喋らせるのだ！ [p]
+[return]
 
 
 ; chooseWhoToBite

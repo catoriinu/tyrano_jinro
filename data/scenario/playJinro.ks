@@ -238,11 +238,8 @@
 ; 現在のラウンド数と次のNPCのアクションを表示する
 [m_displayRoundAndNextActionInDiscussionPhase]
 
-; アクション実行
-[j_setDoActionObject]
-[if exp="Object.keys(f.doActionObject).length > 0"]
-  [j_doAction actionObject="&f.doActionObject"]
-[endif]
+; アクション実行（実行者がいなければ何もしない）
+[j_doAction]
 
 ; 議論フェイズを繰り返す
 [jump target="*startDiscussionLoop"]

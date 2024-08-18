@@ -120,6 +120,8 @@ const ACTION_FORTUNE_TELLING = 'fortuneTelling'; // 占う
 const ACTION_VOTE = 'vote'; // 投票
 const ACTION_EXECUTE = 'execute'; // 処刑。投票による吊り・追放（死亡処理アクション）
 const ACTION_BITE = 'bite'; // 襲撃。人狼による噛み（死亡処理アクション）
+const ACTION_REACTION = 'reaction'; // リアクション（カウンターアクション 優先度0）
+const ACTION_TALK_TOO_MUCH = 'talkToMuch'; // 喋りすぎ（カウンターアクション 優先度2）
 
 // 判断基準
 const DECISION_LOGICAL = 'logical'; // 論理的な判断
