@@ -39,7 +39,7 @@
 
 
 *COFortuneTelling_true_love_alive
-[eval exp="tf.face = 'troubled'"]
+[eval exp="tf.face = '困惑'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_negative"]
@@ -53,7 +53,7 @@
 
 
 *COFortuneTelling_true_hate_alive
-[eval exp="tf.face = 'scorn'"]
+[eval exp="tf.face = '煽り'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_positive"]
@@ -81,7 +81,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *COFortuneTelling_false_love_alive
-[eval exp="tf.face = 'laughing'"]
+[eval exp="tf.face = '笑顔'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_positive"]
@@ -95,7 +95,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *COFortuneTelling_false_hate_alive
-[eval exp="tf.face = 'scorn'"]
+[eval exp="tf.face = '煽り'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -123,7 +123,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *COFortuneTelling_false_love_died
-[eval exp="tf.face = 'angry'"]
+[eval exp="tf.face = '怒り'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -137,7 +137,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *COFortuneTelling_false_hate_died
-[eval exp="tf.face = 'astonished'"]
+[eval exp="tf.face = 'ため息'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -218,7 +218,7 @@ NGリストにぶち込んでやるわ。[p]
 ; シーン：「疑う」アクション実行時
 ; NOTE:事前にf.actionObjectにアクションオブジェクトを格納しておくこと
 *doAction_suspect_logical
-[eval exp="tf.face = 'scorn'"]
+[eval exp="tf.face = '煽り'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 [add_playselist storage="chara/ritsu/030_波音リツ（ノーマル）_X、人狼はアンタよ！.mp3"]
@@ -264,7 +264,7 @@ NGリストにぶち込んでやるわ。[p]
 
 ; シーン：「信じる」アクション実行時
 *doAction_trust_logical
-[eval exp="tf.face = 'laughing'"]
+[eval exp="tf.face = '笑顔'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 [add_playselist storage="chara/ritsu/039_波音リツ（ノーマル）_Xはあたしの仲間よ。.mp3"]
@@ -322,7 +322,7 @@ NGリストにぶち込んでやるわ。[p]
 ; ※targetIdの方がこのサブルーチンのキャラクターであること
 ; シーン：「疑う」アクションの実行対象になった時
 *doAction_reaction_suspect_neutral
-[eval exp="tf.face = 'astonished'"]
+[eval exp="tf.face = 'ため息'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/ritsu/045_波音リツ（ノーマル）_アンタがそう思うな….mp3"]
@@ -335,7 +335,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *doAction_reaction_suspect_love
-[eval exp="tf.face = 'troubled'"]
+[eval exp="tf.face = '困惑'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/ritsu/046_波音リツ（ノーマル）_ふう、なんとか致命….mp3"]
@@ -347,7 +347,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *doAction_reaction_suspect_hate
-[eval exp="tf.face = 'scorn'"]
+[eval exp="tf.face = '煽り'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/ritsu/047_波音リツ（ノーマル）_あたしを疑うの？も….mp3"]
@@ -372,7 +372,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *doAction_reaction_trust_love
-[eval exp="tf.face = 'laughing'"]
+[eval exp="tf.face = '笑顔'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/ritsu/049_波音リツ（ノーマル）_なんだ、ただの神か。.mp3"]
@@ -384,7 +384,7 @@ NGリストにぶち込んでやるわ。[p]
 
 
 *doAction_reaction_trust_hate
-[eval exp="tf.face = 'blank'"]
+[eval exp="tf.face = '真顔'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/ritsu/050_波音リツ（ノーマル）_あっそう。華麗にス….mp3"]
@@ -403,7 +403,7 @@ NGリストにぶち込んでやるわ。[p]
 
 ; シーン：「喋りすぎ」アクション実行時
 *doAction_talkToMuch
-[eval exp="tf.face = 'angry'"]
+[eval exp="tf.face = '怒り'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [playse storage="chara/ritsu/052_波音リツ_連投はネチケット違….ogg" sprite_time="50-20000"]
 
@@ -414,7 +414,7 @@ NGリストにぶち込んでやるわ。[p]
 ; executed
 ; シーン：投票により処刑対象に決まったときの反応
 *executed
-[eval exp="tf.face = 'astonished'"]
+[eval exp="tf.face = 'ため息'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [add_playselist storage="chara/ritsu/052_波音リツ（ノーマル）_安価は絶対……。あ….mp3"]
 [playselist]

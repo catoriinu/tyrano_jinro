@@ -35,7 +35,7 @@
 
 
 *noticeRole_fortuneTeller
-[eval exp="tf.face = 'happy'"]
+[eval exp="tf.face = '大喜び'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [playse storage="chara/zundamon/002_ずんだもん（ノーマル）_僕は占い師なのだ。….mp3"]
 
@@ -46,7 +46,7 @@
 
 
 *noticeRole_werewolf
-[eval exp="tf.face = 'proud'"]
+[eval exp="tf.face = 'ドヤ顔'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [playse storage="chara/zundamon/003_ずんだもん（ノーマル）_僕は人狼……。みん….mp3"]
 
@@ -57,7 +57,7 @@
 
 
 *noticeRole_madman
-[eval exp="tf.face = 'smug'"]
+[eval exp="tf.face = '自惚れ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [playse storage="chara/zundamon/004_ずんだもん（ノーマル）_僕は狂人なのだ……….mp3"]
 
@@ -73,7 +73,7 @@
 ; NOTE:事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 ; 備考：PCのみ想定
 *announcedFortuneTellingResult_true
-[eval exp="tf.face = 'surprised'"]
+[eval exp="tf.face = '驚き'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
@@ -119,7 +119,7 @@
 ; シーン：前日の占い結果をCOするときのセリフ
 ; NOTE:事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 *COFortuneTelling_true_neutral_alive
-[eval exp="tf.face = 'proud'"]
+[eval exp="tf.face = 'ドヤ顔'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_positive"]
@@ -133,7 +133,7 @@
 
 
 *COFortuneTelling_true_love_alive
-[eval exp="tf.face = 'sad'"]
+[eval exp="tf.face = '悲しみ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_negative"]
@@ -147,7 +147,7 @@
 
 
 *COFortuneTelling_true_hate_alive
-[eval exp="tf.face = 'proud'"]
+[eval exp="tf.face = 'ドヤ顔'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_positive"]
@@ -175,7 +175,7 @@
 
 
 *COFortuneTelling_false_love_alive
-[eval exp="tf.face = 'happy'"]
+[eval exp="tf.face = '大喜び'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_positive"]
@@ -189,7 +189,7 @@
 
 
 *COFortuneTelling_false_hate_alive
-[eval exp="tf.face = 'panicked'"]
+[eval exp="tf.face = '呆れ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -203,7 +203,7 @@
 
 
 *COFortuneTelling_false_neutral_died
-[eval exp="tf.face = 'panicked'"]
+[eval exp="tf.face = '呆れ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -217,7 +217,7 @@
 
 
 *COFortuneTelling_false_love_died
-[eval exp="tf.face = 'sad'"]
+[eval exp="tf.face = '悲しみ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -231,7 +231,7 @@
 
 
 *COFortuneTelling_false_hate_died
-[eval exp="tf.face = 'panicked'"]
+[eval exp="tf.face = '呆れ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -312,7 +312,7 @@
 ; シーン：「疑う」アクション実行時
 ; NOTE:事前にf.actionObjectにアクションオブジェクトを格納しておくこと
 *doAction_suspect_logical
-[eval exp="tf.face = 'smug'"]
+[eval exp="tf.face = '自惚れ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 
@@ -333,7 +333,7 @@
 
 
 *doAction_suspect_emotional
-[eval exp="tf.face = 'troubled'"]
+[eval exp="tf.face = '困惑'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 
@@ -376,7 +376,7 @@
 
 
 *doAction_trust_emotional
-[eval exp="tf.face = 'happy'"]
+[eval exp="tf.face = '大喜び'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 
@@ -411,7 +411,7 @@
 ; ※targetIdの方がこのサブルーチンのキャラクターであること
 ; シーン：「疑う」アクションの実行対象になった時
 *doAction_reaction_suspect_neutral
-[eval exp="tf.face = 'surprised'"]
+[eval exp="tf.face = '驚き'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [playse storage="chara/zundamon/082_ずんだもん（ノーマル）_ぼ、僕は人狼じゃな….mp3"]
@@ -421,7 +421,7 @@
 
 
 *doAction_reaction_suspect_love
-[eval exp="tf.face = 'sad'"]
+[eval exp="tf.face = '悲しみ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [playse storage="chara/zundamon/083_ずんだもん（ノーマル）_違うのだ！僕じゃな….mp3"]
@@ -431,7 +431,7 @@
 
 
 *doAction_reaction_suspect_hate
-[eval exp="tf.face = 'panicked'"]
+[eval exp="tf.face = '呆れ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [playse storage="chara/zundamon/084_ずんだもん（ノーマル）_そう言うオマエこそ….mp3"]
@@ -452,7 +452,7 @@
 
 
 *doAction_reaction_trust_love
-[eval exp="tf.face = 'happy'"]
+[eval exp="tf.face = '大喜び'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [playse storage="chara/zundamon/086_ずんだもん（ノーマル）_嬉しいのだ！そう言….mp3"]
@@ -462,7 +462,7 @@
 
 
 *doAction_reaction_trust_hate
-[eval exp="tf.face = 'panicked'"]
+[eval exp="tf.face = '呆れ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [playse storage="chara/zundamon/087_ずんだもん（ノーマル）_…本当にそう思って….mp3"]
@@ -480,7 +480,7 @@
 
 ; シーン：「喋りすぎ」アクション実行時
 *doAction_talkToMuch
-[eval exp="tf.face = 'surprised'"]
+[eval exp="tf.face = '驚き'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [playse storage="chara/zundamon/089_ずんだもん_オマエばっかりズル….ogg" sprite_time="50-20000"]
 
@@ -491,7 +491,7 @@
 ; chooseWhoToBite
 ; シーン：人狼で、誰を噛むか選ぶときのセリフ
 *chooseWhoToBite
-[eval exp="tf.face = 'proud'"]
+[eval exp="tf.face = 'ドヤ顔'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [playse storage="chara/zundamon/089_ずんだもん（ノーマル）_くくく、今夜は誰を….mp3"]
 
@@ -505,7 +505,7 @@
 ; executed
 ; シーン：投票により処刑対象に決まったときの反応
 *executed
-[eval exp="tf.face = 'surprised'"]
+[eval exp="tf.face = '驚き'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [playse storage="chara/zundamon/090_ずんだもん（ノーマル）_なんでなのだ！僕は….mp3"]
 

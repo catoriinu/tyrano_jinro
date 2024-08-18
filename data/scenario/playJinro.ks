@@ -267,7 +267,8 @@
 [m_changeFrameWithId]
 # 
 [if exp="f.characterObjects[f.playerCharacterId].isAlive"]
-  [m_changeCharacter characterId="&f.playerCharacterId" face="thinking" side="left"]
+  ; TODO 現状、ずんだもん専用。汎用的にしたい
+  [m_changeCharacter characterId="&f.playerCharacterId" face="考える" side="left"]
   投票するキャラクターを選択してください。
 [else]
   あなたは退場済みなので投票できません。

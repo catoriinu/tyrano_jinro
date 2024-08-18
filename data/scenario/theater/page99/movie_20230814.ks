@@ -56,11 +56,11 @@
 [playse storage="chara/miko/movie_20230814/006_櫻歌ミコ（ノーマル）_どれくらい？.mp3"]
 どれくらい？[p]
 
-[m_changeCharacterFrameName name="もち子さん" face="tired"]
+[m_changeCharacterFrameName name="もち子さん" face="げっそり"]
 [playse storage="chara/mochiko/movie_20230814/007_もち子さん（ノーマル）_はうちゃんよりはち….mp3"]
 はうちゃんよりはちょっとマシなくらい…。[p]
 
-[m_changeCharacterFrameName name="櫻歌ミコ" face="sad"]
+[m_changeCharacterFrameName name="櫻歌ミコ" face="悲しみ"]
 [playse storage="chara/miko/movie_20230814/008_櫻歌ミコ（ノーマル）_あっ….mp3"]
 あっ…（察し）[p]
 
@@ -113,7 +113,7 @@
 裏側では完成版リリースに向けた機能追加をしたり、[r]
 シナリオを書いたりしてますが、まだ詳しくは見せられません。[p]
 
-[m_changeCharacterFrameName name="櫻歌ミコ" face="astonished"]
+[m_changeCharacterFrameName name="櫻歌ミコ" face="やれやれ"]
 [playse storage="chara/miko/movie_20230814/019_櫻歌ミコ（ノーマル）_勿体ぶるね。.mp3"]
 勿体ぶるね。[p]
 
@@ -248,7 +248,7 @@
 [playse storage="chara/mochiko/movie_20230814/047_もち子さん（ノーマル）_ミコちゃんに食べて….mp3"]
 ミコちゃんに食べてもらうためにも頑張ります！[p]
 
-[m_changeCharacterFrameName name="櫻歌ミコ" face="embarrassed"]
+[m_changeCharacterFrameName name="櫻歌ミコ" face="恥ずかしい"]
 [playse storage="chara/miko/movie_20230814/048_櫻歌ミコ（ロリ）_…あのね、もち子ち….mp3"]
 …あのね、もち子ちゃんとは一緒に人狼になりたい…かも。[p]
 

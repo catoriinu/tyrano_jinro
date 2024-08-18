@@ -25,7 +25,7 @@
 ; シーン：前日の占い結果をCOするときのセリフ
 ; NOTE:事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 *COFortuneTelling_true_neutral_alive
-[eval exp="tf.face = 'smug'"]
+[eval exp="tf.face = 'クスクス'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_positive"]
@@ -39,7 +39,7 @@
 
 
 *COFortuneTelling_true_love_alive
-[eval exp="tf.face = 'serious'"]
+[eval exp="tf.face = '真剣'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_positive"]
@@ -53,7 +53,7 @@
 
 
 *COFortuneTelling_true_hate_alive
-[eval exp="tf.face = 'blank'"]
+[eval exp="tf.face = '目閉じ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_positive"]
@@ -81,7 +81,7 @@
 
 
 *COFortuneTelling_false_love_alive
-[eval exp="tf.face = 'smug'"]
+[eval exp="tf.face = 'クスクス'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_positive"]
@@ -95,7 +95,7 @@
 
 
 *COFortuneTelling_false_hate_alive
-[eval exp="tf.face = 'panicked'"]
+[eval exp="tf.face = '困惑'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -109,7 +109,7 @@
 
 
 *COFortuneTelling_false_neutral_died
-[eval exp="tf.face = 'blank'"]
+[eval exp="tf.face = '目閉じ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -123,7 +123,7 @@
 
 
 *COFortuneTelling_false_love_died
-[eval exp="tf.face = 'sad'"]
+[eval exp="tf.face = '悲しみ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -137,7 +137,7 @@
 
 
 *COFortuneTelling_false_hate_died
-[eval exp="tf.face = 'blank'"]
+[eval exp="tf.face = '目閉じ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -231,7 +231,7 @@
 
 
 *doAction_suspect_emotional
-[eval exp="tf.face = 'serious'"]
+[eval exp="tf.face = '真剣'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 [add_playselist storage="chara/metan/022_四国めたん（ノーマル）_X、そろそろ認めた….mp3"]
@@ -277,7 +277,7 @@
 
 
 *doAction_trust_emotional
-[eval exp="tf.face = 'smug'"]
+[eval exp="tf.face = 'クスクス'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 [add_playselist storage="chara/metan/031_四国めたん（ノーマル）_X、わたくしと共に….mp3"]
@@ -312,7 +312,7 @@
 ; ※targetIdの方がこのサブルーチンのキャラクターであること
 ; シーン：「疑う」アクションの実行対象になった時
 *doAction_reaction_suspect_neutral
-[eval exp="tf.face = 'blank'"]
+[eval exp="tf.face = '目閉じ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/metan/041_四国めたん（ノーマル）_心外ね。あなたはも….mp3"]
@@ -324,7 +324,7 @@
 
 
 *doAction_reaction_suspect_love
-[eval exp="tf.face = 'panicked'"]
+[eval exp="tf.face = '困惑'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/metan/042_四国めたん（ノーマル）_わ、わたくしを裏切….mp3"]
@@ -337,7 +337,7 @@
 
 
 *doAction_reaction_suspect_hate
-[eval exp="tf.face = 'blank'"]
+[eval exp="tf.face = '目閉じ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/metan/043_四国めたん（ノーマル）_そう、わたくしたち….mp3"]
@@ -363,7 +363,7 @@
 
 
 *doAction_reaction_trust_love
-[eval exp="tf.face = 'embarrassed'"]
+[eval exp="tf.face = '恥ずかしい'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/metan/045_四国めたん（ノーマル）_べ、別に嬉しくなん….mp3"]
@@ -375,7 +375,7 @@
 
 
 *doAction_reaction_trust_hate
-[eval exp="tf.face = 'panicked'"]
+[eval exp="tf.face = '困惑'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/metan/046_四国めたん（ノーマル）_まさか、あなたの口….mp3"]
@@ -393,7 +393,7 @@
 
 ; シーン：「喋りすぎ」アクション実行時
 *doAction_talkToMuch
-[eval exp="tf.face = 'serious'"]
+[eval exp="tf.face = '真剣'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [playse storage="chara/metan/048_四国めたん_そのよく回る口を封….ogg" sprite_time="50-20000"]
 
@@ -404,7 +404,7 @@
 ; executed
 ; シーン：投票により処刑対象に決まったときの反応
 *executed
-[eval exp="tf.face = 'sad'"]
+[eval exp="tf.face = '悲しみ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [add_playselist storage="chara/metan/048_四国めたん（ノーマル）_これがわたくしの運….mp3"]
 [playselist]

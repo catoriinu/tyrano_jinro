@@ -25,7 +25,7 @@
 ; シーン：前日の占い結果をCOするときのセリフ
 ; NOTE:事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 *COFortuneTelling_true_neutral_alive
-[eval exp="tf.face = 'thinking'"]
+[eval exp="tf.face = '考える'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_negative"]
@@ -39,7 +39,7 @@
 
 
 *COFortuneTelling_true_love_alive
-[eval exp="tf.face = 'sad'"]
+[eval exp="tf.face = '悲しみ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_negative"]
@@ -67,7 +67,7 @@
 
 
 *COFortuneTelling_false_neutral_alive
-[eval exp="tf.face = 'relieved'"]
+[eval exp="tf.face = '安心'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_positive"]
@@ -81,7 +81,7 @@
 
 
 *COFortuneTelling_false_love_alive
-[eval exp="tf.face = 'laughing'"]
+[eval exp="tf.face = '笑顔'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -95,7 +95,7 @@
 
 
 *COFortuneTelling_false_hate_alive
-[eval exp="tf.face = 'wrysmile'"]
+[eval exp="tf.face = '苦笑'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_positive"]
@@ -109,7 +109,7 @@
 
 
 *COFortuneTelling_false_neutral_died
-[eval exp="tf.face = 'astonished'"]
+[eval exp="tf.face = 'ため息'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -123,7 +123,7 @@
 
 
 *COFortuneTelling_false_love_died
-[eval exp="tf.face = 'sad'"]
+[eval exp="tf.face = '悲しみ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -137,7 +137,7 @@
 
 
 *COFortuneTelling_false_hate_died
-[eval exp="tf.face = 'wrysmile'"]
+[eval exp="tf.face = '苦笑'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -218,7 +218,7 @@
 ; シーン：「疑う」アクション実行時
 ; NOTE:事前にf.actionObjectにアクションオブジェクトを格納しておくこと
 *doAction_suspect_logical
-[eval exp="tf.face = 'thinking'"]
+[eval exp="tf.face = '考える'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 [add_playselist storage="chara/hau/030_雨晴はう（ノーマル）_人狼はXですよね？.mp3"]
@@ -241,7 +241,7 @@
 
 
 *doAction_suspect_emotional
-[eval exp="tf.face = 'astonished'"]
+[eval exp="tf.face = 'ため息'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 [add_playselist storage="chara/hau/026_雨晴はう（ノーマル）_僕はXが怪しいと思….mp3"]
@@ -264,7 +264,7 @@
 
 ; シーン：「信じる」アクション実行時
 *doAction_trust_logical
-[eval exp="tf.face = 'laughing'"]
+[eval exp="tf.face = '笑顔'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 [add_playselist storage="chara/hau/039_雨晴はう（ノーマル）_Xは信頼に値する方….mp3"]
@@ -287,7 +287,7 @@
 
 
 *doAction_trust_emotional
-[eval exp="tf.face = 'relieved'"]
+[eval exp="tf.face = '安心'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 [add_playselist storage="chara/hau/035_雨晴はう（ノーマル）_Xはきっと大丈夫で….mp3"]
@@ -322,7 +322,7 @@
 ; ※targetIdの方がこのサブルーチンのキャラクターであること
 ; シーン：「疑う」アクションの実行対象になった時
 *doAction_reaction_suspect_neutral
-[eval exp="tf.face = 'astonished'"]
+[eval exp="tf.face = 'ため息'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/hau/045_雨晴はう（ノーマル）_どうせ僕なんて、疑….mp3"]
@@ -334,7 +334,7 @@
 
 
 *doAction_reaction_suspect_love
-[eval exp="tf.face = 'sad'"]
+[eval exp="tf.face = '悲しみ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/hau/046_雨晴はう（ノーマル）_…僕がどんなに頑張….mp3"]
@@ -346,7 +346,7 @@
 
 
 *doAction_reaction_suspect_hate
-[eval exp="tf.face = 'wrysmile'"]
+[eval exp="tf.face = '苦笑'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/hau/047_雨晴はう（ノーマル）_はいはい、分かりま….mp3"]
@@ -371,7 +371,7 @@
 
 
 *doAction_reaction_trust_love
-[eval exp="tf.face = 'relieved'"]
+[eval exp="tf.face = '安心'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/hau/049_雨晴はう（ノーマル）_あなたと一緒だと心….mp3"]
@@ -383,7 +383,7 @@
 
 
 *doAction_reaction_trust_hate
-[eval exp="tf.face = 'thinking'"]
+[eval exp="tf.face = '考える'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/hau/050_雨晴はう（ノーマル）_…まあ、あなたのこ….mp3"]
@@ -403,7 +403,7 @@
 
 ; シーン：「喋りすぎ」アクション実行時
 *doAction_talkToMuch
-[eval exp="tf.face = 'wrysmile'"]
+[eval exp="tf.face = '苦笑'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [playse storage="chara/hau/052_雨晴はう_あの…そろそろお口….ogg" sprite_time="50-20000"]
 
@@ -414,7 +414,7 @@
 ; executed
 ; シーン：投票により処刑対象に決まったときの反応
 *executed
-[eval exp="tf.face = 'tired'"]
+[eval exp="tf.face = 'げっそり'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [add_playselist storage="chara/hau/052_雨晴はう（ノーマル）_これ以上、頑張らな….mp3"]
 [playselist]

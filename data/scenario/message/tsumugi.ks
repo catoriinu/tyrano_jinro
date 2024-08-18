@@ -39,7 +39,7 @@
 
 
 *COFortuneTelling_true_love_alive
-[eval exp="tf.face = 'sad'"]
+[eval exp="tf.face = '悲しみ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_negative"]
@@ -53,7 +53,7 @@
 
 
 *COFortuneTelling_true_hate_alive
-[eval exp="tf.face = 'regretful'"]
+[eval exp="tf.face = 'ガッカリ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_negative"]
@@ -81,7 +81,7 @@
 
 
 *COFortuneTelling_false_love_alive
-[eval exp="tf.face = 'excited'"]
+[eval exp="tf.face = 'ワクワク'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_positive"]
@@ -95,7 +95,7 @@
 
 
 *COFortuneTelling_false_hate_alive
-[eval exp="tf.face = 'regretful'"]
+[eval exp="tf.face = 'ガッカリ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -109,7 +109,7 @@
 
 
 *COFortuneTelling_false_neutral_died
-[eval exp="tf.face = 'regretful'"]
+[eval exp="tf.face = 'ガッカリ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -123,7 +123,7 @@
 
 
 *COFortuneTelling_false_love_died
-[eval exp="tf.face = 'sad'"]
+[eval exp="tf.face = '悲しみ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -137,7 +137,7 @@
 
 
 *COFortuneTelling_false_hate_died
-[eval exp="tf.face = 'regretful'"]
+[eval exp="tf.face = 'ガッカリ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
@@ -218,7 +218,7 @@
 ; シーン：「疑う」アクション実行時
 ; NOTE:事前にf.actionObjectにアクションオブジェクトを格納しておくこと
 *doAction_suspect_logical
-[eval exp="tf.face = 'smug'"]
+[eval exp="tf.face = 'テンアゲ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [add_playselist storage="chara/tsumugi/031_春日部つむぎ（ノーマル）_あーし、全部分かっ….mp3"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
@@ -265,7 +265,7 @@
 
 ; シーン：「信じる」アクション実行時
 *doAction_trust_logical
-[eval exp="tf.face = 'smug'"]
+[eval exp="tf.face = 'テンアゲ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 [add_playselist storage="chara/tsumugi/041_春日部つむぎ（ノーマル）_Xとあーしは最強の….mp3"]
@@ -288,7 +288,7 @@
 
 
 *doAction_trust_emotional
-[eval exp="tf.face = 'excited'"]
+[eval exp="tf.face = 'ワクワク'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 [add_playselist storage="chara/tsumugi/036_春日部つむぎ（ノーマル）_あーしはXを味方だ….mp3"]
@@ -324,7 +324,7 @@
 ; ※targetIdの方がこのサブルーチンのキャラクターであること
 ; シーン：「疑う」アクションの実行対象になった時
 *doAction_reaction_suspect_neutral
-[eval exp="tf.face = 'wrysmile'"]
+[eval exp="tf.face = '苦笑'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/tsumugi/047_春日部つむぎ（ノーマル）_そんな風に思われて….mp3"]
@@ -337,7 +337,7 @@
 
 
 *doAction_reaction_suspect_love
-[eval exp="tf.face = 'regretful'"]
+[eval exp="tf.face = 'ガッカリ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/tsumugi/048_春日部つむぎ（ノーマル）_あ…うん、今まで馴….mp3"]
@@ -362,7 +362,7 @@
 
 ; シーン：「信じる」アクションの実行対象になった時
 *doAction_reaction_trust_neutral
-[eval exp="tf.face = 'happy'"]
+[eval exp="tf.face = 'ニコニコ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/tsumugi/050_春日部つむぎ（ノーマル）_マジ？なんか嬉しい….mp3"]
@@ -374,7 +374,7 @@
 
 
 *doAction_reaction_trust_love
-[eval exp="tf.face = 'smug'"]
+[eval exp="tf.face = 'テンアゲ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [add_playselist storage="chara/tsumugi/051_春日部つむぎ（ノーマル）_やった！きみに信じ….mp3"]
@@ -406,7 +406,7 @@
 
 ; シーン：「喋りすぎ」アクション実行時
 *doAction_talkToMuch
-[eval exp="tf.face = 'regretful'"]
+[eval exp="tf.face = 'ガッカリ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [playse storage="chara/tsumugi/054_春日部つむぎ_もう！あーしも言い….ogg" sprite_time="50-20000"]
 
@@ -417,7 +417,7 @@
 ; executed
 ; シーン：投票により処刑対象に決まったときの反応
 *executed
-[eval exp="tf.face = 'sad'"]
+[eval exp="tf.face = '悲しみ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [add_playselist storage="chara/tsumugi/054_春日部つむぎ（ノーマル）_うそ、あーし選ばれ….mp3"]
 [playselist]

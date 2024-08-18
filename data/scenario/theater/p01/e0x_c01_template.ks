@@ -34,7 +34,7 @@ tf.playbgmParams = {
 
 
 ; セリフ例
-;[m_changeCharacterFrameName name="ずんだもん" face="deny"]
+;[m_changeCharacterFrameName name="ずんだもん" face="否定"]
 ;[playse storage="chara/zundamon/01-01/001_ずんだもん（なみだめ）_うわあ！？ない！な….ogg" sprite_time="50-20000"]
 ;うわあああ！？ない！ないのだ！[p]
 
