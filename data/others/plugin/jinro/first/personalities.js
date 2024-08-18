@@ -57,7 +57,7 @@ function Personality_tester() {
       current: 1,   // 現在の値（判定処理にはcurrentを用いる）
       decrease: 0.3 // 減少値（発言一回ごとに減少値分currentを減らす）
     },
-    3,
+    1.7,
     // COProbability {自身のRoleId : その役職としてCOする可能性}
     {
       [ROLE_ID_FORTUNE_TELLER]: {
@@ -100,7 +100,7 @@ function Personality_zundamon() {
       current: 1,   // 現在の値（判定処理にはcurrentを用いる）
       decrease: 0.1 // 減少値（発言一回ごとに減少値分currentを減らす）
     },
-    3,
+    1.8,
     // COProbability {自身のRoleId : その役職としてCOする可能性}
     {
       [ROLE_ID_FORTUNE_TELLER]: {
@@ -143,9 +143,9 @@ function Personality_metan() {
     { // assertiveness 主張力（originalとcurrentは同値にすること）
       original: 1,  // 元々の値（毎日currentをoriginalで初期化する）
       current: 1,   // 現在の値（判定処理にはcurrentを用いる）
-      decrease: 0.3 // 減少値（発言一回ごとに減少値分currentを減らす）
+      decrease: 0.25 // 減少値（発言一回ごとに減少値分currentを減らす）
     },
-    3,
+    1.8,
     // COProbability {自身のRoleId : その役職としてCOする可能性}
     {
       [ROLE_ID_FORTUNE_TELLER]: {
@@ -186,9 +186,9 @@ function Personality_tsumugi() {
     { // assertiveness 主張力（originalとcurrentは同値にすること）
       original: 1.1,  // 元々の値（毎日currentをoriginalで初期化する）
       current: 1.1,   // 現在の値（判定処理にはcurrentを用いる）
-      decrease: 0.25 // 減少値（発言一回ごとに減少値分currentを減らす）
+      decrease: 0.2 // 減少値（発言一回ごとに減少値分currentを減らす）
     },
-    3,
+    1.7,
     // COProbability {自身のRoleId : その役職としてCOする可能性}
     {
       [ROLE_ID_FORTUNE_TELLER]: {
@@ -232,9 +232,9 @@ function Personality_hau() {
     { // assertiveness 主張力（originalとcurrentは同値にすること）
       original: 0.9,  // 元々の値（毎日currentをoriginalで初期化する）
       current: 0.9,   // 現在の値（判定処理にはcurrentを用いる）
-      decrease: 0.3 // 減少値（発言一回ごとに減少値分currentを減らす）
+      decrease: 0.25 // 減少値（発言一回ごとに減少値分currentを減らす）
     },
-    3,
+    1.8,
     // COProbability {自身のRoleId : その役職としてCOする可能性}
     {
       [ROLE_ID_FORTUNE_TELLER]: {
@@ -277,9 +277,9 @@ function Personality_ritsu() {
     { // assertiveness 主張力（originalとcurrentは同値にすること）
       original: 1,  // 元々の値（毎日currentをoriginalで初期化する）
       current: 1,   // 現在の値（判定処理にはcurrentを用いる）
-      decrease: 0.3 // 減少値（発言一回ごとに減少値分currentを減らす）
+      decrease: 0.25 // 減少値（発言一回ごとに減少値分currentを減らす）
     },
-    3,
+    1.7,
     // COProbability {自身のRoleId : その役職としてCOする可能性}
     {
       [ROLE_ID_FORTUNE_TELLER]: {

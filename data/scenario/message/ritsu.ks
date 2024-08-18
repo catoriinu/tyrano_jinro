@@ -403,8 +403,11 @@ NGリストにぶち込んでやるわ。[p]
 
 ; シーン：「喋りすぎ」アクション実行時
 *doAction_talkToMuch
+[eval exp="tf.face = 'angry'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-半年ROMってなさい。[p]
+[playse storage="chara/ritsu/052_波音リツ_連投はネチケット違….ogg" sprite_time="50-20000"]
+
+連投はネチケット違反よ。半年ROMってなさい。[p]
 [return]
 
 
@@ -486,6 +489,7 @@ NGリストにぶち込んでやるわ。[p]
       "data/sound/chara/ritsu/050_波音リツ（ノーマル）_あっそう。華麗にス….mp3",
       "data/sound/chara/ritsu/051_波音リツ（ノーマル）_アンタに教えること….mp3",
       "data/sound/chara/ritsu/052_波音リツ（ノーマル）_安価は絶対……。あ….mp3",
+      "data/sound/chara/ritsu/052_波音リツ_連投はネチケット違….ogg",
     );
   [endscript]
 [return]

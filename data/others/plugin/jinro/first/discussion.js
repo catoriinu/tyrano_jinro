@@ -899,9 +899,9 @@ function updateReliabirityForTalkTooMuch(character, action, influenceMultiplier)
     // 喋りすぎているキャラへの信頼度を下げる
     utility.updateReliability(-0.1, action.targetId);
 
-    // 「喋りすぎ」を実行したキャラのフラストレーションを半分に軽減する
+    // 「喋りすぎ」を実行したキャラのフラストレーションを1/4に軽減する
     // TODO 本来この信頼度更新メソッドでやるべきことではないので、類似の処理が増えたら別メソッドに分けるなりする
-    TYRANO.kag.stat.f.characterObjects[action.characterId].currentFrustration[action.targetId] *= 0.5;
+    TYRANO.kag.stat.f.characterObjects[action.characterId].currentFrustration[action.targetId] *= 0.25;
 
   } else if (character.characterId === action.targetId) {
     // 「喋りすぎ」だと言われたキャラである場合

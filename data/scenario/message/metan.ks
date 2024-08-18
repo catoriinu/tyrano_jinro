@@ -393,8 +393,11 @@
 
 ; シーン：「喋りすぎ」アクション実行時
 *doAction_talkToMuch
+[eval exp="tf.face = 'serious'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-よく口が回るのね。[p]
+[playse storage="chara/metan/048_四国めたん_そのよく回る口を封….ogg" sprite_time="50-20000"]
+
+そのよく回る口を封印できる魔導書はどこかしら？[p]
 [return]
 
 
@@ -472,6 +475,7 @@
       "data/sound/chara/metan/046_四国めたん（ノーマル）_まさか、あなたの口….mp3",
       "data/sound/chara/metan/047_四国めたん（ノーマル）_わたくしに聞かない….mp3",
       "data/sound/chara/metan/048_四国めたん（ノーマル）_これがわたくしの運….mp3",
+      "data/sound/chara/metan/048_四国めたん_そのよく回る口を封….ogg",
     );
   [endscript]
 [return]

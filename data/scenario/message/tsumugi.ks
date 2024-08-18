@@ -406,8 +406,11 @@
 
 ; シーン：「喋りすぎ」アクション実行時
 *doAction_talkToMuch
+[eval exp="tf.face = 'regretful'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-あーしも言いたいことあったのに！[p]
+[playse storage="chara/tsumugi/054_春日部つむぎ_もう！あーしも言い….ogg" sprite_time="50-20000"]
+
+もう！あーしも言いたいことあったのに！[p]
 [return]
 
 
@@ -492,6 +495,7 @@
       "data/sound/chara/tsumugi/052_春日部つむぎ（ノーマル）_えー？もしきみが激….mp3",
       "data/sound/chara/tsumugi/053_春日部つむぎ（ノーマル）_そんなの聞かれても….mp3",
       "data/sound/chara/tsumugi/054_春日部つむぎ（ノーマル）_うそ、あーし選ばれ….mp3",
+      "data/sound/chara/tsumugi/054_春日部つむぎ_もう！あーしも言い….ogg",
     );
   [endscript]
 [return]

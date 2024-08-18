@@ -403,8 +403,11 @@
 
 ; シーン：「喋りすぎ」アクション実行時
 *doAction_talkToMuch
+[eval exp="tf.face = 'wrysmile'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-そろそろお口にチャックでお願いしますね。[p]
+[playse storage="chara/hau/052_雨晴はう_あの…そろそろお口….ogg" sprite_time="50-20000"]
+
+あの…そろそろお口にチャックお願いします。[p]
 [return]
 
 
@@ -487,6 +490,7 @@
       "data/sound/chara/hau/050_雨晴はう（ノーマル）_…まあ、あなたのこ….mp3",
       "data/sound/chara/hau/051_雨晴はう（ノーマル）_ぼ、僕ではお役に立….mp3",
       "data/sound/chara/hau/052_雨晴はう（ノーマル）_これ以上、頑張らな….mp3",
+      "data/sound/chara/hau/052_雨晴はう_あの…そろそろお口….ogg",
     );
   [endscript]
 [return]

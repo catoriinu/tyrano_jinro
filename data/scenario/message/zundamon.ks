@@ -480,8 +480,11 @@
 
 ; シーン：「喋りすぎ」アクション実行時
 *doAction_talkToMuch
+[eval exp="tf.face = 'surprised'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-お前ばっかりズルいのだ！僕にも喋らせるのだ！ [p]
+[playse storage="chara/zundamon/089_ずんだもん_オマエばっかりズル….ogg" sprite_time="50-20000"]
+
+オマエばっかりズルいのだ！僕にも喋らせるのだ！ [p]
 [return]
 
 
@@ -618,6 +621,7 @@
       "data/sound/chara/zundamon/089_ずんだもん（ノーマル）_くくく、今夜は誰を….mp3",
       "data/sound/chara/zundamon/090_ずんだもん（ノーマル）_なんでなのだ！僕は….mp3",
       "data/sound/chara/zundamon/091_ずんだもん（ノーマル）_この決断が、間違っ….mp3",
+      "data/sound/chara/zundamon/089_ずんだもん_オマエばっかりズル….ogg",
     );
   [endscript]
 [return]
