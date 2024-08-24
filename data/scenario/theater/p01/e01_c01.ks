@@ -28,6 +28,25 @@ tf.playbgmParams = {
     volume: "12",
 }
 [endscript]
+
+; 「はじめに」表示
+[layopt layer="message0" visible="false"]
+[bg storage="black.png" time="1000"]
+[playse storage="chime.ogg" buf="1" loop="false" volume="55" sprite_time="50-20000"]
+
+[ptext layer="1" x="90" y="150" text="はじめに" color="#f7f7f7" size="60" time="1000" width="1100" align="center"]
+[ptext layer="1" x="90" y="320" text="本作品は、VOICEVOX公式様や<br>各キャラクター運営様とは無関係の個人が制作した、<br>非公式二次創作ゲームです。" color="#f7f7f7" size="44" time="1000" width="1100" align="center"]
+
+[p]
+[freeimage layer="1" time="1000" wait="true"]
+
+[ptext layer="1" x="90" y="100" text="本作品は以下の要素を含みます。" color="#f7f7f7" size="44" time="1000" width="1100" align="center"]
+[ptext layer="1" x="70" y="200" text="・テキスト読み上げソフトウェアVOICEVOX製の合成音声<br>・公式と異なる独自設定を含むキャラクター描写<br>・既存作品にインスパイアされた表現<br>・人狼ゲーム由来の過激な単語<br>・メタ要素" color="#f7f7f7" size="44" time="1000" width="1140" align="left"]
+[ptext layer="1" x="90" y="560" text="以上をご理解のうえ、お楽しみください。" color="#f7f7f7" size="44" time="1000" width="1100" align="center"]
+
+[p]
+[freeimage layer="1" time="2000" wait="true"]
+
 [t_setupChapter actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
 
 ; ここからチャプター視聴開始
