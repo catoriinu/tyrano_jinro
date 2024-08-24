@@ -305,32 +305,35 @@
 ; 現在は登場していないキャラを登場させる
 ; @param characterId 登場させたいキャラのキャラクターID。必須。
 ; @param face 登場させたいキャラのface。必須。
-; @param side そのキャラがデフォルトで登場する位置。必須。
+; @param side そのキャラが登場する位置。必須。
 [macro name="m_enterCharacter"]
+  [iscript]
+    console.log('★enter ' + mp.characterId);
 
-  [eval exp="console.log('★enter ' + mp.characterId)"]
+    // sideに合わせて、キャラクター画像を移動させるべき量を格納する
+    tf.moveLeft = (mp.side === 'left') ? f.defaultPosition[mp.characterId].leftOnLeft : f.defaultPosition[mp.characterId].leftOnRight;
 
-  ; sideに合わせて、キャラクター画像を移動させるべき量を格納する
-  [eval exp="tf.moveLeft = '-=1000'" cond="mp.side == 'right'"]
-  [eval exp="tf.moveLeft = '+=1000'" cond="mp.side == 'left'"]
+    // 表示キャラオブジェクトを更新する
+    f.displayedCharacter[mp.side] = new DisplayedCharacterSingle(true, mp.characterId, mp.face);
+
+    // そのキャラ立ち絵の反転フラグを取得。左向きならfalse, 右向きならtrue
+    const reflect = f.defaultPosition[mp.characterId].reflect;
+    // 反転フラグとsideを考慮して画像の向きを決める
+    tf.reflectForMod = ((!reflect && mp.side === 'left') || (reflect && mp.side === 'right')) ? 'true' : 'false';
+  [endscript]
 
   ; sideがleftの場合のみ、一度leftOnDefautLeftの位置に移動させる。デフォルトの待機位置がleftOnDefautRightなので。
-  [chara_move name="&mp.characterId" time="1" left="&f.defaultPosition[mp.characterId].leftOnDefautLeft" wait="true" cond="mp.side == 'left'"]
+  [chara_move name="&mp.characterId" time="1" left="&f.defaultPosition[mp.characterId].leftOnDefautLeft" wait="true" cond="mp.side === 'left'"]
 
   ; 表情を変える
   ; MEMO 「そのキャラの今の表情」を取得可能であれば、「今の表情と違う場合のみ」にしたい。が、HTML要素内に表情の情報がimgのパスくらいしかなかったので無理そう。
   [chara_mod name="&mp.characterId" face="&mp.face" time="1" wait="false"]
 
-  ; 画面の内側向きになるように画像の向きを変える 
-  [chara_mod name="&mp.characterId" reflect="false" time="1" wait="false" cond="mp.side == 'right'"]
-  [chara_mod name="&mp.characterId" reflect="true" time="1" wait="false" cond="mp.side == 'left'"]
+  ; 画面の内側向きになるように画像の向きを変える
+  [chara_mod name="&mp.characterId" reflect="&tf.reflectForMod" time="1" wait="false"]
 
   ; sideがrightなら画面右から右側に、leftなら画面左から左側にスライドインしてくる
   [chara_move name="&mp.characterId" time="600" anim="true" left="&tf.moveLeft" wait="false" effect="easeOutExpo"]
-
-  ; 表示キャラオブジェクトを更新する
-  [eval exp="f.displayedCharacter[mp.side] = new DisplayedCharacterSingle(true, mp.characterId, mp.face)"]
-
 [endmacro]
 
 

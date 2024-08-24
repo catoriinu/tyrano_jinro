@@ -69,7 +69,7 @@ function enterCharacter(characterId, face, side) {
   let left = TYRANO.kag.stat.f.defaultPosition[characterId].leftOnRight;
 
   // sideがleftの場合のみ、一度leftOnDefautLeftの位置に移動させる。デフォルトの待機位置がleftOnDefautRightなので。
-  if (side == 'left') {
+  if (side === 'left') {
     TYRANO.kag.ftag.startTag("chara_move",{
       name: characterId,
       time: 1,
@@ -88,11 +88,14 @@ function enterCharacter(characterId, face, side) {
     wait: 'false'
   });
 
+  // そのキャラ立ち絵の反転フラグを取得。左向きならfalse, 右向きならtrue
+  const reflect = f.defaultPosition[characterId].reflect;
+  // 反転フラグとsideを考慮して画像の向きを決める
+  const reflectForMod = ((!reflect && mp.side === 'left') || (reflect && mp.side === 'right')) ? 'true' : 'false';
   // 画面の内側向きになるように画像の向きを変える 
-  let reflect = (side == 'left') ? 'true' : 'false';
   TYRANO.kag.ftag.startTag('chara_mod', {
     name: characterId,
-    reflect: reflect,
+    reflect: reflectForMod,
     time: 1,
     wait: 'false'
   });
