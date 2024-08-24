@@ -6,23 +6,27 @@
 ; chara_newタグとchara_faceタグをまとめて実行
 ; widthとhaightはここで設定しておくこと。
 *executeCharaNewAndCharaFace
-  [eval exp="tf.characterId = CHARACTER_ID_TAKEHIRO"]
-
-  ; キャラ画像のデフォルト座標をゲーム変数に格納する
   [iscript]
+    tf.characterId = CHARACTER_ID_TAKEHIRO;
+    tf.jname = '玄野武宏';
+
+    // キャラ画像のデフォルト座標をゲーム変数に格納する
     f.defaultPosition[tf.characterId] = {
-      //side: 'right', // デフォルト待機位置
-      //left: 1823, // デフォルト座標（left）
-      side: 'left', // デフォルト待機位置
-      left: -1090, // デフォルト座標（left）
-      top: 104, // キャラが登場したときのtopの値
       width: 549, // 画像の幅（画面幅1280pxの中での幅）
       haight: 824, // 画像の高さ（画面高さ720pxの中での高さ）
-      widthCenter: 245, // 画像の幅の中央(反転しない状態で)
+      widthCenter: 245, // 画像の幅の中央（立ち絵の見た目の中央の位置。画像の左端からのpxで指定）
+      top: 104, // キャラが登場したときのtopの値
+      leftOnLeft: -90, // キャラが左側に登場したときのleftの値
+      leftOnRight: 823, // キャラが右側に登場したときのleftの値
+      reflect: false, // キャラが右側に登場したときの立ち絵の向き。立ち絵が左向きならfalse, 右向きならtrueを指定する
     }
-    // キャラクターのイメージカラーのカラーコード
+    // キャラが左(右)側から登場する直前の待機位置のleftの値。絶対値を上げるほど画面の遠くで待機する
+    f.defaultPosition[tf.characterId].leftOnDefautLeft = f.defaultPosition[tf.characterId].leftOnLeft - 1000;
+    f.defaultPosition[tf.characterId].leftOnDefautRight = f.defaultPosition[tf.characterId].leftOnRight + 1000;
+
+    // TODO キャラクターのイメージカラーのカラーコード
     f.color.character[tf.characterId] = '#65e3ef';
-    // ステータス画面等の立ち絵
+    // TODO ステータス画面等の立ち絵
     f.statusFace[tf.characterId] = {
       alive: 'normal.png',
       lose: 'astonished.png',
@@ -37,7 +41,7 @@
   ; キャラクターの登録
   ; だいたいtf.characterIdを参照してくれるが、storageとjnameには正確な文字列を入れること
   ; 元画像が左向き（右側用の立ち絵）ならreflect="false"、逆ならreflect="true"とすること
-  [chara_new name="&tf.characterId" storage="chara/takehiro/normal.png" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" jname="玄野武宏" reflect="true" ]
+  [chara_new name="&tf.characterId" storage="chara/takehiro/normal.png" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" jname="&tf.jname" reflect="&f.defaultPosition[tf.characterId].reflect"]
   [chara_face name="&tf.characterId" face="通常" storage="chara/takehiro/normal.png"]
-  [chara_show name="&tf.characterId" face="通常" time="0" wait="true" left="&f.defaultPosition[tf.characterId].left" top="&f.defaultPosition[tf.characterId].top"]
+  [chara_show name="&tf.characterId" face="通常" time="0" wait="true" left="&f.defaultPosition[tf.characterId].leftOnDefautRight" top="&f.defaultPosition[tf.characterId].top"]
 [return]
