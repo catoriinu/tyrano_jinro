@@ -305,10 +305,12 @@
 ; 現在は登場していないキャラを登場させる
 ; @param characterId 登場させたいキャラのキャラクターID。必須。
 ; @param face 登場させたいキャラのface。必須。
-; @param side そのキャラが登場する位置。必須。
+; @param side 発言者が登場する位置。'left'で左側。それ以外または未指定の場合は右側。
 [macro name="m_enterCharacter"]
   [iscript]
     console.log('★enter ' + mp.characterId);
+
+    mp.side = (('side' in mp) && mp.side === 'left') ? 'left' : 'right';
 
     // sideに合わせて、キャラクター画像を移動させるべき量を格納する
     tf.moveLeft = (mp.side === 'left') ? f.defaultPosition[mp.characterId].leftOnLeft : f.defaultPosition[mp.characterId].leftOnRight;
@@ -407,7 +409,7 @@
       tf.ccfn.characterId = getCharacterIdByName(tf.ccfn.name);
     }
 
-    tf.ccfn.side = (('side' in tf.ccfn) && tf.ccfn.side == 'left') ? 'left' : 'right';
+    tf.ccfn.side = (('side' in tf.ccfn) && tf.ccfn.side === 'left') ? 'left' : 'right';
 
     // マクロの引数にnameが未指定なら、characterIdをもとに取得してくる
     if (!('name' in tf.ccfn)) {
