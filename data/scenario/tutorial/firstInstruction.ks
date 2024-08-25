@@ -20,7 +20,7 @@
 
 ; もち子さんのセリフ。立ち絵はまだ出さない
 [m_changeFrameWithId characterId="mochiko"]
-# ???
+# ？？？
 いいえ、それは違います。[r]
 人狼ゲームで勝てばいいんですよ。[p]
 
