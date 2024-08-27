@@ -72,7 +72,7 @@
 ふふっ。[r]
 これからゲームが始まるところですからまずは観戦してみましょう。[p]
 
-[playse storage="シーン切り替え1.ogg" loop="false"]
+[playse storage="scenekirikae1.ogg" loop="false"]
 [mask time="1000" effect="rotateIn" graphic="voivojinrou_green.png" folder="bgimage"]
 #
 [m_changeCharacter characterId="mochiko" face="normal"]

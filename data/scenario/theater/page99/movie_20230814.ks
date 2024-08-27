@@ -147,7 +147,7 @@
 という情報を知っていただいたうえで、[r]
 最新のテストプレイ動画をご覧ください。[p]
 
-[playse storage="シーン切り替え1.ogg" loop="false" volume="50"]
+[playse storage="scenekirikae1.ogg" loop="false" volume="50"]
 [mask time="1000" effect="rotateIn" graphic="voivojinrou_green.png" folder="bgimage"]
 #
 [m_changeCharacter characterId="mochiko" face="normal"]

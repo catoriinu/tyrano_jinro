@@ -550,7 +550,7 @@
 
     ;[image layer="1" x="0" y="150" width="1280" height="200" time="700" wait="false" storage="cutin.gif" name="cutin"]
     ; ボイスとのスロットの競合を避けるためにbuf="1"を指定
-    [playse storage="シャキーン1.ogg" volume="35" buf="1"]
+    [playse storage="shakiin1.ogg" volume="35" buf="1"]
     ;[image layer="1" x="-1000" y="160" height="180" visible="true" reflect="true" storage="00_angry_eye.png" name="00"]
     ;[anim name="00" left=100 time=700]
     ;[wait time=700]
