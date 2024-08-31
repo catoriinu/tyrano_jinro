@@ -24,6 +24,7 @@
   [endscript]
 
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+  [stopse]
 [endmacro]
 
 
@@ -35,7 +36,9 @@
     tf.messageStorage = './message/' + f.actionObject.characterId + '.ks';
     tf.messageTarget = '*announcedFortuneTellingResult_' + f.actionObject.result;
   [endscript]
+
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+  [stopse]
 [endmacro]
 
 
@@ -63,6 +66,7 @@
   [endscript]
 
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+  [stopse]
 [endmacro]
 
 
@@ -79,21 +83,7 @@
   [endscript]
 
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
-[endmacro]
-
-
-; シーン：人狼で、誰を噛むか選ぶときのセリフ
-; @param characterId 発言者のキャラクターID。必須
-[macro name="m_chooseWhoToBite"]
-  [iscript]
-    // 発言者名を表示するためだけにアクションオブジェクトを作成する
-    f.actionObject = new Action(mp.characterId);
-
-    tf.side = 'left';
-    tf.messageStorage = './message/' + mp.characterId + '.ks';
-    tf.messageTarget = '*chooseWhoToBite';
-  [endscript]
-  [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+  [stopse]
 [endmacro]
 
 
@@ -108,7 +98,9 @@
     tf.messageStorage = './message/' + mp.characterId + '.ks';
     tf.messageTarget = '*executed';
   [endscript]
+
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+  [stopse]
   [m_exitCharacter characterId="&mp.characterId"]
 [endmacro]
 
@@ -123,6 +115,23 @@
   [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
   [eval exp="tf.messageTarget = '*afterExecution'"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+[endmacro]
+
+
+; シーン：人狼で、誰を噛むか選ぶときのセリフ
+; @param characterId 発言者のキャラクターID。必須
+[macro name="m_chooseWhoToBite"]
+  [iscript]
+    // 発言者名を表示するためだけにアクションオブジェクトを作成する
+    f.actionObject = new Action(mp.characterId);
+
+    tf.side = 'left';
+    tf.messageStorage = './message/' + mp.characterId + '.ks';
+    tf.messageTarget = '*chooseWhoToBite';
+  [endscript]
+
+  [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+  [stopse]
 [endmacro]
 
 
