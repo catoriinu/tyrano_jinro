@@ -321,7 +321,7 @@
 ; 音量変更
 [seopt volume="&tf.tmp_voice_vol" buf="0"]
 ; サンプルとしてボイスを再生する
-[playse storage="chara/zundamon/001_ずんだもん（ノーマル）_僕は村人なのだ。悪….mp3"]
+[playse storage="chara/zundamon/zundamon_noticeRole_villager_01.ogg"]
 
 [return]
 
