@@ -29,10 +29,10 @@
 ; 議論フェイズのラウンド数
 [eval exp="tf.maxDoActionCount_0 = (sf.j_development.maxDoActionCount == 0) ? 'red' : 'blue'"]
 [glink color="&tf.maxDoActionCount_0" size="30" x="540" width="30" y="350" text="0" target="*displayButtons" exp="sf.j_development.maxDoActionCount = 0"]
+[eval exp="tf.maxDoActionCount_3 = (sf.j_development.maxDoActionCount == 3) ? 'red' : 'blue'"]
+[glink color="&tf.maxDoActionCount_3" size="30" x="735" width="30" y="350" text="3" target="*displayButtons" exp="sf.j_development.maxDoActionCount = 3"]
 [eval exp="tf.maxDoActionCount_default = (sf.j_development.maxDoActionCount == MAX_DO_ACTION_COUNT) ? 'red' : 'blue'"]
-[glink color="&tf.maxDoActionCount_default" size="30" x="735" width="30" y="350" text="&tf.defaultMaxDoActionCount" target="*displayButtons" exp="sf.j_development.maxDoActionCount = MAX_DO_ACTION_COUNT"]
-[eval exp="tf.maxDoActionCount_5 = (sf.j_development.maxDoActionCount == 5) ? 'red' : 'blue'"]
-[glink color="&tf.maxDoActionCount_5" size="30" x="925" width="30" y="350" text="5" target="*displayButtons" exp="sf.j_development.maxDoActionCount = 5"]
+[glink color="&tf.maxDoActionCount_default" size="30" x="925" width="30" y="350" text="&tf.defaultMaxDoActionCount" target="*displayButtons" exp="sf.j_development.maxDoActionCount = MAX_DO_ACTION_COUNT"]
 [eval exp="tf.maxDoActionCount_10 = (sf.j_development.maxDoActionCount == 10) ? 'red' : 'blue'"]
 [glink color="&tf.maxDoActionCount_10" size="30" x="1115" width="30" y="350" text="10" target="*displayButtons" exp="sf.j_development.maxDoActionCount = 10"]
 

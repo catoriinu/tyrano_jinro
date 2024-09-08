@@ -97,7 +97,7 @@ const ROLE_ID_TO_FACTION = {
 }
 
 // アクション実行上限回数
-const MAX_DO_ACTION_COUNT = 3;
+const MAX_DO_ACTION_COUNT = 5;
 
 // 再投票上限回数（これが初回を含めた最大投票回数となる）
 const MAX_REVOTE_COUNT = 4;
