@@ -467,8 +467,11 @@ outputLog();
 [m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId" time="1"]
 [layopt layer="message0" visible="false"]
-; 勝利陣営キャラクターのレイヤーを消去する。タイトルロゴが表示しきるのを待つため少し長めのtimeを設定
-[freeimage layer="1" time="700" wait="false"]
+
+; タイトル画面に戻るときのみ、背景をタイトル画面のものに変えておく
+[bg storage="voivojinrou_green.png" time="1" wait="false" cond="!f.isSituationPlay"]
+; 勝利陣営キャラクターのレイヤーを消去する。wait=trueにして人狼ゲーム終了時に責任を持って消しておくこと。wait=falseだと遷移後の画面でfreeimageが発動して意図しない要素が消えてしまう
+[freeimage layer="1" time="500" wait="true"]
 
 [jump storage="theater/main.ks" target="*returnFromSituationPlay" cond="f.isSituationPlay"]
 [jump storage="title.ks"]
