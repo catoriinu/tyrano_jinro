@@ -124,6 +124,7 @@ tf.playbgmParams = {
 犯人は誰なのだ…！？[r]
 こたろう？ミコ？はう？それとも――[p]
 
+[stopse buf="0"]
 
 ; TODO 使う箇所が増えたらマクロ化する
 [playse storage="ufo03.ogg" buf="1" volume="50" sprite_time="100-4100"]
