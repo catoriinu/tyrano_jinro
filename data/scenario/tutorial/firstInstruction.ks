@@ -195,8 +195,11 @@
 
 *skipInstruction
 
-[m_changeCharacterFrameName name="？？？" characterId="mochiko"]
-了解です！スピードもち子さんはクールに去ります！[p]
+[m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
+了解です！それでは、ずんだもんちゃんの幸運を祈ります。[p]
+
+[m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
+…また会える時を楽しみにしていますね。[p]
 
 [iscript]
   f.tutorialList = {};
