@@ -1,6 +1,6 @@
 ;一番最初に呼び出されるファイル
 
-[title name="ボイボ人狼 ver.0.11.0"]
+[title name="ボイボ人狼 ver.0.12.0"]
 
 [stop_keyconfig]
 
@@ -65,7 +65,7 @@ if (!('config' in sf)) {
     mute_bgm:   false,
     mute_se:    false,
     mute_voice: false,
-    mark_size: 0, // キャラ名マーカーのサイズ（0ならマーカーを引かない）
+    mark_size: 20, // キャラ名マーカーのサイズ（0:なし、20:下線、100:塗りつぶし）
     show_icon: false, // キャラアイコン表示の有無 現在未使用
   }
 }
