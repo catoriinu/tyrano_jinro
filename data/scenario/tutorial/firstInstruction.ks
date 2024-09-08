@@ -8,7 +8,7 @@
 ; もち子さんにフィルターをかける
 ; MEMO: フィルターをかけた責任としてチュートリアルが完了する箇所でfree_filterしておくこと。
 ; ただしプレイヤー途中でゲームを抜けてしまうことを防ぐことはできないので、次に立ち絵を読み込んだタイミングでもfree_filterしておくこと。
-[filter name="mochiko" brightness="20"]
+[filter name="mochiko" brightness="30"]
 
 ; 本当の初回起動時以外は2回目以降用のシナリオにジャンプさせる
 [jump target="*secondInstruction" cond="!f.tutorialList.needFirstInstruction"]
@@ -125,7 +125,8 @@
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
 はい、その通りです。[p]
 
-; TODO 役職説明画像を出す
+; 役職説明画像を出す
+[image storage="icon_instruction_v2.png" layer="1" visible="true" left="310" top="30" width="660" height="440" time="600" wait="false"]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="紹介"]
 次に、役職について説明します。[r]
@@ -178,6 +179,9 @@
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
 はい。ですので誰が味方かはよく見極めるようにしましょうね。[p]
+
+; 役職説明画像を消す
+[freeimage layer="1" time="200" wait="true"]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
 さて、これで人狼ゲームそのものの説明はおしまいです。[r]
