@@ -235,9 +235,6 @@ function daytimeInitialize() {
   TYRANO.kag.stat.f.day++;
   TYRANO.kag.stat.f.isDaytime = true;
 
-  // 勝利陣営を初期化する
-  TYRANO.kag.stat.f.winnerFaction = null;
-
   // NPCのCO候補者がいないフラグをfalseにする（昼の最初はいると考えてfalseで初期化。いないときにtrueにする）
   TYRANO.kag.stat.f.notExistCOCandidateNPC = false;
 
@@ -301,9 +298,6 @@ function nightInitialize() {
     TYRANO.kag.stat.f.day,
     TYRANO.kag.stat.f.isDaytime
   )
-
-  // 勝利陣営を初期化する
-  TYRANO.kag.stat.f.winnerFaction = null;
 
   // 噛み実行済みフラグを最初に初期化しておく。噛んだ後、立てること。人狼が2人以上いたときに、噛み実行済みならスキップするため。
   TYRANO.kag.stat.f.isBiteEnd = false;

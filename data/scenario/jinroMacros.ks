@@ -101,10 +101,7 @@
   [iscript]
     f.winnerFaction = judgeWinnerFaction(f.characterObjects);
   [endscript]
-
-  [if exp="f.winnerFaction != null"]
-    [jump *]
-  [endif]
+  [jump * cond="f.winnerFaction != null"]
 [endmacro]
 
 

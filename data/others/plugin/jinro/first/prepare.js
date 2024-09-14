@@ -294,13 +294,14 @@ function setDefaultCurrentFrustration(characterObjects, participantsIdList) {
  * 人狼ゲーム開始前に毎回呼び出すこと
  */
 function initializeTyranoValiableForJinro() {
-  // TODO 投票履歴オブジェクトの初期化
   // 開票オブジェクトの初期化 {"開票日": その日の開票回数, ...}
   TYRANO.kag.stat.f.openedVote = {};
   // 噛み先履歴オブジェクトの初期化
   TYRANO.kag.stat.f.bitingHistory = {};
   // 処刑履歴オブジェクトの初期化
   TYRANO.kag.stat.f.executionHistory = {};
+  // 勝利陣営の初期化
+  TYRANO.kag.stat.f.winnerFaction = null;
 
   // 全占い結果履歴オブジェクトの初期化
   TYRANO.kag.stat.f.allFortuneTellingHistoryObject = {};
