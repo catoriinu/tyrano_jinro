@@ -276,10 +276,13 @@
       tf.cc.side = 'right';
       tf.cc.counterSide = 'left';
     }
+
+    // スキップ中は表情切り替え時間を0にする。そうしないとフリーズする危険がある
+    tf.time = TG.stat.is_skip ? "0" : "600";
   [endscript]
 
   ; 自分自身がすでに登場済み、かつ逆側に登場させる場合、まず自分自身を退場させる
-  [if exp="f.displayedCharacter[tf.cc.counterSide].characterId == tf.cc.characterId"]
+  [if exp="f.displayedCharacter[tf.cc.counterSide].characterId === tf.cc.characterId"]
     [m_exitCharacter characterId="&tf.cc.characterId"]
   [endif]
 
@@ -287,11 +290,11 @@
   [if exp="f.displayedCharacter[tf.cc.side].isDisplay"]
 
     ; それが登場させたいキャラ自身の場合
-    [if exp="f.displayedCharacter[tf.cc.side].characterId == tf.cc.characterId"]
+    [if exp="f.displayedCharacter[tf.cc.side].characterId === tf.cc.characterId"]
 
       ; 表情の指定があり、かつ今の表情と違う場合、表情を変える
-      [if exp="'face' in tf.cc && f.displayedCharacter[tf.cc.side].face != tf.cc.face"]
-        [chara_mod name="&tf.cc.characterId" face="&tf.cc.face" time="500" wait="false"]
+      [if exp="'face' in tf.cc && f.displayedCharacter[tf.cc.side].face !== tf.cc.face"]
+        [chara_mod name="&tf.cc.characterId" face="&tf.cc.face" time="&tf.time" wait="false"]
         ; 表示キャラオブジェクトを更新する
         [eval exp="f.displayedCharacter[tf.cc.side].face = tf.cc.face"]
       [endif]
@@ -340,10 +343,10 @@
 
   ; 表情を変える
   ; MEMO 「そのキャラの今の表情」を取得可能であれば、「今の表情と違う場合のみ」にしたい。が、HTML要素内に表情の情報がimgのパスくらいしかなかったので無理そう。
-  [chara_mod name="&mp.characterId" face="&mp.face" time="1" wait="false"]
+  [chara_mod name="&mp.characterId" face="&mp.face" time="0" wait="false"]
 
   ; 画面の内側向きになるように画像の向きを変える
-  [chara_mod name="&mp.characterId" reflect="&tf.reflectForMod" time="1" wait="false"]
+  [chara_mod name="&mp.characterId" reflect="&tf.reflectForMod" time="0" wait="false"]
 
   ; sideがrightなら画面右から右側に、leftなら画面左から左側にスライドインしてくる
   [chara_move name="&mp.characterId" time="600" anim="true" left="&tf.moveLeft" wait="false" effect="easeOutExpo"]
