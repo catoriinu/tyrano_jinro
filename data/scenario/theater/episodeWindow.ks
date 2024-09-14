@@ -1,9 +1,13 @@
 ; エピソードウィンドウ
 
 *start
-; 利用する変数の初期化
-[eval exp="f.displayEpisode = f.episodeList[f.displayEpisodeId]"]
-[eval exp="tf.buttonColor = CLASS_GLINK_DEFAULT"]
+[iscript]
+  // 利用する変数の初期化
+  f.displayEpisode = f.episodeList[f.displayEpisodeId];
+  tf.buttonColor = CLASS_GLINK_DEFAULT;
+
+  f.currentFrame = null;
+[endscript]
 
 [layopt layer="message0" visible="false"]
 [filter layer="0" blur="10"]

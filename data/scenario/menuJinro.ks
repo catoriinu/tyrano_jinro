@@ -35,6 +35,7 @@
 [m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId" time="1"]
 [layopt layer="message0" visible="false"]
+[eval exp="f.currentFrame = null"]
 [freeimage layer="1"]
 
 [jump storage="theater/main.ks" target="*returnFromSituationPlay"]
@@ -50,7 +51,9 @@
 [m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId" time="1"]
 [layopt layer="message0" visible="false"]
+[eval exp="f.currentFrame = null"]
 [freeimage layer="1"]
+
 [jump storage="title.ks"]
 [s]
 
