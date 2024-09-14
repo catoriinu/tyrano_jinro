@@ -241,19 +241,21 @@
 ; メッセージフレームを、発言者の位置に合わせて切り替える
 ; 現在のフレームと同じフレームに変える場合は何もしない
 ; NOTICE: [m_changeCharacter]と併用する場合、[m_changeCharacter]を先に実行してf.displayedCharacterを更新しておく必要がある
-; TODO 高頻度で切り替え時にチラつくのをなんとかしたい
 ; @param characterId 発言者のキャラクターID。ない場合、発言者枠なしのメッセージフレームに変える。
 [macro name="m_changeFrameWithId"]
   [if exp="!('characterId' in mp)"]
-    [position layer="message0" frame="message_window_none.png" cond="f.currentFrame != 'none'"]
+    [position layer="message0" frame="message_window_none.png" cond="f.currentFrame !== 'none'"]
     [eval exp="f.currentFrame = 'none'"]
   [elsif exp="f.displayedCharacter.left.isDisplay && mp.characterId == f.displayedCharacter.left.characterId"]
-    [position layer="message0" frame="message_window_left.png" cond="f.currentFrame != 'left'"]
+    [position layer="message0" frame="message_window_left.png" cond="f.currentFrame !== 'left'"]
     [eval exp="f.currentFrame = 'left'"]
   [else]
-    [position layer="message0" frame="message_window_right.png" cond="f.currentFrame != 'right'"]
+    [position layer="message0" frame="message_window_right.png" cond="f.currentFrame !== 'right'"]
     [eval exp="f.currentFrame = 'right'"]
   [endif]
+  ; このマクロを呼んだならフレームを表示したいのは確実なので、今まで表示していなかったとしてもここで可視化する。
+  ; 逆に言えばシナリオファイルの最初の方において、このマクロを呼ぶまではフレームを不可視状態にしておくことができる。
+  [layopt layer="message0" visible="true"]
 [endmacro]
 
 
@@ -409,7 +411,7 @@
     // マクロの引数を一時変数に保持しておく。別マクロを呼ぶ際にmpが上書きされ、戻ってきたときに参照できなくなるため
     tf.ccfn = clone(mp);
 
-    if (!('name' in tf.ccfn) && !('name' in tf.ccfn)) {
+    if (!('characterId' in tf.ccfn) && !('name' in tf.ccfn)) {
       alert('characterId, nameともに未指定です');
     }
 
@@ -417,8 +419,8 @@
     if (!('characterId' in tf.ccfn)) {
       tf.ccfn.characterId = getCharacterIdByName(tf.ccfn.name);
     }
-
-    tf.ccfn.side = (('side' in tf.ccfn) && tf.ccfn.side === 'left') ? 'left' : 'right';
+    // デフォルトは右側
+    tf.ccfn.side = tf.ccfn.side || 'right';
 
     // マクロの引数にnameが未指定なら、characterIdをもとに取得してくる
     if (!('name' in tf.ccfn)) {
