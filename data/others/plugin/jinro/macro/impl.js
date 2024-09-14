@@ -19,7 +19,7 @@ function changeCharacter(characterId, face = null, side = 'right') {
   }
   
   // 自分自身がすでに登場済み、かつ逆側に登場させる場合、まず自分自身を退場させる
-  if (TYRANO.kag.stat.f.displayedCharacter[counterSide].characterId == characterId) {
+  if (TYRANO.kag.stat.f.displayedCharacter[counterSide].characterId === characterId) {
     exitCharacter(characterId);
   }
 
@@ -27,13 +27,17 @@ function changeCharacter(characterId, face = null, side = 'right') {
   if (TYRANO.kag.stat.f.displayedCharacter[side].isDisplay) {
 
     // それが登場させたいキャラ自身の場合
-    if (TYRANO.kag.stat.f.displayedCharacter[side].characterId == characterId) {
+    if (TYRANO.kag.stat.f.displayedCharacter[side].characterId === characterId) {
       // 表情の指定があり、かつ今の表情と違う場合、表情を変える
       if (face && TYRANO.kag.stat.f.displayedCharacter[side].face != face) {
+
+        // スキップ中は表情切り替え時間を0にする。そうしないとフリーズする危険がある
+        const time = TYRANO.kag.stat.is_skip ? 0 : 500;
+
         TYRANO.kag.ftag.startTag('chara_mod', {
           name: characterId,
           face: face,
-          time: 500,
+          time: time,
           wait: 'false'
         });
         // 表示キャラオブジェクトを更新する
@@ -84,19 +88,19 @@ function enterCharacter(characterId, face, side) {
   TYRANO.kag.ftag.startTag('chara_mod', {
     name: characterId,
     face: face,
-    time: 1,
+    time: 0,
     wait: 'false'
   });
 
   // そのキャラ立ち絵の反転フラグを取得。左向きならfalse, 右向きならtrue
-  const reflect = f.defaultPosition[characterId].reflect;
+  const reflect = TYRANO.kag.stat.f.defaultPosition[characterId].reflect;
   // 反転フラグとsideを考慮して画像の向きを決める
-  const reflectForMod = ((!reflect && mp.side === 'left') || (reflect && mp.side === 'right')) ? 'true' : 'false';
+  const reflectForMod = ((!reflect && side === 'left') || (reflect && side === 'right')) ? 'true' : 'false';
   // 画面の内側向きになるように画像の向きを変える 
   TYRANO.kag.ftag.startTag('chara_mod', {
     name: characterId,
     reflect: reflectForMod,
-    time: 1,
+    time: 0,
     wait: 'false'
   });
 
