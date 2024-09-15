@@ -34,6 +34,7 @@
 [loadjs storage="voivoJinro/theater/Situation.js"]
 [loadjs storage="voivoJinro/theater/theaterScripts.js"]
 [loadjs storage="voivoJinro/theater/episodeData.js"]
+[loadjs storage="voivoJinro/record/recordScripts.js"]
 
 ; キーフレーム定義読み込み
 [call storage="keyframe.ks"]
@@ -51,6 +52,10 @@ if (!('theaterProgress' in sf)) {
 // 紹介動画表示用の進捗
 if (sf.isDebugMode) {
   setTheaterProgressForP99();
+}
+// レコードの初期化
+if (!('record' in sf)) {
+  resetRecordToDefault();
 }
 
 // コンフィグ用初期設定

@@ -445,6 +445,10 @@
 [fadeoutbgm time="1000"]
 [j_displayGameOverAndWinnerFaction]
 
+[iscript]
+  incrementPlayHistoryCount(f.characterObjects[f.playerCharacterId], f.winnerFaction);
+[endscript]
+
 [a_convertResultToAchievementCondition]
 [a_checkAchievedConditions]
 [a_displayAchievedEpisodes]
