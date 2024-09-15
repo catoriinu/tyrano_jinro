@@ -136,7 +136,7 @@ function Personality_metan() {
     0.95,
     {
       action: {
-        [ACTION_TRUST]: 0.6
+        [ACTION_TRUST]: 0.5
       },
       actor: {}
     },
@@ -178,7 +178,7 @@ function Personality_tsumugi() {
     {
       action: {}
     },
-    0.9,
+    0.8,
     {
       action: {},
       actor: {}
@@ -224,7 +224,7 @@ function Personality_hau() {
     1,
     {
       action: {
-        [ACTION_FORTUNE_TELLING]: 0.8,
+        [ACTION_FORTUNE_TELLING]: 0.6,
         [ACTION_SUSPECT]: 0.8,
       },
       actor: {}
