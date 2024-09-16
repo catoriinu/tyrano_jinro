@@ -42,7 +42,9 @@
 
 [iscript]
 // デバッグモード
-sf.isDebugMode = true;
+if (!('isDebugMode' in sf)) {
+  sf.isDebugMode = true;
+}
 
 // シナリオ変数初期設定
 // シアター含む、全てのゲーム進捗の初期化
