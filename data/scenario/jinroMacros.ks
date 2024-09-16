@@ -891,7 +891,7 @@
 
 
 ; 人狼メニュー画面に表示するための全占い師のCO状況テキストを生成する
-; TODO 作り直す
+; TODO 現在未使用
 [macro name="j_getAllFortuneTellerCOText"]
   [iscript]
     tf.allFortuneTellerCOText = '';

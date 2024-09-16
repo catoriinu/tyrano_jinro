@@ -200,7 +200,7 @@
 
 ; チャプター再生中ならポーズメニュー画面に戻る
 [jump storage="theater/pauseMenu.ks" cond="f.chapterStorage != null"]
-; TODO 人狼ゲーム中ならメニュー画面に戻る
+; 人狼ゲーム中ならメニュー画面に戻る
 [jump storage="menuJinro.ks" target="*returnFromConfig" cond="f.inJinroGame"]
 
 ; それ以外ならタイトル画面に戻る

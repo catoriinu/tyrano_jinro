@@ -47,7 +47,6 @@ function createParticipantsInfoBoxes(characterObjects, characterId, shouldOpenRo
   const $roleInfoBox = createRoleInfoBox(characterObject, totalLineNumber, shouldOpenRoleInfo);
 
   // 死因情報表示
-  // TODO 夜時間はどうする？
   const $deathInfoBox = createDeathInfoBox(characterObject, totalLineNumber);
 
   return [$roleInfoBox, $deathInfoBox];
@@ -268,6 +267,7 @@ function getDetailForDeathInfoBox(characterObject, totalLineNumber) {
   if (!characterObject.isAlive) {
     Object.assign(cssObject, getCssBGColor('black'));
 
+    // TODO 死因が増えたらここに分岐を追加する
     // 投票で退場したキャラかを確認する
     let [deathDay, deathActionObject] = findObjectFromHistoryByTargetId(TYRANO.kag.stat.f.executionHistory, characterObject.characterId);
     text = '追放';

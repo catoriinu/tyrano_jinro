@@ -23,7 +23,6 @@
 [ptext layer="1" page="back" text="の解決編が解放されました！" size="28" x="180" y="380" width="920" align="center"]
 
 ; 導入編を視聴済みなら「解決編を見る」ボタンを、未視聴なら「導入編から見る」ボタンを表示する
-; TODO 「解決編を見る」ボタンを出すときには「導入編から見る」ボタンも出そう。ボタン位置も調整すること
 [t_isProgressWatched pageId="&f.displayEpisode.pageId" episodeId="&f.displayEpisode.episodeId" chapterId="c01"]
 [if exp="tf.isProgressWatched"]
   [glink color="&tf.buttonColor" size="24" width="300" x="488" y="435" text="解決編を見る" target="*startOutro"]
