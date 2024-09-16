@@ -1,12 +1,16 @@
 ; （キャラ名）のcharaサブルーチン
 ; chara_xxxタグ関連の処理をまとめておく
 ; ※同一キャラの画像は差分含め全く同じサイズにしておくこと
-; ※キャラの待機位置は右側・左向きを基準とする
-*executeCharaNewAndCharaFace
-  [eval exp="tf.characterId = CHARACTER_ID_XXX"]
 
-  ; キャラ画像のサイズと登場位置等をゲーム変数に格納する
+; キャラクター登録サブルーチン
+; chara_newタグとchara_faceタグをまとめて実行
+; widthとhaightはここで設定しておくこと。
+*registerNewcharacter
   [iscript]
+    tf.characterId = CHARACTER_ID_XXX;
+    tf.jname = 'キャラ名';
+
+    // キャラ画像のサイズと登場位置等をゲーム変数に格納する
     f.defaultPosition[tf.characterId] = {
       width: 800, // 画像の幅（画面幅1280pxの中での幅）
       haight: 800, // 画像の高さ（画面高さ720pxの中での高さ）
@@ -32,12 +36,12 @@
       },
       draw: 'panicked.png',
     };
+
+    f.charaFaceObjects = [
+      {face: '通常', storage: 'normal'},
+      {face: '敗北', storage: 'astonished'},
+    ];
   [endscript]
 
-  ; キャラクターの登録
-  ; だいたいtf.characterIdを参照してくれるが、storageとjnameには正確な文字列を入れること
-  [chara_new name="&tf.characterId" storage="chara/xxx/normal.png" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" jname="（キャラ名）" reflect="&f.defaultPosition[tf.characterId].reflect"]
-  [chara_face name="&tf.characterId" face="通常" storage="chara/xxx/normal.png"]
-  [chara_face name="&tf.characterId" face="敗北" storage="chara/xxx/sad.png"]
-  [chara_show name="&tf.characterId" face="通常" time="0" wait="true" left="&f.defaultPosition[tf.characterId].leftOnDefautRight" top="&f.defaultPosition[tf.characterId].top"]
+  [call storage="./chara/common.ks" target="*executeCharaNewFaceShow"]
 [return]
