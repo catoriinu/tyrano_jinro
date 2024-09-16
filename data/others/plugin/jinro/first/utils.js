@@ -433,6 +433,30 @@ function getCharacterIdByName(name) {
   return participant ? participant.characterId : '';
 }
 
+
+/**
+ * 発話者名を取得する。
+ * 特定の条件を満たした場合、発話者名の後ろに役職名を追加する。
+ * @param {String} characterId 名前を表示したいキャラクターのキャラクターID。指定した場合はnameよりも優先。
+ * @param {String} name 名前を表示したいキャラクター名。characterIdがない場合は必須。
+ * @return {String} 発話者部分に表示する文字列
+ */
+function setSpeakersName(characterId = '', name = '') {
+  // 人狼ゲーム中であるかつ、開発者用設定：独裁者モードである、かつキャラクターIDを指定しているなら
+  if (TYRANO.kag.stat.f.inJinroGame && TYRANO.kag.variable.sf.j_development.dictatorMode && characterId) {
+    // キャラクターIDがcharacterObjectsから取れれば役職名も取れると判断する
+    if (characterId in TYRANO.kag.stat.f.characterObjects) {
+      // nameが未設定ならcharacterObjectsからnameを取得する（characterIdしか参照してない箇所からでも呼べるようにするため）
+      name = name || TYRANO.kag.stat.f.characterObjects[characterId].name;
+      return name + '（' + TYRANO.kag.stat.f.characterObjects[characterId].role.roleName + '）';
+    }
+  }
+
+  // 条件を満たさなかった場合、nameのまま表示する
+  return name;
+}
+
+
 /**
  * オブジェクトをディープコピーするための関数;
  * 第一引数はコピーさせたいオブジェクトを渡す;

@@ -45,8 +45,6 @@
   ; 呼び方をtf.targetNameに格納する
   [call storage="&tf.messageStorage" target="changeIdToCallName"]
 
-  ; メッセージ処理開始
-  [m_changeCharacter characterId="&tf.characterId" face="&tf.tmpFace" side="&tf.tmpSide"]
-  [m_changeFrameWithId characterId="&tf.characterId"]
-  # &f.speaker[f.characterObjects[tf.characterId].name]
+  ; キャラクターの立ち絵（表情変更含む）、セリフ枠、発話者名の表示
+  [m_changeCharacterFrameName characterId="&tf.characterId" face="&tf.tmpFace" side="&tf.tmpSide"]
 [return]

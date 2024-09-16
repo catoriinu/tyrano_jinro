@@ -106,12 +106,13 @@
 
 
 ; シーン：処刑後の反応
+; NOTE:現在未使用
 ; @param characterId 発言者のキャラクターID。必須
 ; @param face 発言者の表情。（TODO）
 [macro name="m_afterExecution"]
   [m_changeCharacter characterId="&mp.characterId" face="通常"]
   [m_changeFrameWithId characterId="&mp.characterId"]
-  # &f.speaker[f.characterObjects[mp.characterId].name]
+  ; # &f.speaker[f.characterObjects[mp.characterId].name]
   [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
   [eval exp="tf.messageTarget = '*afterExecution'"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
@@ -402,14 +403,12 @@
 [endmacro]
 
 
-; 
+; キャラクターの立ち絵（表情変更含む）、セリフ枠、発話者名の表示をセットで行う
 ; @param characterId 発言者のキャラクターID。指定しない場合はnameが必須になる。
 ; @param name 発言者のキャラクター名。characterIdが指定されている場合そちらが優先。
 ; @param face 発言者のface。指定がなければそのまま。
 ; @param side 発言者が登場する位置。'left'で左側。それ以外または未指定の場合は右側。
-; NOTE 使いづらかったら変える。
 [macro name="m_changeCharacterFrameName"]
-
   [iscript]
     // マクロの引数を一時変数に保持しておく。別マクロを呼ぶ際にmpが上書きされ、戻ってきたときに参照できなくなるため
     tf.ccfn = clone(mp);
@@ -429,15 +428,8 @@
     if (!('name' in tf.ccfn)) {
       tf.ccfn.name = getNameByCharacterId(tf.ccfn.characterId);
     }
-    // 発言者表示の#に、f.speaker（＝人狼ゲーム中の発言者名格納変数。独裁者モードの場合、発言者の役職を追加表示できる）を使えるかを判定する。
-    if (('speaker' in f) && (tf.ccfn.name in f.speaker)) {
-      // TODO 人狼ゲーム終了時やタイトル画面表示時などに初期化しておかないと、前の人狼ゲーム時の役職が表示されそう
-      tf.ccfn.speaker = f.speaker[tf.ccfn.name];
-    } else {
-      // 使えない場合はnameをそのまま表示する
-      tf.ccfn.speaker = tf.ccfn.name;
-    }
-
+    // 発言者名の#に表示する名前を取得する
+    tf.ccfn.speaker = setSpeakersName(tf.ccfn.characterId, tf.ccfn.name);
   [endscript]
 
   ; マクロの引数にfaceが未指定なら、faceを渡さない=表情はそのままにする。

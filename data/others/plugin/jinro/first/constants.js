@@ -69,17 +69,6 @@ const ROLE_ID_PHYCHIC        = 'psychic'; // 霊能力者
 const ROLE_ID_HUNTER         = 'hunter'; // 狩人
 const ROLE_ID_FOX            = 'fox'; // 妖狐
 
-// 役職IDと役職名の対応オブジェクト
-const ROLE_ID_TO_NAME = {
-    [ROLE_ID_VILLAGER]: '村人',
-    [ROLE_ID_WEREWOLF]: '人狼',
-    [ROLE_ID_FORTUNE_TELLER]: '占い師',
-    [ROLE_ID_MADMAN]: '狂人',
-    [ROLE_ID_PHYCHIC]: '霊能力者',
-    [ROLE_ID_HUNTER]: '狩人',
-    [ROLE_ID_FOX]: '妖狐',
-}
-
 // 陣営
 const FACTION_VILLAGERS  = 'villagers'; // 村人陣営
 const FACTION_WEREWOLVES = 'werewolves'; // 人狼陣営

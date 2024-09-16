@@ -316,9 +316,6 @@ function initializeTyranoValiableForJinro() {
   // ログ用配列の初期化
   TYRANO.kag.stat.f.logArrayList = [];
 
-  // 発話者の名前オブジェクト。ksファイル内で、# &f.speaker['名前'] の形式で使う。
-  TYRANO.kag.stat.f.speaker = setSpeakersName(TYRANO.kag.stat.f.characterObjects);
-
   // アクション実行オブジェクトを初期化する
   // MEMO:昼開始時に初期化しているが、ゲームが夜から始まる場合に夜の間にアクション実行できるようにするためここでも初期化しておく
   TYRANO.kag.stat.f.pcActionObject = {};
@@ -351,25 +348,4 @@ function initializeTyranoValiableForJinro() {
   // ※いわゆる初日占いや初日襲撃ありにする場合は、夜から始めるようにした上でシナリオを修正すること）
   TYRANO.kag.stat.f.day = 0;
   TYRANO.kag.stat.f.isDaytime = false;
-}
-
-
-/**
- * 発話者の名前オブジェクトに、表示名を格納していく
- * @param {Array} characterObjects キャラクターオブジェクト配列
- * @return {Array} 発話者の名前オブジェクト [{name: 表示名},...]
- */
-function setSpeakersName(characterObjects) {
-  const speaker = {}
-  for (let k of Object.keys(characterObjects)) {
-    let tmpName = characterObjects[k].name;
-    // 開発者用設定：独裁者モードなら後ろに役職名を追加する
-    if (TYRANO.kag.variable.sf.j_development.dictatorMode) {
-      // TODO role.roleNameをとればいい。ROLE_ID_TO_NAMEはここでしか使っていないので消せる。
-      tmpName += '（' + ROLE_ID_TO_NAME[characterObjects[k].role.roleId] + '）';
-    }
-    console.log(tmpName);
-    speaker[characterObjects[k].name] = tmpName;
-  }
-  return speaker;
 }
