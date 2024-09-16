@@ -1,4 +1,5 @@
 ; 人狼ゲームのメインシナリオファイル
+; 必ず[j_prepareJinroGame]を実行してから呼び出すこと
 
 *start
 
@@ -11,10 +12,6 @@
   // チュートリアルリストの定義。チュートリアルを行いたい場合は事前に同名変数に格納しておくこと
   f.tutorialList = ('tmpTutorialList' in f) ? clone(f.tmpTutorialList) : {};
   f.tmpTutorialList = {};
-
-  // 人狼ゲーム中フラグ
-  // 人狼ゲームを終了、中断する場合は必ずfalseに戻すこと（タイトル画面に戻る場合はそこで初期化しているので不要）
-  f.inJinroGame = true
 [endscript]
 
 

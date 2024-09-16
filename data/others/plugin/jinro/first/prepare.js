@@ -294,6 +294,10 @@ function setDefaultCurrentFrustration(characterObjects, participantsIdList) {
  * 人狼ゲーム開始前に毎回呼び出すこと
  */
 function initializeTyranoValiableForJinro() {
+  // 人狼ゲーム中フラグ
+  // 人狼ゲームを終了、中断する場合は必ずfalseに戻すこと（タイトル画面に戻る場合はそこで初期化しているので不要）
+  TYRANO.kag.stat.f.inJinroGame = true;
+
   // 開票オブジェクトの初期化 {"開票日": その日の開票回数, ...}
   TYRANO.kag.stat.f.openedVote = {};
   // 噛み先履歴オブジェクトの初期化
