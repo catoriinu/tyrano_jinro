@@ -309,6 +309,9 @@ function initializeTyranoValiableForJinro() {
   // アクション履歴オブジェクトの初期化
   TYRANO.kag.stat.f.doActionHistory = {};
 
+  // ログ用配列の初期化
+  TYRANO.kag.stat.f.logArrayList = [];
+
   // 発話者の名前オブジェクト。ksファイル内で、# &f.speaker['名前'] の形式で使う。
   TYRANO.kag.stat.f.speaker = setSpeakersName(TYRANO.kag.stat.f.characterObjects);
 
@@ -358,6 +361,7 @@ function setSpeakersName(characterObjects) {
     let tmpName = characterObjects[k].name;
     // 開発者用設定：独裁者モードなら後ろに役職名を追加する
     if (TYRANO.kag.variable.sf.j_development.dictatorMode) {
+      // TODO role.roleNameをとればいい。ROLE_ID_TO_NAMEはここでしか使っていないので消せる。
       tmpName += '（' + ROLE_ID_TO_NAME[characterObjects[k].role.roleId] + '）';
     }
     console.log(tmpName);

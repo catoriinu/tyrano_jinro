@@ -980,9 +980,6 @@ function loggingObjects(characterObjects, actionObject) {
 
   const logObject = {};
   const logArray = [];
-  if (!('logArrayList' in TYRANO.kag.stat.f)) {
-    TYRANO.kag.stat.f.logArrayList = [];
-  }
 
   // アクションオブジェクトの情報をログオブジェクトに格納
   logObject.action = [actionObject.characterId, actionObject.actionId, actionObject.targetId, actionObject.result];
@@ -1033,6 +1030,8 @@ function outputLog(){
     console.log(logString);
   }
 }
+
+
 
 
 /**
