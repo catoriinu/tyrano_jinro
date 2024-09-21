@@ -64,6 +64,7 @@
   [j_saveFixButton buf="achieved"]
   [j_clearFixButton]
   [layopt layer="message0" visible="false"]
+  [eval exp="f.currentFrame = null"]
   [filter layer="0" blur="10"]
   [filter layer="base" blur="5"]
 

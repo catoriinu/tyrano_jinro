@@ -30,6 +30,8 @@ tf.playbgmParams = {
 
 ; ここからチャプター視聴開始
 
+; TODO
+注意：このエピソードは開発中につき、最低限のテキストと立ち絵しか実装されていません。[p]
 
 [m_changeCharacterFrameName name="四国めたん"]
 ほら見たでしょう！？[r]

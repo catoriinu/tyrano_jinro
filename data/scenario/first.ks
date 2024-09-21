@@ -1,6 +1,6 @@
 ;一番最初に呼び出されるファイル
 
-[title name="ボイボ人狼 ver.0.11.0"]
+[title name="ボイボ人狼 ver.0.12.0"]
 
 [stop_keyconfig]
 
@@ -34,6 +34,7 @@
 [loadjs storage="voivoJinro/theater/Situation.js"]
 [loadjs storage="voivoJinro/theater/theaterScripts.js"]
 [loadjs storage="voivoJinro/theater/episodeData.js"]
+[loadjs storage="voivoJinro/record/recordScripts.js"]
 
 ; キーフレーム定義読み込み
 [call storage="keyframe.ks"]
@@ -41,7 +42,9 @@
 
 [iscript]
 // デバッグモード
-sf.isDebugMode = true;
+if (!('isDebugMode' in sf)) {
+  sf.isDebugMode = true;
+}
 
 // シナリオ変数初期設定
 // シアター含む、全てのゲーム進捗の初期化
@@ -51,6 +54,10 @@ if (!('theaterProgress' in sf)) {
 // 紹介動画表示用の進捗
 if (sf.isDebugMode) {
   setTheaterProgressForP99();
+}
+// レコードの初期化
+if (!('record' in sf)) {
+  resetRecordToDefault();
 }
 
 // コンフィグ用初期設定
@@ -65,7 +72,7 @@ if (!('config' in sf)) {
     mute_bgm:   false,
     mute_se:    false,
     mute_voice: false,
-    mark_size: 0, // キャラ名マーカーのサイズ（0ならマーカーを引かない）
+    mark_size: 20, // キャラ名マーカーのサイズ（0:なし、20:下線、100:塗りつぶし）
     show_icon: false, // キャラアイコン表示の有無 現在未使用
   }
 }

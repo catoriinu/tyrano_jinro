@@ -1,12 +1,16 @@
 ; 櫻歌ミコのcharaサブルーチン
 ; chara_xxxタグ関連の処理をまとめておく
 ; ※同一キャラの画像は差分含め全く同じサイズにしておくこと
-; ※キャラの待機位置は右側・左向きを基準とする
-*executeCharaNewAndCharaFace
-  [eval exp="tf.characterId = CHARACTER_ID_MIKO"]
 
-  ; キャラ画像のサイズと登場位置等をゲーム変数に格納する
+; キャラクター登録サブルーチン
+; chara_newタグとchara_faceタグをまとめて実行
+; widthとhaightはここで設定しておくこと。
+*registerNewcharacter
   [iscript]
+    tf.characterId = CHARACTER_ID_MIKO;
+    tf.jname = '櫻歌ミコ';
+
+    // キャラ画像のデフォルト座標をゲーム変数に格納する
     f.defaultPosition[tf.characterId] = {
       width: 641, // 画像の幅（画面幅1280pxの中での幅）
       haight: 962, // 画像の高さ（画面高さ720pxの中での高さ）
@@ -24,18 +28,20 @@
     f.color.character[tf.characterId] = '#ffccc5';
     // ステータス画面等の立ち絵
     f.statusFace[tf.characterId] = {};
+
+    f.charaFaceObjects = [
+      {face: '通常', storage: 'normal'},
+      {face: 'がおー', storage: 'gao'},
+      {face: 'わくわく', storage: 'wakuwaku'},
+      {face: '笑顔', storage: '笑顔'},
+      {face: '説明', storage: '説明'},
+      {face: '悲しみ', storage: 'sad'},
+      {face: '驚き', storage: 'surprised'},
+      {face: 'やれやれ', storage: 'astonished'},
+      {face: '恥ずかしい', storage: 'embarrassed'},
+      {face: '笑顔でがおー', storage: 'gao_smile'},
+    ];
   [endscript]
 
-  [chara_new name="&tf.characterId" storage="chara/miko/normal.png" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" jname="櫻歌ミコ" reflect="&f.defaultPosition[tf.characterId].reflect"]
-  [chara_face name="&tf.characterId" face="通常" storage="chara/miko/normal.png"]
-  [chara_face name="&tf.characterId" face="がおー" storage="chara/miko/gao.png"]
-  [chara_face name="&tf.characterId" face="わくわく" storage="chara/miko/wakuwaku.png"]
-  [chara_face name="&tf.characterId" face="笑顔" storage="chara/miko/笑顔.png"]
-  [chara_face name="&tf.characterId" face="説明" storage="chara/miko/説明.png"]
-  [chara_face name="&tf.characterId" face="悲しみ" storage="chara/miko/sad.png"]
-  [chara_face name="&tf.characterId" face="驚き" storage="chara/miko/surprised.png"]
-  [chara_face name="&tf.characterId" face="やれやれ" storage="chara/miko/astonished.png"]
-  [chara_face name="&tf.characterId" face="恥ずかしい" storage="chara/miko/embarrassed.png"]
-  [chara_face name="&tf.characterId" face="笑顔でがおー" storage="chara/miko/gao_smile.png"]
-  [chara_show name="&tf.characterId" face="通常" time="0" wait="true" left="&f.defaultPosition[tf.characterId].leftOnDefautRight" top="&f.defaultPosition[tf.characterId].top"]
+  [call storage="./chara/common.ks" target="*executeCharaNewFaceShow"]
 [return]

@@ -1,16 +1,16 @@
 ; 波音リツのcharaサブルーチン
 ; chara_xxxタグ関連の処理をまとめておく
 ; ※同一キャラの画像は差分含め全く同じサイズにしておくこと
-; ※キャラの待機位置は右側・左向きを基準とする
 
 ; キャラクター登録サブルーチン
 ; chara_newタグとchara_faceタグをまとめて実行
 ; widthとhaightはここで設定しておくこと。
-*executeCharaNewAndCharaFace
-  [eval exp="tf.characterId = CHARACTER_ID_RITSU"]
-
-  ; キャラ画像のサイズと登場位置等をゲーム変数に格納する
+*registerNewcharacter
   [iscript]
+    tf.characterId = CHARACTER_ID_RITSU;
+    tf.jname = '波音リツ';
+
+    // キャラ画像のデフォルト座標をゲーム変数に格納する
     f.defaultPosition[tf.characterId] = {
       width: 640, // 画像の幅（画面幅1280pxの中での幅）
       haight: 960, // 画像の高さ（画面高さ720pxの中での高さ）
@@ -36,18 +36,18 @@
       },
       draw: 'troubled.png',
     };
+
+    f.charaFaceObjects = [
+      {face: '通常', storage: 'normal'},
+      {face: '怒り', storage: 'angry'},
+      {face: 'ため息', storage: 'astonished'},
+      {face: '真顔', storage: 'blank'},
+      {face: '笑顔', storage: 'laughing'},
+      {face: '煽り', storage: 'scorn'},
+      {face: '困惑', storage: 'troubled'},
+      {face: '敗北', storage: 'astonished'},
+    ];
   [endscript]
 
-  ; キャラクターの登録
-  ; だいたいtf.characterIdを参照してくれるが、storageとjnameには正確な文字列を入れること
-  [chara_new name="&tf.characterId" storage="chara/ritsu/normal.png" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" jname="波音リツ" reflect="&f.defaultPosition[tf.characterId].reflect" ]
-  [chara_face name="&tf.characterId" face="angry" storage="chara/ritsu/angry.png"]
-  [chara_face name="&tf.characterId" face="astonished" storage="chara/ritsu/astonished.png"]
-  [chara_face name="&tf.characterId" face="blank" storage="chara/ritsu/blank.png"]
-  [chara_face name="&tf.characterId" face="laughing" storage="chara/ritsu/laughing.png"]
-  [chara_face name="&tf.characterId" face="通常" storage="chara/ritsu/normal.png"]
-  [chara_face name="&tf.characterId" face="scorn" storage="chara/ritsu/scorn.png"]
-  [chara_face name="&tf.characterId" face="troubled" storage="chara/ritsu/troubled.png"]
-  [chara_face name="&tf.characterId" face="lose" storage="chara/ritsu/astonished.png"]
-  [chara_show name="&tf.characterId" face="通常" time="0" wait="true" left="&f.defaultPosition[tf.characterId].leftOnDefautRight" top="&f.defaultPosition[tf.characterId].top"]
+  [call storage="./chara/common.ks" target="*executeCharaNewFaceShow"]
 [return]

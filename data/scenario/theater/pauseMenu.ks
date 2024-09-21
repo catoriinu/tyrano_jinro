@@ -21,6 +21,7 @@
 *skip
 ; スキップして終了する
 [layopt layer="message0" visible="true"]
+[eval exp="f.currentFrame = null"]
 [freeimage layer="1"]
 [free_filter]
 

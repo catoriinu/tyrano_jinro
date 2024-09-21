@@ -19,7 +19,7 @@ function changeCharacter(characterId, face = null, side = 'right') {
   }
   
   // 自分自身がすでに登場済み、かつ逆側に登場させる場合、まず自分自身を退場させる
-  if (TYRANO.kag.stat.f.displayedCharacter[counterSide].characterId == characterId) {
+  if (TYRANO.kag.stat.f.displayedCharacter[counterSide].characterId === characterId) {
     exitCharacter(characterId);
   }
 
@@ -27,13 +27,17 @@ function changeCharacter(characterId, face = null, side = 'right') {
   if (TYRANO.kag.stat.f.displayedCharacter[side].isDisplay) {
 
     // それが登場させたいキャラ自身の場合
-    if (TYRANO.kag.stat.f.displayedCharacter[side].characterId == characterId) {
+    if (TYRANO.kag.stat.f.displayedCharacter[side].characterId === characterId) {
       // 表情の指定があり、かつ今の表情と違う場合、表情を変える
       if (face && TYRANO.kag.stat.f.displayedCharacter[side].face != face) {
+
+        // スキップ中は表情切り替え時間を0にする。そうしないとフリーズする危険がある
+        const time = TYRANO.kag.stat.is_skip ? 0 : 500;
+
         TYRANO.kag.ftag.startTag('chara_mod', {
           name: characterId,
           face: face,
-          time: 500,
+          time: time,
           wait: 'false'
         });
         // 表示キャラオブジェクトを更新する
@@ -69,7 +73,7 @@ function enterCharacter(characterId, face, side) {
   let left = TYRANO.kag.stat.f.defaultPosition[characterId].leftOnRight;
 
   // sideがleftの場合のみ、一度leftOnDefautLeftの位置に移動させる。デフォルトの待機位置がleftOnDefautRightなので。
-  if (side == 'left') {
+  if (side === 'left') {
     TYRANO.kag.ftag.startTag("chara_move",{
       name: characterId,
       time: 1,
@@ -84,16 +88,19 @@ function enterCharacter(characterId, face, side) {
   TYRANO.kag.ftag.startTag('chara_mod', {
     name: characterId,
     face: face,
-    time: 1,
+    time: 0,
     wait: 'false'
   });
 
+  // そのキャラ立ち絵の反転フラグを取得。左向きならfalse, 右向きならtrue
+  const reflect = TYRANO.kag.stat.f.defaultPosition[characterId].reflect;
+  // 反転フラグとsideを考慮して画像の向きを決める
+  const reflectForMod = ((!reflect && side === 'left') || (reflect && side === 'right')) ? 'true' : 'false';
   // 画面の内側向きになるように画像の向きを変える 
-  let reflect = (side == 'left') ? 'true' : 'false';
   TYRANO.kag.ftag.startTag('chara_mod', {
     name: characterId,
-    reflect: reflect,
-    time: 1,
+    reflect: reflectForMod,
+    time: 0,
     wait: 'false'
   });
 
@@ -231,31 +238,36 @@ function getLabelForCOFortuneTelling(actionObject) {
 
 /**
  * [m_doAction]からのジャンプ先のtargetに指定するラベルを判定、返却する。
- * @param {Object} actionObject アクションオブジェクト
- * @returns {String} _{アクションID}_{判断基準}
+ * @param {Action} actionObject アクションオブジェクト
+ * @param {Action} triggerActionObject トリガーアクションオブジェクト
+ * @returns {String} _{アクションID}_{アクションによる}
  */
-function getLabelForDoAction(actionObject) {
-  let actionLabel = '_' + actionObject.actionId;
-  let decisionLabel = '_' + actionObject.decision;
+function getLabelForDoAction(actionObject, triggerActionObject) {
 
-  return actionLabel + decisionLabel;
-}
+  const actionId = actionObject.actionId;
+  const actionLabel = '_' + actionId;
 
+  if (actionId === ACTION_SUSPECT || actionId === ACTION_TRUST) {
+    // 「疑う」「信じる」
+    // _{アクションID}_{判断基準}
+    const decisionLabel = '_' + actionObject.decision;
+    return actionLabel + decisionLabel;
 
-/**
- * [m_doAction_reaction]からのジャンプ先のtargetに指定するラベルを判定、返却する。
- * @param {Object} actionObject アクションオブジェクト targetIdにリアクションの発言者、characterIdが元々の発言者。つまり呼び元は何も考えずアクションオブジェクトを渡せばよい。
- * @returns _{アクションID}_{対象者への感情}
- */
-function getLabelForDoActionReaction(actionObject) {
-  let characterId = actionObject.characterId;
-  let actionId = actionObject.actionId;
-  let targetId = actionObject.targetId;
+  } else if (actionId === ACTION_REACTION) {
+    // 「リアクション」
+    // _{アクションID}_{トリガーアクションID}_{対象者への感情}
+    const triggerActionLabel = '_' + triggerActionObject.actionId;
+    // リアクションなので、トリガーアクションの対象者から実行者への感情を取得する
+    const feelingLabel = '_' + getFeelingLabel(
+      triggerActionObject.targetId,
+      triggerActionObject.characterId
+    );
+    return actionLabel + triggerActionLabel + feelingLabel;
+  }
 
-  let actionLabel = '_' + actionId;
-  let feelingLabel = '_' + getFeelingLabel(targetId, characterId); // リアクションなので、対象者から実行者への感情を取得する
-
-  return actionLabel + feelingLabel;
+  // 上記以外
+  // _{アクションID}
+  return actionLabel;
 }
 
 
@@ -275,4 +287,26 @@ function getFeelingLabel(characterId, targetId) {
   );
 
   return getFeeling(characterObject, sameFactionPossivility[targetId]);
+}
+
+
+/**
+ * [m_doAction]実行時のキャラの立ち絵が登場するsideを判定、返却する。
+ * MEMO アクションやカウンターアクションが増えてきたらより詳細に実装する
+ * @param {Action} actionObject アクションオブジェクト
+ * @param {Action} triggerActionObject トリガーアクションオブジェクト
+ * @returns {String} 'left'または'right'
+ */
+function getSideForDoAction(actionObject, triggerActionObject) {
+
+  const actionId = actionObject.actionId;
+
+  if (actionId === ACTION_SUSPECT || actionId === ACTION_TRUST) {
+    // 「疑う」「信じる」
+    return 'left';
+
+  }
+
+  // 上記以外
+  return 'right';
 }

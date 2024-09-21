@@ -1,4 +1,5 @@
 ; 人狼ゲームのメインシナリオファイル
+; 必ず[j_prepareJinroGame]を実行してから呼び出すこと
 
 *start
 
@@ -11,10 +12,6 @@
   // チュートリアルリストの定義。チュートリアルを行いたい場合は事前に同名変数に格納しておくこと
   f.tutorialList = ('tmpTutorialList' in f) ? clone(f.tmpTutorialList) : {};
   f.tmpTutorialList = {};
-
-  // 人狼ゲーム中フラグ
-  // 人狼ゲームを終了、中断する場合は必ずfalseに戻すこと（タイトル画面に戻る場合はそこで初期化しているので不要）
-  f.inJinroGame = true
 [endscript]
 
 
@@ -22,9 +19,6 @@
 
 ;メッセージウィンドウの設定、文字が表示される領域を調整
 [position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="220" page="fore"]
-
-;メッセージウィンドウの表示
-[layopt layer="message0" visible="true"]
 
 ;キャラクターの名前が表示される文字領域
 [ptext name="chara_name_area" layer="message0" face="にくまるフォント" color="0x28332a" size="36" x="175" y="505"]
@@ -238,11 +232,8 @@
 ; 現在のラウンド数と次のNPCのアクションを表示する
 [m_displayRoundAndNextActionInDiscussionPhase]
 
-; アクション実行
-[j_setDoActionObject]
-[if exp="Object.keys(f.doActionObject).length > 0"]
-  [j_doAction actionObject="&f.doActionObject"]
-[endif]
+; アクション実行（実行者がいなければ何もしない）
+[j_doAction]
 
 ; 議論フェイズを繰り返す
 [jump target="*startDiscussionLoop"]
@@ -270,7 +261,8 @@
 [m_changeFrameWithId]
 # 
 [if exp="f.characterObjects[f.playerCharacterId].isAlive"]
-  [m_changeCharacter characterId="&f.playerCharacterId" face="thinking" side="left"]
+  ; TODO 現状、ずんだもん専用。汎用的にしたい
+  [m_changeCharacter characterId="&f.playerCharacterId" face="考える" side="left"]
   投票するキャラクターを選択してください。
 [else]
   あなたは退場済みなので投票できません。
@@ -450,6 +442,10 @@
 [fadeoutbgm time="1000"]
 [j_displayGameOverAndWinnerFaction]
 
+[iscript]
+  incrementPlayHistoryCount(f.characterObjects[f.playerCharacterId], f.winnerFaction);
+[endscript]
+
 [a_convertResultToAchievementCondition]
 [a_checkAchievedConditions]
 [a_displayAchievedEpisodes]
@@ -469,8 +465,12 @@ outputLog();
 [m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId" time="1"]
 [layopt layer="message0" visible="false"]
-; 勝利陣営キャラクターのレイヤーを消去する。タイトルロゴが表示しきるのを待つため少し長めのtimeを設定
-[freeimage layer="1" time="700" wait="false"]
+[eval exp="f.currentFrame = null"]
+
+; タイトル画面に戻るときのみ、背景をタイトル画面のものに変えておく
+[bg storage="voivojinrou_green.png" time="1" wait="false" cond="!f.isSituationPlay"]
+; 勝利陣営キャラクターのレイヤーを消去する。wait=trueにして人狼ゲーム終了時に責任を持って消しておくこと。wait=falseだと遷移後の画面でfreeimageが発動して意図しない要素が消えてしまう
+[freeimage layer="1" time="500" wait="true"]
 
 [jump storage="theater/main.ks" target="*returnFromSituationPlay" cond="f.isSituationPlay"]
 [jump storage="title.ks"]

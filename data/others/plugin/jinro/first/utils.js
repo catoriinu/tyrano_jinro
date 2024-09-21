@@ -235,9 +235,6 @@ function daytimeInitialize() {
   TYRANO.kag.stat.f.day++;
   TYRANO.kag.stat.f.isDaytime = true;
 
-  // 勝利陣営を初期化する
-  TYRANO.kag.stat.f.winnerFaction = null;
-
   // NPCのCO候補者がいないフラグをfalseにする（昼の最初はいると考えてfalseで初期化。いないときにtrueにする）
   TYRANO.kag.stat.f.notExistCOCandidateNPC = false;
 
@@ -262,13 +259,27 @@ function daytimeInitialize() {
   // 再投票カウントを初期化する
   TYRANO.kag.stat.f.revoteCount = 0;
 
-  // ゲーム変数のキャラクターオブジェクトに対する初期化
-  for (let cId of Object.keys(TYRANO.kag.stat.f.characterObjects)) {
+  // 以下、生存者のキャラクターオブジェクトに対してのみ行う初期化
+  // 生存者のキャラクターオブジェクト配列を取得
+  const survivorObjects = getSurvivorObjects(TYRANO.kag.stat.f.characterObjects);
+  // フラストレーション軽減用係数を事前に取得
+  const frustrationDecreasingRate = getFrustrationDecreasingRate(survivorObjects, TYRANO.kag.stat.f.participantsIdList);
+
+  const survivorIdList = getValuesFromObjectArray(survivorObjects, 'characterId');
+  for (let cId of survivorIdList) {
     // 今日のCO済みフラグをfalseに戻す
     TYRANO.kag.stat.f.characterObjects[cId].isDoneTodaysCO = false;
 
     // 主張力のcurrentをoriginalと同値に戻す
     TYRANO.kag.stat.f.characterObjects[cId].personality.assertiveness.current = TYRANO.kag.stat.f.characterObjects[cId].personality.assertiveness.original;
+
+    // 現在のフラストレーションを軽減させる
+    // MEMO:軽減対象は生存者のみで十分だが、生存者かの判定をするのが面倒なので、全員一律で軽減させる。何らかの不都合が起きたら修正する
+    for (let targetId of TYRANO.kag.stat.f.participantsIdList) {
+      TYRANO.kag.stat.f.characterObjects[cId].currentFrustration[targetId] *= frustrationDecreasingRate;
+    }
+    console.log(cId + ' currentFrustration:');
+    console.log(TYRANO.kag.stat.f.characterObjects[cId].currentFrustration);
   }
 }
 
@@ -287,9 +298,6 @@ function nightInitialize() {
     TYRANO.kag.stat.f.day,
     TYRANO.kag.stat.f.isDaytime
   )
-
-  // 勝利陣営を初期化する
-  TYRANO.kag.stat.f.winnerFaction = null;
 
   // 噛み実行済みフラグを最初に初期化しておく。噛んだ後、立てること。人狼が2人以上いたときに、噛み実行済みならスキップするため。
   TYRANO.kag.stat.f.isBiteEnd = false;
@@ -332,6 +340,17 @@ function initializeDoActionHistoryForNow(doActionHistory, day, isDaytime) {
 
 function getTimeStr(isDaytime = TYRANO.kag.stat.f.isDaytime) {
   return isDaytime ? 'daytime' : 'night';
+}
+
+
+/**
+ * フラストレーション低減率を算出して返却する
+ * @param {Array} survivorObjects 生存者のキャラクターオブジェクト配列
+ * @param {Array} participantsIdList 参加者のキャラクターID配列
+ */
+function getFrustrationDecreasingRate(survivorObjects, participantsIdList) {
+  // 生存者数 / 全参加者数 する。すなわち全員生存時は1をとり、人数が減るごとに減っていく
+  return survivorObjects.length / participantsIdList.length;
 }
 
 
@@ -413,6 +432,30 @@ function getCharacterIdByName(name) {
   const participant = PARTICIPANTS_LIST.find(participant => participant.name === name);
   return participant ? participant.characterId : '';
 }
+
+
+/**
+ * 発話者名を取得する。
+ * 特定の条件を満たした場合、発話者名の後ろに役職名を追加する。
+ * @param {String} characterId 名前を表示したいキャラクターのキャラクターID。指定した場合はnameよりも優先。
+ * @param {String} name 名前を表示したいキャラクター名。characterIdがない場合は必須。
+ * @return {String} 発話者部分に表示する文字列
+ */
+function setSpeakersName(characterId = '', name = '') {
+  // 人狼ゲーム中であるかつ、開発者用設定：独裁者モードである、かつキャラクターIDを指定しているなら
+  if (TYRANO.kag.stat.f.inJinroGame && TYRANO.kag.variable.sf.j_development.dictatorMode && characterId) {
+    // キャラクターIDがcharacterObjectsから取れれば役職名も取れると判断する
+    if (characterId in TYRANO.kag.stat.f.characterObjects) {
+      // nameが未設定ならcharacterObjectsからnameを取得する（characterIdしか参照してない箇所からでも呼べるようにするため）
+      name = name || TYRANO.kag.stat.f.characterObjects[characterId].name;
+      return name + '（' + TYRANO.kag.stat.f.characterObjects[characterId].role.roleName + '）';
+    }
+  }
+
+  // 条件を満たさなかった場合、nameのまま表示する
+  return name;
+}
+
 
 /**
  * オブジェクトをディープコピーするための関数;

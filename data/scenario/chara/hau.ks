@@ -1,16 +1,16 @@
 ; 雨晴はうのcharaサブルーチン
 ; chara_xxxタグ関連の処理をまとめておく
 ; ※同一キャラの画像は差分含め全く同じサイズにしておくこと
-; ※キャラの待機位置は右側・左向きを基準とする
 
 ; キャラクター登録サブルーチン
 ; chara_newタグとchara_faceタグをまとめて実行
 ; widthとhaightはここで設定しておくこと。
-*executeCharaNewAndCharaFace
-  [eval exp="tf.characterId = CHARACTER_ID_HAU"]
-
-  ; キャラ画像のサイズと登場位置等をゲーム変数に格納する
+*registerNewcharacter
   [iscript]
+    tf.characterId = CHARACTER_ID_HAU;
+    tf.jname = '雨晴はう';
+
+    // キャラ画像のデフォルト座標をゲーム変数に格納する
     f.defaultPosition[tf.characterId] = {
       width: 556, // 画像の幅（画面幅1280pxの中での幅）
       haight: 940, // 画像の高さ（画面高さ720pxの中での高さ）
@@ -36,19 +36,19 @@
       },
       draw: 'tired.png',
     };
+
+    f.charaFaceObjects = [
+      {face: '通常', storage: 'normal'},
+      {face: 'ため息', storage: 'astonished'},
+      {face: '笑顔', storage: 'laughing'},
+      {face: '安心', storage: 'relieved'},
+      {face: '悲しみ', storage: 'sad'},
+      {face: '考える', storage: 'thinking'},
+      {face: 'げっそり', storage: 'tired'},
+      {face: '苦笑', storage: 'wrysmile'},
+      {face: '敗北', storage: 'astonished'},
+    ];
   [endscript]
 
-  ; キャラクターの登録
-  ; だいたいtf.characterIdを参照してくれるが、storageとjnameには正確な文字列を入れること
-  [chara_new name="&tf.characterId" storage="chara/hau/normal.png" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" jname="雨晴はう" reflect="&f.defaultPosition[tf.characterId].reflect" ]
-  [chara_face name="&tf.characterId" face="astonished" storage="chara/hau/astonished.png"]
-  [chara_face name="&tf.characterId" face="laughing" storage="chara/hau/laughing.png"]
-  [chara_face name="&tf.characterId" face="通常" storage="chara/hau/normal.png"]
-  [chara_face name="&tf.characterId" face="relieved" storage="chara/hau/relieved.png"]
-  [chara_face name="&tf.characterId" face="sad" storage="chara/hau/sad.png"]
-  [chara_face name="&tf.characterId" face="thinking" storage="chara/hau/thinking.png"]
-  [chara_face name="&tf.characterId" face="tired" storage="chara/hau/tired.png"]
-  [chara_face name="&tf.characterId" face="wrysmile" storage="chara/hau/wrysmile.png"]
-  [chara_face name="&tf.characterId" face="lose" storage="chara/hau/astonished.png"]
-  [chara_show name="&tf.characterId" face="通常" time="0" wait="true" left="&f.defaultPosition[tf.characterId].leftOnDefautRight" top="&f.defaultPosition[tf.characterId].top"]
+  [call storage="./chara/common.ks" target="*executeCharaNewFaceShow"]
 [return]

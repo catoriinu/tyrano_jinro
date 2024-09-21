@@ -23,8 +23,8 @@
   [glink color="&tf.buttonColor" size="30" width="400" x="439" y="320" name="buttonhover" text="コンフィグ" target="*config"]
   [glink color="&tf.buttonColor" size="30" width="400" x="439" y="460" name="buttonhover" text="メニューを閉じる" target="*closeMenu"]
 [endif]
-; TODO:「現在の変数を出力」はテスト時限定の表示とする
-[glink color="&tf.buttonColor" size="26" width="450" x="412" y="600" name="buttonhover" text="テスト用 現在の変数を出力" target="*exportJson"]
+; 「現在の変数を出力」は問い合わせ用に常に表示する。ただし他のボタンの邪魔にならないよう、枠外で。
+[glink color="&tf.buttonColor" size="26" width="450" x="412" y="600" name="buttonhover" text="問い合わせ用 現在の変数を出力" target="*exportJson"]
 
 [s]
 
@@ -35,6 +35,7 @@
 [m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId" time="1"]
 [layopt layer="message0" visible="false"]
+[eval exp="f.currentFrame = null"]
 [freeimage layer="1"]
 
 [jump storage="theater/main.ks" target="*returnFromSituationPlay"]
@@ -50,7 +51,9 @@
 [m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId" time="1"]
 [layopt layer="message0" visible="false"]
+[eval exp="f.currentFrame = null"]
 [freeimage layer="1"]
+
 [jump storage="title.ks"]
 [s]
 

@@ -180,6 +180,9 @@ function initializeCharacterObjectsForJinro(villagersRoleIdList, participantObje
   // 信頼度オブジェクトを各自のcharacterObject.reliabilityに格納する
   setDefaultReliability(characterObjects, TYRANO.kag.stat.f.participantsIdList);
 
+  // 現在のフラストレーションオブジェクトを各自のcharacterObject.currentFrustrationに格納する
+  setDefaultCurrentFrustration(characterObjects, TYRANO.kag.stat.f.participantsIdList);
+
   // キャラクターオブジェクト配列と役職ID配列をティラノのゲーム変数に格納する
   TYRANO.kag.stat.f.characterObjects = characterObjects;
   TYRANO.kag.stat.f.villagersRoleIdList = villagersRoleIdList;
@@ -271,17 +274,38 @@ function setReliability() {
 
 
 /**
+ * 初期状態の、各キャラの現在のフラストレーションオブジェクトを生成する
+ * @param {Array} characterObjects キャラクターオブジェクト配列。このメソッド内でcurrentFrustrationを更新する。
+ * @param {Array} participantsIdList 参加者のキャラクターID配列
+ */
+function setDefaultCurrentFrustration(characterObjects, participantsIdList) {
+  for (let characterId of Object.keys(characterObjects)) {
+    let currentFrustrationObject = {};
+    for (let i = 0; i < participantsIdList.length; i++) {
+      currentFrustrationObject[participantsIdList[i]] = 0;
+    }
+    characterObjects[characterId].currentFrustration = currentFrustrationObject;
+  }
+}
+
+
+/**
  * 人狼ゲームで利用するティラノのゲーム変数を初期化する
  * 人狼ゲーム開始前に毎回呼び出すこと
  */
 function initializeTyranoValiableForJinro() {
-  // TODO 投票履歴オブジェクトの初期化
+  // 人狼ゲーム中フラグ
+  // 人狼ゲームを終了、中断する場合は必ずfalseに戻すこと（タイトル画面に戻る場合はそこで初期化しているので不要）
+  TYRANO.kag.stat.f.inJinroGame = true;
+
   // 開票オブジェクトの初期化 {"開票日": その日の開票回数, ...}
   TYRANO.kag.stat.f.openedVote = {};
   // 噛み先履歴オブジェクトの初期化
   TYRANO.kag.stat.f.bitingHistory = {};
   // 処刑履歴オブジェクトの初期化
   TYRANO.kag.stat.f.executionHistory = {};
+  // 勝利陣営の初期化
+  TYRANO.kag.stat.f.winnerFaction = null;
 
   // 全占い結果履歴オブジェクトの初期化
   TYRANO.kag.stat.f.allFortuneTellingHistoryObject = {};
@@ -289,8 +313,8 @@ function initializeTyranoValiableForJinro() {
   // アクション履歴オブジェクトの初期化
   TYRANO.kag.stat.f.doActionHistory = {};
 
-  // 発話者の名前オブジェクト。ksファイル内で、# &f.speaker['名前'] の形式で使う。
-  TYRANO.kag.stat.f.speaker = setSpeakersName(TYRANO.kag.stat.f.characterObjects);
+  // ログ用配列の初期化
+  TYRANO.kag.stat.f.logArrayList = [];
 
   // アクション実行オブジェクトを初期化する
   // MEMO:昼開始時に初期化しているが、ゲームが夜から始まる場合に夜の間にアクション実行できるようにするためここでも初期化しておく
@@ -324,24 +348,4 @@ function initializeTyranoValiableForJinro() {
   // ※いわゆる初日占いや初日襲撃ありにする場合は、夜から始めるようにした上でシナリオを修正すること）
   TYRANO.kag.stat.f.day = 0;
   TYRANO.kag.stat.f.isDaytime = false;
-}
-
-
-/**
- * 発話者の名前オブジェクトに、表示名を格納していく
- * @param {Array} characterObjects キャラクターオブジェクト配列
- * @return {Array} 発話者の名前オブジェクト [{name: 表示名},...]
- */
-function setSpeakersName(characterObjects) {
-  const speaker = {}
-  for (let k of Object.keys(characterObjects)) {
-    let tmpName = characterObjects[k].name;
-    // 開発者用設定：独裁者モードなら後ろに役職名を追加する
-    if (TYRANO.kag.variable.sf.j_development.dictatorMode) {
-      tmpName += '（' + ROLE_ID_TO_NAME[characterObjects[k].role.roleId] + '）';
-    }
-    console.log(tmpName);
-    speaker[characterObjects[k].name] = tmpName;
-  }
-  return speaker;
 }

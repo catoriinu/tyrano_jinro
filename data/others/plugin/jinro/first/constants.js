@@ -69,17 +69,6 @@ const ROLE_ID_PHYCHIC        = 'psychic'; // 霊能力者
 const ROLE_ID_HUNTER         = 'hunter'; // 狩人
 const ROLE_ID_FOX            = 'fox'; // 妖狐
 
-// 役職IDと役職名の対応オブジェクト
-const ROLE_ID_TO_NAME = {
-    [ROLE_ID_VILLAGER]: '村人',
-    [ROLE_ID_WEREWOLF]: '人狼',
-    [ROLE_ID_FORTUNE_TELLER]: '占い師',
-    [ROLE_ID_MADMAN]: '狂人',
-    [ROLE_ID_PHYCHIC]: '霊能力者',
-    [ROLE_ID_HUNTER]: '狩人',
-    [ROLE_ID_FOX]: '妖狐',
-}
-
 // 陣営
 const FACTION_VILLAGERS  = 'villagers'; // 村人陣営
 const FACTION_WEREWOLVES = 'werewolves'; // 人狼陣営
@@ -97,7 +86,7 @@ const ROLE_ID_TO_FACTION = {
 }
 
 // アクション実行上限回数
-const MAX_DO_ACTION_COUNT = 3;
+const MAX_DO_ACTION_COUNT = 5;
 
 // 再投票上限回数（これが初回を含めた最大投票回数となる）
 const MAX_REVOTE_COUNT = 4;
@@ -120,6 +109,8 @@ const ACTION_FORTUNE_TELLING = 'fortuneTelling'; // 占う
 const ACTION_VOTE = 'vote'; // 投票
 const ACTION_EXECUTE = 'execute'; // 処刑。投票による吊り・追放（死亡処理アクション）
 const ACTION_BITE = 'bite'; // 襲撃。人狼による噛み（死亡処理アクション）
+const ACTION_REACTION = 'reaction'; // リアクション（カウンターアクション 優先度0）
+const ACTION_TALK_TOO_MUCH = 'talkToMuch'; // 喋りすぎ（カウンターアクション 優先度2）
 
 // 判断基準
 const DECISION_LOGICAL = 'logical'; // 論理的な判断
@@ -127,7 +118,7 @@ const DECISION_EMOTIONAL = 'emotional'; // 感情的な判断
 
 // CSSのclass要素名（glinkのnameやcolorに設定するなど）
 const CLASS_GLINK_DEFAULT = 'btn_voivo'; // glinkのcolor用。ゲーム内で基本となるボタンのテーマ
-const CLASS_GLINK_SELECTED = 'btn_voivo_selected'; // glinkのname用。現在選択されているボタン用のテーマ
+const CLASS_GLINK_SELECTED = 'btn_voivo_selected'; // glinkのname用。現在選択されているボタンや、戻る系ボタン（つまり何も選択しなかった扱い）用のテーマ
 const CLASS_GLINK_WHITE = 'btn_voivo_white'; // glinkのname用。白色のテーマ（未作成）
 const CLASS_GLINK_BLACK = 'btn_voivo_black'; // glinkのname用。黒色のテーマ（未作成）
 

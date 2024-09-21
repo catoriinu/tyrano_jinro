@@ -24,6 +24,7 @@
   [endscript]
 
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+  [stopse]
 [endmacro]
 
 
@@ -35,7 +36,9 @@
     tf.messageStorage = './message/' + f.actionObject.characterId + '.ks';
     tf.messageTarget = '*announcedFortuneTellingResult_' + f.actionObject.result;
   [endscript]
+
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+  [stopse]
 [endmacro]
 
 
@@ -63,36 +66,55 @@
   [endscript]
 
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+  [stopse]
 [endmacro]
 
 
 ; シーン：アクション実行時のセリフ
-; 事前にf.actionObjectにアクションオブジェクトを格納しておくこと
+; 事前にf.actionObjectとf.triggerActionObjectにアクションオブジェクトを格納しておくこと
 [macro name="m_doAction"]
   [iscript]
-    tf.targetLabel = getLabelForDoAction(f.actionObject);
+    tf.targetLabel = getLabelForDoAction(f.actionObject, f.triggerActionObject);
     console.log(tf.targetLabel);
 
-    tf.side = 'left';
+    tf.side = getSideForDoAction(f.actionObject, f.triggerActionObject);
     tf.messageStorage = './message/' + f.actionObject.characterId + '.ks';
     tf.messageTarget = '*doAction' + tf.targetLabel;
   [endscript]
 
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+  [stopse]
 [endmacro]
 
 
-; シーン：アクション実行対象になった時のセリフ
-; 事前にf.actionObjectにアクションオブジェクトを格納しておくこと
-[macro name="m_doAction_reaction"]
+; シーン：投票により処刑対象に決まったときの反応
+; @param characterId 発言者のキャラクターID。必須
+[macro name="m_executed"]
   [iscript]
-    tf.targetLabel = getLabelForDoActionReaction(f.actionObject);
-    console.log(tf.targetLabel);
+    // 発言者名を表示するためだけにアクションオブジェクトを作成する
+    f.actionObject = new Action(mp.characterId);
 
-    tf.side = 'right';
-    tf.messageStorage = './message/' + f.actionObject.targetId + '.ks';
-    tf.messageTarget = '*doAction_reaction' + tf.targetLabel;
+    tf.side = 'left';
+    tf.messageStorage = './message/' + mp.characterId + '.ks';
+    tf.messageTarget = '*executed';
   [endscript]
+
+  [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+  [stopse]
+  [m_exitCharacter characterId="&mp.characterId"]
+[endmacro]
+
+
+; シーン：処刑後の反応
+; NOTE:現在未使用
+; @param characterId 発言者のキャラクターID。必須
+; @param face 発言者の表情。（TODO）
+[macro name="m_afterExecution"]
+  [m_changeCharacter characterId="&mp.characterId" face="通常"]
+  [m_changeFrameWithId characterId="&mp.characterId"]
+  ; # &f.speaker[f.characterObjects[mp.characterId].name]
+  [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
+  [eval exp="tf.messageTarget = '*afterExecution'"]
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
 [endmacro]
 
@@ -108,36 +130,9 @@
     tf.messageStorage = './message/' + mp.characterId + '.ks';
     tf.messageTarget = '*chooseWhoToBite';
   [endscript]
+
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
-[endmacro]
-
-
-; シーン：投票により処刑対象に決まったときの反応
-; @param characterId 発言者のキャラクターID。必須
-[macro name="m_executed"]
-  [iscript]
-    // 発言者名を表示するためだけにアクションオブジェクトを作成する
-    f.actionObject = new Action(mp.characterId);
-
-    tf.side = 'left';
-    tf.messageStorage = './message/' + mp.characterId + '.ks';
-    tf.messageTarget = '*executed';
-  [endscript]
-  [call storage="&tf.messageStorage" target="&tf.messageTarget"]
-  [m_exitCharacter characterId="&mp.characterId"]
-[endmacro]
-
-
-; シーン：処刑後の反応
-; @param characterId 発言者のキャラクターID。必須
-; @param face 発言者の表情。（TODO）
-[macro name="m_afterExecution"]
-  [m_changeCharacter characterId="&mp.characterId" face="通常"]
-  [m_changeFrameWithId characterId="&mp.characterId"]
-  # &f.speaker[f.characterObjects[mp.characterId].name]
-  [eval exp="tf.messageStorage = './message/' + mp.characterId + '.ks'"]
-  [eval exp="tf.messageTarget = '*afterExecution'"]
-  [call storage="&tf.messageStorage" target="&tf.messageTarget"]
+  [stopse]
 [endmacro]
 
 
@@ -208,7 +203,7 @@
 
     // アクション予告メッセージを作成する
     tf.tmpMsg = '～誰も話そうとしていないようです～';
-    if (tf.tmpDoActionObject !== {}) {
+    if (Object.keys(tf.tmpDoActionObject).length > 0) {
       const actorName = f.characterObjects[tf.tmpDoActionObject.characterId].name;
       tf.tmpMsg = '～' + actorName + 'が話そうとしています';
       
@@ -247,19 +242,21 @@
 ; メッセージフレームを、発言者の位置に合わせて切り替える
 ; 現在のフレームと同じフレームに変える場合は何もしない
 ; NOTICE: [m_changeCharacter]と併用する場合、[m_changeCharacter]を先に実行してf.displayedCharacterを更新しておく必要がある
-; TODO 高頻度で切り替え時にチラつくのをなんとかしたい
 ; @param characterId 発言者のキャラクターID。ない場合、発言者枠なしのメッセージフレームに変える。
 [macro name="m_changeFrameWithId"]
   [if exp="!('characterId' in mp)"]
-    [position layer="message0" frame="message_window_none.png" cond="f.currentFrame != 'none'"]
+    [position layer="message0" frame="message_window_none.png" cond="f.currentFrame !== 'none'"]
     [eval exp="f.currentFrame = 'none'"]
   [elsif exp="f.displayedCharacter.left.isDisplay && mp.characterId == f.displayedCharacter.left.characterId"]
-    [position layer="message0" frame="message_window_left.png" cond="f.currentFrame != 'left'"]
+    [position layer="message0" frame="message_window_left.png" cond="f.currentFrame !== 'left'"]
     [eval exp="f.currentFrame = 'left'"]
   [else]
-    [position layer="message0" frame="message_window_right.png" cond="f.currentFrame != 'right'"]
+    [position layer="message0" frame="message_window_right.png" cond="f.currentFrame !== 'right'"]
     [eval exp="f.currentFrame = 'right'"]
   [endif]
+  ; このマクロを呼んだならフレームを表示したいのは確実なので、今まで表示していなかったとしてもここで可視化する。
+  ; 逆に言えばシナリオファイルの最初の方において、このマクロを呼ぶまではフレームを不可視状態にしておくことができる。
+  [layopt layer="message0" visible="true"]
 [endmacro]
 
 
@@ -280,10 +277,13 @@
       tf.cc.side = 'right';
       tf.cc.counterSide = 'left';
     }
+
+    // スキップ中は表情切り替え時間を0にする。そうしないとフリーズする危険がある
+    tf.time = TG.stat.is_skip ? "0" : "500";
   [endscript]
 
   ; 自分自身がすでに登場済み、かつ逆側に登場させる場合、まず自分自身を退場させる
-  [if exp="f.displayedCharacter[tf.cc.counterSide].characterId == tf.cc.characterId"]
+  [if exp="f.displayedCharacter[tf.cc.counterSide].characterId === tf.cc.characterId"]
     [m_exitCharacter characterId="&tf.cc.characterId"]
   [endif]
 
@@ -291,11 +291,11 @@
   [if exp="f.displayedCharacter[tf.cc.side].isDisplay"]
 
     ; それが登場させたいキャラ自身の場合
-    [if exp="f.displayedCharacter[tf.cc.side].characterId == tf.cc.characterId"]
+    [if exp="f.displayedCharacter[tf.cc.side].characterId === tf.cc.characterId"]
 
       ; 表情の指定があり、かつ今の表情と違う場合、表情を変える
-      [if exp="'face' in tf.cc && f.displayedCharacter[tf.cc.side].face != tf.cc.face"]
-        [chara_mod name="&tf.cc.characterId" face="&tf.cc.face" time="500" wait="false"]
+      [if exp="'face' in tf.cc && f.displayedCharacter[tf.cc.side].face !== tf.cc.face"]
+        [chara_mod name="&tf.cc.characterId" face="&tf.cc.face" time="&tf.time" wait="false"]
         ; 表示キャラオブジェクトを更新する
         [eval exp="f.displayedCharacter[tf.cc.side].face = tf.cc.face"]
       [endif]
@@ -320,32 +320,37 @@
 ; 現在は登場していないキャラを登場させる
 ; @param characterId 登場させたいキャラのキャラクターID。必須。
 ; @param face 登場させたいキャラのface。必須。
-; @param side そのキャラがデフォルトで登場する位置。必須。
+; @param side 発言者が登場する位置。'left'で左側。それ以外または未指定の場合は右側。
 [macro name="m_enterCharacter"]
+  [iscript]
+    console.log('★enter ' + mp.characterId);
 
-  [eval exp="console.log('★enter ' + mp.characterId)"]
+    mp.side = (('side' in mp) && mp.side === 'left') ? 'left' : 'right';
 
-  ; sideに合わせて、キャラクター画像を移動させるべき量を格納する
-  [eval exp="tf.moveLeft = '-=1000'" cond="mp.side == 'right'"]
-  [eval exp="tf.moveLeft = '+=1000'" cond="mp.side == 'left'"]
+    // sideに合わせて、キャラクター画像を移動させるべき量を格納する
+    tf.moveLeft = (mp.side === 'left') ? f.defaultPosition[mp.characterId].leftOnLeft : f.defaultPosition[mp.characterId].leftOnRight;
+
+    // 表示キャラオブジェクトを更新する
+    f.displayedCharacter[mp.side] = new DisplayedCharacterSingle(true, mp.characterId, mp.face);
+
+    // そのキャラ立ち絵の反転フラグを取得。左向きならfalse, 右向きならtrue
+    const reflect = f.defaultPosition[mp.characterId].reflect;
+    // 反転フラグとsideを考慮して画像の向きを決める
+    tf.reflectForMod = ((!reflect && mp.side === 'left') || (reflect && mp.side === 'right')) ? 'true' : 'false';
+  [endscript]
 
   ; sideがleftの場合のみ、一度leftOnDefautLeftの位置に移動させる。デフォルトの待機位置がleftOnDefautRightなので。
-  [chara_move name="&mp.characterId" time="1" left="&f.defaultPosition[mp.characterId].leftOnDefautLeft" wait="true" cond="mp.side == 'left'"]
+  [chara_move name="&mp.characterId" time="1" left="&f.defaultPosition[mp.characterId].leftOnDefautLeft" wait="true" cond="mp.side === 'left'"]
 
   ; 表情を変える
   ; MEMO 「そのキャラの今の表情」を取得可能であれば、「今の表情と違う場合のみ」にしたい。が、HTML要素内に表情の情報がimgのパスくらいしかなかったので無理そう。
-  [chara_mod name="&mp.characterId" face="&mp.face" time="1" wait="false"]
+  [chara_mod name="&mp.characterId" face="&mp.face" time="0" wait="false"]
 
-  ; 画面の内側向きになるように画像の向きを変える 
-  [chara_mod name="&mp.characterId" reflect="false" time="1" wait="false" cond="mp.side == 'right'"]
-  [chara_mod name="&mp.characterId" reflect="true" time="1" wait="false" cond="mp.side == 'left'"]
+  ; 画面の内側向きになるように画像の向きを変える
+  [chara_mod name="&mp.characterId" reflect="&tf.reflectForMod" time="0" wait="false"]
 
   ; sideがrightなら画面右から右側に、leftなら画面左から左側にスライドインしてくる
   [chara_move name="&mp.characterId" time="600" anim="true" left="&tf.moveLeft" wait="false" effect="easeOutExpo"]
-
-  ; 表示キャラオブジェクトを更新する
-  [eval exp="f.displayedCharacter[mp.side] = new DisplayedCharacterSingle(true, mp.characterId, mp.face)"]
-
 [endmacro]
 
 
@@ -353,11 +358,16 @@
 ; 現在登場しているキャラを退場させる
 ; @param characterId 退場させたいキャラのキャラクターID。必須。
 ; @param time 退場にかかる時間（[chara_move]のtime）。指定しなければデフォルト600ミリ秒
+; @param wait アニメーションの完了を待つかどうか。デフォルトfalse
 [macro name="m_exitCharacter"]
   [iscript]
     // timeのデフォルト値設定
     if (!('time' in mp)) {
       mp.time = 600;
+    }
+    // waitのデフォルト値設定
+    if (!('wait' in mp)) {
+      mp.wait = 'false';
     }
 
     // そのキャラがどちらのサイドに表示されているかを取得する
@@ -373,7 +383,7 @@
   [eval exp="console.log('★exit ' + mp.characterId)"]
 
   ; そのキャラをデフォルトの待機位置に移動させる
-  [chara_move name="&mp.characterId" time="&mp.time" left="&f.defaultPosition[mp.characterId].leftOnDefautRight" wait="false"]
+  [chara_move name="&mp.characterId" time="&mp.time" left="&f.defaultPosition[mp.characterId].leftOnDefautRight" wait="&mp.wait"]
 
   ; 表示キャラオブジェクトを更新する
   [eval exp="f.displayedCharacter[tf.side] = new DisplayedCharacterSingle()"]
@@ -393,19 +403,17 @@
 [endmacro]
 
 
-; 
+; キャラクターの立ち絵（表情変更含む）、セリフ枠、発話者名の表示をセットで行う
 ; @param characterId 発言者のキャラクターID。指定しない場合はnameが必須になる。
 ; @param name 発言者のキャラクター名。characterIdが指定されている場合そちらが優先。
 ; @param face 発言者のface。指定がなければそのまま。
 ; @param side 発言者が登場する位置。'left'で左側。それ以外または未指定の場合は右側。
-; NOTE 使いづらかったら変える。
 [macro name="m_changeCharacterFrameName"]
-
   [iscript]
     // マクロの引数を一時変数に保持しておく。別マクロを呼ぶ際にmpが上書きされ、戻ってきたときに参照できなくなるため
     tf.ccfn = clone(mp);
 
-    if (!('name' in tf.ccfn) && !('name' in tf.ccfn)) {
+    if (!('characterId' in tf.ccfn) && !('name' in tf.ccfn)) {
       alert('characterId, nameともに未指定です');
     }
 
@@ -413,22 +421,15 @@
     if (!('characterId' in tf.ccfn)) {
       tf.ccfn.characterId = getCharacterIdByName(tf.ccfn.name);
     }
-
-    tf.ccfn.side = (('side' in tf.ccfn) && tf.ccfn.side == 'left') ? 'left' : 'right';
+    // デフォルトは右側
+    tf.ccfn.side = tf.ccfn.side || 'right';
 
     // マクロの引数にnameが未指定なら、characterIdをもとに取得してくる
     if (!('name' in tf.ccfn)) {
       tf.ccfn.name = getNameByCharacterId(tf.ccfn.characterId);
     }
-    // 発言者表示の#に、f.speaker（＝人狼ゲーム中の発言者名格納変数。独裁者モードの場合、発言者の役職を追加表示できる）を使えるかを判定する。
-    if (('speaker' in f) && (tf.ccfn.name in f.speaker)) {
-      // TODO 人狼ゲーム終了時やタイトル画面表示時などに初期化しておかないと、前の人狼ゲーム時の役職が表示されそう
-      tf.ccfn.speaker = f.speaker[tf.ccfn.name];
-    } else {
-      // 使えない場合はnameをそのまま表示する
-      tf.ccfn.speaker = tf.ccfn.name;
-    }
-
+    // 発言者名の#に表示する名前を取得する
+    tf.ccfn.speaker = setSpeakersName(tf.ccfn.characterId, tf.ccfn.name);
   [endscript]
 
   ; マクロの引数にfaceが未指定なら、faceを渡さない=表情はそのままにする。

@@ -17,6 +17,7 @@
  * @prop {Object} perspective 現在CO中の視点オブジェクト（未COなら村人として振る舞う）
  * @prop {Object} reliability 信頼度オブジェクト {characterId:0以上1以下かつ小数点第二位までの数値,...}
  * @prop {Object} voteHistory 投票履歴オブジェクト {day:[1回目の投票先characterId,2回目(再投票)の投票先characterId,...],...}
+ * @prop {Object} currentFrustration 現在のフラストレーションオブジェクト {characterId:デフォルト0から上限なし,...}
  */
 function Character(characterId, roleId, personalityName = null, adjustParameters = {}) {
   this.characterId = characterId;
@@ -35,4 +36,5 @@ function Character(characterId, roleId, personalityName = null, adjustParameters
   this.perspective = {};
   this.reliability = {};
   this.voteHistory = {};
+  this.currentFrustration = {};
 }
