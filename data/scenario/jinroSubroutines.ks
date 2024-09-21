@@ -44,16 +44,20 @@
 
 *loopstart
   [iscript]
+    // ボタンの背景を表示（ボタンが出揃う前に高さを決める）
+    // height = 下から2番目のボタンのy座標 + 40（1つ分のボタンの高さ）+ (マージン*2)（上下に取りたい余白）
+    tf.height = (BUTTON_RANGE_Y_LOWER * (tf.buttonCount - 1) / (tf.buttonCount + 1)) + 40 + (BUTTON_MARGIN_HEIGHT * 2) + 'px';
+    $('.' + tf.class).css('height', tf.height);
+
     // y座標計算。範囲を(ボタン数+1)等分し、上限点と下限点を除く点に順番に配置することで、常に間隔が均等になる。式 = (範囲下限 * (tf.cnt + 1)) / (tf.buttonCount + 1) + (範囲上限)
     tf.y = (BUTTON_RANGE_Y_LOWER * (tf.cnt + 1)) / (tf.buttonCount + 1) + BUTTON_RANGE_Y_UPPER;
 
-    // glinkのname（＝ボタンのclass要素）に設定するクラス名を格納する
+    // glinkのname（＝ボタンのclass要素）に設定するクラス名を文字列結合する
     tf.buttonObj = f.buttonObjects[tf.cnt];
-    tf.glink_name = [
-      'buttonhover', // ボタンにカーソルが乗ったときの処理を設定する用
-      'selected_side_' + tf.buttonObj.side + '_buttonid_' + tf.buttonObj.id, // ホバーしたボタンの判定用
-      ...tf.buttonObj.addClasses // ボタンに追加したいクラスがあれば追加する（例：選択中）
-    ].join(); // ここまで配列に格納した各要素をカンマ区切りの文字列として結合する
+    tf.glink_name = 
+      'buttonhover,' + // ボタンにカーソルが乗ったときの処理を設定する用
+      'selected_side_' + tf.buttonObj.side + '_buttonid_' + tf.buttonObj.id + // ホバーしたボタンの判定用
+      tf.buttonObj.additionalClassName; // ボタンに追加したいクラスがあれば追加する（例：選択中）
   [endscript]
 
   ; ボタンを生成する
@@ -95,11 +99,6 @@
       }
     }
   );
-
-  // ボタンの背景を表示（ボタンが出揃ってから高さを決める）
-  // height = 下から2番目のボタンのy座標 + 40（1つ分のボタンの高さ）+ (マージン*2)（上下に取りたい余白）
-  tf.height = (BUTTON_RANGE_Y_LOWER * tf.cnt / (tf.buttonCount + 1)) + 40 + (BUTTON_MARGIN_HEIGHT * 2) + 'px';
-  $('.' + tf.class).css('height', tf.height);
 [endscript]
 
 ; tf.noNeedStopに明示的にtrueを渡されない限り、通常通りにボタンを表示したところで止まる

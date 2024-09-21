@@ -667,19 +667,20 @@
       // ボタン表示したくないアクションIDはf.buttonObjectsに格納しない
       if (tf.disableActionIdList.includes(aId)) continue;
 
-      // 選択中のアクションIDのボタンは選択中の色に変える
-      const addClasses = [];
-      if (f.actionButtonList[aId].id == f.selectedActionId) {
-        addClasses.push(CLASS_GLINK_SELECTED);
-      }
-      // ボタンオブジェクトを、sideとaddClassesを指定するために再生成してf.buttonObjectsに格納する
-      f.buttonObjects.push(new Button(
+      // ボタンオブジェクトを、sideとadditionalClassNameを指定するために再生成
+      const buttonObj = new Button(
         f.actionButtonList[aId].id,
         f.actionButtonList[aId].text,
         'left',
-        CLASS_GLINK_DEFAULT,
-        addClasses
-      ));
+        CLASS_GLINK_DEFAULT
+      );
+      // 選択中のアクションIDのボタンは選択中の色に変える
+      if (f.actionButtonList[aId].id === f.selectedActionId) {
+        buttonObj.addClassName(CLASS_GLINK_SELECTED);
+      }
+
+      // ボタンオブジェクトをf.buttonObjectsに格納する
+      f.buttonObjects.push(buttonObj);
     }
   [endscript]
 [endmacro]
@@ -707,21 +708,20 @@
       // mp.characterIdsに含まれていないキャラはスキップ
       if (!mp.characterIds.includes(cId)) continue;
 
-      // 選択中のキャラクターIDかつ選択中のアクションである（つまり、実行予定だったアクションと同じ）ボタンは選択中の色に変える
-      const addClasses = [];
-      if (cId == f.originalSelectedCharacterId) {
-        if ('actionId' in f.pcActionObject && f.selectedActionId == f.pcActionObject.actionId) {
-          addClasses.push(CLASS_GLINK_SELECTED);
-        }
-      }
-      // ボタンオブジェクトを、sideとaddClassesを指定するために再生成してf.buttonObjectsに格納する
-      f.buttonObjects.push(new Button(
+      // ボタンオブジェクトを、sideとadditionalClassNameを指定するために再生成
+      const buttonObj = new Button(
         cId,
         f.characterObjects[cId].name,
         mp.side,
-        CLASS_GLINK_DEFAULT,
-        addClasses
-      ));
+        CLASS_GLINK_DEFAULT
+      );
+      // 選択中のキャラクターIDかつ選択中のアクションである（つまり、実行予定だったアクションと同じ）ボタンは選択中の色に変える
+      if (cId === f.originalSelectedCharacterId && 'actionId' in f.pcActionObject && f.selectedActionId === f.pcActionObject.actionId) {
+        buttonObj.addClassName(CLASS_GLINK_SELECTED);
+      }
+
+      // ボタンオブジェクトをf.buttonObjectsに格納する
+      f.buttonObjects.push(buttonObj);
     }
   [endscript]
 [endmacro]

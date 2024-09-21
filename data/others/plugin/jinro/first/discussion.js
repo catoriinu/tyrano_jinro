@@ -557,20 +557,25 @@ function countTargetedId(actionObjects, countId) {
  * @param {*} text ボタンに表示するテキスト
  * @param {*} side ボタンの表示位置 'left','right'のいずれか（省略した場合center）
  * @param {*} color ボタンの色
- * @param {*} addClasses ボタンに追加したいクラス名配列。以下補足
+ * @param {String} additionalClassName ボタンに追加したいクラス名。追加不要の場合は空文字。以下補足
  * ・glinkのnameに追加され、ボタンのclass属性になる。colorのclass属性より後ろに追加されるので、より優先される。
- * ・glink生成時にカンマ区切りにするので、追加したいクラス名1つにつき配列の1要素ずつ格納すること。
+ * ・基本的にaddClassName()を使って追加すること。使えない理由がある場合、同等の処理をしておくこと。
  * @param {*} target ボタン押下時にジャンプするラベル名
  * @param {*} storage ボタン押下時にジャンプするファイル名
  */
-function Button (id, text, side = 'center', color = '', addClasses = [], target = '', storage = '') {
+function Button (id, text, side = 'center', color = '', additionalClassName = '', target = '', storage = '') {
   this.id = id;
   this.text = text;
   this.side = side;
   this.color = color;
-  this.addClasses = addClasses;
+  this.additionalClassName = additionalClassName;
   //this.target = target;
   //this.storage = storage;
+
+  // 引数の文字列をadditionalClassNameに追加する。class属性として結合されることになるので、毎回先頭に','も付けておく。
+  this.addClassName = function (newClassName) {
+    this.additionalClassName += ',' + newClassName;
+  }
 }
 
 
