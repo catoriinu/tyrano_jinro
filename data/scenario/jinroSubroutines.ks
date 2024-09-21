@@ -48,18 +48,19 @@
     tf.y = (BUTTON_RANGE_Y_LOWER * (tf.cnt + 1)) / (tf.buttonCount + 1) + BUTTON_RANGE_Y_UPPER;
 
     // glinkのname（＝ボタンのclass要素）に設定するクラス名を格納する
+    tf.buttonObj = f.buttonObjects[tf.cnt];
     tf.glink_name = [
       'buttonhover', // ボタンにカーソルが乗ったときの処理を設定する用
-      'selected_side_' + f.buttonObjects[tf.cnt].side + '_buttonid_' + f.buttonObjects[tf.cnt].id // ホバーしたボタンの判定用
-    ].concat(
-      f.buttonObjects[tf.cnt].addClasses // ボタンに追加したいクラスがあれば追加する（例：選択中）
-    ).join(); // ここまで配列に格納した各要素をカンマ区切りの文字列として結合する
+      `selected_side_${tf.buttonObj.side}_buttonid_${tf.buttonObj.id}` // ホバーしたボタンの判定用
+      , ...tf.buttonObj.addClasses // ボタンに追加したいクラスがあれば追加する（例：選択中）
+    ].join(); // ここまで配列に格納した各要素をカンマ区切りの文字列として結合する
   [endscript]
+
   ; ボタンを生成する
   ; 最終的に押下したボタンを判定するために、ボタン情報をpreexpに格納しておく
   ; 補足：ティラノスクリプトv521fにて、preexpの評価タイミングがボタン押下時ではなくボタン生成時に修正された
   ; 　　　そのおかげで、ホバーしたボタンのクラスからボタン情報を取得していた場合に存在した「ボタン表示時にカーソルが初めからボタンの位置にあると、hoverイベントが発生しないのでクラス名を取得できない」バグが解消された
-  [glink color="&f.buttonObjects[tf.cnt].color" size="26" width="300" x="&tf.x" y="&tf.y" name="&tf.glink_name" text="&f.buttonObjects[tf.cnt].text" preexp="[f.buttonObjects[tf.cnt].side, f.buttonObjects[tf.cnt].id]" exp="[f.selectedSide, f.selectedButtonId] = preexp" target="*glinkFromButtonObjects_end"]
+  [glink color="&tf.buttonObj.color" size="26" width="300" x="&tf.x" y="&tf.y" name="&tf.glink_name" text="&tf.buttonObj.text" preexp="[tf.buttonObj.side, tf.buttonObj.id]" exp="[f.selectedSide, f.selectedButtonId] = preexp" target="*glinkFromButtonObjects_end"]
 
   ; TODO なぜか勢い余ってtf.cntが終了条件以上に超えてしまうことがあるので、>=での判定にしている。それでもたまに1週多くループするバグが起きるので修正する。
   [jump target="*loopend" cond="tf.cnt >= (tf.buttonCount - 1)"]
@@ -95,16 +96,14 @@
     }
   );
 
-  ; ボタンの背景を表示（ボタンが出揃ってから高さを決める）
-  ; height = 下から2番目のボタンのy座標 + 40（1つ分のボタンの高さ）+ (マージン*2)（上下に取りたい余白）
+  // ボタンの背景を表示（ボタンが出揃ってから高さを決める）
+  // height = 下から2番目のボタンのy座標 + 40（1つ分のボタンの高さ）+ (マージン*2)（上下に取りたい余白）
   tf.height = (BUTTON_RANGE_Y_LOWER * tf.cnt / (tf.buttonCount + 1)) + 40 + (BUTTON_MARGIN_HEIGHT * 2) + 'px';
   $('.' + tf.class).css('height', tf.height);
 [endscript]
 
 ; tf.noNeedStopに明示的にtrueを渡されない限り、通常通りにボタンを表示したところで止まる
-[if exp="tf.noNeedStop !== true"]
-  [s]
-[endif]
+[s cond="tf.noNeedStop !== true"]
 
 *glinkFromButtonObjects_end
 [iscript]
