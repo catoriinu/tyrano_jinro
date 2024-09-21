@@ -183,7 +183,7 @@
   [iscript]
     f.buttonObjects = [];
 
-    const classBlack = (f.selectedActionId == 'black') ? [CLASS_GLINK_SELECTED] : [CLASS_GLINK_BLACK];
+    const classBlack = (f.selectedActionId === 'black') ? CLASS_GLINK_SELECTED : CLASS_GLINK_BLACK;
     f.buttonObjects.push(new Button(
       'black',
       '人狼だった',
@@ -192,7 +192,7 @@
       classBlack
     ));
 
-    const classWhite = (f.selectedActionId == 'white') ? [CLASS_GLINK_SELECTED] : [CLASS_GLINK_WHITE];
+    const classWhite = (f.selectedActionId === 'white') ? CLASS_GLINK_SELECTED : CLASS_GLINK_WHITE;
     f.buttonObjects.push(new Button(
       'white',
       '人狼ではなかった',
@@ -201,12 +201,14 @@
       classWhite
     ));
 
+    // 黒か白を選択済みなら基本色、未選択なら選択済みの色
+    const classCancel = (f.selectedActionId === 'black' || f.selectedActionId === 'white') ? '' : CLASS_GLINK_SELECTED;
     f.buttonObjects.push(new Button(
       'cancel',
       '一つ前に戻る',
       'left',
       CLASS_GLINK_DEFAULT,
-      ['cancel']
+      classCancel,
     ));
   [endscript]
   [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]

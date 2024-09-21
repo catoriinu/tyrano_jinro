@@ -568,13 +568,17 @@ function Button (id, text, side = 'center', color = '', additionalClassName = ''
   this.text = text;
   this.side = side;
   this.color = color;
-  this.additionalClassName = additionalClassName;
+  this.additionalClassName = ''; // this.addClassName()を定義したあとで引数を入れるので、今は空文字固定
   //this.target = target;
   //this.storage = storage;
 
   // 引数の文字列をadditionalClassNameに追加する。class属性として結合されることになるので、毎回先頭に','も付けておく。
   this.addClassName = function (newClassName) {
     this.additionalClassName += ',' + newClassName;
+  }
+  // オブジェクト生成時にadditionalClassName引数を渡されていた場合、this.addClassName()を使ってプロパティに設定する
+  if (additionalClassName) {
+    this.addClassName(additionalClassName);
   }
 }
 

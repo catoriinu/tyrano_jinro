@@ -69,7 +69,8 @@
     'skipInstruction',
     'スキップして',
     'center',
-    CLASS_GLINK_DEFAULT
+    CLASS_GLINK_DEFAULT,
+    CLASS_GLINK_SELECTED
   ));
 [endscript]
 [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
@@ -691,7 +692,8 @@
     'skipSecondInstruction',
     'スキップして',
     'center',
-    CLASS_GLINK_DEFAULT
+    CLASS_GLINK_DEFAULT,
+    CLASS_GLINK_SELECTED
   ));
 [endscript]
 [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]

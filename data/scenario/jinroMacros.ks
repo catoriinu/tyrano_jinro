@@ -618,7 +618,8 @@
       'cancel',
       '役職COしない',
       'center',
-      CLASS_GLINK_DEFAULT
+      CLASS_GLINK_DEFAULT,
+      CLASS_GLINK_SELECTED
     ));
   [endscript]
 [endmacro]
@@ -650,7 +651,8 @@
       'noCO',
       '何もしない',
       'center',
-      CLASS_GLINK_DEFAULT
+      CLASS_GLINK_DEFAULT,
+      CLASS_GLINK_SELECTED
     ));
   [endscript]
 [endmacro]
@@ -667,20 +669,20 @@
       // ボタン表示したくないアクションIDはf.buttonObjectsに格納しない
       if (tf.disableActionIdList.includes(aId)) continue;
 
-      // ボタンオブジェクトを、sideとadditionalClassNameを指定するために再生成
-      const buttonObj = new Button(
-        f.actionButtonList[aId].id,
-        f.actionButtonList[aId].text,
-        'left',
-        CLASS_GLINK_DEFAULT
-      );
       // 選択中のアクションIDのボタンは選択中の色に変える
+      let additionalClassName = '';
       if (f.actionButtonList[aId].id === f.selectedActionId) {
-        buttonObj.addClassName(CLASS_GLINK_SELECTED);
+        additionalClassName = CLASS_GLINK_SELECTED;
       }
 
       // ボタンオブジェクトをf.buttonObjectsに格納する
-      f.buttonObjects.push(buttonObj);
+      f.buttonObjects.push(new Button(
+        f.actionButtonList[aId].id,
+        f.actionButtonList[aId].text,
+        'left',
+        CLASS_GLINK_DEFAULT,
+        additionalClassName
+      ));
     }
   [endscript]
 [endmacro]
@@ -708,20 +710,20 @@
       // mp.characterIdsに含まれていないキャラはスキップ
       if (!mp.characterIds.includes(cId)) continue;
 
-      // ボタンオブジェクトを、sideとadditionalClassNameを指定するために再生成
-      const buttonObj = new Button(
-        cId,
-        f.characterObjects[cId].name,
-        mp.side,
-        CLASS_GLINK_DEFAULT
-      );
+      let additionalClassName = '';
       // 選択中のキャラクターIDかつ選択中のアクションである（つまり、実行予定だったアクションと同じ）ボタンは選択中の色に変える
       if (cId === f.originalSelectedCharacterId && 'actionId' in f.pcActionObject && f.selectedActionId === f.pcActionObject.actionId) {
-        buttonObj.addClassName(CLASS_GLINK_SELECTED);
+        additionalClassName = CLASS_GLINK_SELECTED;
       }
 
       // ボタンオブジェクトをf.buttonObjectsに格納する
-      f.buttonObjects.push(buttonObj);
+      f.buttonObjects.push(new Button(
+        cId,
+        f.characterObjects[cId].name,
+        mp.side,
+        CLASS_GLINK_DEFAULT,
+        additionalClassName
+      ));
     }
   [endscript]
 [endmacro]

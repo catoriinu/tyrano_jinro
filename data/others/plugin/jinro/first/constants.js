@@ -118,7 +118,7 @@ const DECISION_EMOTIONAL = 'emotional'; // 感情的な判断
 
 // CSSのclass要素名（glinkのnameやcolorに設定するなど）
 const CLASS_GLINK_DEFAULT = 'btn_voivo'; // glinkのcolor用。ゲーム内で基本となるボタンのテーマ
-const CLASS_GLINK_SELECTED = 'btn_voivo_selected'; // glinkのname用。現在選択されているボタン用のテーマ
+const CLASS_GLINK_SELECTED = 'btn_voivo_selected'; // glinkのname用。現在選択されているボタンや、戻る系ボタン（つまり何も選択しなかった扱い）用のテーマ
 const CLASS_GLINK_WHITE = 'btn_voivo_white'; // glinkのname用。白色のテーマ（未作成）
 const CLASS_GLINK_BLACK = 'btn_voivo_black'; // glinkのname用。黒色のテーマ（未作成）
 
