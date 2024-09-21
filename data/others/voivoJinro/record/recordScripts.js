@@ -68,9 +68,9 @@ function incrementPlayHistoryCount(characterObject, winnerFaction) {
     playHistory.win++;
     incrementWinningStreakCount();
   } else {
-    // 敗北した場合、連勝記録をリセットする
+    // 敗北した場合、現在の連勝記録をリセットする
     playHistory.lose++;
-    TYRANO.kag.variable.sf.record.winningStreak = new WinningStreak();
+    TYRANO.kag.variable.sf.record.winningStreak.current = 0;
   }
   playHistory.play++;
   console.log(TYRANO.kag.variable.sf.record);
