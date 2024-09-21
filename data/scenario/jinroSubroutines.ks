@@ -51,8 +51,8 @@
     tf.buttonObj = f.buttonObjects[tf.cnt];
     tf.glink_name = [
       'buttonhover', // ボタンにカーソルが乗ったときの処理を設定する用
-      `selected_side_${tf.buttonObj.side}_buttonid_${tf.buttonObj.id}` // ホバーしたボタンの判定用
-      , ...tf.buttonObj.addClasses // ボタンに追加したいクラスがあれば追加する（例：選択中）
+      'selected_side_' + tf.buttonObj.side + '_buttonid_' + tf.buttonObj.id, // ホバーしたボタンの判定用
+      ...tf.buttonObj.addClasses // ボタンに追加したいクラスがあれば追加する（例：選択中）
     ].join(); // ここまで配列に格納した各要素をカンマ区切りの文字列として結合する
   [endscript]
 
