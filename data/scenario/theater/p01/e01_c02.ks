@@ -46,7 +46,7 @@ tf.playbgmParams = {
 あーあ、もう少しだったのになー。[r]
 あそこでずんだもん先輩をもっと疑ってれば…。[p]
 
-[m_changeCharacterFrameName name="雨晴はう" face="苦笑"]
+[m_changeCharacterFrameName name="雨晴はう" face="苦笑" side="left"]
 [playse storage="theater/p01/e01/043.ogg"]
 ですが負けは負けです。[r]
 ちゃんと認めましょう、つむぎさん。[p]

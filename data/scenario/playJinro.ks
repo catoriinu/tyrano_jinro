@@ -51,7 +51,7 @@
 [m_noticeRole characterId="&f.playerCharacterId" roleId="&f.characterObjects[f.playerCharacterId].role.roleId"]
 
 ; 【チュートリアル】
-[call storage="tutorial/firstInstruction.ks" target="*instruction" cond="('instruction' in f.tutorialList) && !f.tutorialList.instruction"]
+[call storage="tutorial/firstInstruction.ks" target="*jinroInstruction" cond="('jinroInstruction' in f.tutorialList) && !f.tutorialList.jinroInstruction"]
 
 
 ; 占い師なら初日占い実行
@@ -454,6 +454,10 @@
 outputLog();
 [endscript]
 
+; 【チュートリアル】
+[jump storage="tutorial/firstInstruction.ks" target="*encourageRetry" cond="('encourageRetry' in f.tutorialList)"]
+*returnFromFirstInstructionEncourageRetry_noNeed
+
 [if exp="f.isSituationPlay"]
 シアターに戻ります。[p]
 [else]
@@ -472,6 +476,7 @@ outputLog();
 ; 勝利陣営キャラクターのレイヤーを消去する。wait=trueにして人狼ゲーム終了時に責任を持って消しておくこと。wait=falseだと遷移後の画面でfreeimageが発動して意図しない要素が消えてしまう
 [freeimage layer="1" time="500" wait="true"]
 
+*returnFromFirstInstructionEncourageRetry_end
 [jump storage="theater/main.ks" target="*returnFromSituationPlay" cond="f.isSituationPlay"]
 [jump storage="title.ks"]
 [s]

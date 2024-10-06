@@ -1,4 +1,4 @@
-*instruction
+*jinroInstruction
 
 [iscript]
   // もち子さんの立ち絵を追加で登録する
@@ -40,12 +40,14 @@
 あなたに人狼ゲームのルールと、「ボイボ人狼」の遊び方を説明しにきました。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
-今回の村の内訳は「人狼1人、狂人1人、占い師1人、村人2人」です。[r]
-…だけで理解できるなら、人狼ゲームの説明はスキップしますね。[p]
+今回の村の内訳は「人狼1人、狂人1人、占い師1人、村人2人」です。
+
+…と突然言われても、と思った方はこのまま説明をお聞きください。[r]
+理解できた方は、人狼ゲームの説明はスキップしても大丈夫です。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="企む"]
-ちなみにこの説明を含めたオープニングは見返せますからね。[r]
-後ほどシアターモードから「誰がずんだもちを食べたのだ？」の「チュートリアルをプレイする」を選べばOKです。[p]
+ちなみにこの説明は何度でも見返せます。[r]
+タイトル画面から「シアター」→「誰がずんだもちを食べたのだ？」→「チュートリアルをプレイする」を選べばOKです。[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="困惑" side="left"]
 お姉さんは誰に向かって喋ってるのだ？[p]
@@ -60,24 +62,23 @@
   // ボタン生成（初回用）
   f.buttonObjects = [];
   f.buttonObjects.push(new Button(
-    'continueInstruction',
-    '説明して',
+    'continueJinroInstruction',
+    '最初から説明して',
     'center',
     CLASS_GLINK_DEFAULT
   ));
   f.buttonObjects.push(new Button(
-    'skipInstruction',
-    'スキップして',
+    'skipJinroInstruction',
+    'ボイボ人狼の説明だけ',
     'center',
     CLASS_GLINK_DEFAULT,
-    CLASS_GLINK_SELECTED
   ));
 [endscript]
 [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
 [jump target="&f.selectedButtonId"]
 [s]
 
-*continueInstruction
+*continueJinroInstruction
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
 了解です！[r]
@@ -87,7 +88,7 @@
 よろしくなのだ。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
-こほん…[p]
+こほん…。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="説明"]
 「私たちの村に恐ろしい人狼が忍び込みました！[r]
@@ -103,7 +104,8 @@
 「設定」なんて言っちゃっていいのだ？[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="説明"]
-いいんです。あくまでこのゲームはそういう「設定」なんですよ。[p]
+いいんです。[r]
+あくまでこのゲームはそういう「設定」なんですよ。[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="困惑" side="left"]
 わ、分かったのだ。[p]
@@ -116,7 +118,7 @@
 村人陣営と人狼陣営、いずれかの勝利条件を満たしたらゲーム終了となります。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
-今回の場合、村人陣営の勝利条件は「2日目の投票までに人狼を追放すること」。[r]
+村人陣営の勝利条件は「2日目の投票までに人狼を追放すること」。[r]
 それが達成されなかった場合は人狼陣営の勝利です。[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="通常" side="left"]
@@ -131,16 +133,19 @@
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="紹介"]
 次に、役職について説明します。[r]
-今回の参加者は5人なので、人狼陣営は人狼1人と狂人1人、村人陣営は村人2人と占い師1人、という配役になっています。[p]
+参加者の5人にはそれぞれ、「人狼」「狂人」「村人」「占い師」のいずれかの役職が配役されています。[p]
+
+「人狼」と「狂人」は人狼陣営。「村人」と「占い師」は村人陣営です。[r]
+あ、村人だけは2人いて、他は1人ずつですね。[p]
 
 「村人」は他の役職と違って何の能力も持ちません。だからこそ村人同士で団結して、誰が人狼かを突き止めなくてはなりません。[p]
 
-「占い師」は夜、生存者から一人を選び、その人が[ruby text="クロ"]⚫︎（人狼である）か[ruby text="シロ"]⚪︎（人狼ではない）かを知ることができる能力を持っています。[p]
+「占い師」は夜、生存者から1人を選び、その人が[ruby text="クロ"]⚫︎（人狼である）か[ruby text="シロ"]⚪︎（人狼ではない）かを知ることができる能力を持っています。[p]
 
 昼には「自分は占い師だ」と宣言して占い結果を公開できます。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="説明"]
-なお、自分の役職を公開する、または役職の能力の結果を公開することを「[ruby text="カミング"]C[ruby text="アウト"]O」と言います。[p]
+なお、自分の役職を公開する、または役職の能力を実行した結果を公開することを「[ruby text="カミング"]C[ruby text="アウト"]O」と言います。[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="驚き" side="left"]
 そんな能力ズルいのだ！[r]
@@ -150,8 +155,9 @@
 ずんだもんちゃんの言う通りですね。[r]
 だから人狼陣営には対抗手段があります。[p]
 
-「人狼」には、夜時間に生存者を一人襲撃する能力があります。襲撃された人はゲームから脱落します。[r]
-そして人狼も、占い師COをすることができます。[p]
+「人狼」には、夜時間に生存者を一人襲撃する能力があります。襲撃された人はゲームから脱落します。[p]
+
+そして人狼も「自分は占い師だ」と宣言すること…つまり、占い師COをすることができます。[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="考える" side="left"]
 あれ？人狼も占いができるのだ？[p]
@@ -160,7 +166,7 @@
 いいえ、人狼は占いの能力は持っていません。[r]
 ですから必然的に嘘の占い結果をCOすることになります。[p]
 
-上手く嘘をつけば、逆に本当の占い師の方を偽者だと信じ込ませられるかもしれません。[p]
+上手く嘘をつけば、本物の占い師の方を偽者だとみんなに信じ込ませられるかもしれません。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
 ただし、嘘をつくときは十分注意してくださいね。[r]
@@ -171,7 +177,10 @@
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
 最後の「狂人」は、人狼に味方する村人です。[r]
-特殊な能力はありませんが、人狼と同様に占い師COをすることができます。[p]
+人狼と同様に、占い師COをすることができます。[p]
+
+人狼陣営ですが人狼ではないので、占われた場合は[ruby text="シロ"]⚪︎の結果が出ます。[r]
+その立場を活用して、村を混乱に陥れるのが狂人の役目です。
 
 注意点としては、人狼と狂人はお互いに誰が人狼なのか、狂人なのかを知ることはできません。[p]
 
@@ -186,9 +195,9 @@
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
 さて、これで人狼ゲームそのものの説明はおしまいです。[r]
-ここからは実際にゲームを進めながら、「ボイボ人狼」の説明をしますね。[p]
+ここからは実際にゲームをしつつ「ボイボ人狼」の説明をしますね。[p]
 
-[eval exp="f.tutorialList.instruction = true"]
+[eval exp="f.tutorialList.jinroInstruction = true"]
 
 ; 右側のキャラ退場、枠リセット
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
@@ -198,19 +207,22 @@
 [return]
 
 
-*skipInstruction
+*skipJinroInstruction
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
-了解です！それでは、ずんだもんちゃんの幸運を祈ります。[p]
+了解です！[r]
+それでは人狼ゲーム自体の説明はスキップさせていただきます。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
-…また会える時を楽しみにしていますね。[p]
+ここからは実際にゲームをしつつ「ボイボ人狼」の説明をしますね。[p]
 
-[iscript]
-  f.tutorialList = {};
-[endscript]
+[eval exp="f.tutorialList.jinroInstruction = true"]
 
-[free_filter name="mochiko"]
+; 右側のキャラ退場、枠リセット
+[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
+[m_changeFrameWithId]
+#
+
 [return]
 
 
@@ -298,8 +310,7 @@
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="紹介"]
 そして、アクションは周りの人にも少し影響を与えます。[r]
-自分と同じ意見の人は仲間だと思いますし、[r]
-自分と異なる意見の人は怪しく思うようになります。[p]
+自分と同じ意見の人は仲間だと思いますし、自分と異なる意見の人は怪しく思うようになります。[p]
 
 あなたは他の人よりも優先してアクションを実行できます。[r]
 あなたが実行しないときは、他の人がアクションを実行します。[p]
@@ -319,7 +330,7 @@
 なら、僕はどうすればいいのだ？[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
-ずんだもんちゃんは人狼なので、追放されないように立ち回ることが大事です。[r]
+人狼であるずんだもんちゃんは、追放されないことが最も重要です。[r]
 まずは自分を信じてくれる味方を増やしてみるのはどうでしょうか？[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="通常" side="left"]
@@ -340,7 +351,7 @@
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
 さあ、いよいよ投票フェイズです。[p]
 
-ここまでのCO状況や議論の流れをよく考えて、投票したい人を選んでください。[p]
+ここまでのCO状況や議論の流れをよく考えて、追放したい人に投票してください。[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="考える" side="left"]
 僕が村人陣営だったら人狼っぽい人に投票するのだ。[r]
@@ -358,8 +369,8 @@
 投票でも信頼度は上下するので、投票で怪しまれると翌日以降に不利になるかも。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
-ちなみに最多得票者が二人以上いた場合、再投票になります。[r]
-追放できるのは一日につき一人までですので。[p]
+ちなみに最多得票者が2人以上いた場合、再投票になります。[r]
+追放できるのは1日につき1人までですので。[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="考える" side="left"]
 もしずっと再投票になったらどうなるのだ？[p]
@@ -385,7 +396,7 @@
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
 おめでとうございます！[r]
-一日目の追放は免れましたね。[p]
+1日目の追放は免れましたね。[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="困惑" side="left"]
 ド、ドキドキしたのだ…。[p]
@@ -394,13 +405,13 @@
 でも、休んでいる暇はないですよ。[r]
 夜こそ人狼が真の本性を表す時間です！[p]
 
-誰か一人を選んで襲撃してしまいましょう！[p]
+誰か1人を選んで襲撃してしまいましょう！[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="悲しみ" side="left"]
 どうしても襲わなきゃダメなのだ…？[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="説明"]
-ダメです。ずんだもんちゃんは今、血に飢えた恐ろしい人狼…という設定なんですから！[p]
+ダメです。ずんだもんちゃんは今、血に飢えた恐ろしい人狼…という「設定」なんですから！[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="否定" side="left"]
 うぅ…！[r]
@@ -420,7 +431,7 @@
 *secondDayDayPhase
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
-これで残り人数は三人。[r]
+これで残り人数は3人。[r]
 今日を乗り切れば人狼陣営の勝利です。[p]
 [eval exp="f.tutorialList.secondDayDayPhase = true"]
 
@@ -573,7 +584,7 @@
 また、プレイヤー自身の役職も確認できますよ。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
-「投票履歴」では、ある日の投票フェーズで誰が誰に投票したかを確認できます。[r]
+「投票履歴」では、ある日の投票フェイズで誰が誰に投票したかを確認できます。[r]
 再投票が行われた日の履歴は上から下への順番で並んでいます。[p]
 
 「占い履歴」では、どの占い師に、何日目に、何と占われたかを確認できます。[p]
@@ -674,7 +685,7 @@
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
 ふぅん、なるほど…。[r]
-それじゃあ人狼ゲームとボイボ人狼の説明も要らないですか？[p]
+それでは人狼ゲームと「ボイボ人狼」の説明も要らないですか？[p]
 
 [iscript]
   // チュートリアルリストのフラグ立て
@@ -683,17 +694,23 @@
   // ボタン生成（2回目以降用）
   f.buttonObjects = [];
   f.buttonObjects.push(new Button(
-    'continueInstruction',
-    '説明して',
+    'continueJinroInstruction',
+    '最初から説明して',
     'center',
     CLASS_GLINK_DEFAULT
   ));
   f.buttonObjects.push(new Button(
-    'skipSecondInstruction',
-    'スキップして',
+    'skipJinroInstruction',
+    'ボイボ人狼の説明だけ',
     'center',
     CLASS_GLINK_DEFAULT,
-    CLASS_GLINK_SELECTED
+  ));
+  f.buttonObjects.push(new Button(
+    'skipSecondInstruction',
+    '全てスキップして',
+    'center',
+    CLASS_GLINK_DEFAULT,
+    CLASS_GLINK_SELECTED,
   ));
 [endscript]
 [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
@@ -736,8 +753,55 @@
 #
 
 [iscript]
-  f.tutorialList = {};
+  // ゲーム終了時に判定があるencourageRetryだけ残してあとは消す
+  f.tutorialList = {
+    encourageRetry: false,
+  }
 [endscript]
 
 [free_filter name="mochiko"]
 [return]
+
+
+; ※サブルーチンではないため、callではなくjumpで飛んでくること。
+*encourageRetry
+
+; リトライを促す（つまりこの下のジャンプで戻らない）条件
+; 「誰がずんだもちを食べたのだ？」解決編の解放前である（だけで次の条件も満たすが、念の為次の条件も入れておく）かつ
+; 村人陣営が勝利した、または引き分けになった
+[jump storage="playJinro.ks" target="*returnFromFirstInstructionEncourageRetry_noNeed" cond="!((getTheaterProgress('p01', 'e01', 'c02') === THEATER_LOCKED) && ((f.winnerFaction === FACTION_VILLAGERS) || (f.winnerFaction === FACTION_DRAW_BY_REVOTE)))"]
+
+; 左側の立ち絵と、勝利陣営キャラクターのレイヤーを消去する
+[m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
+[freeimage layer="1" time="500" wait="true"]
+
+
+[if exp="f.winnerFaction === FACTION_VILLAGERS"]
+  [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="伏し目"]
+  そんな、負けてしまうなんて…。[p]
+
+[elsif exp="f.winnerFaction === FACTION_DRAW_BY_REVOTE"]
+  [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="伏し目"]
+  あらら、引き分けになっちゃいましたか…。[p]
+
+[endif]
+
+[m_changeCharacterFrameName name="？？？" characterId="mochiko" face="ドヤ顔"]
+…くよくよしてはいられません。[r]
+こうなったら、勝てるまで何度でもリトライです！[p]
+
+ずんだもんちゃんの疑いを晴らすには、人狼ゲームに勝つしかありませんからね！[p]
+
+; 後処理。キャラをゆっくり消すところが他との相違点
+[j_clearFixButton]
+[layopt layer="message0" visible="false"]
+[m_exitCharacter characterId="&f.displayedCharacter.right.characterId" wait="true"]
+[free_filter name="mochiko"]
+[eval exp="f.currentFrame = null"]
+[eval exp="f.tutorialList.encourageRetry = true"]
+
+; タイトル画面に戻るときのみ、背景をタイトル画面のものに変えておく
+[bg storage="voivojinrou_green.png" time="1" wait="false" cond="!f.isSituationPlay"]
+
+[jump storage="playJinro.ks" target="*returnFromFirstInstructionEncourageRetry_end"]
+[s]

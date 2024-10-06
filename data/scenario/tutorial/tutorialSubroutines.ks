@@ -9,7 +9,7 @@
   // 初回プレイ用チュートリアルリストを格納する
   f.tmpTutorialList = {
     needFirstInstruction: needFirstInstruction,
-    instruction: false,
+    jinroInstruction: false,
     COPhase: false,
     discussionPhase: false,
     votePhase: false,
@@ -20,6 +20,7 @@
     statusButton: false,
     endInstruction: false,
     secondInstruction: false,
+    encourageRetry: false,
   }
 
   // 「誰がずんだもちを食べたのだ？」のエピソード情報から参加者情報を取得して、人狼ゲームの準備に利用する
