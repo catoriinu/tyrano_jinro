@@ -40,7 +40,7 @@
 あなたに人狼ゲームのルールと、「ボイボ人狼」の遊び方を説明しにきました。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
-今回の村の内訳は「人狼1人、狂人1人、占い師1人、村人2人」です。
+今回の村の内訳は「人狼1人、狂人1人、占い師1人、村人2人」です。[p]
 
 …と突然言われても、と思った方はこのまま説明をお聞きください。[r]
 理解できた方は、人狼ゲームの説明はスキップしても大丈夫です。[p]
@@ -63,7 +63,7 @@
   f.buttonObjects = [];
   f.buttonObjects.push(new Button(
     'continueJinroInstruction',
-    '最初から説明して',
+    '人狼ゲームから説明して',
     'center',
     CLASS_GLINK_DEFAULT
   ));
@@ -695,7 +695,7 @@
   f.buttonObjects = [];
   f.buttonObjects.push(new Button(
     'continueJinroInstruction',
-    '最初から説明して',
+    '人狼ゲームから説明して',
     'center',
     CLASS_GLINK_DEFAULT
   ));
