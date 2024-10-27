@@ -149,9 +149,12 @@
     f.chapterStorage = null;
   [endscript]
 
+  ; チャプター再生中に表示している可能性があるものは全て画面から消す（途中でスキップされた場合もここで消せるようにするため）
   [j_clearFixButton]
   [m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
   [m_exitCharacter characterId="&f.displayedCharacter.right.characterId" time="1"]
+  [layopt layer="1" visible="false"]
+  [layopt layer="2" visible="false"]
   [layopt layer="message0" visible="false"]
   [eval exp="f.currentFrame = null"]
 [endmacro]
