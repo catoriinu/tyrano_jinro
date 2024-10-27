@@ -11,6 +11,9 @@ function Participant(characterId, roleId = null, personalityName = null, adjustP
   this.roleId = roleId;
   this.personalityName = personalityName;
   this.adjustParameters = adjustParameters;
+  // this.sortId = 0
+  // this.participationStatus = PARTICIPATION_CONFIRMED、PARTICIPATION_DECLINED、PARTICIPATION_CANDIDATE
+  // this.isPlayer = false
 }
 
 

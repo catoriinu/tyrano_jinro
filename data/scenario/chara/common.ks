@@ -49,7 +49,7 @@
 [return]
 
 
-; f.participantsIdListに登録されている（＝今回のの人狼ゲームに登場する）キャラクターを登録する
+; f.participantsIdListに登録されている（＝今回の人狼ゲームに登場する）キャラクターを登録する
 *registerCharactersFromParticipantsIdList
   [iscript]
     tf.registerCharacterList = f.participantsIdList;
@@ -81,6 +81,7 @@
     tf.normalPath = 'chara/' + tf.characterId + '/normal.png';
     // ループ用カウンター
     tf.cnt = 0;
+    tf.layer = tf.layer || 0;
   [endscript]
   [chara_new name="&tf.characterId" storage="&tf.normalPath" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" jname="&tf.jname" reflect="&f.defaultPosition[tf.characterId].reflect"]
 
@@ -98,5 +99,6 @@
   *executeCharaFace_loopend
 
   ; chara_showで通常の立ち絵だけをデフォルトの位置に表示しておく
-  [chara_show name="&tf.characterId" face="通常" time="0" wait="true" left="&f.defaultPosition[tf.characterId].leftOnDefautRight" top="&f.defaultPosition[tf.characterId].top"]
+  [chara_show name="&tf.characterId" face="通常" time="0" wait="true" layer="&tf.layer" left="&f.defaultPosition[tf.characterId].leftOnDefautRight" top="&f.defaultPosition[tf.characterId].top"]
+  [eval exp="tf.layer = null"]
 [return]

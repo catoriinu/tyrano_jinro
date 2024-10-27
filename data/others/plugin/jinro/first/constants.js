@@ -68,6 +68,7 @@ const ROLE_ID_MADMAN         = 'madman'; // 狂人
 const ROLE_ID_PHYCHIC        = 'psychic'; // 霊能力者
 const ROLE_ID_HUNTER         = 'hunter'; // 狩人
 const ROLE_ID_FOX            = 'fox'; // 妖狐
+const ROLE_ID_UNKNOWN        = 'unknown'; // 不明、ランダム
 
 // 陣営
 const FACTION_VILLAGERS  = 'villagers'; // 村人陣営

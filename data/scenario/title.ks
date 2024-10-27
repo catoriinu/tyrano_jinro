@@ -51,8 +51,10 @@
   [glink color="&tf.buttonColor" size="30" width="300" x="138" y="500" name="buttonhover" text="シアター" target="*theater"]
   [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイスタート" target="*gamestart"]
   [glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="600" name="buttonhover" text="カスタムプレイ" target="*selectStage"]
+  ;[glink color="&tf.buttonColor" size="30" width="300" x="488" y="600" name="buttonhover" text="カスタムプレイ" target="*selectStage"]
 [endif]
+
+  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="600" name="buttonhover" text="カスタマイズ" target="*customize"]
 
 ; デバッグ系ボタン表示
 [if exp="sf.isDebugMode"]
@@ -89,6 +91,12 @@
 [stopbgm]
 ;ステージ選択（TODO 現在はPCの役職のみ選択可能）シナリオファイルへジャンプする
 [jump storage="selectStage.ks"]
+
+
+*customize
+[freeimage layer="1"]
+; カスタマイズ画面へジャンプする
+[jump storage="customize/main.ks"]
 
 
 *teststart
