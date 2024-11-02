@@ -13,10 +13,10 @@
 [iscript]
 f.currentJinroGameData = new JinroGameData(
     {
-        ROLE_ID_VILLAGER: 2,
-        ROLE_ID_FORTUNE_TELLER: 1,
-        ROLE_ID_WEREWOLF: 1,
-        ROLE_ID_MADMAN: 1
+        [ROLE_ID_VILLAGER]: 2,
+        [ROLE_ID_FORTUNE_TELLER]: 1,
+        [ROLE_ID_WEREWOLF]: 1,
+        [ROLE_ID_MADMAN]: 1
     },
     [
         new Participant(CHARACTER_ID_ZUNDAMON),

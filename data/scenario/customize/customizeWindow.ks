@@ -2,38 +2,46 @@
 
 *start
 [iscript]
-    const participant = getParticipantWithIndexFromJinroGameData(f.currentJinroGameData, f.selectedParticipantIndex);
-    tf.characterId = participant.characterId;
-    tf.currentRoleId = participant.roleId || ROLE_ID_UNKNOWN;
+    tf.currentParticipant = getParticipantWithIndexFromJinroGameData(f.currentJinroGameData, f.selectedParticipantIndex);
+    tf.characterId = tf.currentParticipant.characterId;
+    tf.currentRoleId = tf.currentParticipant.roleId || ROLE_ID_UNKNOWN;
 
     // 利用する変数の初期化
     tf.buttonColor = CLASS_GLINK_DEFAULT;
     tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
     tf.selectedButton = 'roleSelect';
+    tf.needTrans = true;
 
-    tf.roleList = [
+    // 役職の残り参加可能人数データ
+    const roleDataWithRemainingCapacity = getRoleDataWithRemainingCapacity(f.currentJinroGameData);
+    // 役職選択ボタン。先頭はランダム固定
+    tf.roleButtonList = [
         {
             roleId: ROLE_ID_UNKNOWN,
-            text: 'ランダム'
+            name: 'ランダム',
+            available: true,
         },
-        {
-            roleId: ROLE_ID_VILLAGER,
-            text: '村人'
-        },
-        {
-            roleId: ROLE_ID_FORTUNE_TELLER,
-            text: '占い師'
-        },
-        {
-            roleId: ROLE_ID_WEREWOLF,
-            text: '人狼'
-        },
-        {
-            roleId: ROLE_ID_MADMAN,
-            text: '狂人'
-        }
     ];
-    tf.roleCount = 0;
+    // 実装されている全役職リストを回す。表示順番を固定させるため
+    for (const roleObj of ROLES_LIST) {
+        if (roleObj.roleId in roleDataWithRemainingCapacity) {
+            // 参加可能人数が0の前提で一旦、無効なボタンとして初期化する
+            const roleButtonObj = {
+                roleId: roleObj.roleId,
+                name: roleObj.name,
+                available: false,
+            }
+            // 以下のいずれかに該当するならボタンを有効化する
+            // ・まだその役職の参加可能人数が残っている
+            // ・ウィンドウ表示時点での、自分の参加役職である（参加可能人数が0でも、自分が参加設定しているせいなら再選択可能にすべきなので）
+            if (roleDataWithRemainingCapacity[roleObj.roleId] > 0 || roleObj.roleId === tf.currentRoleId) {
+                roleButtonObj.available = true;
+            }
+            tf.roleButtonList.push(roleButtonObj);
+        }
+    }
+    tf.maxRoleButtonCount = tf.roleButtonList.length - 1;
+    
     tf.iconSize = 80;
     tf.baseTop = 200;
     tf.offsetTop = 90;
@@ -51,6 +59,8 @@
 
 [m_changeCharacter characterId="&tf.characterId" face="通常"]
 
+*return_from_select_role
+
 ;[glink color="&tf.buttonColor" size="28" width="250" x="230" y="100" text="役職・参加" target="*start"]
 [glink color="&tf.selectedButtonColor" size="28" width="250" x="230" y="100" text="役職設定" target="*start" cond="tf.selectedButton === 'roleSelect'"]
 [glink color="&tf.buttonColor" size="28" width="250" x="230" y="100" text="役職設定" target="*start" cond="tf.selectedButton !== 'roleSelect'"]
@@ -58,14 +68,17 @@
 [glink color="&tf.buttonColor" size="28" width="250" x="513" y="100" text="性格情報" target="*start" cond="tf.selectedButton !== 'personalInfo'"]
 [glink color="&tf.buttonColor" size="28" width="250" x="796" y="100" text="閉じる" target="*returnMain"]
 
+[eval exp="tf.roleCount = 0"]
 *start_displaySelectRoleButton
-[call target="*displaySelectRoleButton"]
-[jump target="*end_displaySelectRoleButton" cond="tf.roleCount >= 4"]
-[eval exp="tf.roleCount++"]
-[jump target="*start_displaySelectRoleButton"]
+  [call target="*displaySelectRoleButton"]
+  [jump target="*end_displaySelectRoleButton" cond="tf.roleCount >= tf.maxRoleButtonCount"]
+  [eval exp="tf.roleCount++"]
+  [jump target="*start_displaySelectRoleButton"]
 *end_displaySelectRoleButton
 
-[trans layer="1" time="0"]
+; 「役職設定」を押したとき（最初にウィンドウを開いたときも含む）だけ、裏ページからトランジションする
+[trans layer="1" time="0" cond="tf.needTrans"]
+[eval exp="tf.needTrans = false"]
 [s]
 
 
@@ -73,24 +86,49 @@
 *displaySelectRoleButton
 [iscript]
 tf.top = tf.baseTop + (tf.offsetTop * tf.roleCount);
-tf.glinkTop = tf.top + 15;
-tf.roleId = tf.roleList[tf.roleCount].roleId;
-tf.roleText = tf.roleList[tf.roleCount].text;
-tf.roleStorage = 'role/icon_' + tf.roleId + '.png';
+tf.buttonX = 350;
+tf.buttonY = tf.top + 15;
+const roleButtonObj = tf.roleButtonList[tf.roleCount];
+tf.roleId = roleButtonObj.roleId;
+tf.roleButtonText = roleButtonObj.name;
+tf.roleButtonAvailable = roleButtonObj.available;
 
+tf.roleStorage = 'role/icon_' + tf.roleId + '.png';
 [endscript]
 
 ; TODO 更新差分があった画像だけ削除して書き換える。それ以外はそのまま
 ; または、裏面を全て消したうえでここに入ってくる
 [image folder="image" page="back" storage="&tf.roleStorage" layer="1" width="&tf.iconSize" haight="&tf.iconSize" left="250" top="&tf.top"]
-[glink color="&tf.buttonColor" size="26" width="200" x="350" y="&tf.glinkTop" text="&tf.roleText" target="*start" cond="tf.roleId !== tf.currentRoleId"]
-[glink color="&tf.selectedButtonColor" size="26" width="200" x="350" y="&tf.glinkTop" text="&tf.roleText" target="*start" cond="tf.roleId === tf.currentRoleId"]
+
+; 参加不可能な役職はボタンではなくテキストを表示
+[ptext layer="1" page="back" size="26" x="&(tf.buttonX + 25)" y="&(tf.buttonY + 5)" text="人数オーバー" color="#28332a" cond="!tf.roleButtonAvailable"]
+; 参加可能な役職のボタン
+[glink color="&tf.buttonColor"         size="26" width="200" x="&tf.buttonX" y="&tf.buttonY" text="&tf.roleButtonText" target="*select_role" preexp="tf.roleId" exp="tf.currentRoleId = preexp" cond="tf.roleButtonAvailable && tf.roleId !== tf.currentRoleId"]
+; そのキャラの役職として選択中の役職のボタン
+[glink color="&tf.selectedButtonColor" size="26" width="200" x="&tf.buttonX" y="&tf.buttonY" text="&tf.roleButtonText" target="*select_role" preexp="tf.roleId" exp="tf.currentRoleId = preexp" cond="tf.roleButtonAvailable && tf.roleId === tf.currentRoleId"]
 [return]
 
 
 
+*select_role
+[freeimage layer="1" page="back"]
+[jump storage="customize/customizeWindow.ks" target="*return_from_select_role"]
+[s]
+
+
 
 *returnMain
+[iscript]
+    const newRoleId = (tf.currentRoleId === ROLE_ID_UNKNOWN) ? null : tf.currentRoleId;
+    const newParticipant = new Participant(
+        tf.characterId,
+        newRoleId,
+        tf.currentParticipant.personalityName,
+        tf.currentParticipant.adjustParameters
+    )
+    replaceParticipantInJinroGameData(f.currentJinroGameData, f.selectedParticipantIndex, newParticipant);
+[endscript]
+
 [m_exitCharacter characterId="&tf.characterId" time="1" wait="true"]
 [free_filter layer="0"]
 [freeimage layer="1" page="fore"]

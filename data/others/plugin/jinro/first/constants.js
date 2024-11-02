@@ -86,6 +86,19 @@ const ROLE_ID_TO_FACTION = {
     [ROLE_ID_FOX]: 'TODO',
 }
 
+// 実装済みの全ての役職IDと名前、およびその基本的な序列
+// TODO：ROLE_ID_TO_FACTIONもこちらに混ぜられそうなら混ぜる
+// メモ：
+// 陣営順：村人陣営→人狼陣営
+// 陣営内の順番：少人数ルールでも登場する役職が先
+const ROLES_LIST = [
+  {roleId: ROLE_ID_VILLAGER,       name: '村人'},
+  {roleId: ROLE_ID_FORTUNE_TELLER, name: '占い師'},
+  {roleId: ROLE_ID_WEREWOLF,       name: '人狼'},
+  {roleId: ROLE_ID_MADMAN,         name: '狂人'},
+];
+
+
 // アクション実行上限回数
 const MAX_DO_ACTION_COUNT = 5;
 
