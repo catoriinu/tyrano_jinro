@@ -10,6 +10,7 @@
 ; @param adjustParameters 性格調整用のパラメータオブジェクト。なければ無調整。
 ; @param isPlayer プレイヤーキャラクターかどうか。指定した時点で、他のキャラの登録は初期化される ※キーを指定した時点でtrue扱いになるので注意
 [macro name="j_registerParticipant"]
+; TODO: 後で消す
   [iscript]
     // 初回呼び出し、あるいはisPlayerを指定された場合、tmpParticipant配列を初期化
     if (!(('tmpParticipantObjectList' in tf) && Array.isArray(tf.tmpParticipantObjectList)) || ('isPlayer' in mp)) {
@@ -27,23 +28,19 @@
 
 ; 人狼ゲーム準備マクロ
 ; 事前に最低でも1人（プレイヤー）以上はj_registerParticipantで（または直接tf.tmpParticipantObjectListに）参加者を登録しておくこと
-; @param participantsNumber 参加者の総人数
+; TODO: 後で消す @param participantsNumber 参加者の総人数
+; @param jinroGameData 利用する人狼ゲームデータ。指定しない場合、sf.jinroGameDataObjects[sf.currentJinroGameDataKey]を利用する
 ; @param preload 人狼ゲームで使用するファイルをpreloadするか。デフォルト=false(しない)
 [macro name="j_prepareJinroGame"]
   [iscript]
-    // 参加者の人数はマクロの引数を優先する。もし未定義なら登録済みの参加者の数とする（未初期化だった場合はエラーになるはずだが考慮しない）
-    const participantsNumber = ('participantsNumber' in mp) ? parseInt(mp.participantsNumber) : tf.tmpParticipantObjectList.length;
-    // 登録済みの参加者オブジェクト配列を一時変数からcloneする
-    let participantObjectList = clone(tf.tmpParticipantObjectList);
-
-    const villagersRoleIdList = getVillagersRoleIdList(participantsNumber, participantObjectList);
-    participantObjectList = fillAndSortParticipantObjectList(participantsNumber, participantObjectList);
+    const jinroGameData = mp.jinroGameData || sf.jinroGameDataObjects[sf.currentJinroGameDataKey];
 
     // キャラクターオブジェクト生成と各種変数の初期化
-    initializeCharacterObjectsForJinro(villagersRoleIdList, participantObjectList);
+    initializeCharacterObjectsForJinro(jinroGameData);
     initializeTyranoValiableForJinro();
 
     // 登録が済んだらティラノの一時変数は初期化しておく
+    // TODO: 後で消す
     tf.tmpParticipantObjectList = [];
 
     // ボイスのプリロードが必要か判定しておく

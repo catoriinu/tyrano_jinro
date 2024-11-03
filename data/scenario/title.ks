@@ -81,8 +81,7 @@
 [stopbgm]
 
 ; 人狼ゲームのメインシナリオファイルへジャンプする
-[j_registerParticipant characterId="&CHARACTER_ID_ZUNDAMON" isplayer="true"]
-[j_prepareJinroGame participantsNumber="5" preload="true"]
+[j_prepareJinroGame preload="true"]
 [jump storage="playJinro.ks"]
 
 

@@ -406,6 +406,19 @@ function pushElement(array, element) {
 }
 
 
+/**
+ * 引数のオブジェクトの、値の数だけキー名を繰り返した状態の配列を返却する
+ * @param {Object} object {String:Number, String:Number,...}形式のオブジェクト
+ * @returns {Array} [String, String,...]形式の配列
+ */
+function convertNumberValueObjectToArray(object) {
+  const resultArray = [];
+  for (const key in object) {
+      resultArray.push(...Array(object[key]).fill(key));
+  }
+  return resultArray;
+};
+
 
 /**
  * chara/{characterId}.ksで設定した、そのキャラクターのイメージカラーのコードを取得する

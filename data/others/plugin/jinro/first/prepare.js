@@ -11,97 +11,18 @@ function Participant(characterId, roleId = null, personalityName = null, adjustP
   this.roleId = roleId;
   this.personalityName = personalityName;
   this.adjustParameters = adjustParameters;
-  // this.sortId = 0
   // this.participationStatus = PARTICIPATION_CONFIRMED、PARTICIPATION_DECLINED、PARTICIPATION_CANDIDATE
-  // this.isPlayer = false
-}
-
-
-/**
- * 参加者の総人数と既に確定済みの参加者オブジェクト配列をもとに、配役される役職ID配列を返却する
- * MEMO:現状5人でこの役職しかないので固定で返す
- * @param {Number} participantsNumber 参加者の総人数
- * @param {Array} participantObjectList 参加者オブジェクト配列 TODO:そこにroleIdがある場合は確定で格納する
- * @return {Array} 配役する役職ID配列（要素数＝参加者の総人数）
- */
-function getVillagersRoleIdList(participantsNumber, participantObjectList = []) {
-  let villagersRoleIdList = [
-    ROLE_ID_WEREWOLF,
-    ROLE_ID_MADMAN,
-    ROLE_ID_VILLAGER,
-    ROLE_ID_FORTUNE_TELLER,
-    ROLE_ID_VILLAGER,
-  ];
-  return villagersRoleIdList;
-}
-
-
-/**
- * 人狼ゲームの参加キャラクターを決める
- * 参加者オブジェクト配列のうち未確定の参加者を、総人数に達するまで実装済みキャラの中からランダムに埋め、規定の順番にソートしなおす
- * @param {Number} participantsNumber 参加者の総人数
- * @param {Array} participantObjectList 確定済みの参加者オブジェクト配列（0要素目はプレイヤーキャラクターになる）
- * @returns {Array} 参加者オブジェクト配列（0要素目はプレイヤーキャラクターになる）
- */
-function fillAndSortParticipantObjectList(participantsNumber, participantObjectList = []) {
-
-  // 未確定の参加者の人数
-  const unconfirmedParticipantsNumber = participantsNumber - participantObjectList.length;
-
-  // すでに全参加者が確定しているなら、ランダム埋めは不要
-  if (unconfirmedParticipantsNumber <= 0) return participantObjectList;
-
-  // 以下の各オブジェクトから、扱いやすくするためにキャラクターID配列にして取り出す
-  const confirmedParticipantsIdList = participantObjectList.map(obj => obj.characterId); // 引数時点で参加確定済みの参加者
-  const allCharacterIdList = PARTICIPANTS_LIST.map(obj => obj.characterId); // 実装済みの全キャラクター
-  const candidatesIdList = allCharacterIdList.filter(cId => 
-    // 全キャラのうちから、参加確定済みを除いた残り
-    !confirmedParticipantsIdList.includes(cId) &&
-    // かつ、参加ステータスがNPCであるキャラ
-    cId in TYRANO.kag.variable.sf.participantStatus &&
-    TYRANO.kag.variable.sf.participantStatus[cId] === PARTICIPATE_AS_NPC
-  );
-
-  // 未確定の参加者の人数分、候補者のうちからランダムに参加者として選出する
-  for (let i = 0; i < unconfirmedParticipantsNumber; i++) {
-    const tmpIndex = Math.floor(Math.random() * candidatesIdList.length);
-    participantObjectList.push(new Participant(candidatesIdList[tmpIndex]));
-
-    // 参加することになったキャラは、候補者配列から取り除く
-    candidatesIdList.splice(tmpIndex, 1);
-  }
-
-  // 参加者オブジェクト配列の先頭のオブジェクトを、ソートに巻き込まないようにするため退避する（プレイヤーキャラなので0要素目にいなければならないため）
-  const firstParticipantObject = participantObjectList.shift();
-
-  // 参加者オブジェクト配列の並び順を、実装済みの全キャラクター配列が定めている通りの順番にソートする
-  const sortedParticipantObjectList = [];
-  for (let i = 0; i < allCharacterIdList.length; i++) {
-    // 今回参加していないキャラクターなら処理不要
-    const tmpIndex = participantObjectList.findIndex(obj => obj.characterId === allCharacterIdList[i]);
-    if (tmpIndex === -1) continue;
-
-    sortedParticipantObjectList.push(participantObjectList[tmpIndex]);
-  }
-
-  // 退避していたオブジェクトを先頭に戻す
-  sortedParticipantObjectList.unshift(firstParticipantObject);
-  return sortedParticipantObjectList;
 }
 
 
 /**
  * 人狼ゲームで利用するキャラクターオブジェクト配列を生成し、ティラノのゲーム変数に格納する
  * 人狼ゲーム開始前に毎回呼び出すこと
- * @param {Array} villagersRoleIdList 配役する役職ID配列（要素数＝参加者の総人数）
- * @param {Array} participantObjectList 参加者オブジェクト配列（0要素目はプレイヤーキャラクターになる）。参加者の総人数よりも多くても許容されるが、余ったキャラは不参加となる
+ * @param {JinroGameData} jinroGameDataParam 人狼ゲームデータ
  */
-function initializeCharacterObjectsForJinro(villagersRoleIdList, participantObjectList) {
-
-  if (villagersRoleIdList.length > participantObjectList.length) {
-    alert('参加者オブジェクト配列の要素数は、配役する役職ID配列の要素数（＝参加者の総人数）と同数かそれ以上にしてください');
-    return;
-  }
+function initializeCharacterObjectsForJinro(jinroGameDataParam) {
+  // 渡し元のjinroGameDataを更新してしまわないようにディープコピー
+  const jinroGameData = clone( jinroGameDataParam);
 
   // 開発者モード：「NPCの思考方針」によってlogicalを調整する。logicalを上書きすることで仲間度の算出結果が変わる。
   const adjustlogicalObject = {};
@@ -113,72 +34,82 @@ function initializeCharacterObjectsForJinro(villagersRoleIdList, participantObje
     adjustlogicalObject.logical = 0.0001;
   }
 
-  // 引数をcloneし、未確定の役職配列、未確定の参加者オブジェクト配列とする。オリジナルの引数も後で必要となるため
-  let unconfirmedRoleIdList = clone(villagersRoleIdList);
-  let unconfirmedParticipantObjectList = clone(participantObjectList);
+  // 残り役職人数の把握のために、現在のroleDataをコピーする
+  const roleDataWithRemainingCapacity = Object.assign({}, jinroGameData.roleData);
 
+  // 最初に、参加確定かつ役職確定している参加者のキャラクターオブジェクトを生成する
   const tmpCharacterObjects = {};
+  const participantList = jinroGameData.participantList;
+  for (const participant of participantList) {
+    // 役職が未確定の参加者は後回し
+    if (!participant.roleId) continue;
 
-  // 最初に、配役される役職が確定しているキャラのキャラクターオブジェクトを生成する
-  for (let i = 0; i < participantObjectList.length; i++) {
-    const characterId = participantObjectList[i].characterId;
-    const roleId = participantObjectList[i].roleId;
-    const personalityName = participantObjectList[i].personalityName;
-    const adjustParameters = Object.assign(participantObjectList[i].adjustParameters, adjustlogicalObject);
-  
-    if (roleId) {
-      if (!unconfirmedRoleIdList.includes(roleId)) {
-        alert(characterId + 'に' + roleId + 'を配役しようとしましたが、配役する役職ID配列の中に不足しています');
-        return;
-      }
+    // 開発者モード用のlogical上書き処理
+    participant.adjustParameters = Object.assign(participant.adjustParameters, adjustlogicalObject);
 
-      // キャラクターオブジェクトを生成。配役した役職IDと参加者オブジェクトは、それぞれ未確定用の配列から取り除く
-      tmpCharacterObjects[characterId] = new Character(characterId, roleId, personalityName, adjustParameters);
-      unconfirmedRoleIdList.splice(unconfirmedRoleIdList.findIndex(rId => rId === roleId), 1);
-      unconfirmedParticipantObjectList.splice(unconfirmedParticipantObjectList.findIndex(obj => obj.characterId === characterId), 1);
+    // キャラクターオブジェクトを生成
+    tmpCharacterObjects[participant.characterId] = new Character(participant);
+
+    // 配役した役職IDは残り役職人数オブジェクトから減らしていく
+    roleDataWithRemainingCapacity[participant.roleId]--;
+    if (roleDataWithRemainingCapacity[participant.roleId] < 0) {
+      alert('役職人数不足エラー: 役職人数不足のため、' + participant.characterId + 'に' + participant.roleId + 'を配役できませんでした');
     }
   }
 
-  // 開発者用設定：役職シャッフル「する」なら、未確定の参加者配列の方をシャッフルする
-  // 未確定の役職よりも未確定の参加者オブジェクトの方が多いケースを考慮してみると、
-  // 役職配列をシャッフルしてもこの後選ばれるキャラクターは固定だが、参加者配列をシャッフルすればどのキャラが出るかもランダムにできるため
-  if (TYRANO.kag.variable.sf.j_development.doShuffle) {
-    unconfirmedParticipantObjectList = shuffleElements(unconfirmedParticipantObjectList);
+  // 未確定の役職配列を、シャッフルした状態で取得する
+  let unconfirmedRoleIdList = shuffleElements(convertNumberValueObjectToArray(roleDataWithRemainingCapacity));
+  let roleIdListIndex = 0;
+
+  // 次に、参加確定かつ役職未確定の参加者のキャラクターオブジェクトを生成する
+  for (const participant of participantList) {
+    // 役職確定の参加者はスキップ（前のループで生成済み）
+    if (participant.roleId) continue;
+    // TODO: 参加未確定の参加者もスキップ。初期リリースではあり得ないパターンなので実装後回し
+
+    // 未確定の役職配列からroleIdを取得し、上書きする
+    const roleId = unconfirmedRoleIdList[roleIdListIndex];
+    participant.roleId = roleId;
+    participant.adjustParameters = Object.assign(participant.adjustParameters, adjustlogicalObject);
+    roleIdListIndex++;
+
+    // キャラクターオブジェクトを生成
+    tmpCharacterObjects[participant.characterId] = new Character(participant);
+
+    // 配役した役職IDは残り役職人数オブジェクトから減らしていく
+    roleDataWithRemainingCapacity[participant.roleId]--;
+    if (roleDataWithRemainingCapacity[participant.roleId] < 0) {
+      alert('役職人数不足エラー: 役職人数不足のため、' + participant.characterId + 'に' + participant.roleId + 'を配役できませんでした');
+    }
   }
 
-  // この時点で未確定の役職を、配役が未確定の参加者に振り分けていく
-  // 配役に対して参加者の方が多くて余ってしまった場合は登場させない
-  for (let i = 0; i < unconfirmedRoleIdList.length; i++) {
-    const characterId = unconfirmedParticipantObjectList[i].characterId;
-    const roleId = unconfirmedRoleIdList[i]; // participant.roleIdがnullなので、未確定の役職配列から取得する
-    const personalityName = unconfirmedParticipantObjectList[i].personalityName;
-    const adjustParameters = Object.assign(unconfirmedParticipantObjectList[i].adjustParameters, adjustlogicalObject);
-
-    // キャラクターオブジェクトを生成。これ以降未確定の役職配列と参加者配列は参照しないので、取り除く処理は省略する
-    tmpCharacterObjects[characterId] = new Character(characterId, roleId, personalityName, adjustParameters);
-  }
-
-  // 参加者のキャラクターID配列（並び順の基準になるので、この後の並び替えと同時にキャラクターIDをpushしていく）
-  TYRANO.kag.stat.f.participantsIdList = [];
+  // 最後に、参加未確定かつ役職未確定の参加者のキャラクターオブジェクトを生成する
+  // TODO: 初期リリースではあり得ないパターンなので実装後回し
+  // 役職未確定の参加者を抽出してシャッフルする
+  // もう一度unconfirmedRoleIdList = shuffleElements(convertNumberValueObjectToArray(roleDataWithRemainingCapacity));を取得し、ループしてキャラクターオブジェクトを生成する。
+  // 最後までループしきったら終了（配役に対して参加者の方が多くて余ってしまった場合は登場させない）
+  // 役職未確定の参加者の方が先に終わってしまった場合は人数不足エラー
 
   // 元々の参加者オブジェクト配列に入っていた順番に、キャラクターオブジェクトを並び替える
   const characterObjects = {};
-  for (let i = 0; i < participantObjectList.length; i++) {
-    const characterId = participantObjectList[i].characterId;
-    if (!(characterId in tmpCharacterObjects)) continue; // 登場しないことになったキャラならスキップ
+  for (const participant of participantList) {
+    const characterId = participant.characterId;
+    if (!(characterId in tmpCharacterObjects)) continue; // 参加しないことになったキャラならスキップ
 
     characterObjects[characterId] = tmpCharacterObjects[characterId];
-    TYRANO.kag.stat.f.participantsIdList.push(characterId);
 
-    // 配列先頭のキャラは、プレイヤーキャラとする
-    if (TYRANO.kag.stat.f.participantsIdList.length == 1) {
+    // 人狼ゲームデータで指定されていたキャラをプレイヤーキャラとする
+    if (characterId === jinroGameData.playerCharacterId) {
       characterObjects[characterId].isPlayer = true;
       TYRANO.kag.stat.f.playerCharacterId = characterId;
     }
   }
 
+  // 参加者のキャラクターID配列をティラノ変数に格納する（ゲーム内での並び順の基準になる）
+  TYRANO.kag.stat.f.participantsIdList = Object.keys(characterObjects);
+
   // 共通の視点オブジェクトをティラノ変数に、各キャラの視点オブジェクトを各自のcharacterObject.perspectiveに格納する
-  setDefaultPerspective(characterObjects, TYRANO.kag.stat.f.participantsIdList, villagersRoleIdList);
+  setDefaultPerspective(characterObjects, TYRANO.kag.stat.f.participantsIdList, jinroGameData.roleData);
 
   // 信頼度オブジェクトを各自のcharacterObject.reliabilityに格納する
   setDefaultReliability(characterObjects, TYRANO.kag.stat.f.participantsIdList);
@@ -188,7 +119,7 @@ function initializeCharacterObjectsForJinro(villagersRoleIdList, participantObje
 
   // キャラクターオブジェクト配列と役職ID配列をティラノのゲーム変数に格納する
   TYRANO.kag.stat.f.characterObjects = characterObjects;
-  TYRANO.kag.stat.f.villagersRoleIdList = villagersRoleIdList;
+  TYRANO.kag.stat.f.villagersRoleIdList = convertNumberValueObjectToArray(jinroGameData.roleData);
 }
 
 
@@ -196,31 +127,26 @@ function initializeCharacterObjectsForJinro(villagersRoleIdList, participantObje
  * 初期状態の、共通の視点オブジェクト、各キャラの視点オブジェクト（自分の役職分を考慮する）を生成する
  * @param {Array} characterObjects キャラクターオブジェクト配列。このメソッド内でperspectiveを更新する。
  * @param {Array} participantsIdList 参加者のキャラクターID配列
- * @param {Array} villagersRoleIdList この村の役職のID配列
+ * @param {Object} roleData 役職データ {役職ID: 人数, ...}
  */
-function setDefaultPerspective(characterObjects, participantsIdList, villagersRoleIdList) {
-  // 役職数をカウントしてオブジェクトに入れる
-  let roleCountObject = {};
-  for (let i = 0; i < villagersRoleIdList.length; i++) {
-    let key = villagersRoleIdList[i];
-    roleCountObject[key] = roleCountObject[key] ? roleCountObject[key] + 1 : 1;
-  }
+function setDefaultPerspective(characterObjects, participantsIdList, roleData) {
+
   // 重複のない、村の役職ID配列をティラノ変数に入れておく
-  TYRANO.kag.stat.f.uniqueRoleIdList = Object.keys(roleCountObject);
+  TYRANO.kag.stat.f.uniqueRoleIdList = Object.keys(roleData);
 
   // 役職の割合をオブジェクトに入れる
-  let roleRatioObject = {};
-  for (let rId of Object.keys(roleCountObject)) {
-    roleRatioObject[rId] = roleCountObject[rId] / villagersRoleIdList.length;
+  const roleRatioObject = {};
+  for (let rId of Object.keys(roleData)) {
+    roleRatioObject[rId] = roleData[rId] / TYRANO.kag.stat.f.uniqueRoleIdList.length;
   }
 
   // 共通視点オブジェクトを生成する
   // このとき格納するオブジェクトは必ずcloneでディープコピーすること。単に格納してしまうと、参照渡しなので中身がorganizePerspectiveで書き換えられてしまう
-  let commonPerspective = {};
+  const commonPerspective = {};
   for (let i = 0; i < participantsIdList.length; i++) {
     commonPerspective[participantsIdList[i]] = clone(roleRatioObject);
   }
-  commonPerspective.uncertified = clone(roleCountObject);
+  commonPerspective.uncertified = clone(roleData);
   // 共通視点オブジェクトはティラノ変数に格納する
   TYRANO.kag.stat.f.commonPerspective = commonPerspective;
 
@@ -231,13 +157,13 @@ function setDefaultPerspective(characterObjects, participantsIdList, villagersRo
     characterObjects[characterId].perspective = organizePerspective(
       commonPerspective,
       characterId,
-      TYRANO.kag.stat.f.uniqueRoleIdList.filter(rId => (rId != ROLE_ID_VILLAGER)) // COなしのうちは村人を入れておく
+      TYRANO.kag.stat.f.uniqueRoleIdList.filter(rId => (rId !== ROLE_ID_VILLAGER)) // COなしのうちは村人を入れておく
     );
 
     characterObjects[characterId].role.rolePerspective = organizePerspective(
       commonPerspective,
       characterId,
-      TYRANO.kag.stat.f.uniqueRoleIdList.filter(rId => (rId != characterObjects[characterId].role.roleId)) // roleCountObjectのキーはroleIdで一意なので利用する。そこから自身のroleId以外を0確定させる。
+      TYRANO.kag.stat.f.uniqueRoleIdList.filter(rId => (rId !== characterObjects[characterId].role.roleId)) // roleCountObjectのキーはroleIdで一意なので利用する。そこから自身のroleId以外を0確定させる。
     );
 
     console.log(characterObjects[characterId].role.rolePerspective);

@@ -13,6 +13,7 @@
 
 
 *test
+; TODO: 後で消す
 [j_registerParticipant characterId="&CHARACTER_ID_ZUNDAMON" roleId="&tf.pcRoleId" isplayer="true"]
 [j_prepareJinroGame participantsNumber="5" preload="true"]
 
