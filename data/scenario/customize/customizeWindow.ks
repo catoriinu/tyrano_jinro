@@ -137,6 +137,8 @@ tf.roleStorage = 'role/icon_' + tf.roleId + '.png';
 [endscript]
 
 [m_exitCharacter characterId="&tf.characterId" time="1" wait="true"]
+; chara_showした立ち絵を退場させる。ここだけレイヤー2を使っているので登場させたままだと他で不具合が起きる
+[chara_hide_all layer="2" time="1" wait="true"]
 [free_filter layer="0"]
 [freeimage layer="1" page="fore"]
 [freeimage layer="1" page="back"]
