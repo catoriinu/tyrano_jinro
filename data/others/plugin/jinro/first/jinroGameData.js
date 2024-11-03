@@ -3,10 +3,12 @@
  * 人狼ゲームを開始するにあたって必要なデータをまとめておく
  * @param {Object} 役職データ {役職ID: 人数, ...}
  * @param {Array<Participant>} 参加者リスト [Paticipantオブジェクト, ...]
+ * @param {String} プレイヤーとなるキャラクターID
  */
-function JinroGameData(roleData = {}, participantList = []) {
+function JinroGameData(roleData = {}, participantList = [], playerCharacterId = null) {
   this.roleData = roleData;
   this.participantList = participantList;
+  this.playerCharacterId = playerCharacterId;
   this.ruleData = {}; // TBD
 }
 
@@ -29,7 +31,8 @@ function resetJinroGameDataObjectsToDefault() {
           new Participant(CHARACTER_ID_TSUMUGI),
           new Participant(CHARACTER_ID_HAU),
           new Participant(CHARACTER_ID_RITSU),
-      ]
+      ],
+      CHARACTER_ID_ZUNDAMON
     )
   };
   TYRANO.kag.variable.sf.currentJinroGameDataKey = 'current';
