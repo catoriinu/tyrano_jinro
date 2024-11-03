@@ -51,6 +51,10 @@ if (!('isDebugMode' in sf)) {
 if (!('theaterProgress' in sf)) {
   resetTheaterProgressToDefault();
 }
+// 人狼ゲームデータの初期化
+if (!('jinroGameDataObjects' in sf)) {
+  resetJinroGameDataObjectsToDefault();
+}
 // 紹介動画表示用の進捗
 if (sf.isDebugMode) {
   setTheaterProgressForP99();

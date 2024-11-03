@@ -1,4 +1,4 @@
-; シアター画面のメインシナリオファイル
+; カスタマイズ画面のメインシナリオファイル
 
 *start
 
@@ -11,21 +11,8 @@
 [button fix="true" graphic="button/button_return_normal.png" enterimg="button/button_return_hover.png" target="*returnTitle" x="1143" y="17" width="114" height="103"]
 
 [iscript]
-f.currentJinroGameData = new JinroGameData(
-    {
-        [ROLE_ID_VILLAGER]: 2,
-        [ROLE_ID_FORTUNE_TELLER]: 1,
-        [ROLE_ID_WEREWOLF]: 1,
-        [ROLE_ID_MADMAN]: 1
-    },
-    [
-        new Participant(CHARACTER_ID_ZUNDAMON),
-        new Participant(CHARACTER_ID_METAN),
-        new Participant(CHARACTER_ID_TSUMUGI),
-        new Participant(CHARACTER_ID_HAU),
-        new Participant(CHARACTER_ID_RITSU),
-    ]
-);
+// 現在の（カスタマイズ対象の）人狼ゲームデータを取得する
+f.currentJinroGameData = sf.jinroGameDataObjects[sf.currentJinroGameDataKey];
 [endscript]
 
 

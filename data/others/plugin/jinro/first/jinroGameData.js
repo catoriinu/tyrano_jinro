@@ -12,6 +12,31 @@ function JinroGameData(roleData = {}, participantList = []) {
 
 
 /**
+ * 人狼ゲームデータと現在の人狼ゲームデータキーを初期化する
+ */
+function resetJinroGameDataObjectsToDefault() {
+  TYRANO.kag.variable.sf.jinroGameDataObjects = {
+    current: new JinroGameData(
+      {
+          [ROLE_ID_VILLAGER]: 2,
+          [ROLE_ID_FORTUNE_TELLER]: 1,
+          [ROLE_ID_WEREWOLF]: 1,
+          [ROLE_ID_MADMAN]: 1
+      },
+      [
+          new Participant(CHARACTER_ID_ZUNDAMON),
+          new Participant(CHARACTER_ID_METAN),
+          new Participant(CHARACTER_ID_TSUMUGI),
+          new Participant(CHARACTER_ID_HAU),
+          new Participant(CHARACTER_ID_RITSU),
+      ]
+    )
+  };
+  TYRANO.kag.variable.sf.currentJinroGameDataKey = 'current';
+}
+
+
+/**
  * 人狼ゲームデータから、指定された要素数番目の参加者オブジェクトを取得、返却する
  * @param {JinroGameData} jinroGameData 人狼ゲームデータ
  * @param {Number} index 取得したい参加者オブジェクトの要素数番目
