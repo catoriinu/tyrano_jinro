@@ -2,6 +2,7 @@
 
 *start
 [iscript]
+    // 現在の人狼ゲームデータから、ウィンドウで開いたキャラの情報を取得する
     tf.currentParticipant = getParticipantWithIndexFromJinroGameData(f.currentJinroGameData, f.selectedParticipantIndex);
     tf.characterId = tf.currentParticipant.characterId;
     tf.currentRoleId = tf.currentParticipant.roleId || ROLE_ID_UNKNOWN;
@@ -61,13 +62,14 @@
 
 *return_from_select_role
 
-;[glink color="&tf.buttonColor" size="28" width="250" x="230" y="100" text="役職・参加" target="*start"]
+; ウィンドウ上部のタブボタン
 [glink color="&tf.selectedButtonColor" size="28" width="250" x="230" y="100" text="役職設定" target="*start" cond="tf.selectedButton === 'roleSelect'"]
 [glink color="&tf.buttonColor" size="28" width="250" x="230" y="100" text="役職設定" target="*start" cond="tf.selectedButton !== 'roleSelect'"]
 [glink color="&tf.selectedButtonColor" size="28" width="250" x="513" y="100" text="性格情報" target="*start" cond="tf.selectedButton === 'personalInfo'"]
 [glink color="&tf.buttonColor" size="28" width="250" x="513" y="100" text="性格情報" target="*start" cond="tf.selectedButton !== 'personalInfo'"]
 [glink color="&tf.buttonColor" size="28" width="250" x="796" y="100" text="閉じる" target="*returnMain"]
 
+; 役職設定ボタン表示用ループ
 [eval exp="tf.roleCount = 0"]
 *start_displaySelectRoleButton
   [call target="*displaySelectRoleButton"]
@@ -83,21 +85,23 @@
 
 
 
+; 役職設定ボタン表示用ループのサブルーチン
 *displaySelectRoleButton
 [iscript]
+// ボタンの座標
 tf.top = tf.baseTop + (tf.offsetTop * tf.roleCount);
 tf.buttonX = 350;
 tf.buttonY = tf.top + 15;
+
+// ボタンの情報
 const roleButtonObj = tf.roleButtonList[tf.roleCount];
 tf.roleId = roleButtonObj.roleId;
 tf.roleButtonText = roleButtonObj.name;
 tf.roleButtonAvailable = roleButtonObj.available;
-
 tf.roleStorage = 'role/icon_' + tf.roleId + '.png';
 [endscript]
 
-; TODO 更新差分があった画像だけ削除して書き換える。それ以外はそのまま
-; または、裏面を全て消したうえでここに入ってくる
+; 役職アイコン
 [image folder="image" page="back" storage="&tf.roleStorage" layer="1" width="&tf.iconSize" haight="&tf.iconSize" left="250" top="&tf.top"]
 
 ; 参加不可能な役職はボタンではなくテキストを表示
@@ -110,15 +114,18 @@ tf.roleStorage = 'role/icon_' + tf.roleId + '.png';
 
 
 
+; 役職ボタンを押した後の処理
 *select_role
 [freeimage layer="1" page="back"]
 [jump storage="customize/customizeWindow.ks" target="*return_from_select_role"]
 [s]
 
 
-
+; メイン画面に戻る
 *returnMain
 [iscript]
+    // 現在選択中の役職IDをもとに、人狼ゲームデータを更新する
+    // ROLE_ID_UNKNOWNはここでしか使わない定数なので（TODO むしろROLE_ID_UNKNOWNをデフォにできるか？）、デフォルトのnullに戻す
     const newRoleId = (tf.currentRoleId === ROLE_ID_UNKNOWN) ? null : tf.currentRoleId;
     const newParticipant = new Participant(
         tf.characterId,
