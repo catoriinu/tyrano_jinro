@@ -33,7 +33,7 @@ tf.clickableWidth = tf.iconSize * 2;
 [jump target="*start_displayParticipantIcon"]
 *end_displayParticipantIcon
 
-[trans layer="0" time="0"]
+[trans layer="0" time="1"]
 
 
 [s]

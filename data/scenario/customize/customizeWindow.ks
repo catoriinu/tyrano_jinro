@@ -79,7 +79,7 @@
 *end_displaySelectRoleButton
 
 ; 「役職設定」を押したとき（最初にウィンドウを開いたときも含む）だけ、裏ページからトランジションする
-[trans layer="1" time="0" cond="tf.needTrans"]
+[trans layer="1" time="1" cond="tf.needTrans"]
 [eval exp="tf.needTrans = false"]
 [s]
 
