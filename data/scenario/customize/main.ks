@@ -8,8 +8,6 @@
 
 [bg storage="../image/config/voivo_config_bg.png" time="100"]
 
-[button fix="true" graphic="button/button_return_normal.png" enterimg="button/button_return_hover.png" target="*returnTitle" x="1143" y="17" width="114" height="103"]
-
 [iscript]
 // 現在の（カスタマイズ対象の）人狼ゲームデータを取得する
 f.currentJinroGameData = sf.jinroGameDataObjects[sf.currentJinroGameDataKey];
@@ -23,9 +21,15 @@ tf.iconSize = 100;
 tf.baseTop = 190;
 tf.offsetTop = 102;
 tf.clickableWidth = tf.iconSize * 2;
+
+tf.buttonColor = CLASS_GLINK_DEFAULT;
 [endscript]
 
+; 画面上部のボタン表示
+[button fix="true" graphic="button/button_return_normal.png" enterimg="button/button_return_hover.png" target="*returnTitle" x="1143" y="17" width="114" height="103"]
+[glink color="&tf.buttonColor" size="28" width="250" x="850" y="43" text="プレイスタート" target="*startPlay"]
 
+; キャラアイコン、役職アイコンとそのクリッカブル領域を表示
 *start_displayParticipantIcon
 [call target="*displayParticipantIcon"]
 [jump target="*end_displayParticipantIcon" cond="tf.participantCount >= 4"]
@@ -34,10 +38,7 @@ tf.clickableWidth = tf.iconSize * 2;
 *end_displayParticipantIcon
 
 [trans layer="0" time="1"]
-
-
 [s]
-
 
 
 
@@ -62,14 +63,23 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 
 
 
-
-
 *returnTitle
 ; fixボタンをクリア
 [clearfix]
 [layopt layer="message0" visible="false"]
 [freeimage layer="0"]
 [jump storage="title.ks"]
+[s]
+
+
+*startPlay
+[clearfix]
+[layopt layer="message0" visible="false"]
+[freeimage layer="0"]
+
+; 人狼ゲームのメインシナリオファイルへジャンプする
+[j_prepareJinroGame preload="true"]
+[jump storage="playJinro.ks"]
 [s]
 
 

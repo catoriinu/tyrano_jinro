@@ -53,6 +53,9 @@
 [endscript]
 [call storage="./chara/common.ks" target="*registerCharacters"]
 
+; fixボタンをクリア
+[clearfix]
+
 [filter layer="0" blur="10"]
 
 [image storage="theater/episodeWindow_rectangle.png" layer="1" page="back" name="episodeWindow" x="158.5" y="38"]
