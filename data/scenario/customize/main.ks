@@ -76,6 +76,7 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 [clearfix]
 [layopt layer="message0" visible="false"]
 [freeimage layer="0"]
+[stopbgm]
 
 ; 人狼ゲームのメインシナリオファイルへジャンプする
 [j_prepareJinroGame preload="true"]
