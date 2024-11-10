@@ -5,7 +5,7 @@
 [bg storage="voivojinrou_title_v3.png" time="1" wait="true"]
 
 *start 
-[ptext layer="1" x="5" y="685" text="ver.0.12.0" color="white" size="24"]
+[ptext layer="1" x="5" y="685" text="ver.0.12.1" color="white" size="24"]
 [layopt layer="1" visible="true"]
 ; ボイス停止（人狼ゲームから戻ってきたとき用）
 [stopse buf="0"]
