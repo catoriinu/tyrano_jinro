@@ -8,8 +8,9 @@ const THEATER_WATCHED = 2;  // 視聴済み
 /**
  * シアター進捗の初期化
  * 初回起動時やリセット時に呼ぶ
+ * TODO 後で消す
  */
-function resetTheaterProgressToDefault() {
+function resetTheaterProgressToDefault_old() {
   TYRANO.kag.variable.sf.theaterProgress = {
     'p01': {
       'e01': {
@@ -104,3 +105,49 @@ function everyProgressMatch(targetProgress, pageIdList, episodeIdList, chapterId
   }
   return true;
 }
+
+
+// エピソード解放ステータス
+const EPISODE_STATUS = {
+  INTRO_LOCKED_UNAVAILABLE: 0,    // 導入編未解放かつ現時点では解放不可
+  INTRO_LOCKED_AVAILABLE: 1,      // 導入編未解放かつ解放可
+  INTRO_UNLOCKED_OUTRO_LOCKED: 2, // 導入編解放済みで解決編未解放
+  OUTRO_UNLOCKED: 3               // 解決編まで解放済み
+};
+
+
+/**
+ * シアター進捗の初期化
+ * 初回起動時やリセット時に呼ぶ
+ */
+function resetTheaterProgressToDefault() {
+  TYRANO.kag.variable.sf.theaterProgress = {
+    'p01': {
+      'e01': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE
+    }
+  }
+}
+
+
+/**
+ * 現在のエピソード解放ステータスが、引数のそれと一致しているエピソードIDの一覧を返却する
+ * @param {Number} episodeStatus 抽出したいエピソード解放ステータス
+ * @param {Object} theaterProgress シアター進捗オブジェクト
+ * @returns {Object} {pageId: [一致したepisodeId, ...], ...}
+ */
+function getEpisodesByStatus(episodeStatus, theaterProgress = TYRANO.kag.variable.sf.theaterProgress) {
+
+  const episodes = {};
+  for (const [pageId, episodeProgress] of Object.entries(theaterProgress)) {
+    // 引数で指定されたエピソード解放ステータスであるエピソードIDを抽出
+    const matchedEpisodeIdList = Object.keys(episodeProgress).filter(
+      episodeId => episodeProgress[episodeId] === episodeStatus
+    );
+
+    // エピソードIDの配列をepisodesに追加
+    episodes[pageId] = matchedEpisodeIdList;
+  }
+
+  return episodes;
+}
+
