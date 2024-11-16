@@ -195,3 +195,51 @@
     [image storage="theater/theater_silver_frame.png" layer="0" name="theater1" x="&tf.episodeCoodinate[mp.episodeId].x" y="&tf.episodeCoodinate[mp.episodeId].y"]
   [endif]
 [endmacro]
+
+
+
+; このマクロ内で更新するゲーム変数
+; f.startingSituation    : シチュエーション開始条件に合致したエピソードのページIDとエピソードID。合致しなかった場合は値はnullのまま。{pageId: String|null, episodeId: String|null}
+; f.needPlayIntroEpisode : 導入編を自動再生するフラグ。true: 自動再生する | false: 自動再生しない
+; f.targetJinroGameData  : ゲーム開始時に利用する人狼ゲームデータオブジェクト。合致したエピソードがあれば、そのシチュエーションに合わせて書き換えられる。なければ現在の人狼ゲームデータ自体のディープコピー。
+[macro name="t_setStartingEpisodeSituation"]
+  [iscript]
+    // このマクロ内で更新するゲーム変数の初期化
+    f.startingSituation = {
+      pageId: null,
+      episodeId: null
+    }
+    f.needPlayIntroEpisode = false;
+
+    // 元々の人狼ゲームデータに書き換えを反映させないために、オブジェクトをcloneする
+    const jinroGameData = mp.jinroGameData || sf.jinroGameDataObjects[sf.currentJinroGameDataKey];
+    f.targetJinroGameData = clone(jinroGameData);
+
+    // 「導入編未解放かつ解放可」のエピソードに対して、シチュエーション開始条件に合致したかのチェック
+    const introAvailableEpisodes = getEpisodesByStatus(EPISODE_STATUS.INTRO_LOCKED_AVAILABLE, sf.theaterProgress);
+    // TODO メソッドを呼び出す
+    // （仮）シチュエーション開始条件に合致したpageIdとepisodeId
+    f.startingSituation = {
+      pageId: 'p01',
+      episodeId: 'e01'
+    }
+    f.needPlayIntroEpisode = true;
+
+    // シチュエーション開始条件に合致した「導入編未解放かつ解放可」のエピソードがなかった場合
+    if (!f.needPlayIntroEpisode) {
+      // 「導入編解放済みで解決編未解放」のエピソードに対して、シチュエーション開始条件に合致したかのチェック
+      const introUnlockedEpisodes = getEpisodesByStatus(EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED, sf.theaterProgress);
+      // TODO メソッドを呼び出す
+      // （仮）シチュエーション開始条件に合致したpageIdとepisodeId
+      f.startingSituation = {
+        pageId: 'p01',
+        episodeId: 'e02'
+      }
+    }
+  [endscript]
+[endmacro]
+
+[macro name="t_setJinroGameDataToEpisodeSituation"]
+  [iscript]
+[endscript]
+[endmacro]

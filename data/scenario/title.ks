@@ -80,7 +80,10 @@
 [freeimage layer="1"]
 [stopbgm]
 
-; 人狼ゲームのメインシナリオファイルへジャンプする
+; [t_setStartingEpisodeSituation]
+; f.needPlayIntroEpisode = trueなら自動再生
+
+; 開始する人狼ゲームデータを読み込み、人狼ゲームのメインシナリオファイルへジャンプする
 [j_prepareJinroGame preload="true"]
 [jump storage="playJinro.ks"]
 
