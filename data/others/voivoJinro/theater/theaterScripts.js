@@ -115,6 +115,12 @@ const EPISODE_STATUS = {
   OUTRO_UNLOCKED: 3               // 解決編まで解放済み
 };
 
+const PARTICIPATION = {
+  CONFIRMED: 0, // 参加確定
+  CANDIDATE: 1, // 参加候補
+  DECLINED: 2,  // 不参加
+}
+
 
 /**
  * シアター進捗の初期化
@@ -133,21 +139,167 @@ function resetTheaterProgressToDefault() {
  * 現在のエピソード解放ステータスが、引数のそれと一致しているエピソードIDの一覧を返却する
  * @param {Number} episodeStatus 抽出したいエピソード解放ステータス
  * @param {Object} theaterProgress シアター進捗オブジェクト
- * @returns {Object} {pageId: [一致したepisodeId, ...], ...}
+ * @returns {Array} [[pageId, episodeId], ...]
  */
 function getEpisodesByStatus(episodeStatus, theaterProgress = TYRANO.kag.variable.sf.theaterProgress) {
 
-  const episodes = {};
+  const episodes = [];
+
   for (const [pageId, episodeProgress] of Object.entries(theaterProgress)) {
     // 引数で指定されたエピソード解放ステータスであるエピソードIDを抽出
     const matchedEpisodeIdList = Object.keys(episodeProgress).filter(
       episodeId => episodeProgress[episodeId] === episodeStatus
     );
 
-    // エピソードIDの配列をepisodesに追加
-    episodes[pageId] = matchedEpisodeIdList;
+    // pageIdとepisodeIdをペアとしてepisodes配列に追加
+    for (const episodeId of matchedEpisodeIdList) {
+      episodes.push([pageId, episodeId]);
+    }
   }
 
   return episodes;
 }
 
+
+/**
+ * 指定されたエピソード一覧のシチュエーションの中に、現在の人狼ゲームデータに合致するエピソードがあるかをチェックする
+ * 合致するエピソードがあった場合、合致させるために書き換えを行った状態の人狼ゲームデータを返却する
+ * @param {Array} episodes チェック対象のエピソード一覧 [[pageId, episodeId], ...]
+ * @param {JinroGameData} targetJinroGameData 現在の人狼ゲームデータ
+ * @returns {Array} [true, pageId, episodeId, JinroGameData]: チェックOK | [false, null, null, JinroGameData]: チェックNG
+ */
+function checkMatchingEpisodeSituation(episodes, targetJinroGameData) {
+
+  for (const [pageId, episodeId] of episodes) {
+    // このエピソードのシチュエーションを表す人狼ゲームデータを取得し、現在の人狼ゲームデータがそれに合致するかをチェックする
+    const situationJinroGameData = episodeData(pageId, episodeId).situationJinroGameData;
+    const [matchResult, matchedJinroGameData] = isMatchEpisodeSituation(situationJinroGameData, targetJinroGameData)
+    if (matchResult) {
+      // シチュエーションに合致するエピソードがあった場合
+      return [true, pageId, episodeId, matchedJinroGameData];
+    }
+  }
+
+  // シチュエーションに合致するエピソードがなかった場合
+  return [false, null, null, targetJinroGameData];
+}
+
+/**
+ * このシチュエーションで指定されている人狼ゲームデータを基準として、現在の人狼ゲームデータが全ての条件に合致しているかを判定する
+ * 合致していた場合、合致させるために書き換えを行った状態の人狼ゲームデータを返却する
+ * @param {JinroGameData} situationJinroGameData このシチュエーションで指定されている人狼ゲームデータ
+ * @param {JinroGameData} targetJinroGameData 現在の人狼ゲームデータ
+ * @returns {Array} [true, JinroGameData]: チェックOK | [false, null]: チェックNG
+ */
+function isMatchEpisodeSituation(situationJinroGameData, targetJinroGameData) {
+
+  // 元々の人狼ゲームデータを書き換えないようにするため、cloneする
+  const tmpTargetJinroGameData = clone(targetJinroGameData);
+
+  // プレイヤーキャラクターの条件チェック
+  if (situationJinroGameData.playerCharacterId) {
+    // プレイヤーキャラクターが合致していなければNG
+    if (tmpTargetJinroGameData.playerCharacterId !== situationJinroGameData.playerCharacterId) {
+      console.log('★false playerCharacterId');
+      return [false, null];
+    }
+  }
+
+  // このシチュエーションと、人狼ゲームデータ側の参加者オブジェクトリストを取得
+  const situationParticipantList = situationJinroGameData.participantList;
+  const tmpTargetParticipantList = tmpTargetJinroGameData.participantList;
+
+  // このシチュエーションの参加者チェック
+  for (const situationParticipant of situationParticipantList) {
+    // 人狼ゲームデータ側の、同一キャラクターの参加者オブジェクトを取得
+    const tmpTargetParticipant = tmpTargetParticipantList.find(
+      participant => participant.characterId === situationParticipant.characterId
+    );
+
+    // 「このシチュエーションで不参加であること」が条件である参加者の、参加ステータスのチェック
+    if (situationParticipant.participationStatus === PARTICIPATION.DECLINED) {
+
+      if (!tmpTargetParticipant || tmpTargetParticipant.participationStatus === PARTICIPATION.DECLINED) {
+        // 「不参加」（参加者オブジェクトが存在しない場合も含む）なら条件合致。次の参加者のチェックへ
+        break;
+
+      } else if (tmpTargetParticipant.participationStatus === PARTICIPATION.CANDIDATE) {
+        // 「参加候補」なら「不参加」に更新したうえで条件合致とする。次の参加者のチェックへ
+        tmpTargetParticipant.setParticipationStatus(PARTICIPATION.DECLINED);
+        break;
+
+      } else {
+        // 上記以外（=「参加必須」）ならNG
+        console.log('★false declined Participant');
+        return [false, null];
+      }
+
+    } else {
+      // このシチュエーションで参加する参加者のチェック
+
+      // 人狼ゲームデータ側に参加者オブジェクトが存在しなかった場合はNG
+      if (!tmpTargetParticipant) {
+        console.log('★false undefined Participant');
+        return [false, null];
+      }
+
+      // 参加者の参加ステータスを「参加確定」に更新する
+      tmpTargetParticipant.setParticipationStatus(PARTICIPATION.CONFIRMED);
+
+      // 「役職候補」が設定されている参加者の、役職チェック
+      if (situationParticipant.candidateRoleIds.length >= 1) {
+
+        // 参加者の現在の役職がランダムなら
+        if (tmpTargetParticipant.roleId === null) {
+          // 残り役職候補の中に、指定されている役職が残っているか
+          const remainRoleData = RemaingetRoleDataWithRemainingCapacity(tmpTargetJinroGameData);
+          const tmpCandidateRoleIds = situationParticipant.candidateRoleIds.filter(
+            roleId => (roleId in remainRoleData && remainRoleData[roleId] >= 1)
+          );
+          if (tmpCandidateRoleIds.length <= 0) {
+            // 指定されている役職が残っていなければNG
+            console.log('★false remainRoleData');
+            return [false, null];
+          }
+
+          // 参加者に役職IDを割り当てる（割り当て可能な候補が複数ある場合に備えてシャッフルし、0要素目を割り当てる）
+          const assignedRoleId = shuffleElements(tmpCandidateRoleIds)[0];
+          tmpTargetParticipant.setRoleId(assignedRoleId);
+        }
+
+        // その参加者に、役職候補に含まれていない役職IDが設定されていた場合はNG
+        if (!situationParticipant.candidateRoleIds.incrudes(tmpTargetParticipant.roleId)) {
+          console.log('★false roleCandidate');
+          return [false, null];
+        }
+      }
+    }
+  }
+
+  // 参加人数チェック
+  // このシチュエーションで参加確定している人数
+  const situationConfirmedNumber = situationParticipantList.filter(
+    participant => (participant.participationStatus !== PARTICIPATION.DECLINED)
+  ).length;
+  // 現在の参加確定人数
+  const tmpTargetComfirmedNumber = tmpTargetParticipantList.filter(
+    participant => (participant.participationStatus === PARTICIPATION.CONFIRMED)
+  ).length;
+  // 現在の参加候補人数
+  const tmpTargetCandidateNumber = tmpTargetParticipantList.filter(
+    participant => (participant.participationStatus === PARTICIPATION.CANDIDATE)
+  ).length;
+  // 以下のどちらかに該当する場合はNG
+  // 1. 現在の参加確定人数が、このシチュエーションで参加確定している人数を上回っている場合（余りが出るためNG）
+  // 2. このシチュエーションで参加確定している人数が、現在の参加確定人数と参加候補人数の合計を超えている場合（人数が不足するためNG）
+  if (
+    tmpTargetComfirmedNumber > situationConfirmedNumber &&
+    situationConfirmedNumber > (tmpTargetComfirmedNumber + tmpTargetCandidateNumber)
+  ) {
+    console.log('★false ComfirmedNumber');
+    return [false, null];
+  }
+
+  // 全てのチェックを満たした場合、このメソッド内で書き換えられた人狼ゲームデータを返却する
+  return [true, tmpTargetJinroGameData];
+}

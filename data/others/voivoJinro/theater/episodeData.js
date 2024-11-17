@@ -8,6 +8,13 @@ function episodeData(pageId, episodeId) {
     switch (pageId) {
         // 1期・2期
         case 'p01':
+            const roleDataP01 = {
+                [ROLE_ID_VILLAGER]: 2,
+                [ROLE_ID_FORTUNE_TELLER]: 1,
+                [ROLE_ID_WEREWOLF]: 1,
+                [ROLE_ID_MADMAN]: 1
+            };
+
             switch (episodeId) {
                 case 'e01':
                     return new Episode(
@@ -33,14 +40,15 @@ function episodeData(pageId, episodeId) {
                                 },
                             ),
                         ),
-                        new Situation(
-                            5,
+                        new JinroGameData(
+                            roleDataP01,
                             [
                                 new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_WEREWOLF, null,
                                     {influenceMultiplier: 1.5, registanceMultiplier: 1.2}
                                 ),
                                 new Participant(CHARACTER_ID_METAN, ROLE_ID_MADMAN),
                             ],
+                            CHARACTER_ID_ZUNDAMON
                         ),
                     );
                 case 'e02':

@@ -62,6 +62,18 @@ function replaceParticipantInJinroGameData(jinroGameData, index, participant) {
 
 
 /**
+ * 人狼ゲームデータから、指定されたキャラクターIDの参加者オブジェクトを取得、返却する
+ * ※キャラクターIDが重複しているケースは考えない。最初に見つかったオブジェクトのみ返却する
+ * @param {JinroGameData} jinroGameData 人狼ゲームデータ
+ * @param {String} characterId 取得したい参加者オブジェクトのキャラクターID
+ * @returns {Participant|undefined} 参加者オブジェクト。見つからなければundefined
+ */
+function findParticipantWithCharacterIdFromJinroGameData(jinroGameData, characterId) {
+  return jinroGameData.participantList.find((participant) => participant.characterId === characterId);
+}
+
+
+/**
  * 人狼ゲームデータ内の役職データと参加者リストの情報をもとに、役職の残り人数を表した役職データを返却する
  * @param {JinroGameData} jinroGameData 人狼ゲームデータ
  * @returns 役職の残り人数を表したroleData

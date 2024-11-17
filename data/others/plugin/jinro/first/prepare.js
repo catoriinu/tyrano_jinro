@@ -9,9 +9,38 @@
 function Participant(characterId, roleId = null, personalityName = null, adjustParameters = {}) {
   this.characterId = characterId;
   this.roleId = roleId;
+  this.participationStatus = PARTICIPATION.CONFIRMED // PARTICIPATION.DECLINED、PARTICIPATION.CANDIDATE
   this.personalityName = personalityName;
   this.adjustParameters = adjustParameters;
-  // this.participationStatus = PARTICIPATION_CONFIRMED、PARTICIPATION_DECLINED、PARTICIPATION_CANDIDATE
+  this.candidateRoleIds = [];
+
+  this.setRoleId = function (roleId) {
+    if (!this.validateParticipantStatus(this.participationStatus, roleId)) {
+      throw new Error('参加確定ではないキャラに、何らかの役職IDを設定することはできません');
+    }
+    this.roleId = roleId;
+  }
+
+  this.setParticipationStatus = function (participationStatus) {
+    if (!Object.values(PARTICIPATION).includes(participationStatus)) {
+      throw new Error('PARTICIPATION定数に未定義の参加ステータスには更新できません');
+    }
+
+    if (!this.validateParticipantStatus(participationStatus, this.roleId)) {
+        throw new Error('役職ID設定済みのキャラを、「参加確定」以外の参加ステータスに更新することはできません');
+    }
+    this.participationStatus = participationStatus;
+  }
+
+  this.validateParticipantStatus= function(participationStatus, roleId) {
+    // 参加ステータスが「参加確定」ではないキャラに、何らかの役職IDを設定することはできない
+    if (participationStatus !== PARTICIPATION.CONFIRMED) {
+      if (!(roleId === null || roleId === ROLE_ID_UNKNOWN)) {
+        return false;
+      }
+    }
+    return true;
+  }
 }
 
 

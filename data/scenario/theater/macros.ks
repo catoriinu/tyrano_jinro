@@ -210,6 +210,7 @@
       episodeId: null
     }
     f.needPlayIntroEpisode = false;
+    let tmpNeedPlayIntroEpisode = false;
 
     // 元々の人狼ゲームデータに書き換えを反映させないために、オブジェクトをcloneする
     const jinroGameData = mp.jinroGameData || sf.jinroGameDataObjects[sf.currentJinroGameDataKey];
@@ -217,29 +218,17 @@
 
     // 「導入編未解放かつ解放可」のエピソードに対して、シチュエーション開始条件に合致したかのチェック
     const introAvailableEpisodes = getEpisodesByStatus(EPISODE_STATUS.INTRO_LOCKED_AVAILABLE, sf.theaterProgress);
-    // TODO メソッドを呼び出す
-    // （仮）シチュエーション開始条件に合致したpageIdとepisodeId
-    f.startingSituation = {
-      pageId: 'p01',
-      episodeId: 'e01'
-    }
-    f.needPlayIntroEpisode = true;
+    [tmpNeedPlayIntroEpisode, f.startingSituation.pageId, f.startingSituation.episodeId, f.targetJinroGameData] = checkMatchingEpisodeSituation(introAvailableEpisodes, f.targetJinroGameData);
 
     // シチュエーション開始条件に合致した「導入編未解放かつ解放可」のエピソードがなかった場合
-    if (!f.needPlayIntroEpisode) {
+    if (!tmpNeedPlayIntroEpisode) {
       // 「導入編解放済みで解決編未解放」のエピソードに対して、シチュエーション開始条件に合致したかのチェック
       const introUnlockedEpisodes = getEpisodesByStatus(EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED, sf.theaterProgress);
-      // TODO メソッドを呼び出す
-      // （仮）シチュエーション開始条件に合致したpageIdとepisodeId
-      f.startingSituation = {
-        pageId: 'p01',
-        episodeId: 'e02'
-      }
+      [, f.startingSituation.pageId, f.startingSituation.episodeId, f.targetJinroGameData] = checkMatchingEpisodeSituation(introUnlockedEpisodes, f.targetJinroGameData);
+      // 合致したエピソードがあってもなくても、tmpNeedPlayIntroEpisodeはfalseのままとする。
     }
-  [endscript]
-[endmacro]
 
-[macro name="t_setJinroGameDataToEpisodeSituation"]
-  [iscript]
-[endscript]
+    // TODO 「視聴済みの導入編を自動スキップする」チェックボックスを導入する場合はこのあたりの修正が必要
+    f.needPlayIntroEpisode = tmpNeedPlayIntroEpisode;
+  [endscript]
 [endmacro]
