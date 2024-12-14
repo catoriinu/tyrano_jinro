@@ -71,13 +71,24 @@
 [endmacro]
 
 
-; 指定されたチャプターの進捗を「視聴済み」に更新する
+; 指定されたエピソードのエピソード解放ステータスを更新する
 ; @param pageId
 ; @param episodeId
 ; @param chapterId
-[macro name="t_updateProgressWatched"]
+[macro name="t_updateEpisodeStatus"]
   [iscript]
-    sf.theaterProgress[mp.pageId][mp.episodeId][mp.chapterId] = THEATER_WATCHED;
+    const currentStatus = sf.theaterProgress[mp.pageId][mp.episodeId];
+    if (mp.chapterId === "c01") {
+      // 導入編の場合、「1：導入編未解放かつ解放可」なら「2：導入編解放済みで解決編未解放」に更新する
+      if (currentStatus === EPISODE_STATUS.INTRO_LOCKED_AVAILABLE) {
+        sf.theaterProgress[mp.pageId][mp.episodeId] = EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED;
+      }
+    } else if (mp.chapterId === "c02") {
+      // 解決編の場合、「2：導入編解放済みで解決編未解放」なら「3：解決編まで解放済み」に更新する
+      if (currentStatus === EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED) {
+        sf.theaterProgress[mp.pageId][mp.episodeId] = EPISODE_STATUS.OUTRO_UNLOCKED;
+      }
+    }
   [endscript]
 [endmacro]
 
@@ -134,10 +145,10 @@
   ; キャラ名を消すための#
   # 
 
-  ; 視聴済みに更新する
-  [t_updateProgressWatched pageId="&mp.pageId" episodeId="&mp.episodeId" chapterId="&mp.chapterId"]
-  ; 視聴終了時に解放すべきシアター進捗があれば解放する
-  [call storage="theater/unlockProgress.ks" target="*start"]
+  ; エピソード解放ステータスを更新する
+  [t_updateEpisodeStatus pageId="&mp.pageId" episodeId="&mp.episodeId" chapterId="&mp.chapterId"]
+  ; TODO 後で消す 視聴終了時に解放すべきシアター進捗があれば解放する
+  ; [call storage="theater/unlockProgress.ks" target="*start"]
 
   [iscript]
     // 戻ったときにエピソードウィンドウを開くための設定
