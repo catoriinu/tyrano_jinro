@@ -252,7 +252,7 @@ function isMatchEpisodeSituation(situationJinroGameData, targetJinroGameData) {
         // 参加者の現在の役職がランダムなら
         if (tmpTargetParticipant.roleId === null) {
           // 残り役職候補の中に、指定されている役職が残っているか
-          const remainRoleData = RemaingetRoleDataWithRemainingCapacity(tmpTargetJinroGameData);
+          const remainRoleData = getRoleDataWithRemainingCapacity(tmpTargetJinroGameData);
           const tmpCandidateRoleIds = situationParticipant.candidateRoleIds.filter(
             roleId => (roleId in remainRoleData && remainRoleData[roleId] >= 1)
           );

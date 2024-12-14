@@ -43,10 +43,11 @@ function episodeData(pageId, episodeId) {
                         new JinroGameData(
                             roleDataP01,
                             [
-                                new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_WEREWOLF, null,
-                                    {influenceMultiplier: 1.5, registanceMultiplier: 1.2}
+                                new Participant(
+                                    CHARACTER_ID_ZUNDAMON, [ROLE_ID_WEREWOLF],
+                                    null, {influenceMultiplier: 1.5, registanceMultiplier: 1.2}
                                 ),
-                                new Participant(CHARACTER_ID_METAN, ROLE_ID_MADMAN),
+                                new Participant(CHARACTER_ID_METAN, [ROLE_ID_MADMAN]),
                             ],
                             CHARACTER_ID_ZUNDAMON,
                         ),
@@ -78,8 +79,8 @@ function episodeData(pageId, episodeId) {
                         new JinroGameData(
                             roleDataP01,
                             [
-                                new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_VILLAGER),
-                                new Participant(CHARACTER_ID_METAN, ROLE_ID_FORTUNE_TELLER),
+                                new Participant(CHARACTER_ID_ZUNDAMON, [ROLE_ID_VILLAGER]),
+                                new Participant(CHARACTER_ID_METAN, [ROLE_ID_FORTUNE_TELLER]),
                             ],
                             CHARACTER_ID_ZUNDAMON,
                         ),
@@ -111,8 +112,8 @@ function episodeData(pageId, episodeId) {
                         new JinroGameData(
                             roleDataP01,
                             [
-                                new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_MADMAN),
-                                new Participant(CHARACTER_ID_TSUMUGI, ROLE_ID_WEREWOLF),
+                                new Participant(CHARACTER_ID_ZUNDAMON, [ROLE_ID_MADMAN]),
+                                new Participant(CHARACTER_ID_TSUMUGI, [ROLE_ID_WEREWOLF]),
                             ],
                             CHARACTER_ID_ZUNDAMON,
                         ),
@@ -144,8 +145,8 @@ function episodeData(pageId, episodeId) {
                         new JinroGameData(
                             roleDataP01,
                             [
-                                new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_FORTUNE_TELLER),
-                                new Participant(CHARACTER_ID_HAU, ROLE_ID_WEREWOLF),
+                                new Participant(CHARACTER_ID_ZUNDAMON, [ROLE_ID_FORTUNE_TELLER]),
+                                new Participant(CHARACTER_ID_HAU, [ROLE_ID_WEREWOLF]),
                             ],
                             CHARACTER_ID_ZUNDAMON,
                         ),
@@ -177,8 +178,8 @@ function episodeData(pageId, episodeId) {
                         new JinroGameData(
                             roleDataP01,
                             [
-                                new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_FORTUNE_TELLER),
-                                new Participant(CHARACTER_ID_RITSU, ROLE_ID_WEREWOLF),
+                                new Participant(CHARACTER_ID_ZUNDAMON, [ROLE_ID_FORTUNE_TELLER]),
+                                new Participant(CHARACTER_ID_RITSU, [ROLE_ID_WEREWOLF]),
                             ],
                             CHARACTER_ID_ZUNDAMON,
                         ),
