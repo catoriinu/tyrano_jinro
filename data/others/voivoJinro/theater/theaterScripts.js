@@ -61,23 +61,22 @@ function getEpisodes(
 }
 
 
+// TODO getTheaterProgress()の利用箇所全てで、第3引数chapterIdを削除する必要がある
 /**
- * 指定されたチャプターの進捗を返却する
+ * 指定されたチャプターのエピソード解放ステータスを返却する
  * @param {String} pageId ページID
  * @param {String} episodeId エピソードID
- * @param {String} chapterId チャプターID
  * @param {any} defaultProgress 進捗が存在しない場合に返却する値
- * @returns {Number} シアター進捗定数
+ * @returns {Number} エピソード解放ステータス
  */
-function getTheaterProgress(pageId, episodeId, chapterId, defaultProgress = THEATER_LOCKED) {
+function getTheaterProgress(pageId, episodeId, defaultProgress = EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE) {
   // 進捗状況内に進捗があればそれを、なければデフォルト値を返却する
   const theaterProgress = TYRANO.kag.variable.sf.theaterProgress;
   if (
     pageId in theaterProgress &&
-    episodeId in theaterProgress[pageId] &&
-    chapterId in theaterProgress[pageId][episodeId]
+    episodeId in theaterProgress[pageId]
   ) {
-    return theaterProgress[pageId][episodeId][chapterId];
+    return theaterProgress[pageId][episodeId];
   }
   return defaultProgress;
 }
@@ -85,22 +84,19 @@ function getTheaterProgress(pageId, episodeId, chapterId, defaultProgress = THEA
 
 /**
  * 指定された複数のチャプターの進捗が、すべて指定の進捗状況である場合にのみtrueを返す
- * ※3重ループで全パターンチェックする実装なので、要素を渡しすぎた場合はパフォーマンスが落ちるので注意
+ * ※2重ループで全パターンチェックする実装なので、要素を渡しすぎた場合はパフォーマンスが落ちるので注意
  * @param {Number} シアター進捗定数
  * @param {Array} pageIdList ページID配列
  * @param {Array} episodeIdList エピソードID配列
- * @param {Array} chapterIdList チャプターID配列
  * @returns {Boolean} true: 全チャプターが満たしている / false: 満たしていないチャプターがある
  */
-function everyProgressMatch(targetProgress, pageIdList, episodeIdList, chapterIdList) {
-  console.log('everyProgressMatch targetProgress=' + targetProgress);
+function everyProgressMatch(targetEpisodeStatus, pageIdList, episodeIdList) {
+  console.log('everyProgressMatch targetEpisodeStatus=' + targetEpisodeStatus);
   for (let pageId of pageIdList) {
     for (let episodeId of episodeIdList) {
-      for (let chapterId of chapterIdList) {
-        let progress = getTheaterProgress(pageId, episodeId, chapterId);
-        console.log(pageId + '_' + episodeId + '_' + chapterId + '=' + progress);
-        if (progress !== targetProgress) return false;
-      }
+      const currentProgress = getTheaterProgress(pageId, episodeId);
+      console.log(pageId + '_' + episodeId + '=' + currentProgress);
+      if (currentProgress !== targetEpisodeStatus) return false;
     }
   }
   return true;
@@ -129,9 +125,35 @@ const PARTICIPATION = {
 function resetTheaterProgressToDefault() {
   TYRANO.kag.variable.sf.theaterProgress = {
     'p01': {
-      'e01': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE
+      'e01': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
+      'e02': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
+      'e03': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
+      'e04': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
+      'e05': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
+      'e06': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
+      'e07': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
+      'e08': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
     }
   }
+}
+
+
+/**
+ * 指定されたエピソードのエピソード進捗ステータスを、進めたいステータスに進めることができればそれを返す
+ * 進められない場合は元々のステータスを返す
+ * @param {String} pageId 
+ * @param {String} episodeId 
+ * @param {Number} targetStatus 進めたいエピソード進捗ステータス
+ * @returns 更新結果となるエピソード進捗ステータス
+ */
+function advanceEpisodeStatus(pageId, episodeId, targetStatus) {
+  const currentStatus = getTheaterProgress(pageId, episodeId);
+  // 現在のステータスが、指定のステータスの1つ前の場合のみ、1つ進めることができると判定する
+  if (currentStatus === (targetStatus - 1)) {
+    return targetStatus;
+  }
+  // 1つ前ではない場合は進められないので元々のステータスを返す（ステータスを飛ばしたり、巻き戻ったりはさせないという意味）
+  return currentStatus;
 }
 
 
