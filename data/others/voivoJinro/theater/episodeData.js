@@ -48,7 +48,7 @@ function episodeData(pageId, episodeId) {
                                 ),
                                 new Participant(CHARACTER_ID_METAN, ROLE_ID_MADMAN),
                             ],
-                            CHARACTER_ID_ZUNDAMON
+                            CHARACTER_ID_ZUNDAMON,
                         ),
                     );
                 case 'e02':
@@ -75,12 +75,13 @@ function episodeData(pageId, episodeId) {
                                 },
                             ),
                         ),
-                        new Situation(
-                            5,
+                        new JinroGameData(
+                            roleDataP01,
                             [
                                 new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_VILLAGER),
                                 new Participant(CHARACTER_ID_METAN, ROLE_ID_FORTUNE_TELLER),
                             ],
+                            CHARACTER_ID_ZUNDAMON,
                         ),
                     );
                 case 'e03':
@@ -107,12 +108,13 @@ function episodeData(pageId, episodeId) {
                                 },
                             ),
                         ),
-                        new Situation(
-                            5,
+                        new JinroGameData(
+                            roleDataP01,
                             [
                                 new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_MADMAN),
                                 new Participant(CHARACTER_ID_TSUMUGI, ROLE_ID_WEREWOLF),
                             ],
+                            CHARACTER_ID_ZUNDAMON,
                         ),
                     );
                 case 'e04':
@@ -139,12 +141,13 @@ function episodeData(pageId, episodeId) {
                                 },
                             ),
                         ),
-                        new Situation(
-                            5,
+                        new JinroGameData(
+                            roleDataP01,
                             [
                                 new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_FORTUNE_TELLER),
                                 new Participant(CHARACTER_ID_HAU, ROLE_ID_WEREWOLF),
                             ],
+                            CHARACTER_ID_ZUNDAMON,
                         ),
                     );
                 case 'e05':
@@ -171,12 +174,13 @@ function episodeData(pageId, episodeId) {
                                 },
                             ),
                         ),
-                        new Situation(
-                            5,
+                        new JinroGameData(
+                            roleDataP01,
                             [
                                 new Participant(CHARACTER_ID_ZUNDAMON, ROLE_ID_FORTUNE_TELLER),
                                 new Participant(CHARACTER_ID_RITSU, ROLE_ID_WEREWOLF),
                             ],
+                            CHARACTER_ID_ZUNDAMON,
                         ),
                     );
                 case 'e06':
