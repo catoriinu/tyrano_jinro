@@ -236,7 +236,7 @@ tf.playbgmParams = {
 
 ; 初回プレイ時用の特殊処理
 [iscript]
-  tf.isFirstStartup = (getTheaterProgress('p01', 'e01', 'c01') === THEATER_LOCKED);
+  tf.isFirstStartup = (getTheaterProgress('p01', 'e01') === EPISODE_STATUS.INTRO_LOCKED_AVAILABLE);
 [endscript]
 
 [t_teardownChapter pageId="&f.pageId" episodeId="&f.episodeId" chapterId="&f.chapterId"]

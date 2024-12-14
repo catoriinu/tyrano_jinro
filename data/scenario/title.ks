@@ -23,38 +23,26 @@
   // シアターで即座にエピソードウィンドウを開くフラグを初期化（タイトルに戻ってきたら次にシアターを開いてもウィンドウを開いてほしくないため）
   f.quickShowEpisodeWindow = false;
 
-  // タイトル画面のボタン表示を判定するためにシアター進捗を取得していく
-  // 初回起動時
-  tf.isFirstStartup = (getTheaterProgress('p01', 'e01', 'c01') === THEATER_LOCKED);
-  // チュートリアル未クリア
-  tf.isTutolialNotCleared = (getTheaterProgress('p01', 'e01', 'c02') === THEATER_LOCKED);
-  // ページ1未クリア
-  tf.isPage01NotCleared = (getTheaterProgress('p01', 'e08', 'c02') !== THEATER_WATCHED);
+  // タイトル画面のボタン表示を判定するためにエピソード進捗ステータスを取得していく
+  // チュートリアルクリア済みか
+  tf.isTutolialCleared = (getTheaterProgress('p01', 'e01') === EPISODE_STATUS.OUTRO_UNLOCKED);
 
   // ボタンの色
   tf.buttonColor = CLASS_GLINK_DEFAULT;
 [endscript]
 
-; タイトル画面のボタン表示。予期せぬパターンがあると大変なので、面倒でもelsifで場合分けしておくこと
-[if exp="tf.isFirstStartup"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイスタート" target="*firstPlayStart"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
-[elsif exp="tf.isTutolialNotCleared"]
+; タイトル画面のボタン表示
+[glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイスタート" target="*gamestart"]
+[glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
+
+; チュートリアルクリア済みならシアターとカスタマイズを解放
+[if exp="tf.isTutolialCleared"]
   [glink color="&tf.buttonColor" size="30" width="300" x="138" y="500" name="buttonhover" text="シアター" target="*theater"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイスタート" target="*firstPlayStart"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
-[elsif exp="tf.isPage01NotCleared"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="138" y="500" name="buttonhover" text="シアター" target="*theater"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイスタート" target="*gamestart"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
-[else]
-  [glink color="&tf.buttonColor" size="30" width="300" x="138" y="500" name="buttonhover" text="シアター" target="*theater"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイスタート" target="*gamestart"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
-  ;[glink color="&tf.buttonColor" size="30" width="300" x="488" y="600" name="buttonhover" text="カスタムプレイ" target="*selectStage"]
+  ; TODO 実際にはこちらを有効化する
+  ;[glink color="&tf.buttonColor" size="30" width="300" x="488" y="600" name="buttonhover" text="カスタマイズ" target="*customize"]
 [endif]
 
-  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="600" name="buttonhover" text="カスタマイズ" target="*customize"]
+[glink color="&tf.buttonColor" size="30" width="300" x="488" y="600" name="buttonhover" text="カスタマイズ" target="*customize"]
 
 ; デバッグ系ボタン表示
 [if exp="sf.isDebugMode"]
@@ -149,13 +137,14 @@
 sf.theaterProgress = 
   {
     'p01': {
-      'e01': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
-      'e02': {'c01': THEATER_UNLOCKED},
-      'e03': {'c01': THEATER_UNLOCKED},
-      'e04': {'c01': THEATER_UNLOCKED},
-      'e05': {'c01': THEATER_UNLOCKED},
-      'e06': {'c01': THEATER_UNLOCKED},
-      'e07': {'c01': THEATER_UNLOCKED},
+      'e01': EPISODE_STATUS.OUTRO_UNLOCKED,
+      'e02': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
+      'e03': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
+      'e04': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
+      'e05': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
+      'e06': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
+      'e07': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
+      'e07': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
     }
   }
 [endscript]
@@ -166,14 +155,14 @@ sf.theaterProgress =
 sf.theaterProgress = 
   {
     'p01': {
-      'e01': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
-      'e02': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
-      'e03': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
-      'e04': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
-      'e05': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
-      'e06': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
-      'e07': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
-      'e08': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
+      'e01': EPISODE_STATUS.OUTRO_UNLOCKED,
+      'e02': EPISODE_STATUS.OUTRO_UNLOCKED,
+      'e03': EPISODE_STATUS.OUTRO_UNLOCKED,
+      'e04': EPISODE_STATUS.OUTRO_UNLOCKED,
+      'e05': EPISODE_STATUS.OUTRO_UNLOCKED,
+      'e06': EPISODE_STATUS.OUTRO_UNLOCKED,
+      'e07': EPISODE_STATUS.OUTRO_UNLOCKED,
+      'e08': EPISODE_STATUS.OUTRO_UNLOCKED,
     }
   }
 [endscript]

@@ -48,6 +48,9 @@ function episodeData(pageId, episodeId) {
                                     null, {influenceMultiplier: 1.5, registanceMultiplier: 1.2}
                                 ),
                                 new Participant(CHARACTER_ID_METAN, [ROLE_ID_MADMAN]),
+                                new Participant(CHARACTER_ID_TSUMUGI, [ROLE_ID_VILLAGER, ROLE_ID_FORTUNE_TELLER]),
+                                new Participant(CHARACTER_ID_HAU, [ROLE_ID_VILLAGER, ROLE_ID_FORTUNE_TELLER]),
+                                new Participant(CHARACTER_ID_RITSU, [ROLE_ID_VILLAGER, ROLE_ID_FORTUNE_TELLER]),
                             ],
                             CHARACTER_ID_ZUNDAMON,
                         ),

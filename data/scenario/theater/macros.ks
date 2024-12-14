@@ -33,6 +33,7 @@
 ; シアター詳細画面では、j_registerParticipantの代わりにこのマクロで登録すること
 [macro name="t_registerSituationParticipants"]
   [iscript]
+  1 // TODO getTheaterProgressの第3引数を削除して判定を変えること
     tf.tmpParticipantObjectList = clone(f.displayEpisode.situation.participantsList);
   [endscript]
 [endmacro]
@@ -44,6 +45,7 @@
 ; @param chapterId
 [macro name="t_isProgressLocked"]
   [iscript]
+    // TODO getTheaterProgressの第3引数を削除して判定を変えること
     tf.isProgressLocked = (getTheaterProgress(mp.pageId, mp.episodeId, mp.chapterId) === THEATER_LOCKED);
   [endscript]
 [endmacro]
@@ -55,6 +57,7 @@
 ; @param chapterId
 [macro name="t_isProgressUnlocked"]
   [iscript]
+    // TODO getTheaterProgressの第3引数を削除して判定を変えること
     tf.isProgressUnlocked = (getTheaterProgress(mp.pageId, mp.episodeId, mp.chapterId) === THEATER_UNLOCKED);
   [endscript]
 [endmacro]

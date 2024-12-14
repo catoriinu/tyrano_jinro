@@ -61,7 +61,6 @@ function getEpisodes(
 }
 
 
-// TODO getTheaterProgress()の利用箇所全てで、第3引数chapterIdを削除する必要がある
 /**
  * 指定されたチャプターのエピソード解放ステータスを返却する
  * @param {String} pageId ページID

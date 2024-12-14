@@ -25,11 +25,10 @@
 
   // 「誰がずんだもちを食べたのだ？」のエピソード情報から参加者情報を取得して、人狼ゲームの準備に利用する
   const tmpEpisodeData = episodeData('p01', 'e01');
-  tf.tmpParticipantsNumber = tmpEpisodeData.situation.participantsNumber;
-  tf.tmpParticipantObjectList = tmpEpisodeData.situation.participantsList;
+  tf.tmpJinroGameData = tmpEpisodeData.situationJinroGameData
 [endscript]
 
-[j_prepareJinroGame participantsNumber="&tf.tmpParticipantsNumber" preload="true"]
+[j_prepareJinroGame jinroGameData="&tf.tmpJinroGameData" preload="true"]
 
 [jump storage="playJinro.ks"]
 [s]

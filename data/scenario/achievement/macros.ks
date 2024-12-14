@@ -18,6 +18,7 @@
 
     for (let pageId of Object.keys(sf.theaterProgress)) {
       for (let episodeId of Object.keys(sf.theaterProgress[pageId])) {
+        // TODO getTheaterProgressの第3引数を削除して判定を変えること
         const introProgress = getTheaterProgress(pageId, episodeId, 'c01');
         const outroProgress = getTheaterProgress(pageId, episodeId, 'c02');
 
