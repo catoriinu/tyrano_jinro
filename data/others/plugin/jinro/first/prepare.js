@@ -13,34 +13,37 @@ function Participant(characterId, roleIdParam = null, personalityName = null, ad
   this.participationStatus = PARTICIPATION.CONFIRMED // PARTICIPATION.DECLINED、PARTICIPATION.CANDIDATE
   this.personalityName = personalityName;
   this.adjustParameters = adjustParameters;
+}
 
-  this.setRoleId = function (roleId) {
-    if (!this.validateParticipantStatus(this.participationStatus, roleId)) {
-      throw new Error('参加確定ではないキャラに、何らかの役職IDを設定することはできません');
-    }
-    this.roleId = roleId;
+
+function updateRoleIdInParticipant (participant, roleId) {
+  if (!validateParticipantStatus(participant.participationStatus, roleId)) {
+    throw new Error('参加確定ではないキャラに、何らかの役職IDを設定することはできません');
+  }
+  participant.roleId = roleId;
+}
+
+
+function updateParticipationStatusInParticipant (participant, participationStatus) {
+  if (!Object.values(PARTICIPATION).includes(participationStatus)) {
+    throw new Error('PARTICIPATION定数に未定義の参加ステータスには更新できません');
   }
 
-  this.setParticipationStatus = function (participationStatus) {
-    if (!Object.values(PARTICIPATION).includes(participationStatus)) {
-      throw new Error('PARTICIPATION定数に未定義の参加ステータスには更新できません');
-    }
-
-    if (!this.validateParticipantStatus(participationStatus, this.roleId)) {
-        throw new Error('役職ID設定済みのキャラを、「参加確定」以外の参加ステータスに更新することはできません');
-    }
-    this.participationStatus = participationStatus;
+  if (!validateParticipantStatus(participationStatus, participant.roleId)) {
+      throw new Error('役職ID設定済みのキャラを、「参加確定」以外の参加ステータスに更新することはできません');
   }
+  participant.participationStatus = participationStatus;
+}
 
-  this.validateParticipantStatus= function(participationStatus, roleId) {
-    // 参加ステータスが「参加確定」ではないキャラに、何らかの役職IDを設定することはできない
-    if (participationStatus !== PARTICIPATION.CONFIRMED) {
-      if (!(roleId === null || roleId === ROLE_ID_UNKNOWN)) {
-        return false;
-      }
+
+function validateParticipantStatus (participationStatus, roleId) {
+  // 参加ステータスが「参加確定」ではないキャラに、何らかの役職IDを設定することはできない
+  if (participationStatus !== PARTICIPATION.CONFIRMED) {
+    if (!(roleId === null || roleId === ROLE_ID_UNKNOWN)) {
+      return false;
     }
-    return true;
   }
+  return true;
 }
 
 

@@ -31,7 +31,6 @@
 [loadjs storage="voivoJinro/achievement/CharacterCondition.js"]
 [loadjs storage="voivoJinro/theater/Episode.js"]
 [loadjs storage="voivoJinro/theater/Chapter.js"]
-[loadjs storage="voivoJinro/theater/Situation.js"]
 [loadjs storage="voivoJinro/theater/theaterScripts.js"]
 [loadjs storage="voivoJinro/theater/episodeData.js"]
 [loadjs storage="voivoJinro/record/recordScripts.js"]

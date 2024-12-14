@@ -172,7 +172,8 @@ function checkMatchingEpisodeSituation(episodes, targetJinroGameData) {
 
   for (const [pageId, episodeId] of episodes) {
     // このエピソードのシチュエーションを表す人狼ゲームデータを取得し、現在の人狼ゲームデータがそれに合致するかをチェックする
-    const situationJinroGameData = episodeData(pageId, episodeId).situationJinroGameData;
+    const episode = episodeData(pageId, episodeId);
+    const situationJinroGameData = episode.situationJinroGameData;
     const [matchResult, matchedJinroGameData] = isMatchEpisodeSituation(situationJinroGameData, targetJinroGameData)
     if (matchResult) {
       // シチュエーションに合致するエピソードがあった場合
@@ -225,7 +226,7 @@ function isMatchEpisodeSituation(situationJinroGameData, targetJinroGameData) {
 
       } else if (tmpTargetParticipant.participationStatus === PARTICIPATION.CANDIDATE) {
         // 「参加候補」なら「不参加」に更新したうえで条件合致とする。次の参加者のチェックへ
-        tmpTargetParticipant.setParticipationStatus(PARTICIPATION.DECLINED);
+        setParticipationStatusInParticipant(tmpTargetParticipant, PARTICIPATION.DECLINED);
         break;
 
       } else {
@@ -244,7 +245,7 @@ function isMatchEpisodeSituation(situationJinroGameData, targetJinroGameData) {
       }
 
       // 参加者の参加ステータスを「参加確定」に更新する
-      tmpTargetParticipant.setParticipationStatus(PARTICIPATION.CONFIRMED);
+      updateParticipationStatusInParticipant(tmpTargetParticipant, PARTICIPATION.CONFIRMED);
 
       // 「役職候補」が設定されている参加者の、役職チェック
       if (situationParticipant.candidateRoleIds.length >= 1) {
@@ -264,11 +265,11 @@ function isMatchEpisodeSituation(situationJinroGameData, targetJinroGameData) {
 
           // 参加者に役職IDを割り当てる（割り当て可能な候補が複数ある場合に備えてシャッフルし、0要素目を割り当てる）
           const assignedRoleId = shuffleElements(tmpCandidateRoleIds)[0];
-          tmpTargetParticipant.setRoleId(assignedRoleId);
+          updateRoleIdInParticipant(tmpTargetParticipant, assignedRoleId);
         }
 
         // その参加者に、役職候補に含まれていない役職IDが設定されていた場合はNG
-        if (!situationParticipant.candidateRoleIds.incrudes(tmpTargetParticipant.roleId)) {
+        if (!situationParticipant.candidateRoleIds.includes(tmpTargetParticipant.roleId)) {
           console.log('★false roleCandidate');
           return [false, null];
         }

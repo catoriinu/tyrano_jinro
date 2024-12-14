@@ -11,7 +11,7 @@
  * その他のテキスト：テキストをそのまま表示する。ボタンは表示されず、ここから人狼ゲームを開始することはできなくなる
  * @param {Chapter} introChapter 導入編のチャプターオブジェクト
  * @param {Chapter} outroChapter 解決編のチャプターオブジェクト
- * @param {JinoGameData|null} situationJinoGameData このエピソードのシチュエーションに合致する人狼ゲームデータ。特定のシチュエーションがないならnullを渡すこと
+ * @param {JinroGameData|null} situationJinroGameData このエピソードのシチュエーションに合致する人狼ゲームデータ。特定のシチュエーションがないならnullを渡すこと
  */
 function Episode(
     pageId,
@@ -22,7 +22,7 @@ function Episode(
     episodePlayButtonType,
     introChapter,
     outroChapter,
-    situationJinoGameData,
+    situationJinroGameData,
 ) {
     this.pageId = pageId;
     this.episodeId = episodeId;
@@ -32,5 +32,5 @@ function Episode(
     this.episodePlayButtonType = episodePlayButtonType;
     this.introChapter = introChapter;
     this.outroChapter = outroChapter;
-    this.situationJinoGameData = situationJinoGameData;
+    this.situationJinroGameData = situationJinroGameData;
 }
