@@ -12,7 +12,8 @@
  * @param {Chapter} introChapter 導入編のチャプターオブジェクト
  * @param {Chapter} outroChapter 解決編のチャプターオブジェクト
  * @param {JinroGameData|null} situationJinroGameData このエピソードのシチュエーションに合致する人狼ゲームデータ。特定のシチュエーションがないならnullを渡すこと
- * @param {AchievementCondition|null} achievementCondition 解放条件オブジェクト。このチャプターを解放するための条件を格納する。解決編がないならnullを渡す。必ず解決編を解放していいならnew AchievementCondition()のまま渡すこと
+ * @param {ResultCondition|null} outroUnlockCondition シチュエーション完遂チェック用の終了状況オブジェクト。解決編を解放するための条件を格納する。
+ * 解決編がないならnullを渡す。必ず解決編を解放していいならnew ResultCondition()のまま渡すこと
  */
 function Episode(
     pageId,
@@ -24,7 +25,7 @@ function Episode(
     introChapter,
     outroChapter,
     situationJinroGameData,
-    achievementCondition,
+    resultCondition,
 ) {
     this.pageId = pageId;
     this.episodeId = episodeId;
@@ -35,5 +36,5 @@ function Episode(
     this.introChapter = introChapter;
     this.outroChapter = outroChapter;
     this.situationJinroGameData = situationJinroGameData;
-    this.achievementCondition = achievementCondition;
+    this.outroUnlockCondition = resultCondition;
 }

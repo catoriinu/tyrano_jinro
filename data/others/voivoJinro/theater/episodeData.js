@@ -46,7 +46,7 @@ function episodeData(pageId, episodeId) {
                             ],
                             CHARACTER_ID_ZUNDAMON,
                         ),
-                        new AchievementCondition(
+                        new ResultCondition(
                             true,
                             null,
                             {
@@ -79,7 +79,7 @@ function episodeData(pageId, episodeId) {
                             ],
                             CHARACTER_ID_ZUNDAMON,
                         ),
-                        new AchievementCondition(
+                        new ResultCondition(
                             true,
                             null,
                             {
@@ -112,7 +112,7 @@ function episodeData(pageId, episodeId) {
                             ],
                             CHARACTER_ID_ZUNDAMON,
                         ),
-                        new AchievementCondition(
+                        new ResultCondition(
                             true,
                             null,
                             {
@@ -145,7 +145,7 @@ function episodeData(pageId, episodeId) {
                             ],
                             CHARACTER_ID_ZUNDAMON,
                         ),
-                        new AchievementCondition(
+                        new ResultCondition(
                             true,
                             null,
                             {
@@ -178,7 +178,7 @@ function episodeData(pageId, episodeId) {
                             ],
                             CHARACTER_ID_ZUNDAMON,
                         ),
-                        new AchievementCondition(
+                        new ResultCondition(
                             true,
                             null,
                             {
@@ -204,7 +204,7 @@ function episodeData(pageId, episodeId) {
                             'theater/p01/e06_c02.ks',
                         ),
                         null,
-                        new AchievementCondition(
+                        new ResultCondition(
                             false,
                             FACTION_VILLAGERS,
                             {
@@ -230,7 +230,7 @@ function episodeData(pageId, episodeId) {
                             'theater/p01/e07_c02.ks',
                         ),
                         null,
-                        new AchievementCondition(
+                        new ResultCondition(
                             null,
                             FACTION_DRAW_BY_REVOTE,
                             null,
@@ -253,7 +253,7 @@ function episodeData(pageId, episodeId) {
                             'theater/p01/e08_c02.ks',
                         ),
                         null,
-                        new AchievementCondition(
+                        new ResultCondition(
                             true,
                             null,
                             null,

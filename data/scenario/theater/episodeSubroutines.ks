@@ -34,9 +34,9 @@
 ; このマクロ内で更新するゲーム変数
 ; f.needPlayOutroEpisode：解決編自動再生フラグ
 ; 関連マクロ：[t_setStartingEpisodeSituation]
-*checkEpisodeUnlockCondition
+*checkOutroUnlockCondition
 [iscript]
-  console.log('★checkEpisodeUnlockCondition start');
+  console.log('★checkOutroUnlockCondition start');
   f.needPlayOutroEpisode = false;
 
   // ゲーム開始時に、シチュエーション開始条件に合致したエピソードがあったか
@@ -49,10 +49,10 @@
     console.log(episode);
 
     // そのエピソードに解決編の解放条件が設定されているか
-    if (episode.achievementCondition !== null) {
+    if (episode.outroUnlockCondition !== null) {
 
-      // 実際のゲーム終了時の状況をもとに、AchievementConditionオブジェクトを生成、格納する
-      const resultCondition = new AchievementCondition(
+      // 実際のゲーム終了時の状況をもとに、ResultConditionオブジェクトを生成、格納する
+      const resultCondition = new ResultCondition(
         isResultPlayersWin(f.winnerFaction, f.characterObjects[f.playerCharacterId].role.faction),
         f.winnerFaction,
         convertCharacterObjectsToCharacterConditions(f.characterObjects),
@@ -61,8 +61,8 @@
       console.log(resultCondition);
 
       // シチュエーション完遂チェックで完遂したか
-      if (isAchievedCondition(episode.achievementCondition, resultCondition)) {
-        console.log('★check OK checkEpisodeUnlockCondition');
+      if (isOutroUnlockConditionMet(episode.outroUnlockCondition, resultCondition)) {
+        console.log('★check OK checkOutroUnlockCondition');
 
         // 現在のエピソード進捗ステータスが「2：導入編解放済みで解決編未解放」で完遂したなら、自動再生フラグをtrueにする
         // （実際にステータスを書き換えるのはシアターの視聴終了後）

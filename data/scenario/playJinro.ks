@@ -446,7 +446,7 @@
   incrementPlayHistoryCount(f.characterObjects[f.playerCharacterId], f.winnerFaction);
 [endscript]
 
-[call storage="theater/episodeSubroutines.ks" target="*checkEpisodeUnlockCondition"]
+[call storage="theater/episodeSubroutines.ks" target="*checkOutroUnlockCondition"]
 ;[a_displayAchievedEpisodes]
 
 [iscript]

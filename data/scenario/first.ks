@@ -27,10 +27,10 @@
 ; ボイボ人狼用初期化
 [call storage="theater/macros.ks"]
 [call storage="achievement/macros.ks"]
-[loadjs storage="voivoJinro/achievement/AchievementCondition.js"]
-[loadjs storage="voivoJinro/achievement/CharacterCondition.js"]
 [loadjs storage="voivoJinro/theater/Episode.js"]
 [loadjs storage="voivoJinro/theater/Chapter.js"]
+[loadjs storage="voivoJinro/theater/ResultCondition.js"]
+[loadjs storage="voivoJinro/theater/CharacterCondition.js"]
 [loadjs storage="voivoJinro/theater/theaterScripts.js"]
 [loadjs storage="voivoJinro/theater/episodeData.js"]
 [loadjs storage="voivoJinro/record/recordScripts.js"]

@@ -1,11 +1,12 @@
 /**
- * 解放条件オブジェクト
- * 達成チェックが不要な条件はnullを格納すること
- * @param {Boolean|null} isPlayerWin
- * @param {String|null} winnerFaction 
+ * 終了状況オブジェクト
+ * 人狼ゲーム終了時の状況を抽象化する
+ * シチュエーション完遂チェック用に生成する際は、完遂チェックが不要な条件はnullを格納すること
+ * @param {Boolean|null} isPlayerWin プレイヤー陣営が勝利したか
+ * @param {String|null} winnerFaction 勝利した陣営の陣営ID
  * @param {Object|null} characterConditions {characterId: CharacterConditionオブジェクト, ...}形式のオブジェクト
  */
-function AchievementCondition(
+function ResultCondition(
     isPlayerWin = null,
     winnerFaction = null,
     characterConditions = null,
@@ -17,7 +18,7 @@ function AchievementCondition(
 
 
 /**
- * キャラクターオブジェクト配列から、AchievementConditionのcharacterConditionsに格納するためのオブジェクトに変換する
+ * キャラクターオブジェクト配列から、ResultConditionのcharacterConditionsに格納するためのオブジェクトに変換する
  * @param {Array} characterObjects キャラクターオブジェクト配列
  * @returns {characterId: CharacterConditionオブジェクト, ...}形式のオブジェクト
  */
@@ -31,41 +32,41 @@ function convertCharacterObjectsToCharacterConditions(characterObjects) {
 
 
 /**
- * 今回のゲームにおいて、解放条件オブジェクトの条件を達成したかを判定する
- * @param {AchievementCondition} achievementCondition 達成チェック対象の解放条件オブジェクト
- * @param {AchievementCondition} resultCondition 実際のゲーム終了時の状況をもとに生成した解放条件オブジェクト
+ * 今回のゲームの終了状況が、シチュエーション完遂チェック用の終了状況を達成したかを判定する
+ * @param {ResultCondition} outroUnlockCondition シチュエーション完遂チェック用の終了状況オブジェクト
+ * @param {ResultCondition} resultCondition 実際の人狼ゲームの終了状況オブジェクト
  * @returns true:条件達成 / false:条件不達成
  */
-function isAchievedCondition(achievementCondition, resultCondition) {
+function isOutroUnlockConditionMet(outroUnlockCondition, resultCondition) {
     // isPlayerWin条件のチェック
-    if (achievementCondition.isPlayerWin !== null) {
-        if (achievementCondition.isPlayerWin !== resultCondition.isPlayerWin) {
+    if (outroUnlockCondition.isPlayerWin !== null) {
+        if (outroUnlockCondition.isPlayerWin !== resultCondition.isPlayerWin) {
             console.log('★false isPlayerWin');
             return false;
         }
     }
 
     // winnerFaction条件のチェック
-    if (achievementCondition.winnerFaction !== null) {
-        if (achievementCondition.winnerFaction !== resultCondition.winnerFaction) {
+    if (outroUnlockCondition.winnerFaction !== null) {
+        if (outroUnlockCondition.winnerFaction !== resultCondition.winnerFaction) {
             console.log('★false winnerFaction');
             return false;
         }
     }
 
     // characterConditions条件のチェック
-    if (achievementCondition.characterConditions !== null) {
-        for (let characterId of Object.keys(achievementCondition.characterConditions)) {
+    if (outroUnlockCondition.characterConditions !== null) {
+        for (let characterId of Object.keys(outroUnlockCondition.characterConditions)) {
             // チェック対象のキャラクターがゲームに参加していなければ未達成とする
             if (!(characterId in resultCondition.characterConditions)) {
                 return false;
             }
 
-            if (!isAchievedCharacterCondition(
-                achievementCondition.characterConditions[characterId],
+            if (!isCharacterConditionMet(
+                outroUnlockCondition.characterConditions[characterId],
                 resultCondition.characterConditions[characterId]
             )) {
-                console.log('★false isAchievedCharacterCondition:' + characterId);
+                console.log('★false isCharacterConditionMet:' + characterId);
                 return false;
             }
         }
