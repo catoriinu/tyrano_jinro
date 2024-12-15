@@ -78,9 +78,8 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 [freeimage layer="0"]
 [stopbgm]
 
-; 人狼ゲームのメインシナリオファイルへジャンプする
-[j_prepareJinroGame preload="true"]
-[jump storage="playJinro.ks"]
+; 人狼ゲームの準備、導入編自動再生、ゲーム開始
+[jump storage="prepareJinro.ks" target="*prepareJinroGame"]
 [s]
 
 
