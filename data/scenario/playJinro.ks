@@ -447,8 +447,8 @@
 [endscript]
 
 [a_convertResultToAchievementCondition]
-[a_checkAchievedConditions pageId="&f.startingSituation.pageId" episodeId="&f.startingSituation.episodeid"]
-[a_displayAchievedEpisodes]
+[a_checkAchievedConditions pageId="&f.startingSituation.pageId" episodeId="&f.startingSituation.episodeId"]
+;[a_displayAchievedEpisodes]
 
 [iscript]
 outputLog();

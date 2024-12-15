@@ -32,7 +32,6 @@
         isAchievedCondition(episode.achievementCondition, f.resultCondition) // 完遂チェックを満たすか
       ) {
         console.log('★check ok isAchievedCondition');
-        continue;
 
         // 現在のエピソード進捗ステータスが「2：導入編解放済みで解決編未解放」ならtrueにする
         // （実際にステータスを書き換えるのはシアターの視聴終了後）

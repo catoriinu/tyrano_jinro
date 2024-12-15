@@ -231,5 +231,8 @@
 
     // TODO 「視聴済みの導入編を自動スキップする」チェックボックスを導入する場合はこのあたりの修正が必要
     f.needPlayIntroEpisode = tmpNeedPlayIntroEpisode;
+
+    console.log('★f.startingSituation');
+    console.log(f.startingSituation);
   [endscript]
 [endmacro]

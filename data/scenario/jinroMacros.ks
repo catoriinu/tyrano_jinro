@@ -35,6 +35,9 @@
   [iscript]
     const jinroGameData = mp.jinroGameData || sf.jinroGameDataObjects[sf.currentJinroGameDataKey];
 
+    console.log('★jinroGameData');
+    console.log(jinroGameData);
+
     // キャラクターオブジェクト生成と各種変数の初期化
     initializeCharacterObjectsForJinro(jinroGameData);
     initializeTyranoValiableForJinro();
