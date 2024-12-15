@@ -101,15 +101,24 @@
   ; pos_mode:キャラの初期位置はキャラ宣言時に全指定するのでfalse
   [chara_config pos_mode="false" memory="true" time="200"]
 
-  ; 再生中のチャプターのファイルパスを生成しておく（スキップからの再開のため・コンフィグでチャプター再生中と判定するため）
-  [eval exp="f.chapterStorage = 'theater/' + f.pageId + '/' + f.episodeId + '_' + f.chapterId + '.ks'"]
-
-  ; スキップした場合用の変数を初期化
-  [eval exp="tf.chapterSkiped = false"]
-
   ;このシナリオで登場する全キャラクターを宣言、表情登録
   [eval exp="tf.registerCharacterList = mp.actorsList"]
   [call storage="./chara/common.ks" target="*registerCharacters"]
+
+  [iscript]
+    // 再生中のチャプターのファイルパスを生成しておく（スキップからの再開のため・コンフィグでチャプター再生中と判定するため）
+    f.chapterStorage = 'theater/' + f.pageId + '/' + f.episodeId + '_' + f.chapterId + '.ks';
+
+    // スキップした場合用の変数を初期化 MEMO 何にも使ってないので消して良さそう
+    tf.chapterSkiped = false;
+
+    // シアター終了後のジャンプ先を指定する。指定があればそこへ、なければシアター画面に戻る
+    f.currentReturnJumpStorage = f.returnJumpStorage || 'theater/main.ks';
+    f.currentReturnJumpTarget = f.returnJumpTarget || '*start';
+    // 次に使うときには初期化されていてほしいので指定用変数はここで初期化する
+    f.returnJumpStorage = null;
+    f.returnJumpTarget = null;
+  [endscript]
 
   ; ボタン表示
   [j_displayFixButton backlog="true" pauseMenu="true"]
@@ -203,7 +212,7 @@
 ; f.startingSituation    : シチュエーション開始条件に合致したエピソードのページIDとエピソードID。合致しなかった場合は値はnullのまま。{pageId: String|null, episodeId: String|null}
 ; f.needPlayIntroEpisode : 導入編を自動再生するフラグ。true: 自動再生する | false: 自動再生しない
 ; f.targetJinroGameData  : ゲーム開始時に利用する人狼ゲームデータオブジェクト。合致したエピソードがあれば、そのシチュエーションに合わせて書き換えられる。なければ現在の人狼ゲームデータ自体のディープコピー。
-[macro name="t_setStartingEpisodeSituation"]
+[macro name="t_setStartingSituation"]
   [iscript]
     // このマクロ内で更新するゲーム変数の初期化
     f.startingSituation = {

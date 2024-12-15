@@ -143,5 +143,5 @@ tf.playbgmParams = {
 *end
 
 [t_teardownChapter pageId="&f.pageId" episodeId="&f.episodeId" chapterId="&f.chapterId"]
-[jump storage="theater/main.ks" target="*start"]
+[jump storage="&f.currentReturnJumpStorage" target="&f.currentReturnJumpTarget"]
 [s]

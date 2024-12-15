@@ -244,5 +244,5 @@ tf.playbgmParams = {
 ; 初回プレイ時は直接チュートリアルモードでシチュエーションプレイを始める
 [jump storage="tutorial/tutorialSubroutines.ks" target="*toFirstInstruction" cond="tf.isFirstStartup"]
 
-[jump storage="theater/main.ks" target="*start"]
+[jump storage="&f.currentReturnJumpStorage" target="&f.currentReturnJumpTarget"]
 [s]

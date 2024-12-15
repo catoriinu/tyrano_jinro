@@ -33,7 +33,7 @@
 ; シチュエーション完遂チェックサブルーチン
 ; このマクロ内で更新するゲーム変数
 ; f.needPlayOutroEpisode：解決編自動再生フラグ
-; 関連マクロ：[t_setStartingEpisodeSituation]
+; 関連マクロ：[t_setStartingSituation]
 *checkOutroUnlockCondition
 [iscript]
   console.log('★checkOutroUnlockCondition start');

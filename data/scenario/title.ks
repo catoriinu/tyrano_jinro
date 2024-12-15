@@ -64,17 +64,14 @@
 [endscript]
 [s]
 
+
 *gamestart
 [freeimage layer="1"]
 [stopbgm]
 
-; シチュエーション開始チェック
-[t_setStartingEpisodeSituation]
-; TODO f.needPlayIntroEpisode = trueなら自動再生
-
-; 開始する人狼ゲームデータを読み込み、人狼ゲームのメインシナリオファイルへジャンプする
-[j_prepareJinroGame jinroGameData="&f.targetJinroGameData" preload="true"]
-[jump storage="playJinro.ks"]
+; 人狼ゲームの準備、導入編自動再生、ゲーム開始
+[jump storage="prepareJinro.ks" target="*prepareJinroGame"]
+[s]
 
 
 *selectStage
