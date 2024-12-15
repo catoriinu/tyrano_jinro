@@ -12,49 +12,41 @@
 [endmacro]
 
 
+; @param String|null pageId シチュエーション開始条件に合致したエピソードのページID。合致したエピソードがなければnull
+; @param String|null episodeId シチュエーション開始条件に合致したエピソードのエピソードID。合致したエピソードがなければnull
+; 関連マクロ：[t_setStartingEpisodeSituation]
+; TODO：「シチュエーション完遂チェック」に名前変えたい
 [macro name="a_checkAchievedConditions"]
   [iscript]
-    f.achievedEpisodes = [];
+    f.isAchievedConditions = false;
 
-    for (let pageId of Object.keys(sf.theaterProgress)) {
-      for (let episodeId of Object.keys(sf.theaterProgress[pageId])) {
-        // TODO getTheaterProgressの第3引数を削除して判定を変えること
-        const introProgress = getTheaterProgress(pageId, episodeId, 'c01');
-        const outroProgress = getTheaterProgress(pageId, episodeId, 'c02');
+    // シチュエーション開始条件に合致したエピソードがある場合のみ
+    if (mp.pageId && mp.episodeId) {
+      const episode = episodeData(mp.pageId, mp.episodeId);
+      console.log('★episode');
+      console.log(episode);
 
-        // 達成チェックすべき条件（導入編が解放済み、かつ解決編がロック中である）を満たしていないならcontinue
-        if (!(introProgress !== THEATER_LOCKED && outroProgress === THEATER_LOCKED)) {
-          console.log('★false 達成チェックすべき条件（導入編が解放済み、かつ解決編がロック中である）を満たしていない');
-          continue;
+      // シチュエーション完遂チェックで完遂した場合のみ
+      if (
+        episode.achievementCondition !== null && // 達成条件が設定されていなければチェック不要
+        isAchievedCondition(episode.achievementCondition, f.resultCondition) // 完遂チェックを満たすか
+      ) {
+        console.log('★check ok isAchievedCondition');
+        continue;
+
+        // 現在のエピソード進捗ステータスが「2：導入編解放済みで解決編未解放」ならtrueにする
+        // （実際にステータスを書き換えるのはシアターの視聴終了後）
+        // TODO：「視聴済みの導入編は自動再生しない」が自動再生する設定なら、ステータスにかかわらずtrueにする
+        if (sf.theaterProgress[mp.pageId][mp.episodeId] === EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED) {
+          f.isAchievedConditions = true;
         }
-
-        const episode = episodeData(pageId, episodeId);
-        console.log('★★★episode');
-        console.log(episode);
-
-        // 解決編がない場合（おまけ動画など）は即continue
-        if (episode.outroChapter == null) {
-          console.log('★undefined isAchievedCondition');
-          continue;
-        }
-
-        // 解決編の解放条件の達成チェックを行う。未達成ならcontinue
-        if (!isAchievedCondition(episode.outroChapter.achievementCondition, f.resultCondition)) {
-          console.log('★false isAchievedCondition');
-          continue;
-        }
-        
-        // 解放条件を達成した場合
-        // 解決編のシアター進捗を「解放済みだが未視聴」に更新する
-        sf.theaterProgress[pageId][episodeId].c02 = THEATER_UNLOCKED;
-        // 達成済みエピソード配列に追加する
-        f.achievedEpisodes.push(episode);
       }
     }
   [endscript]
 [endmacro]
 
 
+; TODO：「解決編を自動再生する」マクロに変える
 ; 達成したエピソードを画面上に表示する
 [macro name="a_displayAchievedEpisodes"]
 

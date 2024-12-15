@@ -447,7 +447,7 @@
 [endscript]
 
 [a_convertResultToAchievementCondition]
-[a_checkAchievedConditions]
+[a_checkAchievedConditions pageId="&f.startingSituation.pageId" episodeId="&f.startingSituation.episodeid"]
 [a_displayAchievedEpisodes]
 
 [iscript]

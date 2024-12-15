@@ -31,14 +31,6 @@ function episodeData(pageId, episodeId) {
                         new Chapter(
                             'c02',
                             'theater/p01/e01_c02.ks',
-                            new AchievementCondition(
-                                true,
-                                null,
-                                {
-                                    [CHARACTER_ID_ZUNDAMON]: new CharacterCondition([ROLE_ID_WEREWOLF], null),
-                                    [CHARACTER_ID_METAN]: new CharacterCondition([ROLE_ID_MADMAN], null),
-                                },
-                            ),
                         ),
                         new JinroGameData(
                             roleDataP01,
@@ -53,6 +45,14 @@ function episodeData(pageId, episodeId) {
                                 new Participant(CHARACTER_ID_RITSU, [ROLE_ID_VILLAGER, ROLE_ID_FORTUNE_TELLER]),
                             ],
                             CHARACTER_ID_ZUNDAMON,
+                        ),
+                        new AchievementCondition(
+                            true,
+                            null,
+                            {
+                                [CHARACTER_ID_ZUNDAMON]: new CharacterCondition([ROLE_ID_WEREWOLF], null),
+                                [CHARACTER_ID_METAN]: new CharacterCondition([ROLE_ID_MADMAN], null),
+                            },
                         ),
                     );
                 case 'e02':
@@ -70,14 +70,6 @@ function episodeData(pageId, episodeId) {
                         new Chapter(
                             'c02',
                             'theater/p01/e02_c02.ks',
-                            new AchievementCondition(
-                                true,
-                                null,
-                                {
-                                    [CHARACTER_ID_ZUNDAMON]: new CharacterCondition([ROLE_ID_VILLAGER], null),
-                                    [CHARACTER_ID_METAN]: new CharacterCondition([ROLE_ID_FORTUNE_TELLER], null),
-                                },
-                            ),
                         ),
                         new JinroGameData(
                             roleDataP01,
@@ -86,6 +78,14 @@ function episodeData(pageId, episodeId) {
                                 new Participant(CHARACTER_ID_METAN, [ROLE_ID_FORTUNE_TELLER]),
                             ],
                             CHARACTER_ID_ZUNDAMON,
+                        ),
+                        new AchievementCondition(
+                            true,
+                            null,
+                            {
+                                [CHARACTER_ID_ZUNDAMON]: new CharacterCondition([ROLE_ID_VILLAGER], null),
+                                [CHARACTER_ID_METAN]: new CharacterCondition([ROLE_ID_FORTUNE_TELLER], null),
+                            },
                         ),
                     );
                 case 'e03':
@@ -103,14 +103,6 @@ function episodeData(pageId, episodeId) {
                         new Chapter(
                             'c02',
                             'theater/p01/e03_c02.ks',
-                            new AchievementCondition(
-                                true,
-                                null,
-                                {
-                                    [CHARACTER_ID_ZUNDAMON]: new CharacterCondition([ROLE_ID_MADMAN], null),
-                                    [CHARACTER_ID_TSUMUGI]: new CharacterCondition([ROLE_ID_WEREWOLF], null),
-                                },
-                            ),
                         ),
                         new JinroGameData(
                             roleDataP01,
@@ -119,6 +111,14 @@ function episodeData(pageId, episodeId) {
                                 new Participant(CHARACTER_ID_TSUMUGI, [ROLE_ID_WEREWOLF]),
                             ],
                             CHARACTER_ID_ZUNDAMON,
+                        ),
+                        new AchievementCondition(
+                            true,
+                            null,
+                            {
+                                [CHARACTER_ID_ZUNDAMON]: new CharacterCondition([ROLE_ID_MADMAN], null),
+                                [CHARACTER_ID_TSUMUGI]: new CharacterCondition([ROLE_ID_WEREWOLF], null),
+                            },
                         ),
                     );
                 case 'e04':
@@ -136,14 +136,6 @@ function episodeData(pageId, episodeId) {
                         new Chapter(
                             'c02',
                             'theater/p01/e04_c02.ks',
-                            new AchievementCondition(
-                                true,
-                                null,
-                                {
-                                    [CHARACTER_ID_ZUNDAMON]: new CharacterCondition([ROLE_ID_FORTUNE_TELLER], null),
-                                    [CHARACTER_ID_HAU]: new CharacterCondition([ROLE_ID_WEREWOLF], null),
-                                },
-                            ),
                         ),
                         new JinroGameData(
                             roleDataP01,
@@ -152,6 +144,14 @@ function episodeData(pageId, episodeId) {
                                 new Participant(CHARACTER_ID_HAU, [ROLE_ID_WEREWOLF]),
                             ],
                             CHARACTER_ID_ZUNDAMON,
+                        ),
+                        new AchievementCondition(
+                            true,
+                            null,
+                            {
+                                [CHARACTER_ID_ZUNDAMON]: new CharacterCondition([ROLE_ID_FORTUNE_TELLER], null),
+                                [CHARACTER_ID_HAU]: new CharacterCondition([ROLE_ID_WEREWOLF], null),
+                            },
                         ),
                     );
                 case 'e05':
@@ -169,14 +169,6 @@ function episodeData(pageId, episodeId) {
                         new Chapter(
                             'c02',
                             'theater/p01/e05_c02.ks',
-                            new AchievementCondition(
-                                true,
-                                null,
-                                {
-                                    [CHARACTER_ID_ZUNDAMON]: new CharacterCondition([ROLE_ID_FORTUNE_TELLER], null),
-                                    [CHARACTER_ID_RITSU]: new CharacterCondition([ROLE_ID_WEREWOLF], null),
-                                },
-                            ),
                         ),
                         new JinroGameData(
                             roleDataP01,
@@ -185,6 +177,14 @@ function episodeData(pageId, episodeId) {
                                 new Participant(CHARACTER_ID_RITSU, [ROLE_ID_WEREWOLF]),
                             ],
                             CHARACTER_ID_ZUNDAMON,
+                        ),
+                        new AchievementCondition(
+                            true,
+                            null,
+                            {
+                                [CHARACTER_ID_ZUNDAMON]: new CharacterCondition([ROLE_ID_FORTUNE_TELLER], null),
+                                [CHARACTER_ID_RITSU]: new CharacterCondition([ROLE_ID_WEREWOLF], null),
+                            },
                         ),
                     );
                 case 'e06':
@@ -202,16 +202,16 @@ function episodeData(pageId, episodeId) {
                         new Chapter(
                             'c02',
                             'theater/p01/e06_c02.ks',
-                            new AchievementCondition(
-                                false,
-                                FACTION_VILLAGERS,
-                                {
-                                    [CHARACTER_ID_ZUNDAMON]: new CharacterCondition([ROLE_ID_WEREWOLF, ROLE_ID_MADMAN], false),
-                                    [CHARACTER_ID_TSUMUGI]: new CharacterCondition([ROLE_ID_WEREWOLF, ROLE_ID_MADMAN], false),
-                                },
-                            ),
                         ),
                         null,
+                        new AchievementCondition(
+                            false,
+                            FACTION_VILLAGERS,
+                            {
+                                [CHARACTER_ID_ZUNDAMON]: new CharacterCondition([ROLE_ID_WEREWOLF, ROLE_ID_MADMAN], false),
+                                [CHARACTER_ID_TSUMUGI]: new CharacterCondition([ROLE_ID_WEREWOLF, ROLE_ID_MADMAN], false),
+                            },
+                        ),
                     );
                 case 'e07':
                     return new Episode(
@@ -228,13 +228,13 @@ function episodeData(pageId, episodeId) {
                         new Chapter(
                             'c02',
                             'theater/p01/e07_c02.ks',
-                            new AchievementCondition(
-                                null,
-                                FACTION_DRAW_BY_REVOTE,
-                                null,
-                            ),
                         ),
                         null,
+                        new AchievementCondition(
+                            null,
+                            FACTION_DRAW_BY_REVOTE,
+                            null,
+                        ),
                     );
                 case 'e08':
                     return new Episode(
@@ -251,13 +251,13 @@ function episodeData(pageId, episodeId) {
                         new Chapter(
                             'c02',
                             'theater/p01/e08_c02.ks',
-                            new AchievementCondition(
-                                true,
-                                null,
-                                null,
-                            ),
                         ),
                         null,
+                        new AchievementCondition(
+                            true,
+                            null,
+                            null,
+                        ),
                     );
                 default:
                     alert('存在しないepisodeIdが指定されました episodeId=' + episodeId);
@@ -280,6 +280,7 @@ function episodeData(pageId, episodeId) {
                         ),
                         null,
                         null,
+                        null,
                     );
                 case 'e03':
                     return new Episode(
@@ -293,6 +294,7 @@ function episodeData(pageId, episodeId) {
                             'c01',
                             'theater/page99/movie_20240803.ks'
                         ),
+                        null,
                         null,
                         null,
                     );
