@@ -138,7 +138,7 @@
   [endscript]
 
   ; 視聴終了時に解放すべきシアター進捗があれば解放する
-  [call storage="theater/unlockProgress.ks" target="*start"]
+  [call storage="theater/episodeSubroutines.ks" target="*unlockNextEpisode"]
 
   [iscript]
     // 戻ったときにエピソードウィンドウを開くための設定
