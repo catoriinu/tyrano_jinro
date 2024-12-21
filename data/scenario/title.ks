@@ -24,8 +24,8 @@
   f.quickShowEpisodeWindow = false;
 
   // タイトル画面のボタン表示を判定するためにエピソード進捗ステータスを取得していく
-  // チュートリアルクリア済みか
-  tf.isTutolialCleared = (getTheaterProgress('p01', 'e01') === EPISODE_STATUS.OUTRO_UNLOCKED);
+  // インストラクションクリア済みか
+  tf.isInstructionCleared = (getTheaterProgress('p01', 'e01') === EPISODE_STATUS.OUTRO_UNLOCKED);
 
   // ボタンの色
   tf.buttonColor = CLASS_GLINK_DEFAULT;
@@ -35,8 +35,8 @@
 [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイスタート" target="*gamestart"]
 [glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
 
-; チュートリアルクリア済みならシアターとカスタマイズを解放
-[if exp="tf.isTutolialCleared"]
+; インストラクションクリア済みならシアターとカスタマイズを解放
+[if exp="tf.isInstructionCleared"]
   [glink color="&tf.buttonColor" size="30" width="300" x="138" y="500" name="buttonhover" text="シアター" target="*theater"]
   ; TODO 実際にはこちらを有効化する
   ;[glink color="&tf.buttonColor" size="30" width="300" x="488" y="600" name="buttonhover" text="カスタマイズ" target="*customize"]
@@ -167,15 +167,4 @@ sf.theaterProgress =
 *doneReset
 [ptext layer="1" x="181" y="490" text="リセット完了 再起動してください" color="black" size="60"]
 [layopt layer="1" visible="true"]
-[s]
-
-
-*firstPlayStart
-[freeimage layer="1"]
-[stopbgm]
-
-; 初回起動時なら「誰がずんだもちを食べたのだ？」導入編に飛ばす
-[jump storage="theater/p01/e01_c01.ks" cond="tf.isFirstStartup"]
-; それ以外でここに来た場合（は導入編は見終わったがまだチュートリアルをクリアしていない場合のみ）は、チュートリアルモードのまま人狼をプレイさせる
-[jump storage="tutorial/tutorialSubroutines.ks" target="*toFirstInstruction"]
 [s]

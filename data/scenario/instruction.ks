@@ -5,7 +5,7 @@
 [endscript]
 [call storage="./chara/common.ks" target="*addRegisterCharacters"]
 ; もち子さんにフィルターをかける
-; MEMO: フィルターをかけた責任としてチュートリアルが完了する箇所でfree_filterしておくこと。
+; MEMO: フィルターをかけた責任としてインストラクションが完了する箇所でfree_filterしておくこと。
 ; ただしプレイヤー途中でゲームを抜けてしまうことを防ぐことはできないので、次に立ち絵を読み込んだタイミングでもfree_filterしておくこと。
 [filter name="mochiko" brightness="30"]
 
@@ -465,7 +465,7 @@
 早く「ステータス」ボタンを押してくださいっ！[p]
 
 [jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
-私、このチュートリアルが終わらないと帰れないんですよぉ！[p]
+私、この説明が終わらないと帰れないんですよぉ！[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="悲しみ"]
 [jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]

@@ -16,7 +16,7 @@
 [plugin name="jinro"] 
 [call storage="jinroMacros.ks"]
 [call storage="messageMacros.ks"]
-[call storage="tutorial/interludeMacros.ks"]
+[call storage="interlude/interludeMacros.ks"]
 [eval exp="f.color = {}"]
 [loadcss file="./data/others/jinro.css"]
 

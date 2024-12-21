@@ -85,6 +85,7 @@
 [s]
 
 
+; TODO 削除予定。もしくは中身を修正する必要あり
 *startSituationPlay
 [free_filter layer="0"]
 [freeimage layer="1" page="fore"]

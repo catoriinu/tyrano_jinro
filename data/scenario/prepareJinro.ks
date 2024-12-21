@@ -49,8 +49,7 @@
   [endscript]
 
   ; 幕間リストの登録
-  ; TODO 「interlude/interludeList.ks」
-  [call storage="tutorial/tutorialSubroutines.ks" target="*addInstruction" cond="tf.needAddInstruction"]
+  [call storage="interlude/interludeList.ks" target="*addInstruction" cond="tf.needAddInstruction"]
 
   [return]
 [s]
