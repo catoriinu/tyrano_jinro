@@ -141,8 +141,8 @@
 [j_setDchForStatus winnerFaction="&f.winnerFaction"]
 [call storage="jinroSubroutines.ks" target="*displayCharactersHorizontallyForStatus"]
 
-; 【幕間再生】
-[i_playInterlude target="statusButton"]
+; 【チャプター再生】
+[t_playChapter target="statusButton"]
 
 [s]
 

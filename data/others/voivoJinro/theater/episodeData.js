@@ -25,11 +25,9 @@ function episodeData(pageId, episodeId) {
                         '【解放条件】<br>チュートリアルで勝利する',
                         'チュートリアルをプレイする',
                         new Chapter(
-                            'c01',
                             'theater/p01/e01_c01.ks'
                         ),
                         new Chapter(
-                            'c02',
                             'theater/p01/e01_c02.ks',
                         ),
                         new JinroGameData(
@@ -64,11 +62,9 @@ function episodeData(pageId, episodeId) {
                         '【解放条件】<br>ずんだもん：村人、四国めたん：占い師でゲームに勝利する',
                         'このシチュエーションでプレイする',
                         new Chapter(
-                            'c01',
                             'theater/p01/e02_c01.ks'
                         ),
                         new Chapter(
-                            'c02',
                             'theater/p01/e02_c02.ks',
                         ),
                         new JinroGameData(
@@ -97,11 +93,9 @@ function episodeData(pageId, episodeId) {
                         '【解放条件】<br>ずんだもん：狂人、春日部つむぎ：人狼でゲームに勝利する',
                         'このシチュエーションでプレイする',
                         new Chapter(
-                            'c01',
                             'theater/p01/e03_c01.ks'
                         ),
                         new Chapter(
-                            'c02',
                             'theater/p01/e03_c02.ks',
                         ),
                         new JinroGameData(
@@ -130,11 +124,9 @@ function episodeData(pageId, episodeId) {
                         '【解放条件】<br>ずんだもん：占い師、雨晴はう：人狼でゲームに勝利する',
                         'このシチュエーションでプレイする',
                         new Chapter(
-                            'c01',
                             'theater/p01/e04_c01.ks'
                         ),
                         new Chapter(
-                            'c02',
                             'theater/p01/e04_c02.ks',
                         ),
                         new JinroGameData(
@@ -163,11 +155,9 @@ function episodeData(pageId, episodeId) {
                         '【解放条件】<br>ずんだもん：占い師、波音リツ：人狼でゲームに勝利する',
                         'このシチュエーションでプレイする',
                         new Chapter(
-                            'c01',
                             'theater/p01/e05_c01.ks'
                         ),
                         new Chapter(
-                            'c02',
                             'theater/p01/e05_c02.ks',
                         ),
                         new JinroGameData(
@@ -196,11 +186,9 @@ function episodeData(pageId, episodeId) {
                         '【解放条件】<br>ずんだもんと春日部つむぎが人狼陣営かつ退場した状態で敗北する',
                         '特定のシチュエーションではないためプレイできません', // 「人狼陣営」なのでどちらがどちらでもよいのでシチュを作れない。かつe03で代用できるため問題なし
                         new Chapter(
-                            'c01',
                             'theater/p01/e06_c01.ks'
                         ),
                         new Chapter(
-                            'c02',
                             'theater/p01/e06_c02.ks',
                         ),
                         null,
@@ -222,11 +210,9 @@ function episodeData(pageId, episodeId) {
                         '【解放条件】<br>引き分けでゲームが終了する',
                         '特定のシチュエーションではないためプレイできません',
                         new Chapter(
-                            'c01',
                             'theater/p01/e07_c01.ks'
                         ),
                         new Chapter(
-                            'c02',
                             'theater/p01/e07_c02.ks',
                         ),
                         null,
@@ -245,11 +231,9 @@ function episodeData(pageId, episodeId) {
                         '【解放条件】<br>他の1期・2期のシアターを全て解放してからゲームに勝利する',
                         '特定のシチュエーションではないためプレイできません',
                         new Chapter(
-                            'c01',
                             'theater/p01/e08_c01.ks'
                         ),
                         new Chapter(
-                            'c02',
                             'theater/p01/e08_c02.ks',
                         ),
                         null,
@@ -275,7 +259,6 @@ function episodeData(pageId, episodeId) {
                         '解決編はありません',
                         '紹介動画の元ネタです',
                         new Chapter(
-                            'c01',
                             'theater/page99/movie_20230814.ks'
                         ),
                         null,
@@ -291,7 +274,6 @@ function episodeData(pageId, episodeId) {
                         '解決編はありません',
                         '紹介動画の元ネタです',
                         new Chapter(
-                            'c01',
                             'theater/page99/movie_20240803.ks'
                         ),
                         null,

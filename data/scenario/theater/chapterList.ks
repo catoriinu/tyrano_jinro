@@ -1,40 +1,40 @@
-; インストラクション用の幕間オブジェクトを追加する
+; インストラクション用のChapterオブジェクトをチャプターリストに追加する
 *addInstruction
   [iscript]
     const instructionStorage = 'instruction.ks';
     Object.assign(
-      f.interludeList,
+      f.chapterList,
       {
-        startInstruction: new Interlude(
+        startInstruction: new Chapter(
           instructionStorage,
           '*startInstruction'
         ),
-        COPhase: new Interlude(
+        COPhase: new Chapter(
           instructionStorage,
           '*COPhase'
         ),
-        discussionPhase: new Interlude(
+        discussionPhase: new Chapter(
           instructionStorage,
           '*discussionPhase'
         ),
-        votePhase: new Interlude(
+        votePhase: new Chapter(
           instructionStorage,
           '*votePhase'
         ),
-        firstDayNightPhase: new Interlude(
+        firstDayNightPhase: new Chapter(
           instructionStorage,
           '*firstDayNightPhase'
         ),
-        secondDayDayPhase: new Interlude(
+        secondDayDayPhase: new Chapter(
           instructionStorage,
           '*secondDayDayPhase',
           false, // 1日目昼には呼び出されても再生したくない。なので1日目夜のfirstDayNightPhaseのシナリオ内でtrueにする
         ),
-        statusButton: new Interlude(
+        statusButton: new Chapter(
           instructionStorage,
           '*statusButton'
         ),
-        encourageRetry: new Interlude(
+        encourageRetry: new Chapter(
           instructionStorage,
           '*encourageRetry'
         ),

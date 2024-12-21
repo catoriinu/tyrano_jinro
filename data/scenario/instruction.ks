@@ -10,7 +10,7 @@
 [filter name="mochiko" brightness="30"]
 
 ; 本当の初回起動時以外は2回目以降用のシナリオにジャンプさせる
-[jump target="*secondInstruction" cond="!f.interludeList.flags.isFirstContact"]
+[jump target="*secondInstruction" cond="!f.chapterList.flags.isFirstContact"]
 
 
 [m_changeCharacterFrameName name="ずんだもん" face="否定" side="left"]
@@ -411,8 +411,8 @@
 
 [free_filter name="mochiko"]
 
-; 2日目昼の幕間を再生するためにここでtrueにする
-[eval exp="f.interludeList.secondDayDayPhase.needPlay = true"]
+; 2日目昼用のチャプターを再生するためにここでtrueにする
+[eval exp="f.chapterList.secondDayDayPhase.needPlay = true"]
 [return]
 
 
@@ -422,115 +422,115 @@
 これで残り人数は3人。[r]
 今日を乗り切れば人狼陣営の勝利です。[p]
 
-; statusButtonの幕間を再生済みなら、ensInstructionに飛ばす
+; statusButtonチャプターを再生済みなら、ensInstructionに飛ばす
 ; これまでにステータス画面を開き済みなら再生済みになっているのでここですぐに飛ばされる
 ; まだステータス画面を開いていなかった場合は、画面から帰ってきたらすぐにendInstructionに飛ばす必要があるので、以降1行ごとにjumpを挟んでおく
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 最後に、ステータス画面の説明をしますね。[r]
 右上の「ステータス」ボタンを押してください。[p]
 
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
-[eval exp="f.interludeList.flags.thankStatusButton = true"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
+[eval exp="f.chapterList.flags.thankStatusButton = true"]
 右上の「ステータス」ボタンを押してください。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="紹介"]
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 右上の「ステータス」ボタンを押してください。[p]
 
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 「ステータス」を押してください。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 「ステータス」を押してくださいってば。[p]
 
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 「ステータス」を押してくださいよー。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="苦笑"]
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 「ステータス」を押していただけませんか？[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="説明"]
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 ほら、画面の右上ですよ。[r]
 「ステータス」と書いてあるボタンを押してください。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="伏し目"]
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 あの…早く…。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="驚き泣き"]
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 早く「ステータス」ボタンを押してくださいっ！[p]
 
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 私、この説明が終わらないと帰れないんですよぉ！[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="悲しみ"]
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 あなたも早くゲームの続きがしたいでしょう？[r]
 そんなに意地を張らないでいいじゃないですか。[p]
 
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 お願いです、私を助けると思って！[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 右上の「ステータス」ボタンを押してください。[p]
 
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 右上の「ステータス」ボタンを押してください。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="げっそり"]
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 右上の…「ステータス」ボタンを…。[p]
 
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 あの…こんなに頼んでもダメですか…？[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="驚き泣き"]
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 はっ…！[r]
 まさかあなた、私の反応を見て楽しんでます？[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="怒り"]
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 あーっ！[r]
 その顔、絶対そうです！間違いないです！[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="説明"]
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 次はなんて言うんだろうって思ってるんでしょう？[r]
 そのくらい私にはお見通しですよ！[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="伏し目"]
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 全く、困った人ですね。[r]
 私がこんなにお願いしてるのに…。[p]
 
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 今更無駄でしょうけど、もう一度だけ言います。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 右上の「ステータス」ボタンを押してください。[p]
 
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 …。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="伏し目"]
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 はいはい、分かりました。[r]
 そっちがその気なら、私にも考えがあります。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="企む"]
-[jump target="endInstruction" cond="f.interludeList.flags.playedStatusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 強制的にステータス画面に飛ばしちゃいますからね！[r]
 えいっ！[p]
 
 ; 強制的にステータス画面に飛ばす
-[eval exp="f.interludeList.flags.forceStatusButton = true"]
+[eval exp="f.chapterList.flags.forceStatusButton = true"]
 [sleepgame storage="statusJinro.ks" target="*statusJinroMain" next="false"]
 
 [jump target="endInstruction"]
@@ -542,7 +542,7 @@
 
 *statusButton
 ; 視聴済みフラグを立てる
-[eval exp="f.interludeList.flags.playedStatusButton = true"]
+[eval exp="f.chapterList.flags.playedStatusButton = true"]
 
 ; ステータス画面では、HTMLがfreeレイヤーに描画されており、それがメッセージレイヤーよりも前面に出ているためメッセージ送りができない状態になっている。
 ; freeレイヤーのz-indexを下げることで、HTML描画中でもメッセージを表示できるようにする。
@@ -550,12 +550,12 @@
   $(".layer.layer_free").css("z-index", 99);
 [endscript]
 
-[if exp="f.interludeList.flags.forceStatusButton"]
+[if exp="f.chapterList.flags.forceStatusButton"]
   [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="ドヤ顔"]
   ふふふ、どうですか？[r]
   ここでは私に逆らうことなんてできないんですよーだ！[p]
 
-[elsif exp="f.interludeList.flags.thankStatusButton"]
+[elsif exp="f.chapterList.flags.thankStatusButton"]
   [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
   円滑なゲーム進行にご協力いただき、ありがとうございます！[p]
 
@@ -732,13 +732,13 @@
 [free_filter name="mochiko"]
 
 [iscript]
-  // encourageRetryを除くインストラクションの幕間の再生フラグを折る
-  f.interludeList.COPhase.needPlay = false;
-  f.interludeList.discussionPhase.needPlay = false;
-  f.interludeList.votePhase.needPlay = false;
-  f.interludeList.firstDayNightPhase.needPlay = false;
-  f.interludeList.secondDayDayPhase.needPlay = false;
-  f.interludeList.statusButton.needPlay = false;
+  // encourageRetryを除くインストラクションのチャプターの再生フラグを折る
+  f.chapterList.COPhase.needPlay = false;
+  f.chapterList.discussionPhase.needPlay = false;
+  f.chapterList.votePhase.needPlay = false;
+  f.chapterList.firstDayNightPhase.needPlay = false;
+  f.chapterList.secondDayDayPhase.needPlay = false;
+  f.chapterList.statusButton.needPlay = false;
 [endscript]
 [return]
 
@@ -784,6 +784,6 @@
 ; タイトル画面に戻るときのみ、背景をタイトル画面のものに変えておく
 [bg storage="voivojinrou_green.png" time="1" wait="false" cond="!f.isSituationPlay"]
 
-; [i_playInterlude]内から[call]で呼び出されてきているのに[jump]で抜けるので、スタックが溜まっている。タイトル画面で[clearstack]すること
+; [t_playChapter]内から[call]で呼び出されてきているのに[jump]で抜けるので、スタックが溜まっている。タイトル画面で[clearstack]すること
 [jump storage="title.ks"]
 [s]

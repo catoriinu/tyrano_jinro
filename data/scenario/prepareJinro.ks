@@ -2,8 +2,8 @@
   ; シチュエーション開始チェック
   [t_setStartingSituation]
 
-  ; 幕間リストの設定
-  [call storage="prepareJinro.ks" target="*addInterludeList"]
+  ; チャプターリスト（再生するシナリオファイルを指定するためのChapterオブジェクトのリスト）の設定
+  [call storage="prepareJinro.ks" target="*addChapterList"]
 
   ; 自動再生すべきシチュエーションがある場合は自動再生する
   [call storage="prepareJinro.ks" target="*playIntroEpisode" cond="f.needPlayIntroEpisode"]
@@ -34,11 +34,11 @@
 
 
 
-; 幕間リストに登録するサブルーチン
-*addInterludeList
+; チャプターリストに登録するサブルーチン
+*addChapterList
   [iscript]
-    // 幕間リストの初期化
-    f.interludeList = {};
+    // チャプターリストの初期化
+    f.chapterList = {};
 
     const pageId = f.startingSituation.pageId;
     const episodeId = f.startingSituation.episodeId;
@@ -47,8 +47,8 @@
     tf.needAddInstruction = ((pageId === 'p01') && (episodeId === 'e01') && (getTheaterProgress('p01', 'e01') !== EPISODE_STATUS.OUTRO_UNLOCKED));
   [endscript]
 
-  ; 幕間リストの登録
-  [call storage="interlude/interludeList.ks" target="*addInstruction" cond="tf.needAddInstruction"]
+  ; チャプターリストの登録
+  [call storage="theater/chapterList.ks" target="*addInstruction" cond="tf.needAddInstruction"]
 
   [return]
 [s]

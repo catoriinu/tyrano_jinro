@@ -245,3 +245,19 @@
     console.log(f.startingSituation);
   [endscript]
 [endmacro]
+
+
+; @param string target
+[macro name="t_playChapter"]
+  [iscript]
+    // チャプターリストの中に指定のキーが存在し、かつそのChapterオブジェクトのneedPlayフラグが立っていれば、再生する
+    tf.targetChapter = (mp.target in f.chapterList) ? f.chapterList[mp.target] : null;
+    tf.needPlay = (tf.targetChapter !== null && tf.targetChapter.needPlay);
+
+    // 対象のChapterオブジェクトの再生フラグを折る
+    if (tf.needPlay) {
+      f.chapterList[mp.target].needPlay = false;
+    }
+  [endscript]
+  [call storage="&tf.targetChapter.storage" target="&tf.targetChapter.target" cond="tf.needPlay"]
+[endmacro]

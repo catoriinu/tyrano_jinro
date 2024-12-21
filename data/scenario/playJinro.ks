@@ -43,8 +43,8 @@
 ; プレイヤーの役職確認セリフ出力
 [m_noticeRole characterId="&f.playerCharacterId" roleId="&f.characterObjects[f.playerCharacterId].role.roleId"]
 
-; 【幕間再生】
-[i_playInterlude target="startInstruction"]
+; 【チャプター再生】
+[t_playChapter target="startInstruction"]
 
 ; 占い師なら初日占い実行
 [if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_FORTUNE_TELLER"]
@@ -72,8 +72,8 @@
 [clearstack]
 [playbgm storage="nc282335.ogg" loop="true" volume="11" restart="false"]
 
-; 【幕間再生】
-[i_playInterlude target="secondDayDayPhase"]
+; 【チャプター再生】
+[t_playChapter target="secondDayDayPhase"]
 
 [m_changeFrameWithId]
 #
@@ -92,8 +92,8 @@
 ; NPCにCO候補者がいるフラグを初期化する
 [eval exp="f.notExistCOCandidateNPC = false"]
 
-; 【幕間再生】
-[i_playInterlude target="COPhase"]
+; 【チャプター再生】
+[t_playChapter target="COPhase"]
 
 *COPhasePlayer
 ; PC（占い師、人狼、狂人）による占いCOフェイズ
@@ -202,8 +202,8 @@
 #
 ～議論フェイズ～[p]
 
-; 【幕間再生】
-[i_playInterlude target="discussionPhase"]
+; 【チャプター再生】
+[t_playChapter target="discussionPhase"]
 
 [eval exp="f.isDoingAction = false"]
 ; アクションボタン表示
@@ -242,8 +242,8 @@
 #
 ～投票フェイズ～[p]
 
-; 【幕間再生】
-[i_playInterlude target="votePhase"]
+; 【チャプター再生】
+[t_playChapter target="votePhase"]
 
 ; ここはバックログに記録しない。記録する必要がないシステムメッセージのため
 [nolog]
@@ -349,8 +349,8 @@
 ; なお、この問題は[clearstack]では解決しなかったが、おまじないとして各フェイズの最初に追加しておく。
 [jump target="*nightPhaseNPC" cond="!f.characterObjectsHistory[f.day][f.playerCharacterId].isAlive"]
 
-; 【幕間再生】
-[i_playInterlude target="firstDayNightPhase"]
+; 【チャプター再生】
+[t_playChapter target="firstDayNightPhase"]
 
 [m_changeFrameWithId]
 #
@@ -438,8 +438,8 @@
 [call storage="theater/episodeSubroutines.ks" target="*checkOutroUnlockCondition"]
 ;[a_displayAchievedEpisodes]
 
-; 【幕間再生】
-[i_playInterlude target="encourageRetry"]
+; 【チャプター再生】
+[t_playChapter target="encourageRetry"]
 
 [if exp="f.isSituationPlay"]
 シアターに戻ります。[p]
