@@ -1,4 +1,4 @@
-*jinroInstruction
+*startInstruction
 [iscript]
   // もち子さんの立ち絵を追加で登録する
   tf.registerCharacterList = [CHARACTER_ID_MOCHIKO];
@@ -61,13 +61,13 @@
   // ボタン生成（初回用）
   f.buttonObjects = [];
   f.buttonObjects.push(new Button(
-    'continueJinroInstruction',
+    'continueInstruction',
     '全て説明して',
     'center',
     CLASS_GLINK_DEFAULT
   ));
   f.buttonObjects.push(new Button(
-    'skipJinroInstruction',
+    'skipInstruction',
     'ボイボ人狼の説明だけ',
     'center',
     CLASS_GLINK_DEFAULT,
@@ -77,7 +77,7 @@
 [jump target="&f.selectedButtonId"]
 [s]
 
-*continueJinroInstruction
+*continueInstruction
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
 了解です！[r]
 それではインストラクションを始めますね！[p]
@@ -204,7 +204,7 @@
 
 
 
-*skipJinroInstruction
+*skipInstruction
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
 了解です！[r]
 それでは人狼ゲーム自体の説明はスキップさせていただきます。[p]
@@ -671,13 +671,13 @@
   // ボタン生成（2回目以降用）
   f.buttonObjects = [];
   f.buttonObjects.push(new Button(
-    'continueJinroInstruction',
+    'continueInstruction',
     '全て説明して',
     'center',
     CLASS_GLINK_DEFAULT
   ));
   f.buttonObjects.push(new Button(
-    'skipJinroInstruction',
+    'skipInstruction',
     'ボイボ人狼の説明だけ',
     'center',
     CLASS_GLINK_DEFAULT,

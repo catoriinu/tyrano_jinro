@@ -44,7 +44,7 @@
 [m_noticeRole characterId="&f.playerCharacterId" roleId="&f.characterObjects[f.playerCharacterId].role.roleId"]
 
 ; 【幕間再生】
-[i_playInterlude target="jinroInstruction"]
+[i_playInterlude target="startInstruction"]
 
 ; 占い師なら初日占い実行
 [if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_FORTUNE_TELLER"]
