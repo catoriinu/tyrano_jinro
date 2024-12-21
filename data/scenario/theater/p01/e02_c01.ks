@@ -143,5 +143,7 @@ tf.playbgmParams = {
 *end
 
 [t_teardownChapter pageId="&f.pageId" episodeId="&f.episodeId" chapterId="&f.chapterId"]
-[jump storage="&f.currentReturnJumpStorage" target="&f.currentReturnJumpTarget"]
+; TODO シアターに戻る際にも使わないで済めば削除する
+; [jump storage="&f.currentReturnJumpStorage" target="&f.currentReturnJumpTarget"]
+[return]
 [s]
