@@ -7,7 +7,6 @@
 
   ; 自動再生すべきシチュエーションがある場合は自動再生する
   [call storage="prepareJinro.ks" target="*playIntroEpisode" cond="f.needPlayIntroEpisode"]
-  *return_playIntroEpisode
 
   ; 開始する人狼ゲームデータを読み込む
   [j_prepareJinroGame jinroGameData="&f.targetJinroGameData" preload="true"]

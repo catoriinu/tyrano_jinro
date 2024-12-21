@@ -432,14 +432,11 @@
 
 [iscript]
   incrementPlayHistoryCount(f.characterObjects[f.playerCharacterId], f.winnerFaction);
+  outputLog();
 [endscript]
 
 [call storage="theater/episodeSubroutines.ks" target="*checkOutroUnlockCondition"]
 ;[a_displayAchievedEpisodes]
-
-[iscript]
-outputLog();
-[endscript]
 
 ; 【幕間再生】
 [i_playInterlude target="encourageRetry"]
