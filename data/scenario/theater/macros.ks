@@ -210,7 +210,7 @@
 
 ; このマクロ内で更新するゲーム変数
 ; f.startingSituation    : シチュエーション開始条件に合致したエピソードのページIDとエピソードID。合致しなかった場合は値はnullのまま。{pageId: String|null, episodeId: String|null}
-; f.needPlayIntroEpisode : 導入編を自動再生するフラグ。true: 自動再生する | false: 自動再生しない
+; f.needPlayIntroChapter : 導入編を自動再生するフラグ。true: 自動再生する | false: 自動再生しない
 ; f.targetJinroGameData  : ゲーム開始時に利用する人狼ゲームデータオブジェクト。合致したエピソードがあれば、そのシチュエーションに合わせて書き換えられる。なければ現在の人狼ゲームデータ自体のディープコピー。
 [macro name="t_setStartingSituation"]
   [iscript]
@@ -219,8 +219,8 @@
       pageId: null,
       episodeId: null
     }
-    f.needPlayIntroEpisode = false;
-    let tmpNeedPlayIntroEpisode = false;
+    f.needPlayIntroChapter = false;
+    let tmpNeedPlayIntroChapter = false;
 
     // 元々の人狼ゲームデータに書き換えを反映させないために、オブジェクトをcloneする
     const jinroGameData = mp.jinroGameData || sf.jinroGameDataObjects[sf.currentJinroGameDataKey];
@@ -228,18 +228,18 @@
 
     // 「導入編未解放かつ解放可」のエピソードに対して、シチュエーション開始条件に合致したかのチェック
     const introAvailableEpisodes = getEpisodesByStatus(EPISODE_STATUS.INTRO_LOCKED_AVAILABLE, sf.theaterProgress);
-    [tmpNeedPlayIntroEpisode, f.startingSituation.pageId, f.startingSituation.episodeId, f.targetJinroGameData] = checkMatchingEpisodeSituation(introAvailableEpisodes, f.targetJinroGameData);
+    [tmpNeedPlayIntroChapter, f.startingSituation.pageId, f.startingSituation.episodeId, f.targetJinroGameData] = checkMatchingEpisodeSituation(introAvailableEpisodes, f.targetJinroGameData);
 
     // シチュエーション開始条件に合致した「導入編未解放かつ解放可」のエピソードがなかった場合
-    if (!tmpNeedPlayIntroEpisode) {
+    if (!tmpNeedPlayIntroChapter) {
       // 「導入編解放済みで解決編未解放」のエピソードに対して、シチュエーション開始条件に合致したかのチェック
       const introUnlockedEpisodes = getEpisodesByStatus(EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED, sf.theaterProgress);
       [, f.startingSituation.pageId, f.startingSituation.episodeId, f.targetJinroGameData] = checkMatchingEpisodeSituation(introUnlockedEpisodes, f.targetJinroGameData);
-      // 合致したエピソードがあってもなくても、tmpNeedPlayIntroEpisodeはfalseのままとする。
+      // 合致したエピソードがあってもなくても、tmpNeedPlayIntroChapterはfalseのままとする。
     }
 
     // TODO 「視聴済みの導入編を自動スキップする」チェックボックスを導入する場合はこのあたりの修正が必要
-    f.needPlayIntroEpisode = tmpNeedPlayIntroEpisode;
+    f.needPlayIntroChapter = tmpNeedPlayIntroChapter;
 
     console.log('★f.startingSituation');
     console.log(f.startingSituation);
@@ -247,7 +247,8 @@
 [endmacro]
 
 
-; @param string target
+; f.chapterListに登録されているチャプターのうち、指定されたチャプターを再生する
+; @param string target チャプターリスト内のキー名
 [macro name="t_playChapter"]
   [iscript]
     // チャプターリストの中に指定のキーが存在し、かつそのChapterオブジェクトのneedPlayフラグが立っていれば、再生する
