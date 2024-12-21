@@ -41,7 +41,7 @@ tf.playbgmParams = {
 [freeimage layer="1" time="1000" wait="true"]
 
 [ptext layer="1" x="90" y="100" text="本作品は以下の要素を含みます。" color="#f7f7f7" size="44" time="1000" width="1100" align="center"]
-[ptext layer="1" x="70" y="200" text="・テキスト読み上げソフトウェアVOICEVOX製の合成音声<br>・公式と異なる独自設定を含むキャラクター描写<br>・既存作品にインスパイアされた表現<br>・人狼ゲーム由来の過激な単語<br>・メタ要素" color="#f7f7f7" size="44" time="1000" width="1140" align="left"]
+[ptext layer="1" x="70" y="200" text="・テキスト読み上げソフトウェアVOICEVOX製の合成音声<br>・公式と異なる独自設定を含むキャラクター描写<br>・既存作品のオマージュ・インスパイア表現<br>・人狼ゲーム由来の過激な単語<br>・メタ要素" color="#f7f7f7" size="44" time="1000" width="1140" align="left"]
 [ptext layer="1" x="90" y="560" text="以上をご理解のうえ、お楽しみください。" color="#f7f7f7" size="44" time="1000" width="1100" align="center"]
 
 [p]
@@ -234,15 +234,7 @@ tf.playbgmParams = {
 ; チャプターここまで
 *end
 
-; 初回プレイ時用の特殊処理
-[iscript]
-  tf.isFirstStartup = (getTheaterProgress('p01', 'e01') === EPISODE_STATUS.INTRO_LOCKED_AVAILABLE);
-[endscript]
-
 [t_teardownChapter pageId="&f.pageId" episodeId="&f.episodeId" chapterId="&f.chapterId"]
-
-; 初回プレイ時は直接チュートリアルモードでシチュエーションプレイを始める
-[jump storage="tutorial/tutorialSubroutines.ks" target="*toFirstInstruction" cond="tf.isFirstStartup"]
 
 [jump storage="&f.currentReturnJumpStorage" target="&f.currentReturnJumpTarget"]
 [s]

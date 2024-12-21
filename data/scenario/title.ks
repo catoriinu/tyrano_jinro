@@ -1,12 +1,12 @@
-
+*start
 [cm]
-
 [clearstack]
 [bg storage="voivojinrou_title_v3.png" time="1" wait="true"]
 
-*start 
+; バージョン表示
 [ptext layer="1" x="5" y="685" text="ver.0.12.1" color="white" size="24"]
 [layopt layer="1" visible="true"]
+
 ; ボイス停止（人狼ゲームから戻ってきたとき用）
 [stopse buf="0"]
 [playbgm storage="fun_fun_Ukelele_1loop.ogg" volume="20" loop="true" restart="false"]

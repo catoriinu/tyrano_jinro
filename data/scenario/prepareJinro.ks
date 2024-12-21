@@ -2,8 +2,11 @@
   ; シチュエーション開始チェック
   [t_setStartingSituation]
 
-  ; 自動再生できる場合は、導入編を自動再生する
-  [jump storage="prepareJinro.ks" target="*playIntroEpisode" cond="f.needPlayIntroEpisode"]
+  ; 幕間リストの設定
+  [call storage="prepareJinro.ks" target="*addInterludeList"]
+
+  ; 自動再生すべきシチュエーションがある場合は自動再生する
+  [call storage="prepareJinro.ks" target="*playIntroEpisode" cond="f.needPlayIntroEpisode"]
   *return_playIntroEpisode
 
   ; 開始する人狼ゲームデータを読み込む
@@ -27,5 +30,27 @@
   [jump storage="&tf.episode.introChapter.storage" target="*start"]
   *end_playIntroEpisode
 
-  [jump storage="prepareJinro.ks" target="*return_playIntroEpisode" cond="f.needPlayIntroEpisode"]
+  [return]
+[s]
+
+
+
+; 幕間リストに登録するサブルーチン
+*addInterludeList
+  [iscript]
+    // 幕間リストの初期化
+    f.interludeList = {};
+
+    const pageId = f.startingSituation.pageId;
+    const episodeId = f.startingSituation.episodeId;
+
+    // シチュエーションが「誰がずんだもちを食べたのだ？」であるかつ解決編が未解放の場合、インストラクションを登録する
+    tf.needAddInstruction = ((pageId === 'p01') && (episodeId === 'e01') && (getTheaterProgress('p01', 'e01') !== EPISODE_STATUS.OUTRO_UNLOCKED));
+  [endscript]
+
+  ; 幕間リストの登録
+  ; TODO 「interlude/interludeList.ks」
+  [call storage="tutorial/tutorialSubroutines.ks" target="*addInstruction" cond="tf.needAddInstruction"]
+
+  [return]
 [s]

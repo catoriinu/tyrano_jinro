@@ -16,6 +16,7 @@
 [plugin name="jinro"] 
 [call storage="jinroMacros.ks"]
 [call storage="messageMacros.ks"]
+[call storage="tutorial/interludeMacros.ks"]
 [eval exp="f.color = {}"]
 [loadcss file="./data/others/jinro.css"]
 
@@ -34,6 +35,7 @@
 [loadjs storage="voivoJinro/theater/theaterScripts.js"]
 [loadjs storage="voivoJinro/theater/episodeData.js"]
 [loadjs storage="voivoJinro/record/recordScripts.js"]
+[loadjs storage="voivoJinro/interlude/Interlude.js"]
 
 ; キーフレーム定義読み込み
 [call storage="keyframe.ks"]

@@ -1,34 +1,49 @@
-; 初回プレイ用チュートリアル開始用ラベル
-; ※サブルーチンではない
-*toFirstInstruction
 
-[iscript]
-  // 本当の初回起動時のみ、tf.isFirstStartupが立っている。2回目以降は折れている。
-  const needFirstInstruction = ('isFirstStartup' in tf) ? tf.isFirstStartup : false;
-
-  // 初回プレイ用チュートリアルリストを格納する
-  f.tmpTutorialList = {
-    needFirstInstruction: needFirstInstruction,
-    jinroInstruction: false,
-    COPhase: false,
-    discussionPhase: false,
-    votePhase: false,
-    firstDayNightPhase: false,
-    secondDayDayPhase: false,
-    thankStatusButton: false,
-    forceStatusButton: false,
-    statusButton: false,
-    endInstruction: false,
-    secondInstruction: false,
-    encourageRetry: false,
-  }
-
-  // 「誰がずんだもちを食べたのだ？」のエピソード情報から参加者情報を取得して、人狼ゲームの準備に利用する
-  const tmpEpisodeData = episodeData('p01', 'e01');
-  tf.tmpJinroGameData = tmpEpisodeData.situationJinroGameData
-[endscript]
-
-[j_prepareJinroGame jinroGameData="&tf.tmpJinroGameData" preload="true"]
-
-[jump storage="playJinro.ks"]
+; インストラクション
+*addInstruction
+  [iscript]
+    const instructionStorage = 'tutorial/firstInstruction.ks';
+    // インストラクション用の幕間オブジェクトを格納する
+    f.interludeList = {
+      jinroInstruction: new Interlude(
+        instructionStorage,
+        '*jinroInstruction'
+      ),
+      COPhase: new Interlude(
+        instructionStorage,
+        '*COPhase'
+      ),
+      discussionPhase: new Interlude(
+        instructionStorage,
+        '*discussionPhase'
+      ),
+      votePhase: new Interlude(
+        instructionStorage,
+        '*votePhase'
+      ),
+      firstDayNightPhase: new Interlude(
+        instructionStorage,
+        '*firstDayNightPhase'
+      ),
+      secondDayDayPhase: new Interlude(
+        instructionStorage,
+        '*secondDayDayPhase',
+        false, // 1日目昼には呼び出されても再生したくない。なので1日目夜のfirstDayNightPhaseのシナリオ内でtrueにする
+      ),
+      statusButton: new Interlude(
+        instructionStorage,
+        '*statusButton'
+      ),
+      encourageRetry: new Interlude(
+        instructionStorage,
+        '*encourageRetry'
+      ),
+      flags: {
+        isFirstContact: (getTheaterProgress('p01', 'e01') === EPISODE_STATUS.INTRO_LOCKED_AVAILABLE), // 本当の初回起動時のみtrue
+        thankStatusButton: false,
+        forceStatusButton: false,
+      }
+    }
+  [endscript]
+  [return]
 [s]
