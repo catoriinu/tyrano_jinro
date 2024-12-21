@@ -728,9 +728,18 @@
 ; 枠リセット
 [m_changeFrameWithId]
 #
-; TODO: encourageRetry以外のインストラクションを消す
 
 [free_filter name="mochiko"]
+
+[iscript]
+  // encourageRetryを除くインストラクションの幕間の再生フラグを折る
+  f.interludeList.COPhase.needPlay = false;
+  f.interludeList.discussionPhase.needPlay = false;
+  f.interludeList.votePhase.needPlay = false;
+  f.interludeList.firstDayNightPhase.needPlay = false;
+  f.interludeList.secondDayDayPhase.needPlay = false;
+  f.interludeList.statusButton.needPlay = false;
+[endscript]
 [return]
 
 

@@ -1,8 +1,7 @@
-; インストラクション
+; インストラクション用の幕間オブジェクトを格納する
 *addInstruction
   [iscript]
     const instructionStorage = 'instruction.ks';
-    // インストラクション用の幕間オブジェクトを格納する
     f.interludeList = {
       jinroInstruction: new Interlude(
         instructionStorage,
