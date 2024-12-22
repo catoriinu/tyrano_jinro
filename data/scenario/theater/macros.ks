@@ -91,17 +91,6 @@
   ; BGM
   [playbgm storage="&mp.playbgmParams.storage" loop="true" volume="&mp.playbgmParams.volume" restart="false"]
 
-  ;メッセージウィンドウの設定、文字が表示される領域を調整
-  [position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="220" page="fore"]
-
-  ;キャラクターの名前が表示される文字領域
-  [ptext name="chara_name_area" layer="message0" face="にくまるフォント" color="0x28332a" size="36" x="175" y="505"]
-
-  ;上記で定義した領域がキャラクターの名前表示であることを宣言（これがないと#の部分でエラーになります）
-  [chara_config ptext="chara_name_area"]
-  ; pos_mode:キャラの初期位置はキャラ宣言時に全指定するのでfalse
-  [chara_config pos_mode="false" memory="true" time="200"]
-
   ;このシナリオで登場する全キャラクターを宣言、表情登録
   [eval exp="tf.registerCharacterList = mp.actorsList"]
   [call storage="./chara/common.ks" target="*registerCharacters"]
