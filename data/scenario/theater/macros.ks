@@ -259,7 +259,7 @@
   [endscript]
   ; あえて[call]ではなく[jump]を使う。[call]だと再生中にスタックが残っておりfixボタンが押せなくなるため
   [jump storage="&tf.targetChapter.storage" target="&tf.targetChapter.target" cond="tf.needPlay"]
-  ; MEMO:戻って来るときは下記を使う
+  ; MEMO:戻って来るときは基本的には下記を使う
   ; [jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
   *end_t_playChapter
 [endmacro]

@@ -5,7 +5,8 @@
   ; チャプターリスト（再生するシナリオファイルを指定するためのChapterオブジェクトのリスト）の設定
   [call storage="prepareJinro.ks" target="*addChapterList"]
 
-  ; 自動再生すべき導入編がある場合は自動再生する
+  ; 自動再生すべきチャプターがある場合は自動再生する
+  [t_playChapter target="notice"]
   [t_playChapter target="introChapter"]
 
   ; 開始する人狼ゲームデータを読み込む
@@ -43,11 +44,14 @@
       };
     }
 
+    // 初めて「プレイスタート」したとき（「誰がずんだもちを食べたのだ？」の導入編が「1：導入編未解放かつ解放可」の場合）のみ、「はじめに」を登録する
+    tf.needAddNotice = ((pageId === 'p01') && (episodeId === 'e01') && (getTheaterProgress('p01', 'e01') === EPISODE_STATUS.INTRO_LOCKED_AVAILABLE));
     // シチュエーションが「誰がずんだもちを食べたのだ？」であるかつ解決編が未解放の場合、インストラクションを登録する
     tf.needAddInstruction = ((pageId === 'p01') && (episodeId === 'e01') && (getTheaterProgress('p01', 'e01') !== EPISODE_STATUS.OUTRO_UNLOCKED));
   [endscript]
 
   ; 規定のチャプターリストの登録
+  [call storage="theater/chapterList.ks" target="*addNotice" cond="tf.needAddNotice"]
   [call storage="theater/chapterList.ks" target="*addInstruction" cond="tf.needAddInstruction"]
 
   [return]

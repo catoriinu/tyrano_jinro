@@ -1,3 +1,19 @@
+; 「はじめに」用のChapterオブジェクトをチャプターリストに追加する
+*addNotice
+  [iscript];
+    Object.assign(
+      f.chapterList,
+      {
+        notice: new Chapter(
+          'theater/p01/notice.ks',
+        ),
+      }
+    );
+  [endscript]
+  [return]
+[s]
+
+
 ; インストラクション用のChapterオブジェクトをチャプターリストに追加する
 *addInstruction
   [iscript]
