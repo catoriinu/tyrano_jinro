@@ -4,7 +4,7 @@
 [bg storage="voivojinrou_title_v3.png" time="1" wait="true"]
 
 ; バージョン表示
-[ptext layer="1" x="5" y="685" text="ver.0.12.1" color="white" size="24"]
+[ptext layer="1" x="5" y="685" text="ver.0.12.2" color="white" size="24"]
 [layopt layer="1" visible="true"]
 
 ; ボイス停止（人狼ゲームから戻ってきたとき用）
@@ -38,11 +38,8 @@
 ; インストラクションクリア済みならシアターとカスタマイズを解放
 [if exp="tf.isInstructionCleared"]
   [glink color="&tf.buttonColor" size="30" width="300" x="138" y="500" name="buttonhover" text="シアター" target="*theater"]
-  ; TODO 実際にはこちらを有効化する
-  ;[glink color="&tf.buttonColor" size="30" width="300" x="488" y="600" name="buttonhover" text="カスタマイズ" target="*customize"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="600" name="buttonhover" text="カスタマイズ" target="*customize"]
 [endif]
-
-[glink color="&tf.buttonColor" size="30" width="300" x="488" y="600" name="buttonhover" text="カスタマイズ" target="*customize"]
 
 ; デバッグ系ボタン表示
 [if exp="sf.isDebugMode"]
@@ -73,12 +70,6 @@
 [jump storage="prepareJinro.ks" target="*prepareJinroGame"]
 [s]
 
-
-*selectStage
-[freeimage layer="1"]
-[stopbgm]
-;ステージ選択（TODO 現在はPCの役職のみ選択可能）シナリオファイルへジャンプする
-[jump storage="selectStage.ks"]
 
 
 *customize
