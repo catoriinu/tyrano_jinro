@@ -124,18 +124,8 @@ tf.playbgmParams = {
 犯人は誰なのだ…！？[r]
 こたろう？ミコ？はう？それとも――[p]
 
-[stopse buf="0"]
-
-; TODO 使う箇所が増えたらマクロ化する
-[playse storage="ufo03.ogg" buf="1" volume="50" sprite_time="100-4100"]
-[layopt layer="message0" visible="false"]
-[layopt layer="1" opacity="210"]
-[image storage="TVStaticColor03.gif" layer="1" width="1280" height="900" visible="true" time="2000" wait="true"]
-[fadeoutse buf="1" time="2100"]
-[freeimage time="2000" wait="true" layer="1"]
-[layopt layer="1" opacity="255"]
-[layopt layer="message0" visible="true"]
-
+; ノイズ演出
+[e_noiseDisplay]
 
 [m_changeCharacterFrameName name="ずんだもん" face="困惑" side="left"]
 [playse storage="theater/p01/e01/018.ogg"]

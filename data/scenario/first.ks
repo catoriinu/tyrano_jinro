@@ -16,6 +16,8 @@
 [plugin name="jinro"] 
 [call storage="jinroMacros.ks"]
 [call storage="messageMacros.ks"]
+[call storage="effect/effectMacros.ks"]
+[call storage="effect/keyframe.ks"]
 [eval exp="f.color = {}"]
 [loadcss file="./data/others/jinro.css"]
 
@@ -34,10 +36,6 @@
 [loadjs storage="voivoJinro/theater/theaterScripts.js"]
 [loadjs storage="voivoJinro/theater/episodeData.js"]
 [loadjs storage="voivoJinro/record/recordScripts.js"]
-
-; キーフレーム定義読み込み
-[call storage="keyframe.ks"]
-
 
 [iscript]
 // デバッグモード
