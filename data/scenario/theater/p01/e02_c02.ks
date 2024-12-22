@@ -60,8 +60,8 @@ tf.playbgmParams = {
 
 [m_changeCharacterFrameName name="雨晴はう"]
 [playse storage="theater/p01/e02/034.ogg"]
-まあまあ、落ち着いてください、ずんだもん。[r]
-あんまり否定するのは良くないですよ。[p]
+まあまあ、落ち着いてください。[r]
+ずんだもんもあんまり否定するのは良くないですよ。[p]
 
 [playse storage="theater/p01/e02/035.ogg"]
 それじゃあめたんさん。[r]
@@ -85,7 +85,7 @@ tf.playbgmParams = {
 
 [playse storage="theater/p01/e02/040.ogg"]
 くっ…どうして…？はうさんの帰宅時間が見えない…！[r]
-まだまだ力不足だとでも言うの…！？[p]
+わたくしにはまだまだ力不足だとでも言うの…！？[p]
 
 [m_changeCharacterFrameName name="雨晴はう"]
 [playse storage="theater/p01/e02/041.ogg"]

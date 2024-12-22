@@ -27,7 +27,7 @@
     const episodeId = f.startingSituation.episodeId;
 
     // シチュエーション開始条件に合致したエピソードがある場合、そのエピソードの導入編と解決編をチャプターリストに登録する
-    if (pageId !== null && episodeId !== null) {
+    if (pageId && episodeId) {
       const episode = episodeData(pageId, episodeId);
       const introChapter = episode.introChapter;
       const outroChapter = episode.outroChapter;
@@ -39,7 +39,7 @@
       f.chapterList.outroChapter = {
         storage: outroChapter.storage,
         target: outroChapter.target,
-        needPlay: f.needPlayIntroChapter // [t_setStartingSituation]で設定されたフラグをそのまま使う。ゲーム終了時、checkOutroUnlockConditionサブルーチンの完遂チェックでNGとなった場合はそこで折る
+        needPlay: false // 一旦falseを入れておく。ゲーム終了時、checkOutroUnlockConditionサブルーチンの完遂チェックでOKかつ再生するとなったらtrueにする
       };
     }
 

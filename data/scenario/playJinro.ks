@@ -435,10 +435,9 @@
   outputLog();
 [endscript]
 
-[call storage="theater/episodeSubroutines.ks" target="*checkOutroUnlockCondition"]
-;[a_displayAchievedEpisodes]
-
 ; 【チャプター再生】
+[call storage="theater/episodeSubroutines.ks" target="*checkOutroUnlockCondition"]
+[t_playChapter target="outroChapter"]
 [t_playChapter target="encourageRetry"]
 
 [if exp="f.isSituationPlay"]

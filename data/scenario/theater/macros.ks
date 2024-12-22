@@ -83,6 +83,8 @@
   [clearfix]
   [start_keyconfig]
 
+  [t_clearDisplay]
+
   ; 背景
   [bg storage="&mp.bgParams.storage" time="300"]
 
@@ -160,6 +162,11 @@
   [endscript]
 
   ; チャプター再生中に表示している可能性があるものは全て画面から消す（途中でスキップされた場合もここで消せるようにするため）
+  [t_clearDisplay]
+[endmacro]
+
+
+[macro name="t_clearDisplay"]
   [j_clearFixButton]
   [m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
   [m_exitCharacter characterId="&f.displayedCharacter.right.characterId" time="1"]

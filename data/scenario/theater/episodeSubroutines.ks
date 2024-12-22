@@ -65,10 +65,10 @@
         console.log('★check OK checkOutroUnlockCondition');
 
         // 現在のエピソード進捗ステータスが「2：導入編解放済みで解決編未解放」で完遂したなら、自動再生フラグをtrueにする
-        // （実際にステータスを書き換えるのはシアターの視聴終了後）
+        // （実際に進捗ステータスを書き換えるのはシアターの視聴終了後）
         // TODO：「視聴済みの導入編は自動再生しない」が自動再生する設定なら、ステータスにかかわらずtrueにする
         if (sf.theaterProgress[pageId][episodeId] === EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED) {
-          f.needPlayOutroEpisode = true;
+          f.chapterList.outroChapter.needPlay = true;
         }
       }
     }
