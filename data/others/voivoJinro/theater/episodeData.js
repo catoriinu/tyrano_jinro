@@ -191,7 +191,14 @@ function episodeData(pageId, episodeId) {
                         new Chapter(
                             'theater/p01/e06_c02.ks',
                         ),
-                        null,
+                        new JinroGameData(
+                            roleDataP01,
+                            [
+                                new Participant(CHARACTER_ID_ZUNDAMON, [ROLE_ID_WEREWOLF, ROLE_ID_MADMAN]),
+                                new Participant(CHARACTER_ID_TSUMUGI, [ROLE_ID_WEREWOLF, ROLE_ID_MADMAN]),
+                            ],
+                            CHARACTER_ID_ZUNDAMON,
+                        ),
                         new ResultCondition(
                             false,
                             FACTION_VILLAGERS,
@@ -215,7 +222,11 @@ function episodeData(pageId, episodeId) {
                         new Chapter(
                             'theater/p01/e07_c02.ks',
                         ),
-                        null,
+                        new JinroGameData(
+                            roleDataP01,
+                            [],
+                            CHARACTER_ID_ZUNDAMON,
+                        ),
                         new ResultCondition(
                             null,
                             FACTION_DRAW_BY_REVOTE,
@@ -236,7 +247,11 @@ function episodeData(pageId, episodeId) {
                         new Chapter(
                             'theater/p01/e08_c02.ks',
                         ),
-                        null,
+                        new JinroGameData(
+                            roleDataP01,
+                            [],
+                            CHARACTER_ID_ZUNDAMON,
+                        ),
                         new ResultCondition(
                             true,
                             null,

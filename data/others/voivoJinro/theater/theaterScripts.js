@@ -209,11 +209,16 @@ function checkMatchingEpisodeSituation(episodes, targetJinroGameData) {
 /**
  * このシチュエーションで指定されている人狼ゲームデータを基準として、現在の人狼ゲームデータが全ての条件に合致しているかを判定する
  * 合致していた場合、合致させるために書き換えを行った状態の人狼ゲームデータを返却する
- * @param {JinroGameData} situationJinroGameData このシチュエーションで指定されている人狼ゲームデータ
+ * @param {JinroGameData|null} situationJinroGameData このシチュエーションで指定されている人狼ゲームデータ
  * @param {JinroGameData} targetJinroGameData 現在の人狼ゲームデータ
  * @returns {Array} [true, JinroGameData]: チェックOK | [false, null]: チェックNG
  */
 function isMatchEpisodeSituation(situationJinroGameData, targetJinroGameData) {
+
+  // シチュエーションが指定されていない場合は、そのまま返却する
+  if (!situationJinroGameData) {
+    return [true, targetJinroGameData];
+  }
 
   // 元々の人狼ゲームデータを書き換えないようにするため、cloneする
   const tmpTargetJinroGameData = clone(targetJinroGameData);
