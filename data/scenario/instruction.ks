@@ -200,7 +200,8 @@
 [m_changeFrameWithId]
 #
 
-[return]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
+[s]
 
 
 
@@ -217,7 +218,8 @@
 [m_changeFrameWithId]
 #
 
-[return]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
+[s]
 
 
 
@@ -245,7 +247,8 @@
 [m_changeFrameWithId]
 #
 
-[return]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
+[s]
 
 
 
@@ -332,7 +335,8 @@
 [m_changeFrameWithId]
 #
 
-[return]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
+[s]
 
 
 
@@ -376,7 +380,8 @@
 [m_changeFrameWithId]
 #
 
-[return]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
+[s]
 
 
 
@@ -413,7 +418,8 @@
 
 ; 2日目昼用のチャプターを再生するためにここでtrueにする
 [eval exp="f.chapterList.secondDayDayPhase.needPlay = true"]
-[return]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
+[s]
 
 
 
@@ -536,7 +542,8 @@
 [jump target="endInstruction"]
 *returnFromEndInstruction
 
-[return]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
+[s]
 
 
 
@@ -591,7 +598,8 @@
 [m_changeFrameWithId]
 #
 
-[return]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
+[s]
 
 
 
@@ -740,19 +748,20 @@
   f.chapterList.secondDayDayPhase.needPlay = false;
   f.chapterList.statusButton.needPlay = false;
 [endscript]
-[return]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
+[s]
 
 
 
 *encourageRetry
-; リトライを促す（つまりこの下でreturnしない）条件
+; リトライを促す（つまりこの下でjumpで戻らない）条件
 ; 「誰がずんだもちを食べたのだ？」が「3:解決編まで解放済み」ではない（＝インストラクションで勝利していない）
 ; TODO 今の実装のままでいくなら、勝利したら解決編再生時にエピソード解放ステータスを3にすること
 [iscript]
   tf.needPlayEncourageRetry = (getTheaterProgress('p01', 'e01') !== EPISODE_STATUS.OUTRO_UNLOCKED);
   console.log('needEncourageRetry: ' + tf.needEncourageRetry);
 [endscript]
-[return cond="!tf.needPlayEncourageRetry"]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget" cond="!tf.needPlayEncourageRetry"]
 
 ; 左側の立ち絵と、勝利陣営キャラクターのレイヤーを消去する
 [m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
@@ -780,10 +789,5 @@
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId" wait="true"]
 [free_filter name="mochiko"]
 [eval exp="f.currentFrame = null"]
-
-; タイトル画面に戻るときのみ、背景をタイトル画面のものに変えておく
-[bg storage="voivojinrou_green.png" time="1" wait="false" cond="!f.isSituationPlay"]
-
-; [t_playChapter]内から[call]で呼び出されてきているのに[jump]で抜けるので、スタックが溜まっている。タイトル画面で[clearstack]すること
 [jump storage="title.ks"]
 [s]

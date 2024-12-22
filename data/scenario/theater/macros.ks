@@ -113,13 +113,12 @@
     // スキップした場合用の変数を初期化 MEMO 何にも使ってないので消して良さそう
     tf.chapterSkiped = false;
 
-    // TODO シアターに戻る際にも使わないで済めば削除する
     // シアター終了後のジャンプ先を指定する。指定があればそこへ、なければシアター画面に戻る
-    //f.currentReturnJumpStorage = f.returnJumpStorage || 'theater/main.ks';
-    //f.currentReturnJumpTarget = f.returnJumpTarget || '*start';
+    f.currentReturnJumpStorage = f.returnJumpStorage || 'theater/main.ks';
+    f.currentReturnJumpTarget = f.returnJumpTarget || '*start';
     // 次に使うときには初期化されていてほしいので指定用変数はここで初期化する
-    //f.returnJumpStorage = null;
-    //f.returnJumpTarget = null;
+    f.returnJumpStorage = null;
+    f.returnJumpTarget = null;
   [endscript]
 
   ; ボタン表示
@@ -170,8 +169,8 @@
   [j_clearFixButton]
   [m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
   [m_exitCharacter characterId="&f.displayedCharacter.right.characterId" time="1"]
-  [layopt layer="1" visible="false"]
-  [layopt layer="2" visible="false"]
+  [freeimage layer="1"]
+  [freeimage layer="2"]
   [layopt layer="message0" visible="false"]
   [eval exp="f.currentFrame = null"]
 [endmacro]
@@ -266,6 +265,14 @@
     if (tf.needPlay) {
       f.chapterList[mp.target].needPlay = false;
     }
+    // チャプター再生後にこのファイルに戻って来るために変数設定 関連マクロ：[t_setupChapter]
+    // MEMO：シアターでもこのマクロを経由して再生するルールにすれば、「シアター終了後のジャンプ先を指定する。指定があればそこへ、なければシアター画面に戻る」は不要になりそう
+    f.returnJumpStorage = 'theater/macros.ks';
+    f.returnJumpTarget = '*end_t_playChapter';
   [endscript]
-  [call storage="&tf.targetChapter.storage" target="&tf.targetChapter.target" cond="tf.needPlay"]
+  ; あえて[call]ではなく[jump]を使う。[call]だと再生中にスタックが残っておりfixボタンが押せなくなるため
+  [jump storage="&tf.targetChapter.storage" target="&tf.targetChapter.target" cond="tf.needPlay"]
+  ; MEMO:戻って来るときは下記を使う
+  ; [jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
+  *end_t_playChapter
 [endmacro]
