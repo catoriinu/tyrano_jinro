@@ -75,6 +75,7 @@
 
 
 ; チャプター視聴開始時の準備用マクロ
+; @param chapterId
 ; @param actorsList
 ; @param bgParams
 ; @param playbgmParams
@@ -99,20 +100,22 @@
     // 再生中のチャプターのファイルパスを生成しておく（スキップからの再開のため・コンフィグでチャプター再生中と判定するため）
     f.chapterStorage = 'theater/' + f.pageId + '/' + f.episodeId + '_' + f.chapterId + '.ks';
 
-    // スキップした場合用の変数を初期化 MEMO 何にも使ってないので消して良さそう
-    tf.chapterSkiped = false;
-
     // シアター終了後のジャンプ先を指定する。指定があればそこへ、なければシアター画面に戻る
     f.currentReturnJumpStorage = f.returnJumpStorage || 'theater/main.ks';
     f.currentReturnJumpTarget = f.returnJumpTarget || '*start';
     // 次に使うときには初期化されていてほしいので指定用変数はここで初期化する
     f.returnJumpStorage = null;
     f.returnJumpTarget = null;
+
+    // エピソード解放ステータスの更新
+    // 解決編の場合、「2：導入編解放済みで解決編未解放」なら「3：解決編まで解放済み」に更新する
+    if (mp.chapterId === 'c02') {
+      sf.theaterProgress[mp.pageId][mp.episodeId] = advanceEpisodeStatus(mp.pageId, mp.episodeId, EPISODE_STATUS.OUTRO_UNLOCKED);
+    }
   [endscript]
 
   ; ボタン表示
   [j_displayFixButton backlog="true" pauseMenu="true"]
-
 [endmacro]
 
 
@@ -125,20 +128,6 @@
   ; キャラ名を消すための#
   # 
 
-  ; エピソード解放ステータスを更新する
-  [iscript]
-    if (mp.chapterId === 'c01') {
-      // 導入編の場合、「1：導入編未解放かつ解放可」なら「2：導入編解放済みで解決編未解放」に更新する
-      sf.theaterProgress[mp.pageId][mp.episodeId] = advanceEpisodeStatus(mp.pageId, mp.episodeId, EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED);
-    } else if (mp.chapterId === 'c02') {
-      // 解決編の場合、「2：導入編解放済みで解決編未解放」なら「3：解決編まで解放済み」に更新する
-      sf.theaterProgress[mp.pageId][mp.episodeId] = advanceEpisodeStatus(mp.pageId, mp.episodeId, EPISODE_STATUS.OUTRO_UNLOCKED);
-    }
-  [endscript]
-
-  ; 視聴終了時に解放すべきシアター進捗があれば解放する
-  [call storage="theater/episodeSubroutines.ks" target="*unlockNextEpisode"]
-
   [iscript]
     // 戻ったときにエピソードウィンドウを開くための設定
     f.displayPageId = mp.pageId;
@@ -147,7 +136,16 @@
     
     // 再生中のチャプターのファイルパスを初期化
     f.chapterStorage = null;
+
+    // エピソード解放ステータスの更新
+    // 導入編の場合、「1：導入編未解放かつ解放可」なら「2：導入編解放済みで解決編未解放」に更新する
+    if (mp.chapterId === 'c01') {
+      sf.theaterProgress[mp.pageId][mp.episodeId] = advanceEpisodeStatus(mp.pageId, mp.episodeId, EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED);
+    }
   [endscript]
+
+  ; 視聴終了時に解放すべきシアター進捗があれば解放する
+  [call storage="theater/episodeSubroutines.ks" target="*unlockNextEpisode"]
 
   ; チャプター再生中に表示している可能性があるものは全て画面から消す（途中でスキップされた場合もここで消せるようにするため）
   [t_clearDisplay]
