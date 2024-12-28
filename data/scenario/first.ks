@@ -52,6 +52,10 @@ if (!('theaterProgress' in sf)) {
 if (!('jinroGameDataObjects' in sf)) {
   resetJinroGameDataObjectsToDefault();
 }
+// 視聴済みチャプタースキップ要否フラグ
+if (!('doSkipWatchedChapter' in sf)) {
+  sf.doSkipWatchedChapter = true;
+}
 // 紹介動画表示用の進捗
 if (sf.isDebugMode) {
   setTheaterProgressForP99();
