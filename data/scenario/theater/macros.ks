@@ -75,6 +75,7 @@
 
 
 ; チャプター視聴開始時の準備用マクロ
+; @param titleText
 ; @param actorsList
 ; @param bgParams
 ; @param playbgmParams
@@ -85,11 +86,8 @@
 
   [t_clearDisplay]
 
-  ; 背景
-  [bg storage="&mp.bgParams.storage" time="300"]
-
-  ; BGM
-  [playbgm storage="&mp.playbgmParams.storage" loop="true" volume="&mp.playbgmParams.volume" restart="false"]
+  ; タイトルカットイン表示。アニメーション処理は待機不要。処理の裏側でデータロードしたいため。代わりにt_waitClickCutInでクリック待ちする。
+  [t_cutIn text="&mp.titleText" waitAnime="false"]
 
   ;このシナリオで登場する全キャラクターを宣言、表情登録
   [eval exp="tf.registerCharacterList = mp.actorsList"]
@@ -112,6 +110,13 @@
       sf.theaterProgress[f.pageId][f.episodeId] = advanceEpisodeStatus(f.pageId, f.episodeId, EPISODE_STATUS.OUTRO_UNLOCKED);
     }
   [endscript]
+
+  [t_waitClickCutIn]
+
+  [bg storage="&mp.bgParams.storage" time="1" wait="true"]
+  [playbgm storage="&mp.playbgmParams.storage" loop="true" volume="&mp.playbgmParams.volume" restart="false"]
+
+  [t_clearCutIn]
 
   ; ボタン表示
   [j_displayFixButton backlog="true" pauseMenu="true"]
@@ -148,6 +153,44 @@
 
   ; チャプター再生中に表示している可能性があるものは全て画面から消す（途中でスキップされた場合もここで消せるようにするため）
   [t_clearDisplay]
+[endmacro]
+
+
+; カットインマクロ
+; 暗幕が降りてくるイメージ
+; 関連マクロ：[t_waitClickCutIn][t_clearCutIn]
+; @param text 表示するテキスト。タイトルなど。
+; @param waitAnime true: アニメーション処理待機する（デフォルト） | false: 待機しない（String型のfalseを渡してもこちらになる）[t_waitClickCutIn]を併用するならfalseでよい
+[macro name="t_cutIn"]
+  [iscript]
+    tf.needText = ('text' in mp);
+    tf.needWaitAnime = ('waitAnime' in mp) ? (mp.waitAnime && mp.waitAnime !== 'false') : true;
+  [endscript]
+  [image layer="2" y="-720" folder="bgimage" storage="black.png" width="1280" height="720" name="cutin"]
+  [ptext layer="2" x="40" y="-420" width="1200" align="center" text="&mp.text" color="white" size="50" name="cutin" con="tf.needText"]
+  [layopt layer="2" visible="true"]
+  [anim name="cutin" top="+=720" time="750"]
+  [wa cond="tf.needWaitAnime"]
+[endmacro]
+
+
+; アニメーション処理が完了するまで待機させたうえで、クリックして次へ進めるよう誘導する
+; 関連マクロ：[t_cutIn][t_clearCutIn]
+[macro name="t_waitClickCutIn"]
+  [wa]
+  [ptext layer="2" x="40" y="660" width="1200" align="right" text="クリックしてスタート" color="white" size="32" name="clickstart" time="100"]
+  [p]
+[endmacro]
+
+
+; カットイン消去マクロ
+; 暗幕を上げるイメージ
+; 関連マクロ：[t_cutIn][t_waitClickCutIn]
+[macro name="t_clearCutIn"]
+  [free layer="2" name="clickstart" time="10" wait="false"]
+  [anim name="cutin" top="-=720" time="750"]
+  [wa]
+  [free layer="2" name="cuitn" time="1" wait="true"]
 [endmacro]
 
 
