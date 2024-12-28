@@ -75,7 +75,6 @@
 
 
 ; チャプター視聴開始時の準備用マクロ
-; @param chapterId
 ; @param actorsList
 ; @param bgParams
 ; @param playbgmParams
@@ -109,8 +108,8 @@
 
     // エピソード解放ステータスの更新
     // 解決編の場合、「2：導入編解放済みで解決編未解放」なら「3：解決編まで解放済み」に更新する
-    if (mp.chapterId === 'c02') {
-      sf.theaterProgress[mp.pageId][mp.episodeId] = advanceEpisodeStatus(mp.pageId, mp.episodeId, EPISODE_STATUS.OUTRO_UNLOCKED);
+    if (f.chapterId === 'c02') {
+      sf.theaterProgress[f.pageId][f.episodeId] = advanceEpisodeStatus(f.pageId, f.episodeId, EPISODE_STATUS.OUTRO_UNLOCKED);
     }
   [endscript]
 
@@ -213,7 +212,6 @@
       episodeId: null
     }
     f.needPlayIntroChapter = false;
-    let tmpNeedPlayIntroChapter = false;
 
     // 元々の人狼ゲームデータに書き換えを反映させないために、オブジェクトをcloneする
     const jinroGameData = mp.jinroGameData || sf.jinroGameDataObjects[sf.currentJinroGameDataKey];
@@ -221,18 +219,20 @@
 
     // 「導入編未解放かつ解放可」のエピソードに対して、シチュエーション開始条件に合致したかのチェック
     const introAvailableEpisodes = getEpisodesByStatus(EPISODE_STATUS.INTRO_LOCKED_AVAILABLE, sf.theaterProgress);
-    [tmpNeedPlayIntroChapter, f.startingSituation.pageId, f.startingSituation.episodeId, f.targetJinroGameData] = checkMatchingEpisodeSituation(introAvailableEpisodes, f.targetJinroGameData);
+    [f.needPlayIntroChapter, f.startingSituation.pageId, f.startingSituation.episodeId, f.targetJinroGameData] = checkMatchingEpisodeSituation(introAvailableEpisodes, f.targetJinroGameData);
+    // 合致したエピソードがあった場合、視聴済みチャプターをスキップする設定でも自動再生する（未視聴なので）
 
     // シチュエーション開始条件に合致した「導入編未解放かつ解放可」のエピソードがなかった場合
-    if (!tmpNeedPlayIntroChapter) {
+    if (!f.needPlayIntroChapter) {
       // 「導入編解放済みで解決編未解放」のエピソードに対して、シチュエーション開始条件に合致したかのチェック
       const introUnlockedEpisodes = getEpisodesByStatus(EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED, sf.theaterProgress);
-      [, f.startingSituation.pageId, f.startingSituation.episodeId, f.targetJinroGameData] = checkMatchingEpisodeSituation(introUnlockedEpisodes, f.targetJinroGameData);
-      // 合致したエピソードがあってもなくても、tmpNeedPlayIntroChapterはfalseのままとする。
-    }
+      [f.needPlayIntroChapter, f.startingSituation.pageId, f.startingSituation.episodeId, f.targetJinroGameData] = checkMatchingEpisodeSituation(introUnlockedEpisodes, f.targetJinroGameData);
 
-    // TODO 「視聴済みの導入編を自動スキップする」チェックボックスを導入する場合はこのあたりの修正が必要
-    f.needPlayIntroChapter = tmpNeedPlayIntroChapter;
+      // 合致したエピソードがあったとしても、視聴済みチャプターをスキップする設定なら自動再生はしない（視聴済みなので）
+      if (sf.doSkipWatchedChapter) {
+        f.needPlayIntroChapter = false;
+      }
+    }
 
     console.log('★f.startingSituation');
     console.log(f.startingSituation);

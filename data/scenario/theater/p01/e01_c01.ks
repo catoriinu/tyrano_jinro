@@ -29,7 +29,7 @@ tf.playbgmParams = {
 }
 [endscript]
 
-[t_setupChapter chapterId="&f.chapterId" actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
+[t_setupChapter actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
 
 ; ここからチャプター視聴開始
 

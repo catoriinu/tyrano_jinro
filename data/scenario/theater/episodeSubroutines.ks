@@ -32,12 +32,10 @@
 
 ; シチュエーション完遂チェックサブルーチン
 ; このマクロ内で更新するゲーム変数
-; f.needPlayOutroEpisode：解決編自動再生フラグ
 ; 関連マクロ：[t_setStartingSituation]
 *checkOutroUnlockCondition
 [iscript]
   console.log('★checkOutroUnlockCondition start');
-  f.needPlayOutroEpisode = false;
 
   // ゲーム開始時に、シチュエーション開始条件に合致したエピソードがあったか
   const pageId = f.startingSituation.pageId;
@@ -64,10 +62,10 @@
       if (isOutroUnlockConditionMet(episode.outroUnlockCondition, resultCondition)) {
         console.log('★check OK checkOutroUnlockCondition');
 
-        // 現在のエピソード進捗ステータスが「2：導入編解放済みで解決編未解放」で完遂したなら、自動再生フラグをtrueにする
+        // 視聴済みチャプターでも自動再生する設定になっている場合、または
+        // 現在のエピソード進捗ステータスが「2：導入編解放済みで解決編未解放」で完遂したなら、チャプターを再生する
         // （実際に進捗ステータスを書き換えるのはシアターの視聴終了後）
-        // TODO：「視聴済みの導入編は自動再生しない」が自動再生する設定なら、ステータスにかかわらずtrueにする
-        if (sf.theaterProgress[pageId][episodeId] === EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED) {
+        if (!sf.doSkipWatchedChapter || sf.theaterProgress[pageId][episodeId] === EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED) {
           f.chapterList.outroChapter.needPlay = true;
         }
       }
