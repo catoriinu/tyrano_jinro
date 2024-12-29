@@ -11,7 +11,7 @@
 [html top="130" left="413.813" name="pause_menu_button_window"]
 [endhtml]
 [eval exp="tf.buttonColor = CLASS_GLINK_DEFAULT"]
-[glink color="&tf.buttonColor" size="30" width="400" x="439" y="180" name="buttonhover" text="スキップして終了する" target="*skip"]
+[glink color="&tf.buttonColor" size="30" width="400" x="439" y="180" name="buttonhover" text="終了までスキップする" target="*skip"]
 [glink color="&tf.buttonColor" size="30" width="400" x="439" y="320" name="buttonhover" text="コンフィグ" target="*config"]
 [glink color="&tf.buttonColor" size="30" width="400" x="439" y="460" name="buttonhover" text="メニューを閉じる" target="*resume"]
 
@@ -19,7 +19,7 @@
 
 
 *skip
-; スキップして終了する
+; 終了までスキップする
 [layopt layer="message0" visible="true"]
 [eval exp="f.currentFrame = null"]
 [freeimage layer="1"]
