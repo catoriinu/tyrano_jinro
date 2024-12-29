@@ -2,6 +2,9 @@
   ; シチュエーション開始チェック
   [t_setStartingSituation]
 
+  ; [t_setStartingSituation]内で設定する変数をサブルーチンの外部で過不足なく設定済みなら、直接ここに飛んできてもよい
+  *hasStartingSituationBeenSet
+
   ; チャプターリスト（再生するシナリオファイルを指定するためのChapterオブジェクトのリスト）の設定
   [call storage="prepareJinro.ks" target="*addChapterList"]
 

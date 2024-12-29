@@ -14,26 +14,42 @@ function JinroGameData(roleData = {}, participantList = [], playerCharacterId = 
 
 
 /**
+ * シアターのページIDごとに、基本となる人狼ゲームデータオブジェクトを返却する
+ * そのページIDのエピソードの全ての開始条件の最大公約数となるデータを設定しておくこと
+ * @param {String} pageId 
+ * @returns {JinroGameData|null} 人狼ゲームデータオブジェクト
+ */
+function getJinroGameDataForTheater(pageId) {
+  switch (pageId) {
+    case 'p01':
+      return new JinroGameData(
+        {
+            [ROLE_ID_VILLAGER]: 2,
+            [ROLE_ID_FORTUNE_TELLER]: 1,
+            [ROLE_ID_WEREWOLF]: 1,
+            [ROLE_ID_MADMAN]: 1
+        },
+        [
+            new Participant(CHARACTER_ID_ZUNDAMON),
+            new Participant(CHARACTER_ID_METAN),
+            new Participant(CHARACTER_ID_TSUMUGI),
+            new Participant(CHARACTER_ID_HAU),
+            new Participant(CHARACTER_ID_RITSU),
+        ],
+        CHARACTER_ID_ZUNDAMON
+      );
+    default:
+      return null;
+  }
+}
+
+
+/**
  * 人狼ゲームデータと現在の人狼ゲームデータキーを初期化する
  */
 function resetJinroGameDataObjectsToDefault() {
   TYRANO.kag.variable.sf.jinroGameDataObjects = {
-    current: new JinroGameData(
-      {
-          [ROLE_ID_VILLAGER]: 2,
-          [ROLE_ID_FORTUNE_TELLER]: 1,
-          [ROLE_ID_WEREWOLF]: 1,
-          [ROLE_ID_MADMAN]: 1
-      },
-      [
-          new Participant(CHARACTER_ID_ZUNDAMON),
-          new Participant(CHARACTER_ID_METAN),
-          new Participant(CHARACTER_ID_TSUMUGI),
-          new Participant(CHARACTER_ID_HAU),
-          new Participant(CHARACTER_ID_RITSU),
-      ],
-      CHARACTER_ID_ZUNDAMON
-    )
+    current: getJinroGameDataForTheater('p01')
   };
   TYRANO.kag.variable.sf.currentJinroGameDataKey = 'current';
 }
