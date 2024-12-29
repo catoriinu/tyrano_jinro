@@ -20,13 +20,13 @@
 
   *displayButtons
   ; 枠外（左右上下）のクリックは「スタート」ボタンと同義
-  [clickable width="174" height="720" x="0" y="0" target="*closeAchieveEpisode"]
-  [clickable width="174" height="720" x="1105" y="0" target="*closeAchieveEpisode"]
-  [clickable width="1280" height="55" x="0" y="0" target="*closeAchieveEpisode"]
-  [clickable width="1280" height="55" x="0" y="665" target="*closeAchieveEpisode"]
+  [clickable width="174" height="720" x="0" y="0" target="*close"]
+  [clickable width="174" height="720" x="1105" y="0" target="*close"]
+  [clickable width="1280" height="55" x="0" y="0" target="*close"]
+  [clickable width="1280" height="55" x="0" y="665" target="*close"]
 
   [glink color="&tf.buttonColor" size="24" width="420" x="428" y="470" text="解放条件を見る（ネタバレあり）" target="*displayConditionText" cond="!tf.needDisplayConditionText"]
-  [glink color="&tf.selectedButtonColor" size="24" width="300" x="488" y="580" text="スタート" target="*closeAchieveEpisode"]
+  [glink color="&tf.selectedButtonColor" size="24" width="300" x="488" y="580" text="スタート" target="*close"]
 [s]
 
 
@@ -41,7 +41,7 @@
 
 
 
-*closeAchieveEpisode
+*close
   [freeimage layer="1" page="fore" time="130" wait="false"]
   [freeimage layer="1" page="back" time="130" wait="false"]
 [return]

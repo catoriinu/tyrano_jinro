@@ -33,7 +33,7 @@
 
 ; ボイボ人狼用初期化
 [call storage="theater/macros.ks"]
-[call storage="achievement/macros.ks"]
+[call storage="window/macros.ks"]
 [loadjs storage="voivoJinro/theater/Episode.js"]
 [loadjs storage="voivoJinro/theater/Chapter.js"]
 [loadjs storage="voivoJinro/theater/ResultCondition.js"]
