@@ -1,61 +1,65 @@
 ; エピソードウィンドウ
 
 *start
-[iscript]
-  // 利用する変数の初期化
-  f.displayEpisode = f.episodeList[f.displayEpisodeId];
-  tf.buttonColor = CLASS_GLINK_DEFAULT;
+  [iscript]
+    // 利用する変数の初期化
+    f.displayEpisode = f.episodeList[f.displayEpisodeId];
+    tf.episodeStatus = getTheaterProgress(f.displayPageId, f.displayEpisodeId);
 
-  f.currentFrame = null;
-[endscript]
+    tf.buttonColor = CLASS_GLINK_DEFAULT;
+    tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
 
-[layopt layer="message0" visible="false"]
-[filter layer="0" blur="10"]
+    f.currentFrame = null;
+    // 開始条件テキストとプレイスタートボタン、および解放条件テキストを表示するかのフラグ。
+    // 進捗が「3：解決編まで解放済み」の場合のみ初期から表示する。それ以外なら表示用ボタンを押すまで表示しない
+    tf.needDisplayStartConditionText = (tf.episodeStatus === EPISODE_STATUS.OUTRO_UNLOCKED);
+    tf.needDisplayUnlockConditionText = (tf.episodeStatus === EPISODE_STATUS.OUTRO_UNLOCKED);
+  [endscript]
 
-[image storage="theater/episodeWindow_rectangle.png" layer="1" page="back" name="episodeWindow" x="158.5" y="38"]
-[kanim name="episodeWindow" keyframe="open_episodeWindow" time="150" easing="ease-out"]
+  [layopt layer="message0" visible="false"]
+  [filter layer="0" blur="10"]
 
-[image storage="&f.displayEpisode.thumbnail" layer="1" page="back" left="424" top="80" height="243" name="thumbnail"]
-[ptext layer="1" page="back" text="&f.displayEpisode.title" face="MPLUSRounded" size="36" x="180" y="330" width="920" align="center"]
+  [image storage="theater/episodeWindow_rectangle.png" layer="1" page="back" name="episodeWindow" x="158.5" y="38"]
+  [kanim name="episodeWindow" keyframe="open_episodeWindow" time="150" easing="ease-out"]
 
-; ✕ボタンまたは枠外（左右上下）のクリックで一覧に戻る
-[glink color="&tf.buttonColor" size="35" width="70" x="1005" y="85" text="✕" target="*returnMain"]
-[clickable width="174" height="720" x="0" y="0" target="*returnMain"]
-[clickable width="174" height="720" x="1105" y="0" target="*returnMain"]
-[clickable width="1280" height="55" x="0" y="0" target="*returnMain"]
-[clickable width="1280" height="55" x="0" y="665" target="*returnMain"]
+  [image storage="&f.displayEpisode.thumbnail" layer="1" page="back" left="424" top="80" height="243" name="thumbnail"]
+  [ptext layer="1" page="back" text="&f.displayEpisode.title" face="MPLUSRounded" size="36" x="180" y="330" width="920" align="center"]
 
-; 「導入編を見る」ボタン
-[glink color="&tf.buttonColor" size="26" width="300" x="488" y="395" text="導入編を見る" target="*startIntro"]
+  ; 開始条件テキストと解放条件テキスト。初期から表示してよいならここで裏ページに表示して、直後にtransで表ページに切り替える
+  [ptext layer="1" page="back" text="&f.displayEpisode.startConditionText" face="MPLUSRounded" size="26" x="180" y="475" width="920" align="center" name="startConditionText" overwrite="true" cond="tf.needDisplayStartConditionText"]
+  [ptext layer="1" page="back" text="&f.displayEpisode.unlockCondition" face="MPLUSRounded" size="26" x="180" y="565" width="920" align="center" name="unlockConditionText" overwrite="true" cond="tf.needDisplayUnlockConditionText"]
 
-; EpisodeモデルのepisodePlayButtonTypeに従ってボタン表示またはプレイできない理由を表示
-[if exp="f.displayEpisode.episodePlayButtonType === 'このシチュエーションでプレイする' || f.displayEpisode.episodePlayButtonType === null"]
-  [glink color="&tf.buttonColor" size="26" width="450" x="412.9" y="480" text="このシチュエーションでプレイする" target="*startSituationPlay"]
-[elsif exp="f.displayEpisode.episodePlayButtonType === 'チュートリアルをプレイする'"]
-  [glink color="&tf.buttonColor" size="26" width="450" x="412.9" y="480" text="チュートリアルをプレイする" target="*startTutorialPlay"]
-[else]
-  [ptext layer="1" page="back" text="&f.displayEpisode.episodePlayButtonType" face="MPLUSRounded" size="30" x="180" y="480" width="920" align="center"]
-[endif]
+  [trans layer="1" time="0"]
 
+  *displayButtons
+  ; 閉じるボタンまたは枠外（左右上下）のクリックで一覧に戻る
+  [glink color="&tf.selectedButtonColor" size="26" width="210" x="875" y="100" text="閉じる" target="*returnMain"]
+  [clickable width="174" height="720" x="0" y="0" target="*returnMain"]
+  [clickable width="174" height="720" x="1105" y="0" target="*returnMain"]
+  [clickable width="1280" height="55" x="0" y="0" target="*returnMain"]
+  [clickable width="1280" height="55" x="0" y="665" target="*returnMain"]
 
-; 「解決編を見る」ボタンまたは解放条件
-[t_isProgressLocked pageId="&f.displayPageId" episodeId="&f.displayEpisodeId" chapterId="c02"]
-[if exp="tf.isProgressLocked"]
-  ; 解決編がロック中の場合、解放条件を表示する
-  [ptext layer="1" page="back" text="&f.displayEpisode.unlockCondition" face="MPLUSRounded" size="30" x="180" y="555" width="920" align="center"]
-[else]
+  [glink color="&tf.buttonColor" size="26" width="210" x="385" y="400" text="導入編" target="*startIntro"]
+  [glink color="&tf.buttonColor" size="26" width="210" x="681" y="400" text="解決編" target="*startOutro"]
 
-  [t_isProgressUnlocked pageId="&f.displayPageId" episodeId="&f.displayEpisodeId" chapterId="c01"]
-  [if exp="tf.isProgressUnlocked"]
-    ; 解決編の解放条件は達成済みだが導入編を未視聴の場合、誘導テキストを表示する
-    [ptext layer="1" page="back" text="解決編は導入編を見ると解放されます" face="MPLUSRounded" size="30" x="180" y="555" width="920" align="center"]
-  [else]
-    ; 解決編を見てよい状態なら「解決編を見る」ボタンを表示する
-    [glink color="&tf.buttonColor" size="26" width="300" x="488" y="565" text="解決編を見る" target="*startOutro"]
-  [endif]
-[endif]
+  [glink color="&tf.buttonColor" size="26" width="210" x="875" y="200" text="この開始条件で<br>プレイスタート" target="*startSituationPlay" cond="tf.needDisplayStartConditionText"]
+  ; 開始条件テキストと解放条件テキスト。ボタンを押して表示する場合はここで表ページに表示させる。overwrite="true"を指定しているので既に表示済みの場合は上書き表示になる（＝重複表示はされない）
+  [ptext layer="1" page="fore" text="&f.displayEpisode.startConditionText" face="MPLUSRounded" size="26" x="180" y="475" width="920" align="center" name="startConditionText" overwrite="true" cond="tf.needDisplayStartConditionText"]
+  [ptext layer="1" page="fore" text="&f.displayEpisode.unlockCondition" face="MPLUSRounded" size="26" x="180" y="565" width="920" align="center" name="unlockConditionText" overwrite="true" cond="tf.needDisplayUnlockConditionText"]
 
-[trans layer="1" time="0"]
+  [glink color="&tf.buttonColor" size="26" width="450" x="413" y="490" text="開始条件を見る（ネタバレあり）" target="*displayStartConditionText" cond="!tf.needDisplayStartConditionText"]
+  [glink color="&tf.buttonColor" size="26" width="450" x="413" y="580" text="解放条件を見る（ネタバレあり）" target="*displayUnlockConditionText" cond="!tf.needDisplayUnlockConditionText"]
+
+[s]
+
+*displayStartConditionText
+  [eval exp="tf.needDisplayStartConditionText = true"]
+  [jump target="*displayButtons"]
+[s]
+
+*displayUnlockConditionText
+  [eval exp="tf.needDisplayUnlockConditionText = true"]
+  [jump target="*displayButtons"]
 [s]
 
 

@@ -14,7 +14,7 @@
   [image storage="&f.displayEpisode.thumbnail" layer="1" page="back" left="424" top="80" height="243" name="thumbnail"]
   [ptext layer="1" page="back" text="&f.displayEpisode.title" face="MPLUSRounded" size="36" x="180" y="330" width="920" align="center"]
 
-  [ptext layer="1" page="back" text="解決編解放チャンス！" size="28" x="180" y="380" width="920" align="center"]
+  [ptext layer="1" page="back" text="解決編解放チャンス！" size="28" x="180" y="395" width="920" align="center"]
 
   [trans layer="1" time="0"]
 

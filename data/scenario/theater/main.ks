@@ -140,7 +140,7 @@ if (!f.quickShowEpisodeWindow) {
 [eval exp="f.quickShowEpisodeWindow = false"]
 
 ; そのエピソードの導入編が解放済みなら、エピソードウィンドウ表示
-[t_isProgressLocked pageId="&f.displayPageId" episodeId="&f.displayEpisodeId" chapterId="c01"]
+[t_isProgressLocked pageId="&f.displayPageId" episodeId="&f.displayEpisodeId"]
 [jump storage="theater/episodeWindow.ks" target="*start" cond="!tf.isProgressLocked"]
 
 ; そのエピソードが未解放なら、詳細を表示させないで戻す
