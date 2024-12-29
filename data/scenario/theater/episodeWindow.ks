@@ -47,15 +47,17 @@
   [ptext layer="1" page="fore" text="&f.displayEpisode.startConditionText" face="MPLUSRounded" size="26" x="180" y="475" width="920" align="center" name="startConditionText" overwrite="true" cond="tf.needDisplayStartConditionText"]
   [ptext layer="1" page="fore" text="&f.displayEpisode.unlockCondition" face="MPLUSRounded" size="26" x="180" y="565" width="920" align="center" name="unlockConditionText" overwrite="true" cond="tf.needDisplayUnlockConditionText"]
 
-  [glink color="&tf.buttonColor" size="26" width="450" x="413" y="490" text="開始条件を見る（ネタバレあり）" target="*displayStartConditionText" cond="!tf.needDisplayStartConditionText"]
-  [glink color="&tf.buttonColor" size="26" width="450" x="413" y="580" text="解放条件を見る（ネタバレあり）" target="*displayUnlockConditionText" cond="!tf.needDisplayUnlockConditionText"]
+  [glink color="&tf.buttonColor" size="26" width="450" x="413" y="490" text="開始条件を見る（ネタバレ注意）" target="*displayStartConditionText" cond="!tf.needDisplayStartConditionText"]
+  [glink color="&tf.buttonColor" size="26" width="450" x="413" y="580" text="解放条件を見る（ネタバレ注意）" target="*displayUnlockConditionText" cond="!tf.needDisplayUnlockConditionText"]
 
 [s]
+
 
 *displayStartConditionText
   [eval exp="tf.needDisplayStartConditionText = true"]
   [jump target="*displayButtons"]
 [s]
+
 
 *displayUnlockConditionText
   [eval exp="tf.needDisplayUnlockConditionText = true"]
