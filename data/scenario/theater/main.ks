@@ -90,7 +90,7 @@ if (!f.quickShowEpisodeWindow) {
 ;メッセージウィンドウの表示
 [layopt layer="message0" visible="true"]
 #
-視聴したいシアターを選択してください。[r]
+視聴したいエピソードを選択してください。[r]
 人狼ゲームで特定の条件を満たすと解決編が解放されます。
 [s]
 

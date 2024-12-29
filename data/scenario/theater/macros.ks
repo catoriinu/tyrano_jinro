@@ -8,21 +8,24 @@
 
   // （現在の）ボイボ人狼ではエピソード数は1ページにつき8つ（e01-e08）
   const episodeIdList = ['e01', 'e02', 'e03', 'e04', 'e05', 'e06', 'e07', 'e08']
-  // 導入編が未解放（＝getEpisodesで取得できなかった）のエピソードは、代わりに未解放用のエピソードを格納する
+  // 導入編が未解放（取得できなかった、または0：導入編未解放かつ現時点では解放不可）のエピソードは、代わりに未解放用のエピソードを格納する
   console.log(f.episodeList);
   for (let episodeId of episodeIdList) {
-    if (!(episodeId in f.episodeList)){
+    const theaterProgress = getTheaterProgress(mp.pageId, episodeId);
+    if (!(episodeId in f.episodeList) || theaterProgress === EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE){
       f.episodeList[episodeId] = new Episode(
         mp.pageId,
         episodeId,
         '？？？？？',
         'theater/TVStaticColor01_10.png',
         '',
+        '',
         null,
         null,
         null,
         null,
-       );
+        null,
+      );
     }
   }
 [endscript]
@@ -42,11 +45,9 @@
 ; 指定されたチャプターの進捗が「未解放」なら一時変数にtrueを格納する
 ; @param pageId
 ; @param episodeId
-; @param chapterId
 [macro name="t_isProgressLocked"]
   [iscript]
-    // TODO getTheaterProgressの第3引数を削除して判定を変えること
-    tf.isProgressLocked = (getTheaterProgress(mp.pageId, mp.episodeId, mp.chapterId) === THEATER_LOCKED);
+    tf.isProgressLocked = (getTheaterProgress(mp.pageId, mp.episodeId) === EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE);
   [endscript]
 [endmacro]
 
@@ -221,6 +222,8 @@
       'e07':{x: 486, y: 260, thumbLeft: 498.5, thumbTop: 274},
       'e08':{x: 723, y: 260, thumbLeft: 735.5, thumbTop: 274},
     }
+    // シアター進捗を取得
+    tf.theaterProgress = getTheaterProgress(mp.pageId, mp.episodeId);
   [endscript]
   
   ; 最も背景の長方形を表示
@@ -228,15 +231,11 @@
   ; サムネイルを表示
   [image storage="&f.episodeList[mp.episodeId].thumbnail" layer="0" left="&tf.episodeCoodinate[mp.episodeId].thumbLeft" top="&tf.episodeCoodinate[mp.episodeId].thumbTop" width="200" height="112.5" name="thumbnail"]
 
-  ; 解決編の進捗を一時変数に取得
-  [t_isProgressUnlocked pageId="&mp.pageId" episodeId="&mp.episodeId" chapterId="c02"]
-  [t_isProgressWatched  pageId="&mp.pageId" episodeId="&mp.episodeId" chapterId="c02"]
-
-  [if exp="tf.isProgressWatched"]
-    ; 解決編が視聴済みなら金枠
+  [if exp="tf.theaterProgress === EPISODE_STATUS.OUTRO_UNLOCKED"]
+    ; 「3：解決編まで解放済み」なら金枠
     [image storage="theater/theater_gold_frame.png" layer="0" name="theater1" x="&tf.episodeCoodinate[mp.episodeId].x" y="&tf.episodeCoodinate[mp.episodeId].y"]
-  [elsif exp="tf.isProgressUnlocked"]
-    ; 解決編が解放済みだが未視聴なら銀枠（導入編の進捗は考慮しなくてよい。プレイヤーが解放条件を満たすか、導入編を見るかしないといけない、ということを銀枠は示している）
+  [elsif exp="tf.theaterProgress === EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED"]
+    ; 「2：導入編解放済みで解決編未解放」なら銀枠
     [image storage="theater/theater_silver_frame.png" layer="0" name="theater1" x="&tf.episodeCoodinate[mp.episodeId].x" y="&tf.episodeCoodinate[mp.episodeId].y"]
   [endif]
 [endmacro]
