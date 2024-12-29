@@ -50,14 +50,14 @@
   [glink color="&tf.buttonColor" size="30" width="300" x="138" y="500" name="buttonhover" text="シアター" target="*theater"]
   [glink color="&tf.buttonColor" size="30" width="300" x="488" y="605" name="buttonhover" text="カスタマイズ" target="*customize"]
 
-  ; 視聴済みチャプタースキップ要否ボタンを表示
+  ; 視聴済みエピソードスキップ要否ボタンを表示
   [iscript]
-    tf.watchButtonColor = sf.doSkipWatchedChapter ? tf.buttonColor : tf.selectedButtonColor;
-    tf.skipButtonColor = sf.doSkipWatchedChapter ? tf.selectedButtonColor : tf.buttonColor;
+    tf.watchButtonColor = sf.doSkipWatchedEpisode ? tf.buttonColor : tf.selectedButtonColor;
+    tf.skipButtonColor = sf.doSkipWatchedEpisode ? tf.selectedButtonColor : tf.buttonColor;
   [endscript]
-  [ptext layer="1" x="180" y="580" text="視聴済みチャプター" color="0x28332a" size="24" cond="tf.isFirstTime"]
-  [glink color="&tf.watchButtonColor" size="24" width="140" x="138" y="625" name="buttonhover" text="自動再生" exp="sf.doSkipWatchedChapter = false" target="*displayButton"]
-  [glink color="&tf.skipButtonColor" size="24" width="140" x="298" y="625" name="buttonhover" text="スキップ" exp="sf.doSkipWatchedChapter = true" target="*displayButton"]
+  [ptext layer="1" x="180" y="580" text="視聴済みエピソード" color="0x28332a" size="24" cond="tf.isFirstTime"]
+  [glink color="&tf.watchButtonColor" size="24" width="140" x="138" y="625" name="buttonhover" text="自動再生" exp="sf.doSkipWatchedEpisode = false" target="*displayButton"]
+  [glink color="&tf.skipButtonColor" size="24" width="140" x="298" y="625" name="buttonhover" text="スキップ" exp="sf.doSkipWatchedEpisode = true" target="*displayButton"]
 [endif]
 
 ; デバッグ系ボタン表示

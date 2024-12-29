@@ -131,7 +131,7 @@
     };
 
     // 導入編が未解放である、または解放済みであっても自動再生する設定であれば、導入編を自動再生する
-    f.needPlayIntroChapter = (!tf.isUnlockedIntro || !sf.doSkipWatchedChapter);
+    f.needPlayIntroChapter = (!tf.isUnlockedIntro || !sf.doSkipWatchedEpisode);
 
     const jinroGameDataForTheater = getJinroGameDataForTheater(f.displayPageId);
     let isMatched = false;
