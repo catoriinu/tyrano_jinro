@@ -10,10 +10,17 @@
     tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
 
     f.currentFrame = null;
+
+    const isUnlockedIntro = (tf.episodeStatus !== EPISODE_STATUS.INTRO_LOCKED_AVAILABLE); // 0はこのウィンドウを開けている時点でありえないため、1以外で判定する
+    const isUnlockedOutro = (tf.episodeStatus === EPISODE_STATUS.OUTRO_UNLOCKED);
+
     // 開始条件テキストとプレイスタートボタン、および解放条件テキストを表示するかのフラグ。
     // 進捗が「3：解決編まで解放済み」の場合のみ初期から表示する。それ以外なら表示用ボタンを押すまで表示しない
-    tf.needDisplayStartConditionText = (tf.episodeStatus === EPISODE_STATUS.OUTRO_UNLOCKED);
-    tf.needDisplayUnlockConditionText = (tf.episodeStatus === EPISODE_STATUS.OUTRO_UNLOCKED);
+    tf.needDisplayStartConditionText = isUnlockedOutro;
+    tf.needDisplayUnlockConditionText = isUnlockedOutro;
+    // 導入編、解決編を視聴するボタンを表示するかのフラグ
+    tf.needDisplayStartIntroButton = isUnlockedIntro;
+    tf.needDisplayStartOutroButton = isUnlockedOutro;
   [endscript]
 
   [layopt layer="message0" visible="false"]
@@ -39,8 +46,8 @@
   [clickable width="1280" height="55" x="0" y="0" target="*returnMain"]
   [clickable width="1280" height="55" x="0" y="665" target="*returnMain"]
 
-  [glink color="&tf.buttonColor" size="26" width="210" x="385" y="400" text="導入編" target="*startIntro"]
-  [glink color="&tf.buttonColor" size="26" width="210" x="681" y="400" text="解決編" target="*startOutro"]
+  [glink color="&tf.buttonColor" size="26" width="210" x="385" y="400" text="導入編" target="*startIntro" cond="tf.needDisplayStartIntroButton"]
+  [glink color="&tf.buttonColor" size="26" width="210" x="681" y="400" text="解決編" target="*startOutro" cond="tf.needDisplayStartOutroButton"]
 
   [glink color="&tf.buttonColor" size="26" width="210" x="875" y="200" text="この開始条件で<br>プレイスタート" target="*startSituationPlay" cond="tf.needDisplayStartConditionText"]
   ; 開始条件テキストと解放条件テキスト。ボタンを押して表示する場合はここで表ページに表示させる。overwrite="true"を指定しているので既に表示済みの場合は上書き表示になる（＝重複表示はされない）
