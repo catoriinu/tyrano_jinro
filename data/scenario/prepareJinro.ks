@@ -23,15 +23,17 @@
   [iscript]
     // チャプターリストの初期化
     f.chapterList = {};
+    // 表示エピソード変数の初期化（シチュエーション開始ウィンドウの表示用）
+    f.displayEpisode = null;
 
     const pageId = f.startingSituation.pageId;
     const episodeId = f.startingSituation.episodeId;
 
     // シチュエーション開始条件に合致したエピソードがある場合、そのエピソードの導入編と解決編をチャプターリストに登録する
     if (pageId && episodeId) {
-      const episode = episodeData(pageId, episodeId);
-      const introChapter = episode.introChapter;
-      const outroChapter = episode.outroChapter;
+      f.displayEpisode = episodeData(pageId, episodeId);
+      const introChapter = f.displayEpisode.introChapter;
+      const outroChapter = f.displayEpisode.outroChapter;
       f.chapterList.introChapter = {
         storage: introChapter.storage,
         target: introChapter.target,

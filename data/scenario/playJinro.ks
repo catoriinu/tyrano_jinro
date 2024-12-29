@@ -20,6 +20,8 @@
 #
 人狼ゲームの幕開けです……！[p]
 
+[w_noticeStartingSituation]
+
 [clearstack]
 *day0_nightPhase
 
