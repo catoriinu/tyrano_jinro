@@ -22,7 +22,8 @@ function episodeData(pageId, episodeId) {
                         episodeId,
                         '誰がずんだもちを食べたのだ？',
                         'theater/p01_e01_thumb.png',
-                        '【解放条件】<br>チュートリアルで勝利する',
+                        '【開始条件】ずんだもん（プレイヤー）：人狼、四国めたん：狂人',
+                        '【解放条件】ゲームに勝利する',
                         'チュートリアルをプレイする',
                         new Chapter(
                             'theater/p01/e01_c01.ks'
@@ -59,7 +60,8 @@ function episodeData(pageId, episodeId) {
                         episodeId,
                         'わたくしの千里眼―サウザンドアイ―に死角なし！',
                         'theater/p01_e02_thumb.png',
-                        '【解放条件】<br>ずんだもん：村人、四国めたん：占い師でゲームに勝利する',
+                        '【開始条件】ずんだもん（プレイヤー）：村人、四国めたん：占い師',
+                        '【解放条件】ゲームに勝利する',
                         'このシチュエーションでプレイする',
                         new Chapter(
                             'theater/p01/e02_c01.ks'
@@ -90,7 +92,8 @@ function episodeData(pageId, episodeId) {
                         episodeId,
                         'えだまめカレーを布教するのだ！',
                         'theater/p01_e03_thumb.png',
-                        '【解放条件】<br>ずんだもん：狂人、春日部つむぎ：人狼でゲームに勝利する',
+                        '【開始条件】ずんだもん（プレイヤー）：狂人、春日部つむぎ：人狼',
+                        '【解放条件】ゲームに勝利する',
                         'このシチュエーションでプレイする',
                         new Chapter(
                             'theater/p01/e03_c01.ks'
@@ -121,7 +124,8 @@ function episodeData(pageId, episodeId) {
                         episodeId,
                         'ニンニクマシマシ幸せマシマシ',
                         'theater/p01_e04_thumb.png',
-                        '【解放条件】<br>ずんだもん：占い師、雨晴はう：人狼でゲームに勝利する',
+                        '【開始条件】ずんだもん：占い師、雨晴はう：人狼',
+                        '【解放条件】ゲームに勝利する',
                         'このシチュエーションでプレイする',
                         new Chapter(
                             'theater/p01/e04_c01.ks'
@@ -152,7 +156,8 @@ function episodeData(pageId, episodeId) {
                         episodeId,
                         '欠陥住宅？',
                         'theater/p01_e05_thumb.png',
-                        '【解放条件】<br>ずんだもん：占い師、波音リツ：人狼でゲームに勝利する',
+                        '【開始条件】ずんだもん（プレイヤー）：占い師、波音リツ：人狼',
+                        '【解放条件】ゲームに勝利する',
                         'このシチュエーションでプレイする',
                         new Chapter(
                             'theater/p01/e05_c01.ks'
@@ -183,7 +188,8 @@ function episodeData(pageId, episodeId) {
                         episodeId,
                         'ボイボ寮の噂話#1',
                         'theater/p01_e06_thumb.png',
-                        '【解放条件】<br>ずんだもんと春日部つむぎが人狼陣営かつ退場した状態で敗北する',
+                        '【開始条件】ずんだもん（プレイヤー）と春日部つむぎが人狼陣営',
+                        '【解放条件】ずんだもんと春日部つむぎがともに退場した状態で敗北する',
                         '特定のシチュエーションではないためプレイできません', // 「人狼陣営」なのでどちらがどちらでもよいのでシチュを作れない。かつe03で代用できるため問題なし
                         new Chapter(
                             'theater/p01/e06_c01.ks'
@@ -214,7 +220,8 @@ function episodeData(pageId, episodeId) {
                         episodeId,
                         '寮長争奪決定戦',
                         'theater/p01_e07_thumb.png',
-                        '【解放条件】<br>引き分けでゲームが終了する',
+                        '【開始条件】ずんだもん（プレイヤー）：役職不問',
+                        '【解放条件】引き分けでゲームが終了する',
                         '特定のシチュエーションではないためプレイできません',
                         new Chapter(
                             'theater/p01/e07_c01.ks'
@@ -239,7 +246,8 @@ function episodeData(pageId, episodeId) {
                         episodeId,
                         '誰が人狼ゲームを始めたのだ？',
                         'theater/p01_e08_thumb.png',
-                        '【解放条件】<br>他の1期・2期のシアターを全て解放してからゲームに勝利する',
+                        '【開始条件】ずんだもん（プレイヤー）：役職不問',
+                        '【解放条件】ゲームに勝利する',
                         '特定のシチュエーションではないためプレイできません',
                         new Chapter(
                             'theater/p01/e08_c01.ks'
