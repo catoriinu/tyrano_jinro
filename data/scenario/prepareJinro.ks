@@ -24,8 +24,6 @@
 ; チャプターリストに登録するサブルーチン
 *addChapterList
   [iscript]
-    // チャプターリストの初期化
-    f.chapterList = {};
     // 表示エピソード変数の初期化（シチュエーション開始ウィンドウの表示用）
     f.displayEpisode = null;
 
