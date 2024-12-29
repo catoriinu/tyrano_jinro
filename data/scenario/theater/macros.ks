@@ -98,13 +98,6 @@
     // 再生中のチャプターのファイルパスを生成しておく（スキップからの再開のため・コンフィグでチャプター再生中と判定するため）
     f.chapterStorage = 'theater/' + f.pageId + '/' + f.episodeId + '_' + f.chapterId + '.ks';
 
-    // シアター終了後のジャンプ先を指定する。指定があればそこへ、なければシアター画面に戻る
-    f.currentReturnJumpStorage = f.returnJumpStorage || 'theater/main.ks';
-    f.currentReturnJumpTarget = f.returnJumpTarget || '*start';
-    // 次に使うときには初期化されていてほしいので指定用変数はここで初期化する
-    f.returnJumpStorage = null;
-    f.returnJumpTarget = null;
-
     // エピソード解放ステータスの更新
     // 解決編の場合、「2：導入編解放済みで解決編未解放」なら「3：解決編まで解放済み」に更新する
     if (f.chapterId === 'c02') {
@@ -283,6 +276,7 @@
 
 
 ; f.chapterListに登録されているチャプターのうち、指定されたチャプターを再生する
+; シアターや幕間のチャプターを再生するときには必ずこのマクロを使うこと
 ; @param string target チャプターリスト内のキー名
 [macro name="t_playChapter"]
   [iscript]
@@ -299,9 +293,10 @@
     f.returnJumpStorage = 'theater/macros.ks';
     f.returnJumpTarget = '*end_t_playChapter';
   [endscript]
+
   ; あえて[call]ではなく[jump]を使う。[call]だと再生中にスタックが残っておりfixボタンが押せなくなるため
   [jump storage="&tf.targetChapter.storage" target="&tf.targetChapter.target" cond="tf.needPlay"]
-  ; MEMO:戻って来るときは基本的には下記を使う
+  ; MEMO:チャプターから戻って来るときには以下のタグを使う
   ; [jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
   *end_t_playChapter
 [endmacro]
