@@ -53,7 +53,6 @@
 
   [glink color="&tf.buttonColor" size="26" width="450" x="413" y="490" text="開始条件を見る（ネタバレ注意）" target="*displayStartConditionText" cond="!tf.needDisplayStartConditionText"]
   [glink color="&tf.buttonColor" size="26" width="450" x="413" y="580" text="解放条件を見る（ネタバレ注意）" target="*displayUnlockConditionText" cond="!tf.needDisplayUnlockConditionText"]
-
 [s]
 
 
@@ -70,28 +69,48 @@
 
 
 *startIntro
-[free_filter layer="0"]
-[freeimage layer="1" page="fore"]
-[freeimage layer="1" page="back"]
-[freeimage layer="0"]
-[stopbgm]
-[endnowait]
-[layopt layer="message0" visible="true"]
+  [free_filter layer="0"]
+  [freeimage layer="1" page="fore"]
+  [freeimage layer="1" page="back"]
+  [freeimage layer="0"]
+  [stopbgm]
+  [endnowait]
+  [layopt layer="message0" visible="true"]
 
-[jump storage="&f.displayEpisode.introChapter.storage" target="*start"]
+  [iscript]
+    f.chapterList.introChapter = {
+      storage: f.displayEpisode.introChapter.storage,
+      target: f.displayEpisode.introChapter.target,
+      needPlay: true
+    };
+  [endscript]
+
+  [t_playChapter target="introChapter"]
+  ; シアターのメイン画面から描画し、このウィンドウを自動で開くところまで実行する
+  [jump storage="theater/main.ks" target="*start"]
 [s]
 
 
 *startOutro
-[free_filter layer="0"]
-[freeimage layer="1" page="fore"]
-[freeimage layer="1" page="back"]
-[freeimage layer="0"]
-[stopbgm]
-[endnowait]
-[layopt layer="message0" visible="true"]
+  [free_filter layer="0"]
+  [freeimage layer="1" page="fore"]
+  [freeimage layer="1" page="back"]
+  [freeimage layer="0"]
+  [stopbgm]
+  [endnowait]
+  [layopt layer="message0" visible="true"]
 
-[jump storage="&f.displayEpisode.outroChapter.storage" target="*start"]
+  [iscript]
+    f.chapterList.outroChapter = {
+      storage: f.displayEpisode.outroChapter.storage,
+      target: f.displayEpisode.outroChapter.target,
+      needPlay: true
+    };
+  [endscript]
+
+  [t_playChapter target="outroChapter"]
+  ; シアターのメイン画面から描画し、このウィンドウを自動で開くところまで実行する
+  [jump storage="theater/main.ks" target="*start"]
 [s]
 
 
@@ -103,7 +122,6 @@
   [stopbgm]
   [endnowait]
   [layopt layer="message0" visible="true"]
-
 
   ; [t_setStartingSituation]内で設定する変数をこの場で設定してから、選択したシチュエーションで人狼ゲームを始める
   [iscript]
