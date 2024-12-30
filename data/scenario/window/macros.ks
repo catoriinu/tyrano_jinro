@@ -1,7 +1,20 @@
 ; 開始条件達成通知ウィンドウ表示用マクロ
 [macro name="w_noticeStartingSituation"]
-  ; f.displayEpisode（addChapterListサブルーチン内で設定）が設定されていない場合、なにもせず終了する
-  [jump target="*end_w_noticeStartingSituation" cond="!f.displayEpisode"]
+  [iscript]
+    tf.noNeedNoticeStartingSituation = false;
+    // 以下のいずれかに該当する場合は、開始条件達成通知ウィンドウを表示しない
+    if (
+      // f.displayEpisode（addChapterListサブルーチン内で設定）が設定されていない場合
+      !f.displayEpisode ||
+      // 視聴済みエピソードをスキップする設定、かつエピソード進捗ステータスが既に「3：解決編まで解放済み」の場合（同様の判定で、解決編も再生しない）
+      (sf.doSkipWatchedEpisode && getTheaterProgress(f.displayEpisode.pageId, f.displayEpisode.episodeId) === EPISODE_STATUS.OUTRO_UNLOCKED) ||
+      // インストラクションを行う場合は開始条件達成通知ウィンドウを表示したくないので、そのためのフラグが立っている場合
+      tf.needAddInstruction
+    ) {
+      tf.noNeedNoticeStartingSituation = true;
+    }
+  [endscript]
+  [jump target="*end_w_noticeStartingSituation" cond="tf.noNeedNoticeStartingSituation"]
 
   ; 表示開始前の準備
   [j_saveFixButton buf="window"]

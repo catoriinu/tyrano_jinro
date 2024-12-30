@@ -62,10 +62,9 @@
       if (isOutroUnlockConditionMet(episode.outroUnlockCondition, resultCondition)) {
         console.log('★check OK checkOutroUnlockCondition');
 
-        // 視聴済みエピソードでも自動再生する設定になっている場合、または
-        // 現在のエピソード進捗ステータスが「2：導入編解放済みで解決編未解放」で完遂したなら、チャプターを再生する
-        // （実際に進捗ステータスを書き換えるのはシアターの視聴終了後）
-        if (!sf.doSkipWatchedEpisode || sf.theaterProgress[pageId][episodeId] === EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED) {
+        // 完遂したら、基本的には解放編を自動再生する
+        // 例外として、視聴済みエピソードをスキップする設定、かつエピソード進捗ステータスが既に「3：解決編まで解放済み」の場合は再生しない
+        if (!(sf.doSkipWatchedEpisode && getTheaterProgress(pageId, episodeId) === EPISODE_STATUS.OUTRO_UNLOCKED)) {
           f.chapterList.outroChapter.needPlay = true;
         }
       }

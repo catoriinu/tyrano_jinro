@@ -255,18 +255,24 @@
     const jinroGameData = mp.jinroGameData || sf.jinroGameDataObjects[sf.currentJinroGameDataKey];
     f.targetJinroGameData = clone(jinroGameData);
 
-    // 「導入編未解放かつ解放可」のエピソードに対して、シチュエーション開始条件に合致したかのチェック
+    // 「1:導入編未解放かつ解放可」のエピソードに対して、シチュエーション開始条件に合致したかのチェック
     const introAvailableEpisodes = getEpisodesByStatus(EPISODE_STATUS.INTRO_LOCKED_AVAILABLE, sf.theaterProgress);
     [f.needPlayIntroChapter, f.startingSituation.pageId, f.startingSituation.episodeId, f.targetJinroGameData] = checkMatchingEpisodeSituation(introAvailableEpisodes, f.targetJinroGameData);
     // 合致したエピソードがあった場合、視聴済みエピソードをスキップする設定でも自動再生する（未視聴なので）
 
-    // シチュエーション開始条件に合致した「導入編未解放かつ解放可」のエピソードがなかった場合
+    // シチュエーション開始条件に合致した「1:導入編未解放かつ解放可」のエピソードがなかった場合
     if (!f.needPlayIntroChapter) {
-      // 「導入編解放済みで解決編未解放」のエピソードに対して、シチュエーション開始条件に合致したかのチェック
+      // 「2:導入編解放済みで解決編未解放」のエピソードに対して、シチュエーション開始条件に合致したかのチェック
       const introUnlockedEpisodes = getEpisodesByStatus(EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED, sf.theaterProgress);
       [f.needPlayIntroChapter, f.startingSituation.pageId, f.startingSituation.episodeId, f.targetJinroGameData] = checkMatchingEpisodeSituation(introUnlockedEpisodes, f.targetJinroGameData);
 
-      // 合致したエピソードがあったとしても、視聴済みエピソードをスキップする設定なら自動再生はしない（視聴済みなので）
+      // それもなければ「3：解決編まで解放済み」のエピソードに対して、シチュエーション開始条件に合致したかのチェック
+      if (!f.needPlayIntroChapter) {
+        const outroUnlockedEpisodes = getEpisodesByStatus(EPISODE_STATUS.OUTRO_UNLOCKED, sf.theaterProgress);
+        [f.needPlayIntroChapter, f.startingSituation.pageId, f.startingSituation.episodeId, f.targetJinroGameData] = checkMatchingEpisodeSituation(outroUnlockedEpisodes, f.targetJinroGameData);
+      }
+
+      // 合致したエピソードがあったとしても、視聴済みエピソードをスキップする設定なら自動再生はしない（ここに入ってきている＝視聴済みなので）
       if (sf.doSkipWatchedEpisode) {
         f.needPlayIntroChapter = false;
       }

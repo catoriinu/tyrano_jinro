@@ -50,6 +50,7 @@
     // 初めて「プレイスタート」したとき（「誰がずんだもちを食べたのだ？」の導入編が「1：導入編未解放かつ解放可」の場合）のみ、「はじめに」を登録する
     tf.needAddNotice = ((pageId === 'p01') && (episodeId === 'e01') && (getTheaterProgress('p01', 'e01') === EPISODE_STATUS.INTRO_LOCKED_AVAILABLE));
     // シチュエーションが「誰がずんだもちを食べたのだ？」であるかつ解決編が未解放の場合、インストラクションを登録する
+    // インストラクションを行う場合は開始条件達成通知ウィンドウを表示したくないので、そのためにもこのフラグを用いる
     tf.needAddInstruction = ((pageId === 'p01') && (episodeId === 'e01') && (getTheaterProgress('p01', 'e01') !== EPISODE_STATUS.OUTRO_UNLOCKED));
   [endscript]
 
