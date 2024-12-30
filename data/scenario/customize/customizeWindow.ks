@@ -70,7 +70,12 @@
 [glink color="&tf.buttonColor" size="28" width="250" x="230" y="100" text="役職設定" target="*start" cond="tf.selectedButton !== 'roleSelect'"]
 [glink color="&tf.selectedButtonColor" size="28" width="250" x="513" y="100" text="性格情報" target="*start" cond="tf.selectedButton === 'personalInfo'"]
 [glink color="&tf.buttonColor" size="28" width="250" x="513" y="100" text="性格情報" target="*start" cond="tf.selectedButton !== 'personalInfo'"]
+; 閉じるボタンまたは枠外（左右上下）のクリックで閉じる
 [glink color="&tf.buttonColor" size="28" width="250" x="796" y="100" text="閉じる" target="*returnMain"]
+[clickable width="174" height="720" x="0" y="0" target="*returnMain"]
+[clickable width="174" height="720" x="1105" y="0" target="*returnMain"]
+[clickable width="1280" height="55" x="0" y="0" target="*returnMain"]
+[clickable width="1280" height="55" x="0" y="665" target="*returnMain"]
 
 ; 役職設定ボタン表示用ループ
 [eval exp="tf.roleCount = 0"]
