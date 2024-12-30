@@ -156,6 +156,9 @@
 ; @param text 表示するテキスト。タイトルなど。
 ; @param waitAnime true: アニメーション処理待機する（デフォルト） | false: 待機しない（String型のfalseを渡してもこちらになる）[t_waitClickCutIn]を併用するならfalseでよい
 [macro name="t_cutIn"]
+  [fadeoutse time="500"]
+  [fadeoutbgm time="500"]
+
   [iscript]
     tf.needText = ('text' in mp);
     tf.needWaitAnime = ('waitAnime' in mp) ? (mp.waitAnime && mp.waitAnime !== 'false') : true;

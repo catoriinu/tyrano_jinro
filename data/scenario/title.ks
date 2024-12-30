@@ -85,7 +85,6 @@
 
 *gamestart
 [freeimage layer="1"]
-[stopbgm]
 
 ; 人狼ゲームの準備、導入編自動再生、ゲーム開始
 [jump storage="prepareJinro.ks" target="*prepareJinroGame"]
