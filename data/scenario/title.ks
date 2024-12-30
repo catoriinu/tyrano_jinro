@@ -55,7 +55,7 @@
     tf.watchButtonColor = sf.doSkipWatchedEpisode ? tf.buttonColor : tf.selectedButtonColor;
     tf.skipButtonColor = sf.doSkipWatchedEpisode ? tf.selectedButtonColor : tf.buttonColor;
   [endscript]
-  [ptext layer="1" x="180" y="580" text="視聴済みエピソード" color="0x28332a" size="24" cond="tf.isFirstTime"]
+  [ptext layer="1" x="157" y="580" text="解決編未解放時の導入編" color="0x28332a" size="24" cond="tf.isFirstTime"]
   [glink color="&tf.watchButtonColor" size="24" width="140" x="138" y="625" name="buttonhover" text="自動再生" exp="sf.doSkipWatchedEpisode = false" target="*displayButton"]
   [glink color="&tf.skipButtonColor" size="24" width="140" x="298" y="625" name="buttonhover" text="スキップ" exp="sf.doSkipWatchedEpisode = true" target="*displayButton"]
 [endif]

@@ -266,12 +266,6 @@
       const introUnlockedEpisodes = getEpisodesByStatus(EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED, sf.theaterProgress);
       [f.needPlayIntroChapter, f.startingSituation.pageId, f.startingSituation.episodeId, f.targetJinroGameData] = checkMatchingEpisodeSituation(introUnlockedEpisodes, f.targetJinroGameData);
 
-      // それもなければ「3：解決編まで解放済み」のエピソードに対して、シチュエーション開始条件に合致したかのチェック
-      if (!f.needPlayIntroChapter) {
-        const outroUnlockedEpisodes = getEpisodesByStatus(EPISODE_STATUS.OUTRO_UNLOCKED, sf.theaterProgress);
-        [f.needPlayIntroChapter, f.startingSituation.pageId, f.startingSituation.episodeId, f.targetJinroGameData] = checkMatchingEpisodeSituation(outroUnlockedEpisodes, f.targetJinroGameData);
-      }
-
       // 合致したエピソードがあったとしても、視聴済みエピソードをスキップする設定なら自動再生はしない（ここに入ってきている＝視聴済みなので）
       if (sf.doSkipWatchedEpisode) {
         f.needPlayIntroChapter = false;

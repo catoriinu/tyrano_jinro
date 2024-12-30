@@ -6,8 +6,8 @@
     if (
       // f.displayEpisode（addChapterListサブルーチン内で設定）が設定されていない場合
       !f.displayEpisode ||
-      // 視聴済みエピソードをスキップする設定、かつエピソード進捗ステータスが既に「3：解決編まで解放済み」の場合（同様の判定で、解決編も再生しない）
-      (sf.doSkipWatchedEpisode && getTheaterProgress(f.displayEpisode.pageId, f.displayEpisode.episodeId) === EPISODE_STATUS.OUTRO_UNLOCKED) ||
+      // エピソード進捗ステータスが既に「3：解決編まで解放済み」の場合（同様の判定で、解決編も再生しない）
+      getTheaterProgress(f.displayEpisode.pageId, f.displayEpisode.episodeId) === EPISODE_STATUS.OUTRO_UNLOCKED ||
       // インストラクションを行う場合は開始条件達成通知ウィンドウを表示したくないので、そのためのフラグが立っている場合
       tf.needAddInstruction
     ) {
