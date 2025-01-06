@@ -32,11 +32,12 @@
   *end_w_noticeStartingSituation
 [endmacro]
 
+; 【重要】ウィンドウ枠およびウィンドウ上に表示する要素は、layer="2"を指定すること
 
 ; ウィンドウ枠を表示する
 ; @param hideMessage true:メッセージ枠を隠す | false:メッセージ枠を隠さない（デフォルト）
 ; メモ：メッセージ枠が表示されているタイミングでウィンドウ表示したいなら隠す必要あり。メッセージ枠のレイヤーの方が上なので、ウィンドウの上に被ってしまうため。
-; ウィンドウを表示するときには適切なタイミングで[trans layer="1"]すること
+; ウィンドウを表示するときには適切なタイミングで[trans layer="2"]すること
 ; 関連マクロ：[w_closeWindow]
 [macro name="w_openWindow"]
   [iscript]
@@ -44,9 +45,10 @@
   [endscript]
   [layopt layer="message0" visible="false" cond="f.needHideMessage"]
   [filter layer="0" blur="10"]
+  [filter layer="1" blur="10"]
   [filter layer="base" blur="5"]
-  [image storage="theater/episodeWindow_rectangle.png" layer="1" page="back" name="episodeWindow" x="158.5" y="38"]
-  [kanim name="episodeWindow" keyframe="open_episodeWindow" time="150" easing="ease-out"]
+  [image storage="theater/episodeWindow_rectangle.png" layer="2" page="back" name="windowElement" x="158.5" y="38"]
+  [kanim name="windowElement" keyframe="open_episodeWindow" time="150" easing="ease-out"]
 [endmacro]
 
 
@@ -71,8 +73,9 @@
     f.needShowMessage = ('showMessage' in mp) ? parseBool(mp.showMessage) : f.needHideMessage;
   [endscript]
   [free_filter layer="0"]
+  [free_filter layer="1"]
   [free_filter layer="base"]
-  [freeimage layer="1" page="fore" time="130" wait="false"]
-  [freeimage layer="1" page="back" time="130" wait="false"]
+  [freeimage layer="2" page="fore" time="130" wait="false"]
+  [freeimage layer="2" page="back" time="130" wait="false"]
   [layopt layer="message0" visible="true" cond="f.needShowMessage"]
 [endmacro]
