@@ -1,7 +1,7 @@
 *start
 [cm]
 [clearstack]
-[bg storage="voivojinrou_title_v3.png" time="1" wait="true"]
+[bg storage="voivojinrou_title_v4.png" time="1" wait="true"]
 
 ; バージョン表示
 [ptext layer="1" x="5" y="685" text="ver.0.12.3" color="white" size="24"]
@@ -41,23 +41,23 @@
 *displayButton
 
 ; タイトル画面のボタン表示
-[glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイスタート" target="*gamestart"]
-[glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
+[glink color="&tf.buttonColor" size="30" width="300" x="488" y="460" name="buttonhover" text="プレイスタート" target="*gamestart"]
+[glink color="&tf.buttonColor" size="30" width="300" x="838" y="460" name="buttonhover" text="コンフィグ" target="*config"]
 
 ; インストラクションクリア済みなら
 [if exp="tf.isInstructionCleared"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="138" y="500" name="buttonhover" text="シアター" target="*theater"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="605" name="buttonhover" text="カスタマイズ" target="*customize"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="605" name="buttonhover" text="遊び方" target="*help"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="138" y="460" name="buttonhover" text="シアター" target="*theater"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="580" name="buttonhover" text="カスタマイズ" target="*customize"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="580" name="buttonhover" text="遊び方" target="*help"]
 
   ; 視聴済みエピソードスキップ要否ボタンを表示
   [iscript]
     tf.watchButtonColor = sf.doSkipWatchedEpisode ? tf.buttonColor : tf.selectedButtonColor;
     tf.skipButtonColor = sf.doSkipWatchedEpisode ? tf.selectedButtonColor : tf.buttonColor;
   [endscript]
-  [ptext layer="1" x="157" y="580" text="解決編未解放時の導入編" color="0x28332a" size="24" cond="tf.isFirstTime"]
-  [glink color="&tf.watchButtonColor" size="24" width="140" x="138" y="625" name="buttonhover" text="自動再生" exp="sf.doSkipWatchedEpisode = false" target="*displayButton"]
-  [glink color="&tf.skipButtonColor" size="24" width="140" x="298" y="625" name="buttonhover" text="スキップ" exp="sf.doSkipWatchedEpisode = true" target="*displayButton"]
+  [ptext layer="1" x="157" y="555" text="解決編未解放時の導入編" color="0x28332a" size="24" cond="tf.isFirstTime"]
+  [glink color="&tf.watchButtonColor" size="24" width="140" x="138" y="600" name="buttonhover" text="自動再生" exp="sf.doSkipWatchedEpisode = false" target="*displayButton"]
+  [glink color="&tf.skipButtonColor" size="24" width="140" x="298" y="600" name="buttonhover" text="スキップ" exp="sf.doSkipWatchedEpisode = true" target="*displayButton"]
 [endif]
 
 ; デバッグ系ボタン表示
@@ -85,11 +85,8 @@
 
 *gamestart
 [freeimage layer="1"]
-
 ; 人狼ゲームの準備、導入編自動再生、ゲーム開始
 [jump storage="prepareJinro.ks" target="*prepareJinroGame"]
-[s]
-
 
 
 *customize
@@ -120,6 +117,7 @@
 [freeimage layer="1"]
 ; コンフィグ画面へジャンプする
 [jump storage="configJinro.ks"]
+
 
 *help
 ; 遊び方ウィンドウを表示する
