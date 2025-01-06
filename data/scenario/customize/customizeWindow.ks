@@ -142,7 +142,7 @@ tf.roleStorage = 'role/icon_' + tf.roleId + '.png';
 [m_exitCharacter characterId="&tf.characterId" time="1" wait="true"]
 ; chara_showした立ち絵を退場させる。ここだけレイヤー3を使っているので登場させたままだと他で不具合が起きる
 [chara_hide_all layer="&tf.layer" time="1" wait="true"]
-[w_closeWindow]
+[w_closeWindow waitAnime="false"]
 [jump storage="customize/main.ks" target="*hideCustomizeWindow"]
 [s]
 

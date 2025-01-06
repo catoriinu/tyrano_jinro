@@ -62,8 +62,9 @@
 
 
 *startIntro
-  [w_closeWindow]
   [freeimage layer="0"]
+  ; ウィンドウを閉じるアニメーション処理を待機する。待機しないとレイヤー削除処理が、この後のカットイン処理に被ってしまう
+  [w_closeWindow waitAnime="true"]
   [stopbgm]
   [endnowait]
 
@@ -82,8 +83,9 @@
 
 
 *startOutro
-  [w_closeWindow]
   [freeimage layer="0"]
+  ; ウィンドウを閉じるアニメーション処理を待機する。待機しないとレイヤー削除処理が、この後のカットイン処理に被ってしまう
+  [w_closeWindow waitAnime="true"]
   [stopbgm]
   [endnowait]
 
@@ -102,8 +104,9 @@
 
 
 *startSituationPlay
-  [w_closeWindow]
   [freeimage layer="0"]
+  ; ウィンドウを閉じるアニメーション処理を待機する。待機しないとレイヤー削除処理が、この後のカットイン処理に被ってしまう
+  [w_closeWindow waitAnime="true"]
   [stopbgm]
   [endnowait]
 
@@ -129,6 +132,6 @@
 
 
 *returnMain
-[w_closeWindow]
+[w_closeWindow waitAnime="false"]
 [jump storage="theater/main.ks" target="*hideEpisodeWindow"]
 [s]

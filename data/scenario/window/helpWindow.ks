@@ -24,7 +24,7 @@
 ; インストラクションを開始する
 *playInstruction
   [freeimage layer="1"]
-  [w_closeWindow]
+  [w_closeWindow waitAnime="false"]
   [stopbgm]
   [endnowait]
 
@@ -52,6 +52,6 @@
 
 
 *close
-  [w_closeWindow]
+  [w_closeWindow waitAnime="false"]
   [jump storage="title.ks" target="*displayButton"]
 [s]

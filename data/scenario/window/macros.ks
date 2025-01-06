@@ -26,7 +26,7 @@
   [call storage="window/noticeStartingSituation.ks" target="*start"]
 
   ; 表示終了後の後片付け
-  [w_closeWindow]
+  [w_closeWindow waitAnime="false"]
   [j_loadFixButton buf="window"]
 
   *end_w_noticeStartingSituation
@@ -67,15 +67,18 @@
 ; ウィンドウを閉じる
 ; @param showMessage true:メッセージ枠を表示する | false:メッセージ枠を表示しない
 ; 事前に[w_openWindow]を実行済みである前提。そのためメッセージ枠の表示要否のデフォルト挙動は、[w_openWindow]で隠したか否か次第とする
+; @param waitAnime true: アニメーション処理待機する（デフォルト） | false: 待機しない
 ; 関連マクロ：[w_openWindow]
 [macro name="w_closeWindow"]
   [iscript]
-    f.needShowMessage = ('showMessage' in mp) ? parseBool(mp.showMessage) : f.needHideMessage;
+    tf.needShowMessage = ('showMessage' in mp) ? parseBool(mp.showMessage) : f.needHideMessage;
+    tf.needWaitAnime = ('waitAnime' in mp) ? parseBool(mp.waitAnime) : true;
   [endscript]
   [free_filter layer="0"]
   [free_filter layer="1"]
   [free_filter layer="base"]
   [freeimage layer="2" page="fore" time="130" wait="false"]
   [freeimage layer="2" page="back" time="130" wait="false"]
-  [layopt layer="message0" visible="true" cond="f.needShowMessage"]
+  [layopt layer="message0" visible="true" cond="tf.needShowMessage"]
+  [wa cond="tf.needWaitAnime"]
 [endmacro]
