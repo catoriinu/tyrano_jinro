@@ -24,7 +24,6 @@ function episodeData(pageId, episodeId) {
                         'theater/p01_e01_thumb.png',
                         '【開始条件】<br>ずんだもん（プレイヤー）：人狼、四国めたん：狂人',
                         '【解放条件】<br>ゲームに勝利する',
-                        'チュートリアルをプレイする',
                         new Chapter(
                             'theater/p01/e01_c01.ks'
                         ),
@@ -62,7 +61,6 @@ function episodeData(pageId, episodeId) {
                         'theater/p01_e02_thumb.png',
                         '【開始条件】<br>ずんだもん（プレイヤー）：村人、四国めたん：占い師',
                         '【解放条件】<br>ゲームに勝利する',
-                        'このシチュエーションでプレイする',
                         new Chapter(
                             'theater/p01/e02_c01.ks'
                         ),
@@ -94,7 +92,6 @@ function episodeData(pageId, episodeId) {
                         'theater/p01_e03_thumb.png',
                         '【開始条件】<br>ずんだもん（プレイヤー）：狂人、春日部つむぎ：人狼',
                         '【解放条件】<br>ゲームに勝利する',
-                        'このシチュエーションでプレイする',
                         new Chapter(
                             'theater/p01/e03_c01.ks'
                         ),
@@ -126,7 +123,6 @@ function episodeData(pageId, episodeId) {
                         'theater/p01_e04_thumb.png',
                         '【開始条件】<br>ずんだもん（プレイヤー）：占い師、雨晴はう：人狼',
                         '【解放条件】<br>ゲームに勝利する',
-                        'このシチュエーションでプレイする',
                         new Chapter(
                             'theater/p01/e04_c01.ks'
                         ),
@@ -158,7 +154,6 @@ function episodeData(pageId, episodeId) {
                         'theater/p01_e05_thumb.png',
                         '【開始条件】<br>ずんだもん（プレイヤー）：占い師、波音リツ：人狼',
                         '【解放条件】<br>ゲームに勝利する',
-                        'このシチュエーションでプレイする',
                         new Chapter(
                             'theater/p01/e05_c01.ks'
                         ),
@@ -190,7 +185,6 @@ function episodeData(pageId, episodeId) {
                         'theater/p01_e06_thumb.png',
                         '【開始条件】<br>ずんだもん（プレイヤー）と春日部つむぎが人狼陣営',
                         '【解放条件】<br>ずんだもんと春日部つむぎがともに退場した状態で敗北する',
-                        '特定のシチュエーションではないためプレイできません', // 「人狼陣営」なのでどちらがどちらでもよいのでシチュを作れない。かつe03で代用できるため問題なし
                         new Chapter(
                             'theater/p01/e06_c01.ks'
                         ),
@@ -222,7 +216,6 @@ function episodeData(pageId, episodeId) {
                         'theater/p01_e07_thumb.png',
                         '【開始条件】<br>ずんだもん（プレイヤー）：役職不問',
                         '【解放条件】<br>引き分けでゲームが終了する',
-                        '特定のシチュエーションではないためプレイできません',
                         new Chapter(
                             'theater/p01/e07_c01.ks'
                         ),
@@ -248,7 +241,6 @@ function episodeData(pageId, episodeId) {
                         'theater/p01_e08_thumb.png',
                         '【開始条件】<br>ずんだもん（プレイヤー）：役職不問',
                         '【解放条件】<br>ゲームに勝利する',
-                        '特定のシチュエーションではないためプレイできません',
                         new Chapter(
                             'theater/p01/e08_c01.ks'
                         ),
@@ -280,7 +272,6 @@ function episodeData(pageId, episodeId) {
                         '【ゲーム】ボイボ人狼 #2【絶賛開発中】',
                         'theater/紹介動画02サムネ.png',
                         '解決編はありません',
-                        '紹介動画の元ネタです',
                         new Chapter(
                             'theater/page99/movie_20230814.ks'
                         ),
@@ -295,7 +286,6 @@ function episodeData(pageId, episodeId) {
                         '【ゲーム】ボイボ人狼 #3【開発終盤！】',
                         'theater/シアターサムネ仮01.png',
                         '解決編はありません',
-                        '紹介動画の元ネタです',
                         new Chapter(
                             'theater/page99/movie_20240803.ks'
                         ),
