@@ -31,45 +31,12 @@
 [endmacro]
 
 
-; 現在選択中のシアター詳細に紐づいているシチュエーションの参加者オブジェクト配列を一時変数に登録する
-; シアター詳細画面では、j_registerParticipantの代わりにこのマクロで登録すること
-[macro name="t_registerSituationParticipants"]
-  [iscript]
-  1 // TODO getTheaterProgressの第3引数を削除して判定を変えること
-    tf.tmpParticipantObjectList = clone(f.displayEpisode.situation.participantsList);
-  [endscript]
-[endmacro]
-
-
 ; 指定されたチャプターの進捗が「未解放」なら一時変数にtrueを格納する
 ; @param pageId
 ; @param episodeId
 [macro name="t_isProgressLocked"]
   [iscript]
     tf.isProgressLocked = (getTheaterProgress(mp.pageId, mp.episodeId) === EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE);
-  [endscript]
-[endmacro]
-
-
-; 指定されたチャプターの進捗が「解放済みだが未視聴」なら一時変数にtrueを格納する
-; @param pageId
-; @param episodeId
-; @param chapterId
-[macro name="t_isProgressUnlocked"]
-  [iscript]
-    // TODO getTheaterProgressの第3引数を削除して判定を変えること
-    tf.isProgressUnlocked = (getTheaterProgress(mp.pageId, mp.episodeId, mp.chapterId) === THEATER_UNLOCKED);
-  [endscript]
-[endmacro]
-
-
-; 指定されたチャプターの進捗が「視聴済み」なら一時変数にtrueを格納する
-; @param pageId
-; @param episodeId
-; @param chapterId
-[macro name="t_isProgressWatched"]
-  [iscript]
-    tf.isProgressWatched = (getTheaterProgress(mp.pageId, mp.episodeId, mp.chapterId) === THEATER_WATCHED);
   [endscript]
 [endmacro]
 

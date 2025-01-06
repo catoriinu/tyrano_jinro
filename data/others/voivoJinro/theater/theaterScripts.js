@@ -1,40 +1,53 @@
-// シアターの解放状況
-// 初回起動時のみ、デフォルト設定値を入れる
-const THEATER_LOCKED = 0;   // 未解放
-const THEATER_UNLOCKED = 1; // 解放済みで未視聴
-const THEATER_WATCHED = 2;  // 視聴済み
+// エピソード解放ステータス
+const EPISODE_STATUS = {
+  INTRO_LOCKED_UNAVAILABLE: 0,    // 導入編未解放かつ現時点では解放不可
+  INTRO_LOCKED_AVAILABLE: 1,      // 導入編未解放かつ解放可
+  INTRO_UNLOCKED_OUTRO_LOCKED: 2, // 導入編解放済みで解決編未解放
+  OUTRO_UNLOCKED: 3               // 解決編まで解放済み
+};
+
+const PARTICIPATION = {
+  CONFIRMED: 0, // 参加確定
+  CANDIDATE: 1, // 参加候補
+  DECLINED: 2,  // 不参加
+}
 
 
 /**
  * シアター進捗の初期化
  * 初回起動時やリセット時に呼ぶ
- * TODO 後で消す
  */
-function resetTheaterProgressToDefault_old() {
+function resetTheaterProgressToDefault() {
   TYRANO.kag.variable.sf.theaterProgress = {
     'p01': {
-      'e01': {
-        'c01': THEATER_LOCKED,
-      }
+      'e01': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
+      'e02': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
+      'e03': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
+      'e04': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
+      'e05': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
+      'e06': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
+      'e07': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
+      'e08': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
     }
   }
 }
 
 
-function setTheaterProgressForP99() {
-  Object.assign(TYRANO.kag.variable.sf.theaterProgress,
-    {
-      'p99': {
-        'e02': {
-          'c01': THEATER_UNLOCKED,
-        },
-        'e03': {
-          'c01': THEATER_UNLOCKED,
-        }
-      }
-    }
-  )
-}
+//function setTheaterProgressForP99() {
+//  Object.assign(TYRANO.kag.variable.sf.theaterProgress,
+//    {
+//      'p99': {
+//        'e02': {
+//          'c01': THEATER_UNLOCKED,
+//        },
+//        'e03': {
+//          'c01': THEATER_UNLOCKED,
+//        }
+//      }
+//    }
+//  )
+//}
+
 
 /**
  * 表示したいページ配下のエピソード情報を取得する
@@ -99,41 +112,6 @@ function everyProgressMatch(targetEpisodeStatus, pageIdList, episodeIdList) {
     }
   }
   return true;
-}
-
-
-// エピソード解放ステータス
-const EPISODE_STATUS = {
-  INTRO_LOCKED_UNAVAILABLE: 0,    // 導入編未解放かつ現時点では解放不可
-  INTRO_LOCKED_AVAILABLE: 1,      // 導入編未解放かつ解放可
-  INTRO_UNLOCKED_OUTRO_LOCKED: 2, // 導入編解放済みで解決編未解放
-  OUTRO_UNLOCKED: 3               // 解決編まで解放済み
-};
-
-const PARTICIPATION = {
-  CONFIRMED: 0, // 参加確定
-  CANDIDATE: 1, // 参加候補
-  DECLINED: 2,  // 不参加
-}
-
-
-/**
- * シアター進捗の初期化
- * 初回起動時やリセット時に呼ぶ
- */
-function resetTheaterProgressToDefault() {
-  TYRANO.kag.variable.sf.theaterProgress = {
-    'p01': {
-      'e01': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
-      'e02': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
-      'e03': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
-      'e04': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
-      'e05': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
-      'e06': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
-      'e07': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
-      'e08': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
-    }
-  }
 }
 
 
@@ -205,6 +183,7 @@ function checkMatchingEpisodeSituation(episodes, targetJinroGameData) {
   // シチュエーションに合致するエピソードがなかった場合
   return [false, null, null, targetJinroGameData];
 }
+
 
 /**
  * このシチュエーションで指定されている人狼ゲームデータを基準として、現在の人狼ゲームデータが全ての条件に合致しているかを判定する

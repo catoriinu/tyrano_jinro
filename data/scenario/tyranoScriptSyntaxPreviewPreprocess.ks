@@ -59,7 +59,8 @@ if (!('jinroGameDataObjects' in sf)) {
 }
 // 紹介動画表示用の進捗
 if (sf.isDebugMode) {
-  setTheaterProgressForP99();
+  // MEMO:必要になったら復活させる
+  // setTheaterProgressForP99();
 }
 // レコードの初期化
 if (!('record' in sf)) {
