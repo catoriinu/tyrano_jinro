@@ -46,9 +46,9 @@
 
 ; インストラクションクリア済みなら
 [if exp="tf.isInstructionCleared"]
-  ; シアターとカスタマイズボタンを表示
   [glink color="&tf.buttonColor" size="30" width="300" x="138" y="500" name="buttonhover" text="シアター" target="*theater"]
   [glink color="&tf.buttonColor" size="30" width="300" x="488" y="605" name="buttonhover" text="カスタマイズ" target="*customize"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="605" name="buttonhover" text="遊び方" target="*help"]
 
   ; 視聴済みエピソードスキップ要否ボタンを表示
   [iscript]
@@ -120,6 +120,10 @@
 [freeimage layer="1"]
 ; コンフィグ画面へジャンプする
 [jump storage="configJinro.ks"]
+
+*help
+; 遊び方ウィンドウを表示する
+[jump storage="window/helpWindow.ks"]
 
 
 *resetProgress

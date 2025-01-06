@@ -128,22 +128,6 @@
 [s]
 
 
-; チュートリアル用ラベル
-; MEMO 現在のところ、p01_e01でしか考慮していないので他で呼ぶ場合は要修正
-*startTutorialPlay
-[w_closeWindow]
-[freeimage layer="0"]
-[stopbgm]
-[endnowait]
-
-; シチュエーションプレイで人狼ゲームを開始したフラグ（人狼ゲーム終了時にエピソード画面に戻ってくるため）
-[eval exp="f.isSituationPlay = true"]
-
-; チュートリアル用ラベルにジャンプする。人狼ゲームの準備も含めてジャンプ先でやってくれる
-[jump storage="tutorial/tutorialSubroutines.ks" target="*toFirstInstruction"]
-[s]
-
-
 *returnMain
 [w_closeWindow]
 [jump storage="theater/main.ks" target="*hideEpisodeWindow"]
