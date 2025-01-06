@@ -5,7 +5,7 @@
  * @param {String} title エピソードのタイトル名（シアター画面表示用）
  * @param {String} thumbnail エピソードのサムネイル画像パス（シアター画面表示用）。fgimageフォルダからの相対パス
  * @param {String} startConditionText エピソード開始条件テキスト（シアター画面表示用）
- * @param {String} unlockCondition エピソード解放条件テキスト（シアター画面表示用）
+ * @param {String} unlockConditionText エピソード解放条件テキスト（シアター画面表示用）
  * @param {Chapter} introChapter 導入編のチャプターオブジェクト
  * @param {Chapter} outroChapter 解決編のチャプターオブジェクト
  * @param {JinroGameData|null} situationJinroGameData このエピソードのシチュエーションに合致する人狼ゲームデータ。特定のシチュエーションがないならnullを渡すこと
@@ -18,7 +18,7 @@ function Episode(
     title,
     thumbnail,
     startConditionText,
-    unlockCondition, // TODO unlockConditionText
+    unlockConditionText,
     introChapter,
     outroChapter,
     situationJinroGameData,
@@ -29,7 +29,7 @@ function Episode(
     this.title = title;
     this.thumbnail = thumbnail;
     this.startConditionText = startConditionText;
-    this.unlockCondition = unlockCondition;
+    this.unlockConditionText = unlockConditionText;
     this.introChapter = introChapter;
     this.outroChapter = outroChapter;
     this.situationJinroGameData = situationJinroGameData;
