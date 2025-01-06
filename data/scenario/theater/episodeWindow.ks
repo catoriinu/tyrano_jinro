@@ -20,11 +20,7 @@
     tf.needDisplayUnlockConditionText = tf.isUnlockedOutro;
   [endscript]
 
-  [layopt layer="message0" visible="false"]
-  [filter layer="0" blur="10"]
-
-  [image storage="theater/episodeWindow_rectangle.png" layer="1" page="back" name="episodeWindow" x="158.5" y="38"]
-  [kanim name="episodeWindow" keyframe="open_episodeWindow" time="150" easing="ease-out"]
+  [w_openWindow hideMessage="true"]
 
   [image storage="&f.displayEpisode.thumbnail" layer="1" page="back" left="424" top="80" height="243" name="thumbnail"]
   [ptext layer="1" page="back" text="&f.displayEpisode.title" face="MPLUSRounded" size="36" x="180" y="330" width="920" align="center"]
@@ -38,10 +34,7 @@
   *displayButtons
   ; 閉じるボタンまたは枠外（左右上下）のクリックで一覧に戻る
   [glink color="&tf.selectedButtonColor" size="26" width="210" x="875" y="100" text="閉じる" target="*returnMain"]
-  [clickable width="174" height="720" x="0" y="0" target="*returnMain"]
-  [clickable width="174" height="720" x="1105" y="0" target="*returnMain"]
-  [clickable width="1280" height="55" x="0" y="0" target="*returnMain"]
-  [clickable width="1280" height="55" x="0" y="665" target="*returnMain"]
+  [w_makeClickableAreaOuterWindow storage="theater/episodeWindow.ks" target="*returnMain"]
 
   [glink color="&tf.buttonColor" size="26" width="210" x="385" y="400" text="導入編" target="*startIntro" cond="tf.isUnlockedIntro"]
   [glink color="&tf.buttonColor" size="26" width="210" x="681" y="400" text="解決編" target="*startOutro" cond="tf.isUnlockedOutro"]
@@ -69,13 +62,10 @@
 
 
 *startIntro
-  [free_filter layer="0"]
-  [freeimage layer="1" page="fore"]
-  [freeimage layer="1" page="back"]
+  [w_closeWindow]
   [freeimage layer="0"]
   [stopbgm]
   [endnowait]
-  [layopt layer="message0" visible="true"]
 
   [iscript]
     f.chapterList.introChapter = {
@@ -92,13 +82,10 @@
 
 
 *startOutro
-  [free_filter layer="0"]
-  [freeimage layer="1" page="fore"]
-  [freeimage layer="1" page="back"]
+  [w_closeWindow]
   [freeimage layer="0"]
   [stopbgm]
   [endnowait]
-  [layopt layer="message0" visible="true"]
 
   [iscript]
     f.chapterList.outroChapter = {
@@ -115,13 +102,10 @@
 
 
 *startSituationPlay
-  [free_filter layer="0"]
-  [freeimage layer="1" page="fore"]
-  [freeimage layer="1" page="back"]
+  [w_closeWindow]
   [freeimage layer="0"]
   [stopbgm]
   [endnowait]
-  [layopt layer="message0" visible="true"]
 
   ; [t_setStartingSituation]内で設定する変数をこの場で設定してから、選択したシチュエーションで人狼ゲームを始める
   [iscript]
@@ -147,13 +131,10 @@
 ; チュートリアル用ラベル
 ; MEMO 現在のところ、p01_e01でしか考慮していないので他で呼ぶ場合は要修正
 *startTutorialPlay
-[free_filter layer="0"]
-[freeimage layer="1" page="fore"]
-[freeimage layer="1" page="back"]
+[w_closeWindow]
 [freeimage layer="0"]
 [stopbgm]
 [endnowait]
-[layopt layer="message0" visible="true"]
 
 ; シチュエーションプレイで人狼ゲームを開始したフラグ（人狼ゲーム終了時にエピソード画面に戻ってくるため）
 [eval exp="f.isSituationPlay = true"]
@@ -164,9 +145,6 @@
 
 
 *returnMain
-[free_filter layer="0"]
-[freeimage layer="1" page="fore"]
-[freeimage layer="1" page="back"]
-[layopt layer="message0" visible="true"]
+[w_closeWindow]
 [jump storage="theater/main.ks" target="*hideEpisodeWindow"]
 [s]

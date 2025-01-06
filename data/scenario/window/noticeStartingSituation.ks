@@ -12,9 +12,6 @@
     tf.needDisplayUnlockConditionText = (tf.episodeStatus === EPISODE_STATUS.OUTRO_UNLOCKED);
   [endscript]
 
-  [image storage="theater/episodeWindow_rectangle.png" layer="1" page="back" name="episodeWindow" x="158.5" y="38"]
-  [kanim name="episodeWindow" keyframe="open_episodeWindow" time="150" easing="ease-out"]
-
   [image storage="&f.displayEpisode.thumbnail" layer="1" page="back" left="424" top="80" height="243" name="thumbnail"]
   [ptext layer="1" page="back" text="&f.displayEpisode.title" face="MPLUSRounded" size="36" x="180" y="330" width="920" align="center"]
 
@@ -29,10 +26,7 @@
   *displayButtons
   ; 閉じるボタンまたは枠外（左右上下）のクリックで閉じる
   [glink color="&tf.selectedButtonColor" size="26" width="210" x="875" y="100" text="閉じる" target="*close"]
-  [clickable width="174" height="720" x="0" y="0" target="*close"]
-  [clickable width="174" height="720" x="1105" y="0" target="*close"]
-  [clickable width="1280" height="55" x="0" y="0" target="*close"]
-  [clickable width="1280" height="55" x="0" y="665" target="*close"]
+  [w_makeClickableAreaOuterWindow storage="window/noticeStartingSituation.ks" target="*close"]
 
   ; 開始条件テキストと解放条件テキスト。ボタンを押して表示する場合はここで表ページに表示させる。overwrite="true"を指定しているので既に表示済みの場合は上書き表示になる（＝重複表示はされない）
   [ptext layer="1" page="fore" text="&f.displayEpisode.startConditionText" face="MPLUSRounded" size="26" x="180" y="475" width="920" align="center" name="startConditionText" overwrite="true" cond="tf.needDisplayStartConditionText"]
@@ -56,7 +50,5 @@
 
 
 *close
-  [freeimage layer="1" page="fore" time="130" wait="false"]
-  [freeimage layer="1" page="back" time="130" wait="false"]
-[return]
+  [return]
 [s]

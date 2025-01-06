@@ -56,10 +56,7 @@
 ; fixボタンをクリア
 [clearfix]
 
-[filter layer="0" blur="10"]
-
-[image storage="theater/episodeWindow_rectangle.png" layer="1" page="back" name="episodeWindow" x="158.5" y="38"]
-[kanim name="episodeWindow" keyframe="open_episodeWindow" time="150" easing="ease-out"]
+[w_openWindow]
 
 [m_changeCharacter characterId="&tf.characterId" face="通常"]
 
@@ -72,10 +69,7 @@
 [glink color="&tf.buttonColor" size="28" width="250" x="513" y="100" text="性格情報" target="*start" cond="tf.selectedButton !== 'personalInfo'"]
 ; 閉じるボタンまたは枠外（左右上下）のクリックで閉じる
 [glink color="&tf.buttonColor" size="28" width="250" x="796" y="100" text="閉じる" target="*returnMain"]
-[clickable width="174" height="720" x="0" y="0" target="*returnMain"]
-[clickable width="174" height="720" x="1105" y="0" target="*returnMain"]
-[clickable width="1280" height="55" x="0" y="0" target="*returnMain"]
-[clickable width="1280" height="55" x="0" y="665" target="*returnMain"]
+[w_makeClickableAreaOuterWindow storage="customize/customizeWindow.ks" target="*returnMain"]
 
 ; 役職設定ボタン表示用ループ
 [eval exp="tf.roleCount = 0"]
@@ -147,9 +141,7 @@ tf.roleStorage = 'role/icon_' + tf.roleId + '.png';
 [m_exitCharacter characterId="&tf.characterId" time="1" wait="true"]
 ; chara_showした立ち絵を退場させる。ここだけレイヤー2を使っているので登場させたままだと他で不具合が起きる
 [chara_hide_all layer="2" time="1" wait="true"]
-[free_filter layer="0"]
-[freeimage layer="1" page="fore"]
-[freeimage layer="1" page="back"]
+[w_closeWindow]
 [jump storage="customize/main.ks" target="*hideCustomizeWindow"]
 [s]
 

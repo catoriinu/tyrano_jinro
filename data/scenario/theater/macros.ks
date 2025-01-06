@@ -161,10 +161,10 @@
 
   [iscript]
     tf.needText = ('text' in mp);
-    tf.needWaitAnime = ('waitAnime' in mp) ? (mp.waitAnime && mp.waitAnime !== 'false') : true;
+    tf.needWaitAnime = ('waitAnime' in mp) ? parseBool(mp.waitAnime) : true;
   [endscript]
   [image layer="2" y="-720" folder="bgimage" storage="black.png" width="1280" height="720" name="cutin"]
-  [ptext layer="2" x="40" y="-420" width="1200" align="center" text="&mp.text" color="white" size="50" name="cutin" con="tf.needText"]
+  [ptext layer="2" x="40" y="-420" width="1200" align="center" text="&mp.text" color="white" size="50" name="cutin" cond="tf.needText"]
   [layopt layer="2" visible="true"]
   [anim name="cutin" top="+=720" time="750"]
   [wa cond="tf.needWaitAnime"]
