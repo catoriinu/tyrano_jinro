@@ -41,6 +41,7 @@
 [jump storage="theater/main.ks" target="*returnFromSituationPlay"]
 [s]
 
+
 *returnTitle
 [j_clearFixButton]
 ; このシナリオにジャンプしてくるためのメニューボタンは、[button role="sleepgame"]である。

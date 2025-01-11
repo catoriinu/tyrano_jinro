@@ -1,17 +1,16 @@
-*jinroInstruction
-
+*startInstruction
 [iscript]
   // もち子さんの立ち絵を追加で登録する
   tf.registerCharacterList = [CHARACTER_ID_MOCHIKO];
 [endscript]
 [call storage="./chara/common.ks" target="*addRegisterCharacters"]
 ; もち子さんにフィルターをかける
-; MEMO: フィルターをかけた責任としてチュートリアルが完了する箇所でfree_filterしておくこと。
+; MEMO: フィルターをかけた責任としてインストラクションが完了する箇所でfree_filterしておくこと。
 ; ただしプレイヤー途中でゲームを抜けてしまうことを防ぐことはできないので、次に立ち絵を読み込んだタイミングでもfree_filterしておくこと。
 [filter name="mochiko" brightness="30"]
 
 ; 本当の初回起動時以外は2回目以降用のシナリオにジャンプさせる
-[jump target="*secondInstruction" cond="!f.tutorialList.needFirstInstruction"]
+[jump target="*secondInstruction" cond="!f.chapterList.flags.isFirstContact"]
 
 
 [m_changeCharacterFrameName name="ずんだもん" face="否定" side="left"]
@@ -62,13 +61,13 @@
   // ボタン生成（初回用）
   f.buttonObjects = [];
   f.buttonObjects.push(new Button(
-    'continueJinroInstruction',
+    'continueInstruction',
     '全て説明して',
     'center',
     CLASS_GLINK_DEFAULT
   ));
   f.buttonObjects.push(new Button(
-    'skipJinroInstruction',
+    'skipInstruction',
     'ボイボ人狼の説明だけ',
     'center',
     CLASS_GLINK_DEFAULT,
@@ -78,8 +77,7 @@
 [jump target="&f.selectedButtonId"]
 [s]
 
-*continueJinroInstruction
-
+*continueInstruction
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
 了解です！[r]
 それではインストラクションを始めますね！[p]
@@ -197,18 +195,17 @@
 さて、これで人狼ゲームそのものの説明はおしまいです。[r]
 ここからは実際にゲームをしつつ「ボイボ人狼」の説明をしますね。[p]
 
-[eval exp="f.tutorialList.jinroInstruction = true"]
-
 ; 右側のキャラ退場、枠リセット
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 [m_changeFrameWithId]
 #
 
-[return]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
+[s]
 
 
-*skipJinroInstruction
 
+*skipInstruction
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
 了解です！[r]
 それでは人狼ゲーム自体の説明はスキップさせていただきます。[p]
@@ -216,20 +213,17 @@
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
 ここからは実際にゲームをしつつ「ボイボ人狼」の説明をしますね。[p]
 
-[eval exp="f.tutorialList.jinroInstruction = true"]
-
 ; 右側のキャラ退場、枠リセット
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 [m_changeFrameWithId]
 #
 
-[return]
-
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
+[s]
 
 
 
 *COPhase
-
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
 昼の一番最初はCOフェイズです。[r]
 占い師、人狼、狂人は、ここで占い師COをすることができます。[p]
@@ -248,14 +242,14 @@
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
 さあ、どうしますか？[p]
 
-[eval exp="f.tutorialList.COPhase = true"]
-
 ; 右側のキャラ退場、枠リセット
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 [m_changeFrameWithId]
 #
 
-[return]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
+[s]
+
 
 
 *discussionPhase
@@ -336,18 +330,17 @@
 [m_changeCharacterFrameName name="ずんだもん" face="通常" side="left"]
 が、がんばるのだ…！[p]
 
-[eval exp="f.tutorialList.discussionPhase = true"]
-
 ; 右側のキャラ退場、枠リセット
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 [m_changeFrameWithId]
 #
 
-[return]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
+[s]
+
 
 
 *votePhase
-
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
 さあ、いよいよ投票フェイズです。[p]
 
@@ -382,18 +375,17 @@
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="企む"]
 では、運命の投票に移りましょう！[p]
 
-[eval exp="f.tutorialList.votePhase = true"]
-
 ; 右側のキャラ退場、枠リセット
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 [m_changeFrameWithId]
 #
 
-[return]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
+[s]
+
 
 
 *firstDayNightPhase
-
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
 おめでとうございます！[r]
 1日目の追放は免れましたね。[p]
@@ -417,143 +409,147 @@
 うぅ…！[r]
 ここまで来たら、とことんやってやるのだー！[p]
 
-[eval exp="f.tutorialList.firstDayNightPhase = true"]
-
 ; 右側のキャラ退場、枠リセット
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 [m_changeFrameWithId]
 #
 
 [free_filter name="mochiko"]
-[return]
+
+; 2日目昼用のチャプターを再生するためにここでtrueにする
+[eval exp="f.chapterList.secondDayDayPhase.needPlay = true"]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
+[s]
+
 
 
 *secondDayDayPhase
-
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
 これで残り人数は3人。[r]
 今日を乗り切れば人狼陣営の勝利です。[p]
-[eval exp="f.tutorialList.secondDayDayPhase = true"]
 
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+; statusButtonチャプターを再生済みなら、ensInstructionに飛ばす
+; これまでにステータス画面を開き済みなら再生済みになっているのでここですぐに飛ばされる
+; まだステータス画面を開いていなかった場合は、画面から帰ってきたらすぐにendInstructionに飛ばす必要があるので、以降1行ごとにjumpを挟んでおく
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 最後に、ステータス画面の説明をしますね。[r]
 右上の「ステータス」ボタンを押してください。[p]
 
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
-[eval exp="f.tutorialList.thankStatusButton = true"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
+[eval exp="f.chapterList.flags.thankStatusButton = true"]
 右上の「ステータス」ボタンを押してください。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="紹介"]
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 右上の「ステータス」ボタンを押してください。[p]
 
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 「ステータス」を押してください。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 「ステータス」を押してくださいってば。[p]
 
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 「ステータス」を押してくださいよー。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="苦笑"]
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 「ステータス」を押していただけませんか？[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="説明"]
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 ほら、画面の右上ですよ。[r]
 「ステータス」と書いてあるボタンを押してください。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="伏し目"]
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 あの…早く…。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="驚き泣き"]
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 早く「ステータス」ボタンを押してくださいっ！[p]
 
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
-私、このチュートリアルが終わらないと帰れないんですよぉ！[p]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
+私、この説明が終わらないと帰れないんですよぉ！[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="悲しみ"]
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 あなたも早くゲームの続きがしたいでしょう？[r]
 そんなに意地を張らないでいいじゃないですか。[p]
 
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 お願いです、私を助けると思って！[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 右上の「ステータス」ボタンを押してください。[p]
 
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 右上の「ステータス」ボタンを押してください。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="げっそり"]
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 右上の…「ステータス」ボタンを…。[p]
 
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 あの…こんなに頼んでもダメですか…？[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="驚き泣き"]
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 はっ…！[r]
 まさかあなた、私の反応を見て楽しんでます？[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="怒り"]
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 あーっ！[r]
 その顔、絶対そうです！間違いないです！[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="説明"]
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 次はなんて言うんだろうって思ってるんでしょう？[r]
 そのくらい私にはお見通しですよ！[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="伏し目"]
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 全く、困った人ですね。[r]
 私がこんなにお願いしてるのに…。[p]
 
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 今更無駄でしょうけど、もう一度だけ言います。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 右上の「ステータス」ボタンを押してください。[p]
 
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 …。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="伏し目"]
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 はいはい、分かりました。[r]
 そっちがその気なら、私にも考えがあります。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="企む"]
-[jump target="endInstruction" cond="f.tutorialList.statusButton"]
+[jump target="endInstruction" cond="f.chapterList.flags.playedStatusButton"]
 強制的にステータス画面に飛ばしちゃいますからね！[r]
 えいっ！[p]
 
-[eval exp="f.tutorialList.forceStatusButton = true"]
-
-; ステータス画面に飛ばす
+; 強制的にステータス画面に飛ばす
+[eval exp="f.chapterList.flags.forceStatusButton = true"]
 [sleepgame storage="statusJinro.ks" target="*statusJinroMain" next="false"]
 
 [jump target="endInstruction"]
-
 *returnFromEndInstruction
 
-[return]
-
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
+[s]
 
 
 
 *statusButton
+; 視聴済みフラグを立てる
+[eval exp="f.chapterList.flags.playedStatusButton = true"]
 
 ; ステータス画面では、HTMLがfreeレイヤーに描画されており、それがメッセージレイヤーよりも前面に出ているためメッセージ送りができない状態になっている。
 ; freeレイヤーのz-indexを下げることで、HTML描画中でもメッセージを表示できるようにする。
@@ -561,14 +557,12 @@
   $(".layer.layer_free").css("z-index", 99);
 [endscript]
 
-[m_changeCharacterFrameName name="？？？" characterId="mochiko"]
-
-[if exp="f.tutorialList.forceStatusButton"]
+[if exp="f.chapterList.flags.forceStatusButton"]
   [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="ドヤ顔"]
   ふふふ、どうですか？[r]
   ここでは私に逆らうことなんてできないんですよーだ！[p]
 
-[elsif exp="f.tutorialList.thankStatusButton"]
+[elsif exp="f.chapterList.flags.thankStatusButton"]
   [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
   円滑なゲーム進行にご協力いただき、ありがとうございます！[p]
 
@@ -599,21 +593,18 @@
   $(".layer.layer_free").css("z-index", 9999999);
 [endscript]
 
-[eval exp="f.tutorialList.statusButton = true"]
-
 ; 右側のキャラ退場、枠リセット
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 [m_changeFrameWithId]
 #
 
-[return]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
+[s]
 
 
 
-
-
+; ※サブルーチンではないため、callではなくjumpで飛んでくること。
 *endInstruction
-
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
 さあ、これでインストラクションは終わりです。[r]
 あとは自分を信じて、最後まで頑張ってくださいね！[p]
@@ -653,20 +644,17 @@
 でも、とにかく今は目の前のゲームに集中するのだ。[r]
 このまま濡れ衣なんて嫌なのだ！[p]
 
-[eval exp="f.tutorialList.endInstruction = true"]
-
 ; 枠リセット
 [m_changeFrameWithId]
 #
 
-; secondDayDayPhase内のタグに戻り、secondDayDayPhaseの元々の呼び出し元にreturnする
+; secondDayDayPhase内のタグに戻り、secondDayDayPhaseの元々の呼び出し元にreturnする。ゆえにこれはサブルーチンとして実装していない。
 [jump target="*returnFromEndInstruction"]
+[s]
 
-[return]
 
 
 *secondInstruction
-
 [m_changeCharacterFrameName name="ずんだもん" face="困惑" side="left"]
 …ってこの状況、前にもあった気がするのだ。[r]
 もし僕の記憶が正しければこのあと…。[p]
@@ -688,19 +676,16 @@
 それでは人狼ゲームと「ボイボ人狼」の説明も要らないですか？[p]
 
 [iscript]
-  // チュートリアルリストのフラグ立て
-  f.tutorialList.secondInstruction = true;
-
   // ボタン生成（2回目以降用）
   f.buttonObjects = [];
   f.buttonObjects.push(new Button(
-    'continueJinroInstruction',
+    'continueInstruction',
     '全て説明して',
     'center',
     CLASS_GLINK_DEFAULT
   ));
   f.buttonObjects.push(new Button(
-    'skipJinroInstruction',
+    'skipInstruction',
     'ボイボ人狼の説明だけ',
     'center',
     CLASS_GLINK_DEFAULT,
@@ -752,29 +737,34 @@
 [m_changeFrameWithId]
 #
 
-[iscript]
-  // ゲーム終了時に判定があるencourageRetryだけ残してあとは消す
-  f.tutorialList = {
-    encourageRetry: false,
-  }
-[endscript]
-
 [free_filter name="mochiko"]
-[return]
+
+[iscript]
+  // encourageRetryを除くインストラクションのチャプターの再生フラグを折る
+  f.chapterList.COPhase.needPlay = false;
+  f.chapterList.discussionPhase.needPlay = false;
+  f.chapterList.votePhase.needPlay = false;
+  f.chapterList.firstDayNightPhase.needPlay = false;
+  f.chapterList.secondDayDayPhase.needPlay = false;
+  f.chapterList.statusButton.needPlay = false;
+[endscript]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
+[s]
 
 
-; ※サブルーチンではないため、callではなくjumpで飛んでくること。
+
 *encourageRetry
-
-; リトライを促す（つまりこの下のジャンプで戻らない）条件
-; 「誰がずんだもちを食べたのだ？」解決編の解放前である（だけで次の条件も満たすが、念の為次の条件も入れておく）かつ
-; 村人陣営が勝利した、または引き分けになった
-[jump storage="playJinro.ks" target="*returnFromFirstInstructionEncourageRetry_noNeed" cond="!((getTheaterProgress('p01', 'e01', 'c02') === THEATER_LOCKED) && ((f.winnerFaction === FACTION_VILLAGERS) || (f.winnerFaction === FACTION_DRAW_BY_REVOTE)))"]
+; リトライを促す（つまりこの下でjumpで戻らない）条件
+; 「誰がずんだもちを食べたのだ？」が「3:解決編まで解放済み」ではない（＝インストラクションで勝利していない）
+[iscript]
+  tf.needPlayEncourageRetry = (getTheaterProgress('p01', 'e01') !== EPISODE_STATUS.OUTRO_UNLOCKED);
+  console.log('needEncourageRetry: ' + tf.needEncourageRetry);
+[endscript]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget" cond="!tf.needPlayEncourageRetry"]
 
 ; 左側の立ち絵と、勝利陣営キャラクターのレイヤーを消去する
 [m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
 [freeimage layer="1" time="500" wait="true"]
-
 
 [if exp="f.winnerFaction === FACTION_VILLAGERS"]
   [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="伏し目"]
@@ -798,10 +788,5 @@
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId" wait="true"]
 [free_filter name="mochiko"]
 [eval exp="f.currentFrame = null"]
-[eval exp="f.tutorialList.encourageRetry = true"]
-
-; タイトル画面に戻るときのみ、背景をタイトル画面のものに変えておく
-[bg storage="voivojinrou_green.png" time="1" wait="false" cond="!f.isSituationPlay"]
-
-[jump storage="playJinro.ks" target="*returnFromFirstInstructionEncourageRetry_end"]
+[jump storage="title.ks"]
 [s]

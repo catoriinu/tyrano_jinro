@@ -1,8 +1,8 @@
-; タイトル：わたくしの千里眼―サウザンドアイ―に死角なし！（解決編）
-
 *start
-; ここからチャプターごとに設定が必要な項目
+; チャプターごとに設定が必要な項目
 [iscript]
+// チャプターのタイトル（カットイン表示用。改行が必要なら<br>を入れる）
+f.titleText = 'わたくしの千里眼―サウザンドアイ―に死角なし！<br>（解決編）';
 // このチャプターを表す通し番号
 f.pageId    = 'p01';
 f.episodeId = 'e02';
@@ -26,7 +26,7 @@ tf.playbgmParams = {
     volume: "12",
 }
 [endscript]
-[t_setupChapter actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
+[t_setupChapter titleText="&f.titleText" actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
 
 ; ここからチャプター視聴開始
 
@@ -60,8 +60,8 @@ tf.playbgmParams = {
 
 [m_changeCharacterFrameName name="雨晴はう"]
 [playse storage="theater/p01/e02/034.ogg"]
-まあまあ、落ち着いてください、ずんだもん。[r]
-あんまり否定するのは良くないですよ。[p]
+まあまあ、落ち着いてください。[r]
+ずんだもんもあんまり否定するのは良くないですよ。[p]
 
 [playse storage="theater/p01/e02/035.ogg"]
 それじゃあめたんさん。[r]
@@ -85,7 +85,7 @@ tf.playbgmParams = {
 
 [playse storage="theater/p01/e02/040.ogg"]
 くっ…どうして…？はうさんの帰宅時間が見えない…！[r]
-まだまだ力不足だとでも言うの…！？[p]
+わたくしにはまだまだ力不足だとでも言うの…！？[p]
 
 [m_changeCharacterFrameName name="雨晴はう"]
 [playse storage="theater/p01/e02/041.ogg"]
@@ -109,5 +109,5 @@ tf.playbgmParams = {
 *end
 
 [t_teardownChapter pageId="&f.pageId" episodeId="&f.episodeId" chapterId="&f.chapterId"]
-[jump storage="theater/main.ks" target="*start"]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
 [s]

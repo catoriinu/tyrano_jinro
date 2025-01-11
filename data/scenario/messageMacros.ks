@@ -356,7 +356,7 @@
 
 ; 退場マクロ
 ; 現在登場しているキャラを退場させる
-; @param characterId 退場させたいキャラのキャラクターID。必須。
+; @param characterId 退場させたいキャラのキャラクターID。指定しなければ何もせず終了
 ; @param time 退場にかかる時間（[chara_move]のtime）。指定しなければデフォルト600ミリ秒
 ; @param wait アニメーションの完了を待つかどうか。デフォルトfalse
 [macro name="m_exitCharacter"]
@@ -372,6 +372,7 @@
 
     // そのキャラがどちらのサイドに表示されているかを取得する
     tf.side = (function(){
+      if (!mp.characterId) return null; // キャラクターIDの指定がなかった場合何もせず終了させる
       if (f.displayedCharacter.right.isDisplay && f.displayedCharacter.right.characterId == mp.characterId) return 'right';
       if (f.displayedCharacter.left.isDisplay  && f.displayedCharacter.left.characterId  == mp.characterId) return 'left';
       return null;

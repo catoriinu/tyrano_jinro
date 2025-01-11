@@ -75,11 +75,11 @@ if (!f.quickShowEpisodeWindow) {
   tf.buttonColor = CLASS_GLINK_DEFAULT;
   tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
 [endscript]
-[glink color="&tf.buttonColor" size="30" width="270" x="975" y="438" text="タイトルに戻る" target="*returnTitle"]
+[glink color="&tf.buttonColor" size="30" width="270" x="975" y="38" text="タイトルに戻る" target="*returnTitle"]
 
 ; 以下、選択中のページのみボタンの色を変える
-[glink color="&tf.selectedButtonColor" size="30" width="270" x="975" y="338" text="1期・2期" target="*loadEpisodeList" exp="f.displayPageId = 'p01'" cond="f.displayPageId === 'p01'"]
-[glink color="&tf.buttonColor" size="30" width="270" x="975" y="338" text="1期・2期" target="*loadEpisodeList" exp="f.displayPageId = 'p01'" cond="f.displayPageId !== 'p01'"]
+[glink color="&tf.selectedButtonColor" size="30" width="270" x="975" y="438" text="ページ1" target="*loadEpisodeList" exp="f.displayPageId = 'p01'" cond="f.displayPageId === 'p01'"]
+[glink color="&tf.buttonColor" size="30" width="270" x="975" y="438" text="ページ1" target="*loadEpisodeList" exp="f.displayPageId = 'p01'" cond="f.displayPageId !== 'p01'"]
 
 ; TODO sf.theaterProgressのpageIdを参照して出し分けるべき。以下のように現在表示してよいページID一覧を取得するなど
 ; TYRANO.kag.stat.f.availablePageIdList = Object.keys(TYRANO.kag.variable.sf.theaterProgress);
@@ -90,7 +90,7 @@ if (!f.quickShowEpisodeWindow) {
 ;メッセージウィンドウの表示
 [layopt layer="message0" visible="true"]
 #
-視聴したいシアターを選択してください。[r]
+視聴したいエピソードを選択してください。[r]
 人狼ゲームで特定の条件を満たすと解決編が解放されます。
 [s]
 
@@ -140,7 +140,7 @@ if (!f.quickShowEpisodeWindow) {
 [eval exp="f.quickShowEpisodeWindow = false"]
 
 ; そのエピソードの導入編が解放済みなら、エピソードウィンドウ表示
-[t_isProgressLocked pageId="&f.displayPageId" episodeId="&f.displayEpisodeId" chapterId="c01"]
+[t_isProgressLocked pageId="&f.displayPageId" episodeId="&f.displayEpisodeId"]
 [jump storage="theater/episodeWindow.ks" target="*start" cond="!tf.isProgressLocked"]
 
 ; そのエピソードが未解放なら、詳細を表示させないで戻す

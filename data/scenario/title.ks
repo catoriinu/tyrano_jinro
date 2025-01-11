@@ -1,12 +1,12 @@
-
+*start
 [cm]
-
 [clearstack]
-[bg storage="voivojinrou_title_v3.png" time="1" wait="true"]
+[bg storage="voivojinrou_title_v4.png" time="1" wait="true"]
 
-*start 
-[ptext layer="1" x="5" y="685" text="ver.0.12.1" color="white" size="24"]
+; バージョン表示
+[ptext layer="1" x="5" y="685" text="ver.0.12.4" color="white" size="24"]
 [layopt layer="1" visible="true"]
+
 ; ボイス停止（人狼ゲームから戻ってきたとき用）
 [stopse buf="0"]
 [playbgm storage="fun_fun_Ukelele_1loop.ogg" volume="20" loop="true" restart="false"]
@@ -22,39 +22,43 @@
   f.isSituationPlay = false;
   // シアターで即座にエピソードウィンドウを開くフラグを初期化（タイトルに戻ってきたら次にシアターを開いてもウィンドウを開いてほしくないため）
   f.quickShowEpisodeWindow = false;
+  // チャプターリストの初期化
+  f.chapterList = {};
 
-  // タイトル画面のボタン表示を判定するためにシアター進捗を取得していく
-  // 初回起動時
-  tf.isFirstStartup = (getTheaterProgress('p01', 'e01', 'c01') === THEATER_LOCKED);
-  // チュートリアル未クリア
-  tf.isTutolialNotCleared = (getTheaterProgress('p01', 'e01', 'c02') === THEATER_LOCKED);
-  // ページ1未クリア
-  tf.isPage01NotCleared = (getTheaterProgress('p01', 'e08', 'c02') !== THEATER_WATCHED);
+  // タイトル画面のボタン表示を判定するためにエピソード進捗ステータスを取得していく
+  // インストラクションクリア済みか
+  tf.isInstructionCleared = (getTheaterProgress('p01', 'e01') === EPISODE_STATUS.OUTRO_UNLOCKED);
 
   // ボタンの色
   tf.buttonColor = CLASS_GLINK_DEFAULT;
+  tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
+
+  // タイトル画面初回表示フラグ
+  // ゲームの初回起動の意味ではない。displayButtonラベルに戻るボタンを押したときに、初回表示時以外は実行したくない処理を弾くためのフラグ
+  tf.isFirstTime = true;
 [endscript]
 
-; タイトル画面のボタン表示。予期せぬパターンがあると大変なので、面倒でもelsifで場合分けしておくこと
-[if exp="tf.isFirstStartup"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイスタート" target="*firstPlayStart"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
-[elsif exp="tf.isTutolialNotCleared"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="138" y="500" name="buttonhover" text="シアター" target="*theater"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイスタート" target="*firstPlayStart"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
-[elsif exp="tf.isPage01NotCleared"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="138" y="500" name="buttonhover" text="シアター" target="*theater"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイスタート" target="*gamestart"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
-[else]
-  [glink color="&tf.buttonColor" size="30" width="300" x="138" y="500" name="buttonhover" text="シアター" target="*theater"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="500" name="buttonhover" text="プレイスタート" target="*gamestart"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="500" name="buttonhover" text="コンフィグ" target="*config"]
-  ;[glink color="&tf.buttonColor" size="30" width="300" x="488" y="600" name="buttonhover" text="カスタムプレイ" target="*selectStage"]
-[endif]
+*displayButton
 
-  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="600" name="buttonhover" text="カスタマイズ" target="*customize"]
+; タイトル画面のボタン表示
+[glink color="&tf.buttonColor" size="30" width="300" x="488" y="460" name="buttonhover" text="プレイスタート" target="*gamestart"]
+[glink color="&tf.buttonColor" size="30" width="300" x="838" y="460" name="buttonhover" text="コンフィグ" target="*config"]
+
+; インストラクションクリア済みなら
+[if exp="tf.isInstructionCleared"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="138" y="460" name="buttonhover" text="シアター" target="*theater"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="580" name="buttonhover" text="カスタマイズ" target="*customize"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="580" name="buttonhover" text="遊び方" target="*help"]
+
+  ; 視聴済みエピソードスキップ要否ボタンを表示
+  [iscript]
+    tf.watchButtonColor = sf.doSkipWatchedEpisode ? tf.buttonColor : tf.selectedButtonColor;
+    tf.skipButtonColor = sf.doSkipWatchedEpisode ? tf.selectedButtonColor : tf.buttonColor;
+  [endscript]
+  [ptext layer="1" x="157" y="555" text="解決編未解放時の導入編" color="0x28332a" size="24" cond="tf.isFirstTime"]
+  [glink color="&tf.watchButtonColor" size="24" width="140" x="138" y="600" name="buttonhover" text="自動再生" exp="sf.doSkipWatchedEpisode = false" target="*displayButton"]
+  [glink color="&tf.skipButtonColor" size="24" width="140" x="298" y="600" name="buttonhover" text="スキップ" exp="sf.doSkipWatchedEpisode = true" target="*displayButton"]
+[endif]
 
 ; デバッグ系ボタン表示
 [if exp="sf.isDebugMode"]
@@ -63,6 +67,8 @@
 [endif]
 
 [iscript]
+  tf.isFirstTime = false;
+
   // ボタンにカーソルが乗ったときの処理
   $(".buttonhover").hover(
     function(e) {
@@ -76,20 +82,11 @@
 [endscript]
 [s]
 
+
 *gamestart
 [freeimage layer="1"]
-[stopbgm]
-
-; 人狼ゲームのメインシナリオファイルへジャンプする
-[j_prepareJinroGame preload="true"]
-[jump storage="playJinro.ks"]
-
-
-*selectStage
-[freeimage layer="1"]
-[stopbgm]
-;ステージ選択（TODO 現在はPCの役職のみ選択可能）シナリオファイルへジャンプする
-[jump storage="selectStage.ks"]
+; 人狼ゲームの準備、導入編自動再生、ゲーム開始
+[jump storage="prepareJinro.ks" target="*prepareJinroGame"]
 
 
 *customize
@@ -122,6 +119,11 @@
 [jump storage="configJinro.ks"]
 
 
+*help
+; 遊び方ウィンドウを表示する
+[jump storage="window/helpWindow.ks"]
+
+
 *resetProgress
 [html top="130" left="413.813" name="pause_menu_button_window"]
 [endhtml]
@@ -145,13 +147,14 @@
 sf.theaterProgress = 
   {
     'p01': {
-      'e01': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
-      'e02': {'c01': THEATER_UNLOCKED},
-      'e03': {'c01': THEATER_UNLOCKED},
-      'e04': {'c01': THEATER_UNLOCKED},
-      'e05': {'c01': THEATER_UNLOCKED},
-      'e06': {'c01': THEATER_UNLOCKED},
-      'e07': {'c01': THEATER_UNLOCKED},
+      'e01': EPISODE_STATUS.OUTRO_UNLOCKED,
+      'e02': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
+      'e03': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
+      'e04': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
+      'e05': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
+      'e06': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
+      'e07': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
+      'e08': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
     }
   }
 [endscript]
@@ -162,14 +165,14 @@ sf.theaterProgress =
 sf.theaterProgress = 
   {
     'p01': {
-      'e01': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
-      'e02': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
-      'e03': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
-      'e04': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
-      'e05': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
-      'e06': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
-      'e07': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
-      'e08': {'c01': THEATER_WATCHED, 'c02': THEATER_WATCHED},
+      'e01': EPISODE_STATUS.OUTRO_UNLOCKED,
+      'e02': EPISODE_STATUS.OUTRO_UNLOCKED,
+      'e03': EPISODE_STATUS.OUTRO_UNLOCKED,
+      'e04': EPISODE_STATUS.OUTRO_UNLOCKED,
+      'e05': EPISODE_STATUS.OUTRO_UNLOCKED,
+      'e06': EPISODE_STATUS.OUTRO_UNLOCKED,
+      'e07': EPISODE_STATUS.OUTRO_UNLOCKED,
+      'e08': EPISODE_STATUS.OUTRO_UNLOCKED,
     }
   }
 [endscript]
@@ -177,15 +180,4 @@ sf.theaterProgress =
 *doneReset
 [ptext layer="1" x="181" y="490" text="リセット完了 再起動してください" color="black" size="60"]
 [layopt layer="1" visible="true"]
-[s]
-
-
-*firstPlayStart
-[freeimage layer="1"]
-[stopbgm]
-
-; 初回起動時なら「誰がずんだもちを食べたのだ？」導入編に飛ばす
-[jump storage="theater/p01/e01_c01.ks" cond="tf.isFirstStartup"]
-; それ以外でここに来た場合（は導入編は見終わったがまだチュートリアルをクリアしていない場合のみ）は、チュートリアルモードのまま人狼をプレイさせる
-[jump storage="tutorial/tutorialSubroutines.ks" target="*toFirstInstruction"]
 [s]

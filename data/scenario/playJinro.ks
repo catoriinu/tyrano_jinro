@@ -7,26 +7,9 @@
 [clearfix]
 [start_keyconfig]
 
-
-[iscript]
-  // チュートリアルリストの定義。チュートリアルを行いたい場合は事前に同名変数に格納しておくこと
-  f.tutorialList = ('tmpTutorialList' in f) ? clone(f.tmpTutorialList) : {};
-  f.tmpTutorialList = {};
-[endscript]
-
-
-[bg storage="living_night_close_nc238328.jpg" time="300"]
-
-;メッセージウィンドウの設定、文字が表示される領域を調整
-[position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="220" page="fore"]
-
-;キャラクターの名前が表示される文字領域
-[ptext name="chara_name_area" layer="message0" face="にくまるフォント" color="0x28332a" size="36" x="175" y="505"]
-
-;上記で定義した領域がキャラクターの名前表示であることを宣言（これがないと#の部分でエラーになります）
-[chara_config ptext="chara_name_area"]
-; pos_mode:キャラの初期位置はキャラ宣言時に全指定するのでfalse
-[chara_config pos_mode="false" memory="true" time="200"]
+[bg storage="living_night_close_nc238328.jpg" time="500"]
+[fadeoutse time="500"]
+[fadeoutbgm time="500"]
 
 ;このゲームで登場するキャラクターを宣言、表情登録
 [call storage="./chara/common.ks" target="*registerCharactersFromParticipantsIdList"]
@@ -39,6 +22,8 @@
 #
 人狼ゲームの幕開けです……！[p]
 
+[w_noticeStartingSituation]
+
 [clearstack]
 *day0_nightPhase
 
@@ -50,9 +35,8 @@
 ; プレイヤーの役職確認セリフ出力
 [m_noticeRole characterId="&f.playerCharacterId" roleId="&f.characterObjects[f.playerCharacterId].role.roleId"]
 
-; 【チュートリアル】
-[call storage="tutorial/firstInstruction.ks" target="*jinroInstruction" cond="('jinroInstruction' in f.tutorialList) && !f.tutorialList.jinroInstruction"]
-
+; 【チャプター再生】
+[t_playChapter target="startInstruction"]
 
 ; 占い師なら初日占い実行
 [if exp="f.characterObjects[f.playerCharacterId].role.roleId == ROLE_ID_FORTUNE_TELLER"]
@@ -80,10 +64,8 @@
 [clearstack]
 [playbgm storage="nc282335.ogg" loop="true" volume="11" restart="false"]
 
-
-; 【チュートリアル】
-[call storage="tutorial/firstInstruction.ks" target="*secondDayDayPhase" cond="('secondDayDayPhase' in f.tutorialList) && f.tutorialList.firstDayNightPhase && !f.tutorialList.secondDayDayPhase"]
-
+; 【チャプター再生】
+[t_playChapter target="secondDayDayPhase"]
 
 [m_changeFrameWithId]
 #
@@ -102,8 +84,8 @@
 ; NPCにCO候補者がいるフラグを初期化する
 [eval exp="f.notExistCOCandidateNPC = false"]
 
-; 【チュートリアル】
-[call storage="tutorial/firstInstruction.ks" target="*COPhase" cond="('COPhase' in f.tutorialList) && !f.tutorialList.COPhase"]
+; 【チャプター再生】
+[t_playChapter target="COPhase"]
 
 *COPhasePlayer
 ; PC（占い師、人狼、狂人）による占いCOフェイズ
@@ -212,8 +194,8 @@
 #
 ～議論フェイズ～[p]
 
-; 【チュートリアル】
-[call storage="tutorial/firstInstruction.ks" target="*discussionPhase" cond="('discussionPhase' in f.tutorialList) && !f.tutorialList.discussionPhase"]
+; 【チャプター再生】
+[t_playChapter target="discussionPhase"]
 
 [eval exp="f.isDoingAction = false"]
 ; アクションボタン表示
@@ -252,8 +234,8 @@
 #
 ～投票フェイズ～[p]
 
-; 【チュートリアル】
-[call storage="tutorial/firstInstruction.ks" target="*votePhase" cond="('votePhase' in f.tutorialList) && !f.tutorialList.votePhase"]
+; 【チャプター再生】
+[t_playChapter target="votePhase"]
 
 ; ここはバックログに記録しない。記録する必要がないシステムメッセージのため
 [nolog]
@@ -359,10 +341,8 @@
 ; なお、この問題は[clearstack]では解決しなかったが、おまじないとして各フェイズの最初に追加しておく。
 [jump target="*nightPhaseNPC" cond="!f.characterObjectsHistory[f.day][f.playerCharacterId].isAlive"]
 
-
-; 【チュートリアル】
-[call storage="tutorial/firstInstruction.ks" target="*firstDayNightPhase" cond="('firstDayNightPhase' in f.tutorialList) && !f.tutorialList.firstDayNightPhase"]
-
+; 【チャプター再生】
+[t_playChapter target="firstDayNightPhase"]
 
 [m_changeFrameWithId]
 #
@@ -444,27 +424,15 @@
 
 [iscript]
   incrementPlayHistoryCount(f.characterObjects[f.playerCharacterId], f.winnerFaction);
+  outputLog();
 [endscript]
 
-[a_convertResultToAchievementCondition]
-[a_checkAchievedConditions]
-[a_displayAchievedEpisodes]
+; 【チャプター再生】
+[call storage="theater/episodeSubroutines.ks" target="*checkOutroUnlockCondition"]
+[t_playChapter target="outroChapter"]
+[t_playChapter target="encourageRetry"]
 
-[iscript]
-outputLog();
-[endscript]
-
-; 【チュートリアル】
-[jump storage="tutorial/firstInstruction.ks" target="*encourageRetry" cond="('encourageRetry' in f.tutorialList)"]
-*returnFromFirstInstructionEncourageRetry_noNeed
-
-[if exp="f.isSituationPlay"]
-シアターに戻ります。[p]
-[else]
-タイトルに戻ります。[p]
-[endif]
-
-; シアターまたはタイトル画面に戻る前に、キャラの退場、メッセージ枠の削除、ボタンの削除を行う
+; タイトル画面に戻る前に、キャラの退場、メッセージ枠の削除、ボタンの削除を行う
 [j_clearFixButton]
 [m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId" time="1"]
@@ -472,11 +440,8 @@ outputLog();
 [eval exp="f.currentFrame = null"]
 
 ; タイトル画面に戻るときのみ、背景をタイトル画面のものに変えておく
-[bg storage="voivojinrou_green.png" time="1" wait="false" cond="!f.isSituationPlay"]
+[bg storage="voivojinrou_green.png" time="1" wait="false"]
 ; 勝利陣営キャラクターのレイヤーを消去する。wait=trueにして人狼ゲーム終了時に責任を持って消しておくこと。wait=falseだと遷移後の画面でfreeimageが発動して意図しない要素が消えてしまう
 [freeimage layer="1" time="500" wait="true"]
-
-*returnFromFirstInstructionEncourageRetry_end
-[jump storage="theater/main.ks" target="*returnFromSituationPlay" cond="f.isSituationPlay"]
 [jump storage="title.ks"]
 [s]

@@ -3,6 +3,8 @@
 *start
 ; ここからチャプターごとに設定が必要な項目
 [iscript]
+// チャプターのタイトル（カットイン表示用。改行が必要なら<br>を入れる）
+f.titleText = 'わたくしの千里眼―サウザンドアイ―に死角なし！<br>（導入編）';
 // このチャプターを表す通し番号
 f.pageId    = 'p01';
 f.episodeId = 'e02';
@@ -26,7 +28,7 @@ tf.playbgmParams = {
     volume: "12",
 }
 [endscript]
-[t_setupChapter actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
+[t_setupChapter titleText="&f.titleText" actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
 
 ; ここからチャプター視聴開始
 
@@ -143,5 +145,5 @@ tf.playbgmParams = {
 *end
 
 [t_teardownChapter pageId="&f.pageId" episodeId="&f.episodeId" chapterId="&f.chapterId"]
-[jump storage="theater/main.ks" target="*start"]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
 [s]

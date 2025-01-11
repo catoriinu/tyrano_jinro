@@ -1,8 +1,8 @@
-; タイトル：誰がずんだもちを食べたのだ？（解決編）
-
 *start
-; ここからチャプターごとに設定が必要な項目
+; チャプターごとに設定が必要な項目
 [iscript]
+// チャプターのタイトル（カットイン表示用。改行が必要なら<br>を入れる）
+f.titleText = '誰がずんだもちを食べたのだ？<br>（解決編）';
 // このチャプターを表す通し番号
 f.pageId    = 'p01';
 f.episodeId = 'e01';
@@ -28,7 +28,7 @@ tf.playbgmParams = {
     volume: "12",
 }
 [endscript]
-[t_setupChapter actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
+[t_setupChapter titleText="&f.titleText" actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
 
 ; ここからチャプター視聴開始
 
@@ -124,5 +124,5 @@ tf.playbgmParams = {
 *end
 
 [t_teardownChapter pageId="&f.pageId" episodeId="&f.episodeId" chapterId="&f.chapterId"]
-[jump storage="theater/main.ks" target="*start"]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
 [s]

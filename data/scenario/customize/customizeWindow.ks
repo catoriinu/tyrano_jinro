@@ -49,17 +49,15 @@
     // キャラ立ち絵表示用の変数設定
     tf.registerCharacterList = [tf.characterId];
     // キャラ表示レイヤー
-    tf.layer = 2;
+    // FIXME:ここのためだけにConfig.tjsでnumCharacterLayers = 4;に設定している。[m_changeCharacter]を使わずに画像として立ち絵をlayer="2"に表示できるようになれば、レイヤー数は3で済むはず。
+    tf.layer = 3;
 [endscript]
 [call storage="./chara/common.ks" target="*registerCharacters"]
 
 ; fixボタンをクリア
 [clearfix]
 
-[filter layer="0" blur="10"]
-
-[image storage="theater/episodeWindow_rectangle.png" layer="1" page="back" name="episodeWindow" x="158.5" y="38"]
-[kanim name="episodeWindow" keyframe="open_episodeWindow" time="150" easing="ease-out"]
+[w_openWindow]
 
 [m_changeCharacter characterId="&tf.characterId" face="通常"]
 
@@ -70,7 +68,9 @@
 [glink color="&tf.buttonColor" size="28" width="250" x="230" y="100" text="役職設定" target="*start" cond="tf.selectedButton !== 'roleSelect'"]
 [glink color="&tf.selectedButtonColor" size="28" width="250" x="513" y="100" text="性格情報" target="*start" cond="tf.selectedButton === 'personalInfo'"]
 [glink color="&tf.buttonColor" size="28" width="250" x="513" y="100" text="性格情報" target="*start" cond="tf.selectedButton !== 'personalInfo'"]
+; 閉じるボタンまたは枠外（左右上下）のクリックで閉じる
 [glink color="&tf.buttonColor" size="28" width="250" x="796" y="100" text="閉じる" target="*returnMain"]
+[w_makeClickableAreaOuterWindow storage="customize/customizeWindow.ks" target="*returnMain"]
 
 ; 役職設定ボタン表示用ループ
 [eval exp="tf.roleCount = 0"]
@@ -82,7 +82,7 @@
 *end_displaySelectRoleButton
 
 ; 「役職設定」を押したとき（最初にウィンドウを開いたときも含む）だけ、裏ページからトランジションする
-[trans layer="1" time="1" cond="tf.needTrans"]
+[trans layer="2" time="1" cond="tf.needTrans"]
 [eval exp="tf.needTrans = false"]
 [s]
 
@@ -105,10 +105,10 @@ tf.roleStorage = 'role/icon_' + tf.roleId + '.png';
 [endscript]
 
 ; 役職アイコン
-[image folder="image" page="back" storage="&tf.roleStorage" layer="1" width="&tf.iconSize" haight="&tf.iconSize" left="250" top="&tf.top"]
+[image folder="image" page="back" storage="&tf.roleStorage" layer="2" width="&tf.iconSize" haight="&tf.iconSize" left="250" top="&tf.top"]
 
 ; 参加不可能な役職はボタンではなくテキストを表示
-[ptext layer="1" page="back" size="26" x="&(tf.buttonX + 25)" y="&(tf.buttonY + 5)" text="人数オーバー" color="#28332a" cond="!tf.roleButtonAvailable"]
+[ptext layer="2" page="back" size="26" x="&(tf.buttonX + 25)" y="&(tf.buttonY + 5)" text="人数オーバー" color="#28332a" cond="!tf.roleButtonAvailable"]
 ; 参加可能な役職のボタン
 [glink color="&tf.buttonColor"         size="26" width="200" x="&tf.buttonX" y="&tf.buttonY" text="&tf.roleButtonText" target="*select_role" preexp="tf.roleId" exp="tf.currentRoleId = preexp" cond="tf.roleButtonAvailable && tf.roleId !== tf.currentRoleId"]
 ; そのキャラの役職として選択中の役職のボタン
@@ -119,7 +119,7 @@ tf.roleStorage = 'role/icon_' + tf.roleId + '.png';
 
 ; 役職ボタンを押した後の処理
 *select_role
-[freeimage layer="1" page="back"]
+[freeimage layer="2" page="back"]
 [jump storage="customize/customizeWindow.ks" target="*return_from_select_role"]
 [s]
 
@@ -140,11 +140,9 @@ tf.roleStorage = 'role/icon_' + tf.roleId + '.png';
 [endscript]
 
 [m_exitCharacter characterId="&tf.characterId" time="1" wait="true"]
-; chara_showした立ち絵を退場させる。ここだけレイヤー2を使っているので登場させたままだと他で不具合が起きる
-[chara_hide_all layer="2" time="1" wait="true"]
-[free_filter layer="0"]
-[freeimage layer="1" page="fore"]
-[freeimage layer="1" page="back"]
+; chara_showした立ち絵を退場させる。ここだけレイヤー3を使っているので登場させたままだと他で不具合が起きる
+[chara_hide_all layer="&tf.layer" time="1" wait="true"]
+[w_closeWindow waitAnime="false"]
 [jump storage="customize/main.ks" target="*hideCustomizeWindow"]
 [s]
 

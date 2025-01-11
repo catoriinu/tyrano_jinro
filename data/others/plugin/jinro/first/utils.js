@@ -471,6 +471,22 @@ function setSpeakersName(characterId = '', name = '') {
 
 
 /**
+ * 引数をbool型として評価した結果を返却する
+ * 注意：String型の'false'はfalseと判定する
+ * @param {*} value 
+ * @returns 引数をbool型として評価した結果
+ */
+function parseBool(value) {
+  if (typeof value === 'string') {
+    const lowerValue = value.toLowerCase().trim();
+    if (lowerValue === 'false') return false;
+    if (lowerValue === 'true') return true;
+  }
+  return Boolean(value);
+}
+
+
+/**
  * オブジェクトをディープコピーするための関数;
  * 第一引数はコピーさせたいオブジェクトを渡す;
  * 第二引数はオブジェクトをどの程度同質にするかをオブジェクトで指定;

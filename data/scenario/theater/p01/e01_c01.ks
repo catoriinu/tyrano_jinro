@@ -1,8 +1,8 @@
-; タイトル：誰がずんだもちを食べたのだ？（導入編）
-
 *start
-; ここからチャプターごとに設定が必要な項目
+; チャプターごとに設定が必要な項目
 [iscript]
+// チャプターのタイトル（カットイン表示用。改行が必要なら<br>を入れる）
+f.titleText = '誰がずんだもちを食べたのだ？<br>（導入編）';
 // このチャプターを表す通し番号
 f.pageId    = 'p01';
 f.episodeId = 'e01';
@@ -29,28 +29,9 @@ tf.playbgmParams = {
 }
 [endscript]
 
-; 「はじめに」表示
-[layopt layer="message0" visible="false"]
-[bg storage="black.png" time="1000"]
-[playse storage="chime.ogg" buf="1" loop="false" volume="55" sprite_time="50-20000"]
-
-[ptext layer="1" x="90" y="150" text="はじめに" color="#f7f7f7" size="60" time="1000" width="1100" align="center"]
-[ptext layer="1" x="90" y="320" text="本作品は、VOICEVOX公式様や<br>各キャラクター運営様とは無関係の個人が制作した、<br>非公式二次創作ゲームです。" color="#f7f7f7" size="44" time="1000" width="1100" align="center"]
-
-[p]
-[freeimage layer="1" time="1000" wait="true"]
-
-[ptext layer="1" x="90" y="100" text="本作品は以下の要素を含みます。" color="#f7f7f7" size="44" time="1000" width="1100" align="center"]
-[ptext layer="1" x="70" y="200" text="・テキスト読み上げソフトウェアVOICEVOX製の合成音声<br>・公式と異なる独自設定を含むキャラクター描写<br>・既存作品にインスパイアされた表現<br>・人狼ゲーム由来の過激な単語<br>・メタ要素" color="#f7f7f7" size="44" time="1000" width="1140" align="left"]
-[ptext layer="1" x="90" y="560" text="以上をご理解のうえ、お楽しみください。" color="#f7f7f7" size="44" time="1000" width="1100" align="center"]
-
-[p]
-[freeimage layer="1" time="2000" wait="true"]
-
-[t_setupChapter actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
+[t_setupChapter titleText="&f.titleText" actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
 
 ; ここからチャプター視聴開始
-
 
 [m_changeCharacterFrameName name="ずんだもん" face="否定" side="left"]
 [playse storage="theater/p01/e01/001.ogg"]
@@ -124,18 +105,8 @@ tf.playbgmParams = {
 犯人は誰なのだ…！？[r]
 こたろう？ミコ？はう？それとも――[p]
 
-[stopse buf="0"]
-
-; TODO 使う箇所が増えたらマクロ化する
-[playse storage="ufo03.ogg" buf="1" volume="50" sprite_time="100-4100"]
-[layopt layer="message0" visible="false"]
-[layopt layer="1" opacity="210"]
-[image storage="TVStaticColor03.gif" layer="1" width="1280" height="900" visible="true" time="2000" wait="true"]
-[fadeoutse buf="1" time="2100"]
-[freeimage time="2000" wait="true" layer="1"]
-[layopt layer="1" opacity="255"]
-[layopt layer="message0" visible="true"]
-
+; ノイズ演出
+[e_noiseDisplay]
 
 [m_changeCharacterFrameName name="ずんだもん" face="困惑" side="left"]
 [playse storage="theater/p01/e01/018.ogg"]
@@ -234,15 +205,7 @@ tf.playbgmParams = {
 ; チャプターここまで
 *end
 
-; 初回プレイ時用の特殊処理
-[iscript]
-  tf.isFirstStartup = (getTheaterProgress('p01', 'e01', 'c01') === THEATER_LOCKED);
-[endscript]
-
 [t_teardownChapter pageId="&f.pageId" episodeId="&f.episodeId" chapterId="&f.chapterId"]
 
-; 初回プレイ時は直接チュートリアルモードでシチュエーションプレイを始める
-[jump storage="tutorial/tutorialSubroutines.ks" target="*toFirstInstruction" cond="tf.isFirstStartup"]
-
-[jump storage="theater/main.ks" target="*start"]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
 [s]

@@ -141,9 +141,8 @@
 [j_setDchForStatus winnerFaction="&f.winnerFaction"]
 [call storage="jinroSubroutines.ks" target="*displayCharactersHorizontallyForStatus"]
 
-
-; 【チュートリアル】
-[call storage="tutorial/firstInstruction.ks" target="*statusButton" cond="('statusButton' in f.tutorialList) && !f.tutorialList.statusButton"]
+; 【チャプター再生】
+[t_playChapter target="statusButton"]
 
 [s]
 
