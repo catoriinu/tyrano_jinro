@@ -257,8 +257,7 @@
     if (tf.needPlay) {
       f.chapterList[mp.target].needPlay = false;
     }
-    // チャプター再生後にこのファイルに戻って来るために変数設定 関連マクロ：[t_setupChapter]
-    // MEMO：シアターでもこのマクロを経由して再生するルールにすれば、「シアター終了後のジャンプ先を指定する。指定があればそこへ、なければシアター画面に戻る」は不要になりそう
+    // チャプター再生後にこのファイルに戻って来るために変数設定
     f.returnJumpStorage = 'theater/macros.ks';
     f.returnJumpTarget = '*end_t_playChapter';
   [endscript]

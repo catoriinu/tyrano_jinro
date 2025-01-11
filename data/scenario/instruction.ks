@@ -756,7 +756,6 @@
 *encourageRetry
 ; リトライを促す（つまりこの下でjumpで戻らない）条件
 ; 「誰がずんだもちを食べたのだ？」が「3:解決編まで解放済み」ではない（＝インストラクションで勝利していない）
-; TODO 今の実装のままでいくなら、勝利したら解決編再生時にエピソード解放ステータスを3にすること
 [iscript]
   tf.needPlayEncourageRetry = (getTheaterProgress('p01', 'e01') !== EPISODE_STATUS.OUTRO_UNLOCKED);
   console.log('needEncourageRetry: ' + tf.needEncourageRetry);
