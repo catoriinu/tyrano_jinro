@@ -6,10 +6,9 @@
     tf.buttonColor = CLASS_GLINK_DEFAULT;
     tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
 
-    // 開始条件テキストとプレイスタートボタン、および解放条件テキストを表示するかのフラグ。
-    // 進捗が「3：解決編まで解放済み」の場合のみ初期から表示する。それ以外なら表示用ボタンを押すまで表示しない
-    tf.needDisplayStartConditionText = (tf.episodeStatus === EPISODE_STATUS.OUTRO_UNLOCKED);
-    tf.needDisplayUnlockConditionText = (tf.episodeStatus === EPISODE_STATUS.OUTRO_UNLOCKED);
+    // 開始条件テキストとプレイスタートボタン、および解放条件テキストを表示するかのフラグ。ウィンドウ表示時点では表示しない
+    tf.needDisplayStartConditionText = false;
+    tf.needDisplayUnlockConditionText = false;
   [endscript]
 
   [image storage="&f.displayEpisode.thumbnail" layer="2" page="back" left="424" top="80" height="243" name="thumbnail"]
