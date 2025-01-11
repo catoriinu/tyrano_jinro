@@ -105,5 +105,7 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 [jump target="*jump_customizeWindow"]
 
 *jump_customizeWindow
+; fixボタンをクリア
+[clearfix]
 [jump storage="customize/customizeWindow.ks" target="*start"]
 [s]

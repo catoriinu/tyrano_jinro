@@ -54,37 +54,39 @@
 [endscript]
 [call storage="./chara/common.ks" target="*registerCharacters"]
 
-; fixボタンをクリア
-[clearfix]
-
 [w_openWindow]
 
 [m_changeCharacter characterId="&tf.characterId" face="通常"]
 
-*return_from_select_role
-
-; ウィンドウ上部のタブボタン
-;[glink color="&tf.selectedButtonColor" size="28" width="250" x="230" y="100" text="役職設定" target="*start" cond="tf.selectedButton === 'roleSelect'"]
-;[glink color="&tf.buttonColor" size="28" width="250" x="230" y="100" text="役職設定" target="*start" cond="tf.selectedButton !== 'roleSelect'"]
-;[glink color="&tf.selectedButtonColor" size="28" width="250" x="513" y="100" text="性格情報" target="*start" cond="tf.selectedButton === 'personalInfo'"]
-;[glink color="&tf.buttonColor" size="28" width="250" x="513" y="100" text="性格情報" target="*start" cond="tf.selectedButton !== 'personalInfo'"]
-; 閉じるボタンまたは枠外（左右上下）のクリックで閉じる
-[glink color="&tf.buttonColor" size="28" width="250" x="796" y="100" text="閉じる" target="*returnMain"]
+*common
+[glink color="&tf.selectedButtonColor" size="26" width="210" x="875" y="80" text="閉じる" target="*returnMain"]
 [w_makeClickableAreaOuterWindow storage="customize/customizeWindow.ks" target="*returnMain"]
 
-; 役職設定ボタン表示用ループ
-[eval exp="tf.roleCount = 0"]
-*start_displaySelectRoleButton
-  [call target="*displaySelectRoleButton"]
-  [jump target="*end_displaySelectRoleButton" cond="tf.roleCount >= tf.maxRoleButtonCount"]
-  [eval exp="tf.roleCount++"]
-  [jump target="*start_displaySelectRoleButton"]
-*end_displaySelectRoleButton
+; 役職設定
+[call target="*selectRole"]
 
-; 「役職設定」を押したとき（最初にウィンドウを開いたときも含む）だけ、裏ページからトランジションする
+
+; 最初にウィンドウを開いたときだけ、裏ページからトランジションする
 [trans layer="2" time="1" cond="tf.needTrans"]
 [eval exp="tf.needTrans = false"]
 [s]
+
+
+
+; 役職設定用サブルーチン
+*selectRole
+  [glink color="&tf.buttonColor" size="26" width="210" x="230" y="80" text="←キャラ情報" target="*start"]
+  [ptext layer="2" page="back" text="役職設定" face="MPLUSRounded" size="36" x="180" y="80" width="920" align="center" name="helpTitle" overwrite="true"]
+
+  ; 役職設定ボタン表示用ループ
+  [eval exp="tf.roleCount = 0"]
+  *start_displaySelectRoleButton
+    [call target="*displaySelectRoleButton"]
+    [jump target="*end_displaySelectRoleButton" cond="tf.roleCount >= tf.maxRoleButtonCount"]
+    [eval exp="tf.roleCount++"]
+    [jump target="*start_displaySelectRoleButton"]
+  *end_displaySelectRoleButton
+[return]
 
 
 
