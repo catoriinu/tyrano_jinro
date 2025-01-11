@@ -6,6 +6,7 @@
     tf.currentParticipant = getParticipantWithIndexFromJinroGameData(f.currentJinroGameData, f.selectedParticipantIndex);
     tf.characterId = tf.currentParticipant.characterId;
     tf.currentRoleId = tf.currentParticipant.roleId || ROLE_ID_UNKNOWN;
+    tf.characterName = getNameByCharacterId(tf.characterId);
 
     // 利用する変数の初期化
     tf.buttonColor = CLASS_GLINK_DEFAULT;
@@ -57,6 +58,15 @@
 
 ; layer2にキャラ立ち絵を表示したいため、ウィンドウはlayer1に表示する
 [w_openWindow layer="1"]
+
+[ptext layer="1" page="back" text="&tf.characterName" face="MPLUSRounded" size="36" x="180" y="130" width="920" align="center" name="characterName" overwrite="true"]
+[iscript]
+  // キャラ名に下線で色をつける。ティラノの[mark]の内部処理を参考にした
+  tf.characterColor = getBgColorFromCharacterId(tf.characterId);
+  $('.characterName').html(function (_, html) {
+    return `<mark style="margin-right:-1px;background-color:${tf.characterColor} ;color:#28332a;background: linear-gradient(transparent 80%, ${tf.characterColor} 0%);padding-top:4px;padding-bottom:4px;">${html}</mark>`;
+  });
+[endscript]
 
 *show
 [glink color="&tf.selectedButtonColor" size="26" width="210" x="875" y="80" text="閉じる" target="*returnMain"]
