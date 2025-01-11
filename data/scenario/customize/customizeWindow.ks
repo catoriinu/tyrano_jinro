@@ -64,7 +64,7 @@
   // キャラ名に下線で色をつける。ティラノの[mark]の内部処理を参考にした
   tf.characterColor = getBgColorFromCharacterId(tf.characterId);
   $('.characterName').html(function (_, html) {
-    return `<mark style="margin-right:-1px;background-color:${tf.characterColor} ;color:#28332a;background: linear-gradient(transparent 80%, ${tf.characterColor} 0%);padding-top:4px;padding-bottom:4px;">${html}</mark>`;
+    return `<mark style="margin-right:-1px; background-color:${tf.characterColor}; color:#28332a; background:linear-gradient(transparent 80%, ${tf.characterColor} 0%); padding-top:4px; padding-bottom:4px;">${html}</mark>`;
   });
 [endscript]
 
