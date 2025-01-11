@@ -64,10 +64,10 @@
 *return_from_select_role
 
 ; ウィンドウ上部のタブボタン
-[glink color="&tf.selectedButtonColor" size="28" width="250" x="230" y="100" text="役職設定" target="*start" cond="tf.selectedButton === 'roleSelect'"]
-[glink color="&tf.buttonColor" size="28" width="250" x="230" y="100" text="役職設定" target="*start" cond="tf.selectedButton !== 'roleSelect'"]
-[glink color="&tf.selectedButtonColor" size="28" width="250" x="513" y="100" text="性格情報" target="*start" cond="tf.selectedButton === 'personalInfo'"]
-[glink color="&tf.buttonColor" size="28" width="250" x="513" y="100" text="性格情報" target="*start" cond="tf.selectedButton !== 'personalInfo'"]
+;[glink color="&tf.selectedButtonColor" size="28" width="250" x="230" y="100" text="役職設定" target="*start" cond="tf.selectedButton === 'roleSelect'"]
+;[glink color="&tf.buttonColor" size="28" width="250" x="230" y="100" text="役職設定" target="*start" cond="tf.selectedButton !== 'roleSelect'"]
+;[glink color="&tf.selectedButtonColor" size="28" width="250" x="513" y="100" text="性格情報" target="*start" cond="tf.selectedButton === 'personalInfo'"]
+;[glink color="&tf.buttonColor" size="28" width="250" x="513" y="100" text="性格情報" target="*start" cond="tf.selectedButton !== 'personalInfo'"]
 ; 閉じるボタンまたは枠外（左右上下）のクリックで閉じる
 [glink color="&tf.buttonColor" size="28" width="250" x="796" y="100" text="閉じる" target="*returnMain"]
 [w_makeClickableAreaOuterWindow storage="customize/customizeWindow.ks" target="*returnMain"]
@@ -110,18 +110,11 @@ tf.roleStorage = 'role/icon_' + tf.roleId + '.png';
 ; 参加不可能な役職はボタンではなくテキストを表示
 [ptext layer="2" page="back" size="26" x="&(tf.buttonX + 25)" y="&(tf.buttonY + 5)" text="人数オーバー" color="#28332a" cond="!tf.roleButtonAvailable"]
 ; 参加可能な役職のボタン
-[glink color="&tf.buttonColor"         size="26" width="200" x="&tf.buttonX" y="&tf.buttonY" text="&tf.roleButtonText" target="*select_role" preexp="tf.roleId" exp="tf.currentRoleId = preexp" cond="tf.roleButtonAvailable && tf.roleId !== tf.currentRoleId"]
+[glink color="&tf.buttonColor"         size="26" width="200" x="&tf.buttonX" y="&tf.buttonY" text="&tf.roleButtonText" target="*returnMain" preexp="tf.roleId" exp="tf.currentRoleId = preexp" cond="tf.roleButtonAvailable && tf.roleId !== tf.currentRoleId"]
 ; そのキャラの役職として選択中の役職のボタン
-[glink color="&tf.selectedButtonColor" size="26" width="200" x="&tf.buttonX" y="&tf.buttonY" text="&tf.roleButtonText" target="*select_role" preexp="tf.roleId" exp="tf.currentRoleId = preexp" cond="tf.roleButtonAvailable && tf.roleId === tf.currentRoleId"]
+[glink color="&tf.selectedButtonColor" size="26" width="200" x="&tf.buttonX" y="&tf.buttonY" text="&tf.roleButtonText" target="*returnMain" preexp="tf.roleId" exp="tf.currentRoleId = preexp" cond="tf.roleButtonAvailable && tf.roleId === tf.currentRoleId"]
 [return]
 
-
-
-; 役職ボタンを押した後の処理
-*select_role
-[freeimage layer="2" page="back"]
-[jump storage="customize/customizeWindow.ks" target="*return_from_select_role"]
-[s]
 
 
 ; メイン画面に戻る
