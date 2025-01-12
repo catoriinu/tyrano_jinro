@@ -73,7 +73,9 @@
 [w_makeClickableAreaOuterWindow storage="customize/customizeWindow.ks" target="*returnMain"]
 
 ; 役職設定
-[call target="*selectRole"]
+;[call target="*selectRole"]
+; キャラ情報
+[call target="*charaInfo"]
 
 ; 最初にウィンドウを開いたときだけ、裏ページからトランジションする
 [trans layer="1" time="1" cond="tf.needTrans"]
@@ -84,8 +86,8 @@
 
 ; 役職設定用サブルーチン
 *selectRole
-  [glink color="&tf.buttonColor" size="26" width="210" x="192" y="80" text="←キャラ情報" target="*start"]
-  [ptext layer="1" page="back" text="役職設定" face="MPLUSRounded" size="36" x="180" y="80" width="920" align="center" name="helpTitle" overwrite="true"]
+  [glink color="&tf.buttonColor" size="26" width="210" x="192" y="80" text="←キャラ情報" target="*show"]
+  [ptext layer="1" page="back" text="役職設定" face="MPLUSRounded" size="36" x="180" y="80" width="920" align="center" name="windowTitle" overwrite="true"]
 
   ; 役職設定ボタン表示用ループ
   [eval exp="tf.roleCount = 0"]
@@ -124,6 +126,18 @@ tf.roleStorage = 'role/icon_' + tf.roleId + '.png';
 [glink color="&tf.buttonColor"         size="26" width="200" x="&tf.buttonX" y="&tf.buttonY" text="&tf.roleButtonText" target="*returnMain" preexp="tf.roleId" exp="tf.currentRoleId = preexp" cond="tf.roleButtonAvailable && tf.roleId !== tf.currentRoleId"]
 ; そのキャラの役職として選択中の役職のボタン
 [glink color="&tf.selectedButtonColor" size="26" width="200" x="&tf.buttonX" y="&tf.buttonY" text="&tf.roleButtonText" target="*returnMain" preexp="tf.roleId" exp="tf.currentRoleId = preexp" cond="tf.roleButtonAvailable && tf.roleId === tf.currentRoleId"]
+[return]
+
+
+
+; キャラ情報用サブルーチン
+*charaInfo
+  [glink color="&tf.buttonColor" size="26" width="210" x="192" y="80" text="役職設定→" target="*show"]
+  [ptext layer="1" page="back" text="キャラ情報" face="MPLUSRounded" size="36" x="180" y="80" width="920" align="center" name="windowTitle" overwrite="true"]
+
+  ; キャラ情報テキストをサブルーチン内で変数に格納してから、表示する
+  [call storage="customize/charaInfo.ks" target="&tf.characterId"]
+  [ptext layer="1" page="back" text="&tf.infoText" face="MPLUSRounded" size="26" x="180" y="200" width="920" align="left" name="charaInfoText" overwrite="true"]
 [return]
 
 
