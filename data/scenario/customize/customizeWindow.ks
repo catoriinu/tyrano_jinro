@@ -11,8 +11,12 @@
     // 利用する変数の初期化
     tf.buttonColor = CLASS_GLINK_DEFAULT;
     tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
-    tf.selectedButton = 'roleSelect';
+    // ウィンドウに表示する要素（役職設定='selectRole', キャラ情報='charaInfo'）
+    // TODO:ウィンドウを表示するときのクリッカブル領域によって入れ分けておく
+    tf.windowElements = 'selectRole';
+    // トランジション要否（elementPageは、トランジションするなら'back'に、トランジションしないなら'fore'にすること）
     tf.needTrans = true;
+    tf.elementPage = 'back';
 
     // 役職の残り参加可能人数データ
     const roleDataWithRemainingCapacity = getRoleDataWithRemainingCapacity(f.currentJinroGameData);
@@ -59,6 +63,7 @@
 ; layer2にキャラ立ち絵を表示したいため、ウィンドウはlayer1に表示する
 [w_openWindow layer="1"]
 
+; キャラ名表示
 [ptext layer="1" page="back" text="&tf.characterName" face="MPLUSRounded" size="36" x="180" y="130" width="920" align="center" name="characterName" overwrite="true"]
 [iscript]
   // キャラ名に下線で色をつける。ティラノの[mark]の内部処理を参考にした
@@ -72,22 +77,42 @@
 [glink color="&tf.selectedButtonColor" size="26" width="210" x="875" y="80" text="閉じる" target="*returnMain"]
 [w_makeClickableAreaOuterWindow storage="customize/customizeWindow.ks" target="*returnMain"]
 
-; 役職設定
-;[call target="*selectRole"]
-; キャラ情報
-[call target="*charaInfo"]
+; これから表示する要素以外は消す
+[call target="*hideElements"]
 
-; 最初にウィンドウを開いたときだけ、裏ページからトランジションする
+; 「役職設定」を表示する
+[call target="*selectRole" cond="tf.windowElements === 'selectRole'"]
+; 「キャラ情報」を表示する
+[call target="*charaInfo" cond="tf.windowElements === 'charaInfo'"]
+
+; 最初にウィンドウを開いたときだけ、裏ページからトランジションする。トランジションするたびにウィンドウの[kanim]が実行されてしまうので、内容切り替え時にトランジションするのは諦める
 [trans layer="1" time="1" cond="tf.needTrans"]
-[eval exp="tf.needTrans = false"]
+[iscript]
+  tf.needTrans = false;
+  tf.elementPage = 'fore';
+[endscript]
 [s]
+
+
+
+; 要素削除サブルーチン
+*hideElements
+  ; これから表示する要素ではない要素は消す
+  ; windowTitleは上書きされるため、characterNameは共通のため、消さなくてよい
+  [free layer="1" name="selectRoleElement" cond="tf.windowElements !== 'selectRole'"]
+  [free layer="1" name="charaInfoElement" cond="tf.windowElements !== 'charaInfo'"]
+
+  ; トランジションしないときのみ、消した状態の表ページの要素を裏ページにコピーする
+  ; トランジションするとき=[kanim]を実行するときにコピーが行われると、アニメーションが中断されてウィンドウが表示できなくなるので避ける
+  [backlay layer="1" cond="!tf.needTrans"]
+[return]
 
 
 
 ; 役職設定用サブルーチン
 *selectRole
-  [glink color="&tf.buttonColor" size="26" width="210" x="192" y="80" text="←キャラ情報" target="*show"]
-  [ptext layer="1" page="back" text="役職設定" face="MPLUSRounded" size="36" x="180" y="80" width="920" align="center" name="windowTitle" overwrite="true"]
+  [glink color="&tf.buttonColor" size="26" width="210" x="192" y="80" text="←キャラ情報" target="*show" preexp="'charaInfo'" exp="tf.windowElements = preexp"]
+  [ptext layer="1" page="&tf.elementPage" text="役職設定" face="MPLUSRounded" size="36" x="180" y="80" width="920" align="center" name="windowTitle" overwrite="true"]
 
   ; 役職設定ボタン表示用ループ
   [eval exp="tf.roleCount = 0"]
@@ -118,10 +143,10 @@ tf.roleStorage = 'role/icon_' + tf.roleId + '.png';
 [endscript]
 
 ; 役職アイコン
-[image folder="image" page="back" storage="&tf.roleStorage" layer="1" width="&tf.iconSize" haight="&tf.iconSize" left="250" top="&tf.top"]
+[image folder="image" page="&tf.elementPage" storage="&tf.roleStorage" layer="1" width="&tf.iconSize" haight="&tf.iconSize" left="250" top="&tf.top" name="selectRoleElement"]
 
 ; 参加不可能な役職はボタンではなくテキストを表示
-[ptext layer="1" page="back" size="26" x="&(tf.buttonX + 25)" y="&(tf.buttonY + 5)" text="人数オーバー" color="#28332a" cond="!tf.roleButtonAvailable"]
+[ptext layer="1" page="&tf.elementPage" size="26" x="&(tf.buttonX + 25)" y="&(tf.buttonY + 5)" text="人数オーバー" color="#28332a" cond="!tf.roleButtonAvailable" name="selectRoleElement"]
 ; 参加可能な役職のボタン
 [glink color="&tf.buttonColor"         size="26" width="200" x="&tf.buttonX" y="&tf.buttonY" text="&tf.roleButtonText" target="*returnMain" preexp="tf.roleId" exp="tf.currentRoleId = preexp" cond="tf.roleButtonAvailable && tf.roleId !== tf.currentRoleId"]
 ; そのキャラの役職として選択中の役職のボタン
@@ -132,12 +157,12 @@ tf.roleStorage = 'role/icon_' + tf.roleId + '.png';
 
 ; キャラ情報用サブルーチン
 *charaInfo
-  [glink color="&tf.buttonColor" size="26" width="210" x="192" y="80" text="役職設定→" target="*show"]
-  [ptext layer="1" page="back" text="キャラ情報" face="MPLUSRounded" size="36" x="180" y="80" width="920" align="center" name="windowTitle" overwrite="true"]
+  [glink color="&tf.buttonColor" size="26" width="210" x="192" y="80" text="役職設定→" target="*show" preexp="'selectRole'" exp="tf.windowElements = preexp"]
+  [ptext layer="1" page="&tf.elementPage" text="キャラ情報" face="MPLUSRounded" size="36" x="180" y="80" width="920" align="center" name="windowTitle" overwrite="true"]
 
   ; キャラ情報テキストをサブルーチン内で変数に格納してから、表示する
   [call storage="customize/charaInfo.ks" target="&tf.characterId"]
-  [ptext layer="1" page="back" text="&tf.infoText" face="MPLUSRounded" size="26" x="180" y="200" width="920" align="left" name="charaInfoText" overwrite="true"]
+  [ptext layer="1" page="&tf.elementPage" text="&tf.infoText" face="MPLUSRounded" size="26" x="180" y="200" width="920" align="left" name="charaInfoElement" overwrite="true"]
 [return]
 
 
