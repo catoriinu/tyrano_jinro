@@ -1,4 +1,6 @@
 ; カスタマイズウィンドウ
+; 事前準備：
+; tf.windowElementsにウィンドウに表示する要素を入れておくこと（役職設定='selectRole', キャラ情報='charaInfo'）
 
 *start
 [iscript]
@@ -11,9 +13,7 @@
     // 利用する変数の初期化
     tf.buttonColor = CLASS_GLINK_DEFAULT;
     tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
-    // ウィンドウに表示する要素（役職設定='selectRole', キャラ情報='charaInfo'）
-    // TODO:ウィンドウを表示するときのクリッカブル領域によって入れ分けておく
-    tf.windowElements = 'selectRole';
+
     // トランジション要否（elementPageは、トランジションするなら'back'に、トランジションしないなら'fore'にすること）
     tf.needTrans = true;
     tf.elementPage = 'back';

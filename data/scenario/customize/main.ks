@@ -18,7 +18,7 @@ f.currentJinroGameData = sf.jinroGameDataObjects[sf.currentJinroGameDataKey];
 [iscript]
 tf.participantCount = 0;
 tf.iconSize = 105;
-tf.baseTop = 160;
+tf.baseTop = 155;
 tf.offsetTop = 110;
 tf.clickableWidth = tf.iconSize * 2;
 
@@ -45,7 +45,8 @@ tf.buttonColor = CLASS_GLINK_DEFAULT;
 *displayParticipantIcon
 [iscript]
 tf.top = tf.baseTop + (tf.offsetTop * tf.participantCount);
-tf.target = '*customize_window_' + tf.participantCount;
+tf.targetCharaInfo = '*window_charaInfo_' + tf.participantCount;
+tf.targetSelectRole = '*window_selectRole_' + tf.participantCount;
 
 const participant = getParticipantWithIndexFromJinroGameData(f.currentJinroGameData, tf.participantCount);
 const characterId = participant.characterId;
@@ -57,8 +58,10 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 
 [image folder="image" page="back" storage="&tf.sdStorage" layer="0" width="&tf.iconSize" haight="&tf.iconSize" left="100" top="&tf.top"]
 [image folder="image" page="back" storage="&tf.roleStorage" layer="0" width="&tf.iconSize" haight="&tf.iconSize" left="205" top="&tf.top"]
-[clickable width="&tf.clickableWidth" height="&tf.iconSize" x="100" y="&tf.top" color="0x333333" opacity="0" mouseopacity="40" target="&tf.target"]
 
+; キャラアイコンには「キャラ情報」への、役職アイコンには「役職設定」へのクリッカブル領域を作成
+[clickable width="&tf.iconSize" height="&tf.iconSize" x="100" y="&tf.top" color="0x333333" opacity="0" mouseopacity="40" target="&tf.targetCharaInfo"]
+[clickable width="&tf.iconSize" height="&tf.iconSize" x="205" y="&tf.top" color="0x333333" opacity="0" mouseopacity="40" target="&tf.targetSelectRole"]
 [return]
 
 
@@ -84,24 +87,74 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 
 
 
-*customize_window_0
-[eval exp="f.selectedParticipantIndex = 0"]
+*window_charaInfo_0
+[iscript]
+  f.selectedParticipantIndex = 0;
+  tf.windowElements = 'charaInfo';
+[endscript]
 [jump target="*jump_customizeWindow"]
 
-*customize_window_1
-[eval exp="f.selectedParticipantIndex = 1"]
+*window_charaInfo_1
+[iscript]
+  f.selectedParticipantIndex = 1;
+  tf.windowElements = 'charaInfo';
+[endscript]
 [jump target="*jump_customizeWindow"]
 
-*customize_window_2
-[eval exp="f.selectedParticipantIndex = 2"]
+*window_charaInfo_2
+[iscript]
+  f.selectedParticipantIndex = 2;
+  tf.windowElements = 'charaInfo';
+[endscript]
 [jump target="*jump_customizeWindow"]
 
-*customize_window_3
-[eval exp="f.selectedParticipantIndex = 3"]
+*window_charaInfo_3
+[iscript]
+  f.selectedParticipantIndex = 3;
+  tf.windowElements = 'charaInfo';
+[endscript]
 [jump target="*jump_customizeWindow"]
 
-*customize_window_4
-[eval exp="f.selectedParticipantIndex = 4"]
+*window_charaInfo_4
+[iscript]
+  f.selectedParticipantIndex = 4;
+  tf.windowElements = 'charaInfo';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
+*window_selectRole_0
+[iscript]
+  f.selectedParticipantIndex = 0;
+  tf.windowElements = 'selectRole';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
+*window_selectRole_1
+[iscript]
+  f.selectedParticipantIndex = 1;
+  tf.windowElements = 'selectRole';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
+*window_selectRole_2
+[iscript]
+  f.selectedParticipantIndex = 2;
+  tf.windowElements = 'selectRole';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
+*window_selectRole_3
+[iscript]
+  f.selectedParticipantIndex = 3;
+  tf.windowElements = 'selectRole';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
+*window_selectRole_4
+[iscript]
+  f.selectedParticipantIndex = 4;
+  tf.windowElements = 'selectRole';
+[endscript]
 [jump target="*jump_customizeWindow"]
 
 *jump_customizeWindow
