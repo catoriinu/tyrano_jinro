@@ -9,8 +9,10 @@
 [bg storage="../image/config/voivo_config_bg_v2.png" time="100"]
 
 [iscript]
-// 現在の（カスタマイズ対象の）人狼ゲームデータを取得する
+// カスタマイズ画面を開いた時点の、カスタマイズ対象の人狼ゲームデータとを取得する
 f.currentJinroGameData = sf.jinroGameDataObjects[sf.currentJinroGameDataKey];
+// 現在の参加者リスト。参加者情報に更新があったらアイコンを更新するという判定に使う。なのでこの時点ではあえて空配列。
+f.currentParticipantList = [];
 [endscript]
 
 
@@ -38,6 +40,10 @@ tf.buttonColor = CLASS_GLINK_DEFAULT;
 *end_displayParticipantIcon
 
 [trans layer="0" time="1"]
+[iscript]
+  // カスタマイズウィンドウを閉じて再度メイン画面を表示したときに画像更新判定をするために、現時点での参加者リストを保存しておく
+  f.currentParticipantList = clone(f.currentJinroGameData.participantList);
+[endscript]
 [s]
 
 
@@ -48,16 +54,33 @@ tf.top = tf.baseTop + (tf.offsetTop * tf.participantCount);
 tf.targetCharaInfo = '*window_charaInfo_' + tf.participantCount;
 tf.targetSelectRole = '*window_selectRole_' + tf.participantCount;
 
+// アイコン画像のnameパラメータ（=class属性）
+tf.charaIconName = 'charaIcon_' + tf.participantCount;
+tf.roleIconName = 'roleIcon_' + tf.participantCount;
+
+// 参加者情報を取得
 const participant = getParticipantWithIndexFromJinroGameData(f.currentJinroGameData, tf.participantCount);
 const characterId = participant.characterId;
 const roleId = participant.roleId || ROLE_ID_UNKNOWN;
 
+// アイコン画像の更新要否判定。現在表示しているキャラや役職と変わっていたなら画像を更新する（ただし初回なら必ず表示する）
+const currentParticipant = f.currentParticipantList[tf.participantCount] || null;
+tf.needUpdateCharaIcon = (currentParticipant === null || currentParticipant.characterId !== characterId);
+tf.needUpdateRoleIcon = (currentParticipant === null || currentParticipant.roleId !== participant.roleId);
+
+// 画像ファイルパス
 tf.sdStorage = 'sdchara/' + characterId + '.png';
 tf.roleStorage = 'role/icon_' + roleId + '.png';
 [endscript]
 
-[image folder="image" page="back" storage="&tf.sdStorage" layer="0" width="&tf.iconSize" haight="&tf.iconSize" left="100" top="&tf.top"]
-[image folder="image" page="back" storage="&tf.roleStorage" layer="0" width="&tf.iconSize" haight="&tf.iconSize" left="205" top="&tf.top"]
+; 画像を更新する場合、裏ページ（※）のアイコンを削除しておく。残しておくと、画面上では重なって見えないがimageタグ自体は残り続けたままになってしまうため
+; ※[free]タグのpageパラメータはv6タグリファレンスには明記されていないが、ティラノのv600a時点で指定できることを確認した
+[free layer="0" page="back" name="&tf.charaIconName" cond="tf.needUpdateCharaIcon"]
+[free layer="0" page="back" name="&tf.roleIconName" cond="tf.needUpdateRoleIcon"]
+
+; キャラアイコンと役職アイコン表示
+[image folder="image" page="back" storage="&tf.sdStorage" layer="0" width="&tf.iconSize" haight="&tf.iconSize" left="100" top="&tf.top" name="&tf.charaIconName" cond="tf.needUpdateCharaIcon"]
+[image folder="image" page="back" storage="&tf.roleStorage" layer="0" width="&tf.iconSize" haight="&tf.iconSize" left="205" top="&tf.top" name="&tf.roleIconName" cond="tf.needUpdateRoleIcon"]
 
 ; キャラアイコンには「キャラ情報」への、役職アイコンには「役職設定」へのクリッカブル領域を作成
 [clickable width="&tf.iconSize" height="&tf.iconSize" x="100" y="&tf.top" color="0x333333" opacity="0" mouseopacity="40" target="&tf.targetCharaInfo"]
