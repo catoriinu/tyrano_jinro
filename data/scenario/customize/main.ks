@@ -6,7 +6,7 @@
 [clearfix]
 [start_keyconfig]
 
-[bg storage="../image/config/voivo_config_bg.png" time="100"]
+[bg storage="../image/config/voivo_config_bg_v2.png" time="100"]
 
 [iscript]
 // 現在の（カスタマイズ対象の）人狼ゲームデータを取得する
@@ -17,9 +17,9 @@ f.currentJinroGameData = sf.jinroGameDataObjects[sf.currentJinroGameDataKey];
 *hideCustomizeWindow
 [iscript]
 tf.participantCount = 0;
-tf.iconSize = 100;
-tf.baseTop = 190;
-tf.offsetTop = 102;
+tf.iconSize = 105;
+tf.baseTop = 160;
+tf.offsetTop = 110;
 tf.clickableWidth = tf.iconSize * 2;
 
 tf.buttonColor = CLASS_GLINK_DEFAULT;
@@ -56,7 +56,7 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 [endscript]
 
 [image folder="image" page="back" storage="&tf.sdStorage" layer="0" width="&tf.iconSize" haight="&tf.iconSize" left="100" top="&tf.top"]
-[image folder="image" page="back" storage="&tf.roleStorage" layer="0" width="&tf.iconSize" haight="&tf.iconSize" left="200" top="&tf.top"]
+[image folder="image" page="back" storage="&tf.roleStorage" layer="0" width="&tf.iconSize" haight="&tf.iconSize" left="205" top="&tf.top"]
 [clickable width="&tf.clickableWidth" height="&tf.iconSize" x="100" y="&tf.top" color="0x333333" opacity="0" mouseopacity="40" target="&tf.target"]
 
 [return]

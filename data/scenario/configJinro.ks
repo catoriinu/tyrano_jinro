@@ -55,9 +55,9 @@
 [cm]
 
 ; コンフィグ用の背景を読み込んでトランジション
-[image storage="&tf.img_path +'voivo_config_bg.png'" layer="1" visible="true" left="0" top="0" width="1280" height="720" name="config_bg" time="100"]
+[image storage="&tf.img_path +'voivo_config_bg_v2.png'" layer="1" visible="true" left="0" top="0" width="1280" height="720" name="config_bg" time="100"]
 
-[ptext layer="1" x="490" y="30"  text="コンフィグ" color="#28332a" size="60"]
+[ptext layer="1" x="490" y="25"  text="コンフィグ" color="#28332a" size="60"]
 [ptext layer="1" x="100" y="170" text="音量" color="#28332a" size="44"]
 [ptext layer="1" x="245" y="170" text="BGM" color="#28332a" size="44"]
 [ptext layer="1" x="245" y="255" text="SE" color="#28332a" size="44"]
