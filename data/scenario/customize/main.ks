@@ -276,9 +276,14 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
       const dropAreaName = f.dragitem[participant.characterId];
       const afterIndex = parseInt(dropAreaName.split('_')[1]);
 
-      // 順番が更新されていたら、参加者オブジェクトを人狼ゲームデータに入れ直す。
+      // 順番が更新されていたら、参加者オブジェクトを人狼ゲームデータに入れ直す
       if (afterIndex !== currentIndex) {
         replaceParticipantInJinroGameData(f.currentJinroGameData, afterIndex, participant);
+
+        // dragArea_0が更新されていた場合、プレイヤーキャラクターを変更する
+        if (afterIndex === 0) {
+          f.currentJinroGameData.playerCharacterId = participant.characterId;
+        }
       }
       currentIndex++;
     }
