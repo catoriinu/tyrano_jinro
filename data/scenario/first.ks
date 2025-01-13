@@ -25,6 +25,8 @@
 
 ; さくた氏の「拡張UIパーツプラグイン」
 [plugin name="uiparts_set"]
+; ティラノ公式の「ドラッグ＆ドロッププラクイン」
+[plugin name="drag-and-drop"]
 
 ; ボイボ人狼用初期化
 [call storage="theater/macros.ks"]

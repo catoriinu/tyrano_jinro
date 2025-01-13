@@ -11,6 +11,7 @@ data/others/testjs.js
 data/others/plugin/for/
 data/others/plugin/jinro/memo/*.drawio
 data/others/plugin/uiparts_set/
+data/others/plugin/drag-and-drop/
 data/scenario/cg.ks
 data/scenario/config.ks
 data/scenario/make.ks
