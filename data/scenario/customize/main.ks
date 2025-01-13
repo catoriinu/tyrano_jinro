@@ -112,7 +112,8 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 ; fixボタンをクリア
 [clearfix]
 [layopt layer="message0" visible="false"]
-[freeimage layer="0"]
+[freeimage layer="0" page="fore"]
+[freeimage layer="0" page="back"]
 [jump storage="title.ks"]
 [s]
 
@@ -121,7 +122,8 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 *startPlay
 [clearfix]
 [layopt layer="message0" visible="false"]
-[freeimage layer="0"]
+[freeimage layer="0" page="fore"]
+[freeimage layer="0" page="back"]
 [stopbgm]
 
 ; 人狼ゲームの準備、導入編自動再生、ゲーム開始
