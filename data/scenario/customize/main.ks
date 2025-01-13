@@ -92,7 +92,7 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 [endscript]
 
 ; 画像を更新する場合、裏ページ（※）のアイコンを削除しておく。残しておくと、画面上では重なって見えないがimageタグ自体は残り続けたままになってしまうため
-; ※[free]タグのpageパラメータはv6タグリファレンスには明記されていないが、ティラノのv600a時点で指定できることを確認した
+; ※[free]タグのpageパラメータはv6タグリファレンスには明記されていないが、ティラノのv600beta5時点で指定できることを確認した
 [free layer="0" page="back" name="&tf.charaIconName" cond="tf.needUpdateCharaIcon"]
 [free layer="0" page="back" name="&tf.roleIconName" cond="tf.needUpdateRoleIcon"]
 
