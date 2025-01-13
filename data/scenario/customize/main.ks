@@ -8,6 +8,8 @@
 
 [bg storage="../image/config/voivo_config_bg_v2.png" time="100"]
 
+
+*return_from_resetToDefault
 [iscript]
 // カスタマイズ画面を開いた時点の、カスタマイズ対象の人狼ゲームデータとを取得する
 f.currentJinroGameData = sf.jinroGameDataObjects[sf.currentJinroGameDataKey];
@@ -32,8 +34,13 @@ tf.buttonColor = CLASS_GLINK_DEFAULT;
 
 ; 画面上部のボタン表示
 [button fix="true" graphic="button/button_return_normal.png" enterimg="button/button_return_hover.png" target="*returnTitle" x="1143" y="17" width="114" height="103"]
-[glink color="&tf.buttonColor" size="28" width="250" x="850" y="43" text="プレイスタート" target="*startPlay"]
-[glink color="&tf.buttonColor" size="28" width="250" x="550" y="43" text="参加者編集" target="*startEditMode"]
+[glink color="&tf.buttonColor" size="26" width="220" x="395" y="22" text="デフォルト設定" target="*resetToDefault"]
+[glink color="&tf.buttonColor" size="26" width="220" x="645" y="22" text="参加者編集" target="*startEditMode"]
+[glink color="&tf.buttonColor" size="26" width="220" x="895" y="22" text="プレイスタート" target="*startPlay"]
+
+; タイトルバーのテキスト表示
+[ptext layer="0" page="back" name="titleText" x="25" y="16" text="カスタマイズ" color="#28332a" size="44" overwrite="true"]
+[ptext layer="0" page="back" name="explainText" x="25" y="85" text="キャラアイコン：キャラ情報　役職アイコン：役職設定" color="#28332a" size="28" overwrite="true"]
 
 ; キャラアイコン、役職アイコンとそのクリッカブル領域を表示
 *start_displayParticipantIcon
@@ -221,6 +228,10 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 
   [clearfix]
 
+  ; タイトルバーのテキスト表示
+  [ptext layer="0" page="fore" name="titleText" x="25" y="16" text="参加者編集" color="#28332a" size="44" overwrite="true"]
+  [ptext layer="0" page="fore" name="explainText" x="25" y="85" text="緑：プレイヤー　青：NPC　ドラッグ＆ドロップで並び替え" color="#28332a" size="28" overwrite="true"]
+
   ; キャラアイコンは裏ページからは消しておかないとドラッグアイテム生成時に問題が起きる（表の画像も裏の画像も同じnameなので、ドラッグアイテムが2つ生成されてしまう）
   [free layer="0" page="back" name="charaIcon"]
   ; 参加者編集時に役職は関係ないので消してスペース確保。参加者編集完了後には全アイコン必ず再表示するので、今のうちに表からも裏からも消しておく
@@ -236,7 +247,7 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
   *end_prepareDragDrop
 
   ; 編集完了ボタン
-  [glink color="&tf.buttonColor" size="28" width="250" x="550" y="43" text="編集完了" target="*endEditMode"]
+  [glink color="&tf.buttonColor" size="26" width="220" x="645" y="22" text="編集完了" target="*endEditMode"]
 [s]
 
 
@@ -298,4 +309,18 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
   [endscript]
 
   [jump target="*return_from_EditMode"]
+[s]
+
+
+
+; デフォルト設定に戻す
+*resetToDefault
+  [iscript]
+    resetJinroGameDataObjectsToDefault();
+    f.currentParticipantList = [];
+  [endscript]
+
+  [free layer="0" page="back" name="charaIcon"]
+  [free layer="0" page="back" name="roleIcon"]
+  [jump target="*return_from_resetToDefault"]
 [s]
