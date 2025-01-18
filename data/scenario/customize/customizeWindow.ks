@@ -1,6 +1,6 @@
 ; カスタマイズウィンドウ
 ; 事前準備：
-; tf.windowElementsにウィンドウに表示する要素を入れておくこと（役職設定='selectRole', キャラ情報='charaInfo'）
+; tf.windowElementsにウィンドウに表示する要素を入れておくこと（役職設定='selectRole', プロフィール='profile'）
 
 *start
 [iscript]
@@ -82,8 +82,8 @@
 
 ; 「役職設定」を表示する
 [call target="*selectRole" cond="tf.windowElements === 'selectRole'"]
-; 「キャラ情報」を表示する
-[call target="*charaInfo" cond="tf.windowElements === 'charaInfo'"]
+; 「プロフィール」を表示する
+[call target="*profile" cond="tf.windowElements === 'profile'"]
 
 ; 最初にウィンドウを開いたときだけ、裏ページからトランジションする。トランジションするたびにウィンドウの[kanim]が実行されてしまうので、内容切り替え時にトランジションするのは諦める
 [trans layer="1" time="1" cond="tf.needTrans"]
@@ -100,7 +100,7 @@
   ; これから表示する要素ではない要素は消す
   ; windowTitleは上書きされるため、characterNameは共通のため、消さなくてよい
   [free layer="1" name="selectRoleElement" cond="tf.windowElements !== 'selectRole'"]
-  [free layer="1" name="charaInfoElement" cond="tf.windowElements !== 'charaInfo'"]
+  [free layer="1" name="profileElement" cond="tf.windowElements !== 'profile'"]
 
   ; トランジションしないときのみ、消した状態の表ページの要素を裏ページにコピーする
   ; トランジションするとき=[kanim]を実行するときにコピーが行われると、アニメーションが中断されてウィンドウが表示できなくなるので避ける
@@ -111,7 +111,7 @@
 
 ; 役職設定用サブルーチン
 *selectRole
-  [glink color="&tf.buttonColor" size="26" width="210" x="192" y="80" text="←キャラ情報" target="*show" preexp="'charaInfo'" exp="tf.windowElements = preexp"]
+  [glink color="&tf.buttonColor" size="26" width="210" x="192" y="80" text="←プロフィール" target="*show" preexp="'profile'" exp="tf.windowElements = preexp"]
   [ptext layer="1" page="&tf.elementPage" text="役職設定" face="MPLUSRounded" size="36" x="180" y="80" width="920" align="center" name="windowTitle" overwrite="true"]
 
   ; 役職設定ボタン表示用ループ
@@ -155,14 +155,14 @@ tf.roleStorage = 'role/icon_' + tf.roleId + '.png';
 
 
 
-; キャラ情報用サブルーチン
-*charaInfo
+; プロフィール用サブルーチン
+*profile
   [glink color="&tf.buttonColor" size="26" width="210" x="192" y="80" text="役職設定→" target="*show" preexp="'selectRole'" exp="tf.windowElements = preexp"]
-  [ptext layer="1" page="&tf.elementPage" text="キャラ情報" face="MPLUSRounded" size="36" x="180" y="80" width="920" align="center" name="windowTitle" overwrite="true"]
+  [ptext layer="1" page="&tf.elementPage" text="プロフィール" face="MPLUSRounded" size="36" x="180" y="80" width="920" align="center" name="windowTitle" overwrite="true"]
 
-  ; キャラ情報テキストをサブルーチン内で変数に格納してから、表示する
-  [call storage="customize/charaInfo.ks" target="&tf.characterId"]
-  [ptext layer="1" page="&tf.elementPage" text="&tf.infoText" face="MPLUSRounded" size="26" x="180" y="200" width="920" align="left" name="charaInfoElement" overwrite="true"]
+  ; プロフィールテキストをサブルーチン内で変数に格納してから、表示する
+  [call storage="customize/profile.ks" target="&tf.characterId"]
+  [ptext layer="1" page="&tf.elementPage" text="&tf.infoText" face="MPLUSRounded" size="26" x="180" y="200" width="920" align="left" name="profileElement" overwrite="true"]
 [return]
 
 

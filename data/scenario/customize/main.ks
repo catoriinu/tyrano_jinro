@@ -40,7 +40,7 @@ tf.buttonColor = CLASS_GLINK_DEFAULT;
 
 ; タイトルバーのテキスト表示
 [ptext layer="0" page="back" name="titleText" x="25" y="16" text="カスタマイズ" color="#28332a" size="44" overwrite="true"]
-[ptext layer="0" page="back" name="explainText" x="25" y="85" text="キャラアイコン：キャラ情報　役職アイコン：役職設定" color="#28332a" size="28" overwrite="true"]
+[ptext layer="0" page="back" name="explainText" x="25" y="85" text="キャラアイコン：プロフィール　役職アイコン：役職設定" color="#28332a" size="28" overwrite="true"]
 
 ; キャラアイコン、役職アイコンとそのクリッカブル領域を表示
 *start_displayParticipantIcon
@@ -75,7 +75,7 @@ tf.buttonColor = CLASS_GLINK_DEFAULT;
 *displayParticipantIcon
 [iscript]
 tf.top = tf.baseTop + (tf.offsetTop * tf.participantCount);
-tf.targetCharaInfo = '*window_charaInfo_' + tf.participantCount;
+tf.targetprofile = '*window_profile_' + tf.participantCount;
 tf.targetSelectRole = '*window_selectRole_' + tf.participantCount;
 
 // 参加者情報を取得
@@ -107,8 +107,8 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 [image folder="image" page="back" storage="&tf.sdStorage" layer="0" width="&tf.iconSize" height="&tf.iconSize" left="100" top="&tf.top" name="&tf.charaIconName" cond="tf.needUpdateCharaIcon"]
 [image folder="image" page="back" storage="&tf.roleStorage" layer="0" width="&tf.iconSize" height="&tf.iconSize" left="205" top="&tf.top" name="&tf.roleIconName" cond="tf.needUpdateRoleIcon"]
 
-; キャラアイコンには「キャラ情報」への、役職アイコンには「役職設定」へのクリッカブル領域を作成
-[clickable width="&tf.iconSize" height="&tf.iconSize" x="100" y="&tf.top" color="0x333333" opacity="0" mouseopacity="40" target="&tf.targetCharaInfo"]
+; キャラアイコンには「プロフィール」への、役職アイコンには「役職設定」へのクリッカブル領域を作成
+[clickable width="&tf.iconSize" height="&tf.iconSize" x="100" y="&tf.top" color="0x333333" opacity="0" mouseopacity="40" target="&tf.targetprofile"]
 [clickable width="&tf.iconSize" height="&tf.iconSize" x="205" y="&tf.top" color="0x333333" opacity="0" mouseopacity="40" target="&tf.targetSelectRole"]
 [return]
 
@@ -141,38 +141,38 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 
 ; カスタマイズウィンドウを表示する
 ; メモ：最大クリッカブル領域の数（＝最大参加キャラクター数）だけ事前に実装しておくこと
-*window_charaInfo_0
+*window_profile_0
 [iscript]
   f.selectedParticipantIndex = 0;
-  tf.windowElements = 'charaInfo';
+  tf.windowElements = 'profile';
 [endscript]
 [jump target="*jump_customizeWindow"]
 
-*window_charaInfo_1
+*window_profile_1
 [iscript]
   f.selectedParticipantIndex = 1;
-  tf.windowElements = 'charaInfo';
+  tf.windowElements = 'profile';
 [endscript]
 [jump target="*jump_customizeWindow"]
 
-*window_charaInfo_2
+*window_profile_2
 [iscript]
   f.selectedParticipantIndex = 2;
-  tf.windowElements = 'charaInfo';
+  tf.windowElements = 'profile';
 [endscript]
 [jump target="*jump_customizeWindow"]
 
-*window_charaInfo_3
+*window_profile_3
 [iscript]
   f.selectedParticipantIndex = 3;
-  tf.windowElements = 'charaInfo';
+  tf.windowElements = 'profile';
 [endscript]
 [jump target="*jump_customizeWindow"]
 
-*window_charaInfo_4
+*window_profile_4
 [iscript]
   f.selectedParticipantIndex = 4;
-  tf.windowElements = 'charaInfo';
+  tf.windowElements = 'profile';
 [endscript]
 [jump target="*jump_customizeWindow"]
 
