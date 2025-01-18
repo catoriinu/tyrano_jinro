@@ -37,10 +37,16 @@
       draw: 'panicked.png',
     };
 
+    // キャラ立ち絵のfaceとstorageの紐づけ
     f.charaFaceObjects = [
       {face: '通常', storage: 'normal'},
-      {face: '敗北', storage: 'astonished'},
     ];
+
+    // 規定のイベントとfaceの紐づけ
+    f.charaFaceForEvent[tf.characterId] = {
+      '被襲撃': '通常',
+      '投票': '通常',
+    }
   [endscript]
 
   [call storage="./chara/common.ks" target="*executeCharaNewFaceShow"]

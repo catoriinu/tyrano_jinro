@@ -16,6 +16,8 @@
     f.color.character = {}
     // ステータス画面等の立ち絵用オブジェクト
     f.statusFace = {}
+    // 規定のイベントとfaceの紐づけ用オブジェクト
+    f.charaFaceForEvent = {}
   [endscript]
   ; ここに来るまでにシナリオの都合でフィルターをかけている可能性があるので、外しておく。
   ; MEMO: 現状全フィルター外してしまっているので、問題がある場合はlayer指定やname指定やcond指定などすること

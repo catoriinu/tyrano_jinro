@@ -265,6 +265,7 @@
 ; すでにそのキャラがchara_newで登録,およびその表情がchara_faceで登録済みである前提とする。
 ; @param characterId 登場させたいキャラのキャラクターID。必須。
 ; @param face 登場させたいキャラのface。未指定の場合は表情は変えない。
+; @param eventFace イベント名。規定のイベントに紐づくfaceがあるときその表情に変える。face引数より優先する。
 ; @param side 画面のどちら側に登場させるか。'left'で左側。それ以外または未指定の場合は右側。
 [macro name="m_changeCharacter"]
   [iscript]
@@ -276,6 +277,11 @@
     if (!(('side' in tf.cc) && tf.cc.side == 'left')) {
       tf.cc.side = 'right';
       tf.cc.counterSide = 'left';
+    }
+
+    // eventFace引数が渡された場合、イベントに紐づくfaceに上書きする
+    if ('eventFace' in tf.cc && tf.cc.eventFace in f.charaFaceForEvent[mp.characterId]) {
+      tf.cc.face = f.charaFaceForEvent[mp.characterId][tf.cc.eventFace];
     }
 
     // スキップ中は表情切り替え時間を0にする。そうしないとフリーズする危険がある
