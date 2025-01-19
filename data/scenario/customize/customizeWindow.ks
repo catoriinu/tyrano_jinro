@@ -162,7 +162,7 @@ tf.roleStorage = 'role/icon_' + tf.roleId + '.png';
 
   ; プロフィールテキストをサブルーチン内で変数に格納してから、表示する
   [call storage="customize/profile.ks" target="&tf.characterId"]
-  [ptext layer="1" page="&tf.elementPage" text="&tf.infoText" face="MPLUSRounded" size="26" x="180" y="200" width="920" align="left" name="profileElement" overwrite="true"]
+  [ptext layer="1" page="&tf.elementPage" text="&tf.profileText" face="MPLUSRounded" size="26" x="185" y="200" width="920" align="left" name="profileElement" overwrite="true"]
 [return]
 
 
