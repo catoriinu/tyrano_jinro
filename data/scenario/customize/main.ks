@@ -18,7 +18,7 @@ f.currentParticipantList = [];
 // 参加者編集モードの後処理要否フラグ
 tf.needTeardownEditMode = false;
 
-// 「参加者編集」「デフォルト設定」ボタンを表示してよいかの判定フラグ
+// 「参加者編集」ボタンを表示してよいかの判定フラグ
 const isPage01AllCleared = (getTheaterProgress('p01', 'e08') === EPISODE_STATUS.OUTRO_UNLOCKED);
 tf.allowShowEditButton = (isPage01AllCleared || sf.isDebugMode);
 [endscript]
@@ -38,7 +38,7 @@ tf.buttonColor = CLASS_GLINK_DEFAULT;
 
 ; 画面上部のボタン表示
 [button fix="true" graphic="button/button_return_normal.png" enterimg="button/button_return_hover.png" target="*returnTitle" x="1143" y="17" width="114" height="103"]
-[glink color="&tf.buttonColor" size="26" width="220" x="395" y="22" text="デフォルト設定" target="*resetToDefault" cond="tf.allowShowEditButton"]
+[glink color="&tf.buttonColor" size="26" width="220" x="395" y="22" text="リセット" target="*resetToDefault"]
 [glink color="&tf.buttonColor" size="26" width="220" x="645" y="22" text="参加者編集" target="*startEditMode" cond="tf.allowShowEditButton"]
 [glink color="&tf.buttonColor" size="26" width="220" x="895" y="22" text="プレイスタート" target="*startPlay"]
 
@@ -317,7 +317,7 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 
 
 
-; デフォルト設定に戻す
+; デフォルト設定にリセットする
 *resetToDefault
   [iscript]
     resetJinroGameDataObjectsToDefault();
