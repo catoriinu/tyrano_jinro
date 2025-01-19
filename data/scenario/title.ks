@@ -48,7 +48,7 @@
 [if exp="tf.isInstructionCleared"]
   [glink color="&tf.buttonColor" size="30" width="300" x="138" y="460" name="buttonhover" text="シアター" target="*theater"]
   [glink color="&tf.buttonColor" size="30" width="300" x="488" y="580" name="buttonhover" text="カスタマイズ" target="*customize"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="580" name="buttonhover" text="遊び方" target="*help"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="580" name="buttonhover" text="ヘルプ" target="*help"]
 
   ; 視聴済みエピソードスキップ要否ボタンを表示
   [iscript]
@@ -120,7 +120,7 @@
 
 
 *help
-; 遊び方ウィンドウを表示する
+; ヘルプウィンドウを表示する
 [jump storage="window/helpWindow.ks"]
 
 
