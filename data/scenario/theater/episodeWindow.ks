@@ -33,13 +33,13 @@
 
   *displayButtons
   ; 閉じるボタンまたは枠外（左右上下）のクリックで一覧に戻る
-  [glink color="&tf.selectedButtonColor" size="26" width="210" x="875" y="100" text="閉じる" target="*returnMain"]
+  [glink color="&tf.selectedButtonColor" size="26" width="210" x="875" y="80" text="閉じる" target="*returnMain"]
   [w_makeClickableAreaOuterWindow storage="theater/episodeWindow.ks" target="*returnMain"]
 
   [glink color="&tf.buttonColor" size="26" width="210" x="385" y="400" text="導入編" target="*startIntro" cond="tf.isUnlockedIntro"]
   [glink color="&tf.buttonColor" size="26" width="210" x="681" y="400" text="解決編" target="*startOutro" cond="tf.isUnlockedOutro"]
 
-  [glink color="&tf.buttonColor" size="26" width="210" x="875" y="200" text="この開始条件で<br>プレイスタート" target="*startSituationPlay" cond="tf.needDisplayStartConditionText"]
+  [glink color="&tf.buttonColor" size="26" width="210" x="875" y="240" text="この開始条件で<br>プレイスタート" target="*startSituationPlay" cond="tf.needDisplayStartConditionText"]
   ; 開始条件テキストと解放条件テキスト。ボタンを押して表示する場合はここで表ページに表示させる。overwrite="true"を指定しているので既に表示済みの場合は上書き表示になる（＝重複表示はされない）
   [ptext layer="2" page="fore" text="&f.displayEpisode.startConditionText" face="MPLUSRounded" size="26" x="180" y="475" width="920" align="center" name="startConditionText" overwrite="true" cond="tf.needDisplayStartConditionText"]
   [ptext layer="2" page="fore" text="&f.displayEpisode.unlockConditionText" face="MPLUSRounded" size="26" x="180" y="565" width="920" align="center" name="unlockConditionText" overwrite="true" cond="tf.needDisplayUnlockConditionText"]
