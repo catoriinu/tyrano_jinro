@@ -27,7 +27,7 @@
 
   [trans layer="2" time="0"]
 
-  [glink color="&tf.buttonColor" size="24" width="450" x="413" y="595" text="インストラクションを再プレイ" target="*playInstruction"]
+  [glink color="&tf.buttonColor" size="24" width="450" x="413" y="595" text="インストラクションをリプレイ" target="*playInstruction"]
   [glink color="&tf.selectedButtonColor" size="26" width="210" x="875" y="80" text="閉じる" target="*close"]
 [s]
 
