@@ -61,10 +61,9 @@
 [endif]
 
 ; デバッグ系ボタン表示
-[if exp="sf.isDebugMode"]
-  [glink color="black" size="15" x="1125" y="4" width="90" text="進捗リセット" name="buttonhover" target="*resetProgress"]
-  [glink color="black" size="15" x="1125" y="40" width="90" text="開発者用" name="buttonhover" target="*developerSettings"]
-[endif]
+[glink color="black" size="15" x="1125" y="4" width="90" text="進捗リセット" name="buttonhover" target="*resetProgress" cond="sf.isDebugMode"]
+[glink color="black" size="15" x="1125" y="40" width="90" text="開発者用" name="buttonhover" target="*developerSettings" cond="sf.isDebugMode"]
+
 
 [iscript]
   tf.isFirstTime = false;
