@@ -5,7 +5,7 @@
 ; 以下、first.ksからコピペ。ただし[jump storage="title.ks"]だけはコピペしない
 ;一番最初に呼び出されるファイル
 
-[title name="ボイボ人狼 ver.0.12.4"]
+[title name="ボイボ人狼 ver.0.12.5"]
 
 [stop_keyconfig]
 
