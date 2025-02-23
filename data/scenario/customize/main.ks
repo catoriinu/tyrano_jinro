@@ -65,7 +65,7 @@ tf.buttonColor = CLASS_GLINK_DEFAULT;
 [free_draglayer cond="tf.needTeardownEditMode"]
 
 [iscript]
-  // 現時点での参加者リストを保存しておく。
+  // 現時点での参加者リストとプレイヤーキャラクターIDを保存しておく。
   // カスタマイズウィンドウを閉じたり、参加者編集が完了して、再度メイン画面を表示したときに画像更新判定をするため
   f.currentParticipantList = clone(f.currentJinroGameData.participantList);
 
@@ -92,13 +92,14 @@ const currentParticipant = f.currentParticipantList[tf.participantCount] || null
 tf.needUpdateCharaIcon = (currentParticipant === null || currentParticipant.characterId !== characterId);
 tf.needUpdateRoleIcon = (currentParticipant === null || currentParticipant.roleId !== participant.roleId);
 
-// プレイヤーキャラかどうか（金枠表示用）
+// プレイヤーキャラクター枠の更新要否判定。プレイヤーキャラクターが変わっていたなら、現PCと元PCのフレームを更新する（ただし初回なら必ず現PCのみ表示する）
 tf.isPlayer = (characterId === f.currentJinroGameData.playerCharacterId);
 
 // アイコン画像のnameパラメータ（=class属性）
 // キャラクターIDそのものを含めておくことで扱いやすくする（一意になる、そのままキャラクターIDとして参照できる）
 tf.charaIconName = 'charaIcon ' + characterId;
 tf.roleIconName = 'roleIcon roleIcon_' + tf.participantCount;
+tf.pcFrameName = 'pcFrame_' + characterId;
 
 // 画像ファイルパス
 tf.sdStorage = 'sdchara/' + characterId + '.png';
@@ -109,13 +110,16 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 ; ※[free]タグのpageパラメータはv6タグリファレンスには明記されていないが、ティラノのv600beta5時点で指定できることを確認した
 [free layer="0" page="back" name="&tf.charaIconName" cond="tf.needUpdateCharaIcon"]
 [free layer="0" page="back" name="&tf.roleIconName" cond="tf.needUpdateRoleIcon"]
+; プレイヤーキャラクター枠は毎回消しておく。プレイヤーキャラクターならこのあとすぐ表示するし、違うなら表示させないために消す必要があるため
+; FIXME 一つ前に表示させていたら、などの条件をつけたいが、うまくいかなかったので一律で消しておく
+[free layer="0" page="back" name="&tf.pcFrameName"]
 
 ; キャラアイコンと役職アイコン表示
 [image folder="image" page="back" storage="&tf.sdStorage" layer="0" width="&tf.iconSize" height="&tf.iconSize" left="100" top="&tf.top" name="&tf.charaIconName" cond="tf.needUpdateCharaIcon"]
 [image folder="image" page="back" storage="&tf.roleStorage" layer="0" width="&tf.iconSize" height="&tf.iconSize" left="205" top="&tf.top" name="&tf.roleIconName" cond="tf.needUpdateRoleIcon"]
 
 ; プレイヤーの役職アイコンには金枠を表示
-[image folder="image" page="back" storage="role/icon_gold_frame.png" layer="0" width="&tf.iconSize" height="&tf.iconSize" left="205" top="&tf.top" name="&tf.roleIconName" cond="tf.isPlayer"]
+[image folder="image" page="back" storage="role/icon_gold_frame.png" layer="0" width="&tf.iconSize" height="&tf.iconSize" left="205" top="&tf.top" name="&tf.pcFrameName" cond="tf.isPlayer"]
 
 ; キャラアイコンには「プロフィール」への、役職アイコンには「役職設定」へのクリッカブル領域を作成
 [clickable width="&tf.iconSize" height="&tf.iconSize" x="100" y="&tf.top" color="0x333333" opacity="0" mouseopacity="40" target="&tf.targetprofile"]

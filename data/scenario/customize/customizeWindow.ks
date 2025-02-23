@@ -10,6 +10,11 @@
     tf.currentRoleId = tf.currentParticipant.roleId || ROLE_ID_UNKNOWN;
     tf.characterName = getNameByCharacterId(tf.characterId);
 
+    // プレイヤーキャラかどうか（ウィンドウ表示開始時）
+    tf.isCurrentPlayer = (tf.characterId === f.currentJinroGameData.playerCharacterId);
+    // プレイヤーキャラかどうか（ウィンドウ表示中の一時変数）
+    tf.isPlayer = tf.isCurrentPlayer;
+
     // 利用する変数の初期化
     tf.buttonColor = CLASS_GLINK_DEFAULT;
     tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
@@ -122,6 +127,13 @@
     [eval exp="tf.roleCount++"]
     [jump target="*start_displaySelectRoleButton"]
   *end_displaySelectRoleButton
+
+  ; プレイヤーキャラクター設定ボタン
+  [glink color="&tf.buttonColor" size="26" width="90" x="620" y="575" text="PC" target="*show" cond="!tf.isPlayer" preexp="true" exp="tf.isPlayer = preexp"]
+  [glink color="&tf.selectedButtonColor" size="26" width="90" x="620" y="575" text="PC" target="*show" cond="tf.isPlayer" preexp="true" exp="tf.isPlayer = preexp"]
+  ; NPC設定ボタン（現在そのキャラがPCの場合は表示しない。誰もPCがいなくなってしまうので。オートプレイをできるようにするなら表示させてもいいがまだ考慮しない）
+  [glink color="&tf.buttonColor" size="26" width="90" x="740" y="575" text="NPC" target="*show" cond="!tf.isCurrentPlayer && tf.isPlayer" preexp="false" exp="tf.isPlayer = preexp"]
+  [glink color="&tf.selectedButtonColor" size="26" width="90" x="740" y="575" text="NPC" target="*show" cond="!tf.isPlayer" preexp="false" exp="tf.isPlayer = preexp"]
 [return]
 
 
@@ -131,7 +143,7 @@
 [iscript]
 // ボタンの座標
 tf.top = tf.baseTop + (tf.offsetTop * tf.roleCount);
-tf.buttonX = 350;
+tf.buttonX = 330;
 tf.buttonY = tf.top + 15;
 
 // ボタンの情報
@@ -143,7 +155,7 @@ tf.roleStorage = 'role/icon_' + tf.roleId + '.png';
 [endscript]
 
 ; 役職アイコン
-[image folder="image" page="&tf.elementPage" storage="&tf.roleStorage" layer="1" width="&tf.iconSize" haight="&tf.iconSize" left="250" top="&tf.top" name="selectRoleElement"]
+[image folder="image" page="&tf.elementPage" storage="&tf.roleStorage" layer="1" width="&tf.iconSize" haight="&tf.iconSize" left="230" top="&tf.top" name="selectRoleElement"]
 
 ; 参加不可能な役職はボタンではなくテキストを表示
 [ptext layer="1" page="&tf.elementPage" size="26" x="&(tf.buttonX + 25)" y="&(tf.buttonY + 5)" text="人数オーバー" color="#28332a" cond="!tf.roleButtonAvailable" name="selectRoleElement"]
@@ -180,6 +192,11 @@ tf.roleStorage = 'role/icon_' + tf.roleId + '.png';
         tf.currentParticipant.adjustParameters
     )
     replaceParticipantInJinroGameData(f.currentJinroGameData, f.selectedParticipantIndex, newParticipant);
+
+    // PCの場合、現在の人狼ゲームデータのプレイヤーキャラを更新
+    if (tf.isPlayer) {
+        f.currentJinroGameData.playerCharacterId = tf.characterId;
+    }
 [endscript]
 
 [m_exitCharacter characterId="&tf.characterId" time="1" wait="true"]
