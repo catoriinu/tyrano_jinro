@@ -92,6 +92,9 @@ const currentParticipant = f.currentParticipantList[tf.participantCount] || null
 tf.needUpdateCharaIcon = (currentParticipant === null || currentParticipant.characterId !== characterId);
 tf.needUpdateRoleIcon = (currentParticipant === null || currentParticipant.roleId !== participant.roleId);
 
+// プレイヤーキャラかどうか（金枠表示用）
+tf.isPlayer = (characterId === f.currentJinroGameData.playerCharacterId);
+
 // アイコン画像のnameパラメータ（=class属性）
 // キャラクターIDそのものを含めておくことで扱いやすくする（一意になる、そのままキャラクターIDとして参照できる）
 tf.charaIconName = 'charaIcon ' + characterId;
@@ -110,6 +113,9 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 ; キャラアイコンと役職アイコン表示
 [image folder="image" page="back" storage="&tf.sdStorage" layer="0" width="&tf.iconSize" height="&tf.iconSize" left="100" top="&tf.top" name="&tf.charaIconName" cond="tf.needUpdateCharaIcon"]
 [image folder="image" page="back" storage="&tf.roleStorage" layer="0" width="&tf.iconSize" height="&tf.iconSize" left="205" top="&tf.top" name="&tf.roleIconName" cond="tf.needUpdateRoleIcon"]
+
+; プレイヤーの役職アイコンには金枠を表示
+[image folder="image" page="back" storage="role/icon_gold_frame.png" layer="0" width="&tf.iconSize" height="&tf.iconSize" left="205" top="&tf.top" name="&tf.roleIconName" cond="tf.isPlayer"]
 
 ; キャラアイコンには「プロフィール」への、役職アイコンには「役職設定」へのクリッカブル領域を作成
 [clickable width="&tf.iconSize" height="&tf.iconSize" x="100" y="&tf.top" color="0x333333" opacity="0" mouseopacity="40" target="&tf.targetprofile"]
