@@ -800,22 +800,27 @@
 
 *secondInstruction
 [m_changeCharacterFrameName name="ずんだもん" face="困惑" side="left"]
+[playse storage="other/01_instruction/165.ogg"]
 …ってこの状況、前にもあった気がするのだ。[r]
 もし僕の記憶が正しければこのあと…。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
+[playse storage="other/01_instruction/166.ogg"]
 お困りの方がいればどこにでも駆けつけます！[r]
 インストラクターのお姉さん、颯爽登場です！[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
-あ、あれ、おかしいなぁ…？[r]
+[playse storage="other/01_instruction/167.ogg"]
+あ、あれ、おかしいですね…？[r]
 あんまり驚いてくれませんね…。[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="通常" side="left"]
+[playse storage="other/01_instruction/168.ogg"]
 前にも同じような状況があったのだ。[r]
 夢かもしれないけど、確かに見覚えがあるのだ。[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
+[playse storage="other/01_instruction/169.ogg"]
 ふぅん、なるほど…。[r]
 それでは人狼ゲームと「ボイボ人狼」の説明も要らないですか？[p]
 
