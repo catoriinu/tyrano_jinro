@@ -8,11 +8,9 @@
 
 [bg storage="../image/config/voivo_config_bg_v2.png" time="100"]
 
-
-*return_from_resetToDefault
 [iscript]
-// カスタマイズ画面を開いた時点の、カスタマイズ対象の人狼ゲームデータとを取得する
-f.currentJinroGameData = sf.jinroGameDataObjects[sf.currentJinroGameDataKey];
+// カスタマイズ画面を開いた時点の、カスタマイズ対象の人狼ゲームデータをクローンする
+f.currentJinroGameData = clone(sf.jinroGameDataObjects[sf.currentJinroGameDataKey]);
 // 現在の参加者リスト。参加者情報に更新があったらアイコンを更新するという判定に使う。なのでこの時点ではあえて空配列。
 f.currentParticipantList = [];
 // 参加者編集モードの後処理要否フラグ
@@ -23,7 +21,7 @@ const isPage01AllCleared = (getTheaterProgress('p01', 'e08') === EPISODE_STATUS.
 tf.allowShowEditButton = (isPage01AllCleared || sf.isDebugMode);
 [endscript]
 
-
+*return_from_resetToDefault
 *hideCustomizeWindow
 *return_from_EditMode
 [iscript]
@@ -41,8 +39,8 @@ tf.buttonColor = CLASS_GLINK_DEFAULT;
 [glink color="&tf.buttonColor" size="22" width="260" x="770" y="16" text="初期状態にリセット" target="*resetToDefault"]
 [glink color="&tf.buttonColor" size="22" width="260" x="770" y="80" text="反映してプレイスタート" target="*startPlay"]
 ; TODO returnTitleを「破棄してもどる」「反映してもどる」用に修正する
-[glink color="&tf.buttonColor" size="22" width="200" x="1055" y="16" text="破棄してもどる" target="*returnTitle"]
-[glink color="&tf.buttonColor" size="22" width="200" x="1055" y="80" text="反映してもどる" target="*returnTitle"]
+[glink color="&tf.buttonColor" size="22" width="200" x="1055" y="16" text="破棄してもどる" preexp="false" exp="tf.needUpdateJinrogGamedata = preexp" target="*returnTitle"]
+[glink color="&tf.buttonColor" size="22" width="200" x="1055" y="80" text="反映してもどる" preexp="true" exp="tf.needUpdateJinrogGamedata = preexp" target="*returnTitle"]
 ; MEMO ver0.12.5to6 「参加者編集」ボタン及びドラッグ＆ドロッププラグインを利用した参加者編集機能は撤廃する。並び替え機能は不要、PC設定や参加不参加は別の形で実装予定。せっかく実装したのでコメントアウトで残してはおく。
 ;[glink color="&tf.buttonColor" size="26" width="220" x="645" y="22" text="参加者編集" target="*startEditMode" cond="tf.allowShowEditButton"]
 
@@ -135,6 +133,10 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 
 ; タイトル画面に戻る
 *returnTitle
+
+; 「反映してもどる」の場合のみ、カスタマイズ画面での変更をシステム変数内の人狼ゲームデータに反映する
+[eval exp="sf.jinroGameDataObjects[sf.currentJinroGameDataKey] = f.currentJinroGameData" cond="tf.needUpdateJinrogGamedata"]
+
 ; fixボタンをクリア
 [clearfix]
 [layopt layer="message0" visible="false"]
@@ -146,6 +148,10 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 
 ; 人狼ゲームを開始する
 *startPlay
+
+; カスタマイズ画面での変更をシステム変数内の人狼ゲームデータに反映する
+[eval exp="sf.jinroGameDataObjects[sf.currentJinroGameDataKey] = f.currentJinroGameData" cond="tf.needUpdateJinrogGamedata"]
+
 [clearfix]
 [layopt layer="message0" visible="false"]
 [freeimage layer="0" page="fore"]
@@ -335,7 +341,7 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 ; デフォルト設定にリセットする
 *resetToDefault
   [iscript]
-    resetJinroGameDataObjectsToDefault();
+    f.currentJinroGameData = getJinroGameDataForTheater('p01');
     f.currentParticipantList = [];
   [endscript]
 
