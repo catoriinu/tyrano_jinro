@@ -37,14 +37,18 @@ tf.buttonColor = CLASS_GLINK_DEFAULT;
 [endscript]
 
 ; 画面上部のボタン表示
-[button fix="true" graphic="button/button_return_normal.png" enterimg="button/button_return_hover.png" target="*returnTitle" x="1143" y="17" width="114" height="103"]
-[glink color="&tf.buttonColor" size="26" width="220" x="395" y="22" text="リセット" target="*resetToDefault"]
-[glink color="&tf.buttonColor" size="26" width="220" x="645" y="22" text="参加者編集" target="*startEditMode" cond="tf.allowShowEditButton"]
-[glink color="&tf.buttonColor" size="26" width="220" x="895" y="22" text="プレイスタート" target="*startPlay"]
+[ptext layer="0" page="back" name="explainButtonText" x="475" y="18" text="現在のカスタマイズを" color="#28332a" size="28" overwrite="true"]
+[glink color="&tf.buttonColor" size="22" width="260" x="770" y="16" text="初期状態にリセット" target="*resetToDefault"]
+[glink color="&tf.buttonColor" size="22" width="260" x="770" y="80" text="反映してプレイスタート" target="*startPlay"]
+; TODO returnTitleを「破棄してもどる」「反映してもどる」用に修正する
+[glink color="&tf.buttonColor" size="22" width="200" x="1055" y="16" text="破棄してもどる" target="*returnTitle"]
+[glink color="&tf.buttonColor" size="22" width="200" x="1055" y="80" text="反映してもどる" target="*returnTitle"]
+; MEMO ver0.12.5to6 「参加者編集」ボタン及びドラッグ＆ドロッププラグインを利用した参加者編集機能は撤廃する。並び替え機能は不要、PC設定や参加不参加は別の形で実装予定。せっかく実装したのでコメントアウトで残してはおく。
+;[glink color="&tf.buttonColor" size="26" width="220" x="645" y="22" text="参加者編集" target="*startEditMode" cond="tf.allowShowEditButton"]
 
 ; タイトルバーのテキスト表示
-[ptext layer="0" page="back" name="titleText" x="25" y="16" text="カスタマイズ" color="#28332a" size="44" overwrite="true"]
-[ptext layer="0" page="back" name="explainText" x="25" y="85" text="役職アイコン：役職設定、プロフィール" color="#28332a" size="28" overwrite="true"]
+[ptext layer="0" page="back" name="titleText" x="22" y="10" text="カスタマイズ" color="#28332a" size="44" overwrite="true"]
+[ptext layer="0" page="back" name="explainText" x="25" y="80" text="役職アイコン：役職設定、プロフィール" color="#28332a" size="28" overwrite="true"]
 
 ; キャラアイコン、役職アイコンとそのクリッカブル領域を表示
 *start_displayParticipantIcon
