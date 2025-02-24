@@ -129,12 +129,13 @@
   *end_displaySelectRoleButton
 
   ; プレイヤーキャラクター設定ボタン
+  [ptext layer="1" page="&tf.elementPage" size="26" x="580" y="580" text="操作" color="#28332a" name="selectRoleElement"]
   ; main画面で定義したtf.allowShowEditButtonフラグをここでも使い回す。第一章クリアまたはデバッグモード時のみ、切り替えられるようにする。
-  [glink color="&tf.buttonColor" size="26" width="90" x="620" y="575" text="PC" target="*show" cond="!tf.isPlayer && tf.allowShowEditButton" preexp="true" exp="tf.isPlayer = preexp"]
-  [glink color="&tf.selectedButtonColor" size="26" width="90" x="620" y="575" text="PC" target="*show" cond="tf.isPlayer" preexp="true" exp="tf.isPlayer = preexp"]
+  [glink color="&tf.buttonColor" size="26" width="90" x="650" y="575" text="PC" target="*show" cond="!tf.isPlayer && tf.allowShowEditButton" preexp="true" exp="tf.isPlayer = preexp"]
+  [glink color="&tf.selectedButtonColor" size="26" width="90" x="650" y="575" text="PC" target="*show" cond="tf.isPlayer" preexp="true" exp="tf.isPlayer = preexp"]
   ; NPC設定ボタン（現在そのキャラがPCの場合は表示しない。誰もPCがいなくなってしまうので。オートプレイをできるようにするなら表示させてもいいがまだ考慮しない）
-  [glink color="&tf.buttonColor" size="26" width="90" x="740" y="575" text="NPC" target="*show" cond="!tf.isCurrentPlayer && tf.isPlayer && tf.allowShowEditButton" preexp="false" exp="tf.isPlayer = preexp"]
-  [glink color="&tf.selectedButtonColor" size="26" width="90" x="740" y="575" text="NPC" target="*show" cond="!tf.isPlayer" preexp="false" exp="tf.isPlayer = preexp"]
+  [glink color="&tf.buttonColor" size="26" width="90" x="760" y="575" text="NPC" target="*show" cond="!tf.isCurrentPlayer && tf.isPlayer && tf.allowShowEditButton" preexp="false" exp="tf.isPlayer = preexp"]
+  [glink color="&tf.selectedButtonColor" size="26" width="90" x="760" y="575" text="NPC" target="*show" cond="!tf.isPlayer" preexp="false" exp="tf.isPlayer = preexp"]
 [return]
 
 
