@@ -44,7 +44,7 @@ tf.buttonColor = CLASS_GLINK_DEFAULT;
 
 ; タイトルバーのテキスト表示
 [ptext layer="0" page="back" name="titleText" x="25" y="16" text="カスタマイズ" color="#28332a" size="44" overwrite="true"]
-[ptext layer="0" page="back" name="explainText" x="25" y="85" text="キャラアイコン：プロフィール　役職アイコン：役職設定" color="#28332a" size="28" overwrite="true"]
+[ptext layer="0" page="back" name="explainText" x="25" y="85" text="役職アイコン：役職設定、プロフィール" color="#28332a" size="28" overwrite="true"]
 
 ; キャラアイコン、役職アイコンとそのクリッカブル領域を表示
 *start_displayParticipantIcon
@@ -122,7 +122,8 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 [image folder="image" page="back" storage="role/icon_gold_frame.png" layer="0" width="&tf.iconSize" height="&tf.iconSize" left="205" top="&tf.top" name="&tf.pcFrameName" cond="tf.isPlayer"]
 
 ; キャラアイコンには「プロフィール」への、役職アイコンには「役職設定」へのクリッカブル領域を作成
-[clickable width="&tf.iconSize" height="&tf.iconSize" x="100" y="&tf.top" color="0x333333" opacity="0" mouseopacity="40" target="&tf.targetprofile"]
+; MEMO ver0.12.5to6 「プロフィール」へ遷移するクリッカブル領域は撤廃する。将来的に参加・不参加・参加候補の切り替え用にする予定
+;[clickable width="&tf.iconSize" height="&tf.iconSize" x="100" y="&tf.top" color="0x333333" opacity="0" mouseopacity="40" target="&tf.targetprofile"]
 [clickable width="&tf.iconSize" height="&tf.iconSize" x="205" y="&tf.top" color="0x333333" opacity="0" mouseopacity="40" target="&tf.targetSelectRole"]
 [return]
 

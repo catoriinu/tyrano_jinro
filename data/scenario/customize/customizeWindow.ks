@@ -116,7 +116,7 @@
 
 ; 役職設定用サブルーチン
 *selectRole
-  [glink color="&tf.buttonColor" size="26" width="210" x="192" y="80" text="←プロフィール" target="*show" preexp="'profile'" exp="tf.windowElements = preexp"]
+  [glink color="&tf.buttonColor" size="26" width="210" x="192" y="80" text="プロフィール" target="*show" preexp="'profile'" exp="tf.windowElements = preexp"]
   [ptext layer="1" page="&tf.elementPage" text="役職設定" face="MPLUSRounded" size="36" x="180" y="80" width="920" align="center" name="windowTitle" overwrite="true"]
 
   ; 役職設定ボタン表示用ループ
@@ -169,7 +169,7 @@ tf.roleStorage = 'role/icon_' + tf.roleId + '.png';
 
 ; プロフィール用サブルーチン
 *profile
-  [glink color="&tf.buttonColor" size="26" width="210" x="192" y="80" text="役職設定→" target="*show" preexp="'selectRole'" exp="tf.windowElements = preexp"]
+  [glink color="&tf.buttonColor" size="26" width="210" x="192" y="80" text="役職設定" target="*show" preexp="'selectRole'" exp="tf.windowElements = preexp"]
   [ptext layer="1" page="&tf.elementPage" text="プロフィール" face="MPLUSRounded" size="36" x="180" y="80" width="920" align="center" name="windowTitle" overwrite="true"]
 
   ; プロフィールテキストをサブルーチン内で変数に格納してから、表示する
