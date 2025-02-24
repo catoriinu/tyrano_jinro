@@ -32,22 +32,24 @@
   *end_w_noticeStartingSituation
 [endmacro]
 
-; 【重要】ウィンドウ枠およびウィンドウ上に表示する要素は、layer="2"を指定すること
+
 
 ; ウィンドウ枠を表示する
+; ウィンドウは裏ページで描画されるので、表示するときには適切なタイミングで[trans layer="2"]すること
 ; @param hideMessage true:メッセージ枠を隠す | false:メッセージ枠を隠さない（デフォルト）
 ; メモ：メッセージ枠が表示されているタイミングでウィンドウ表示したいなら隠す必要あり。メッセージ枠のレイヤーの方が上なので、ウィンドウの上に被ってしまうため。
-; ウィンドウを表示するときには適切なタイミングで[trans layer="2"]すること
+; @param layer ウィンドウを表示するレイヤー。デフォルトはlayer="2"
 ; 関連マクロ：[w_closeWindow]
 [macro name="w_openWindow"]
   [iscript]
     f.needHideMessage = ('hideMessage' in mp) ? parseBool(mp.hideMessage) : false;
+    f.windowLayer = ('layer' in mp) ? parseInt(mp.layer) : 2;
   [endscript]
   [layopt layer="message0" visible="false" cond="f.needHideMessage"]
-  [filter layer="0" blur="10"]
-  [filter layer="1" blur="10"]
+  [filter layer="0" blur="10" cond="f.windowLayer > 0"]
+  [filter layer="1" blur="10" cond="f.windowLayer > 1"]
   [filter layer="base" blur="5"]
-  [image storage="theater/episodeWindow_rectangle.png" layer="2" page="back" name="windowElement" x="158.5" y="38"]
+  [image storage="theater/episodeWindow_rectangle.png" layer="&f.windowLayer" page="back" name="windowElement" x="158.5" y="38"]
   [kanim name="windowElement" keyframe="open_episodeWindow" time="150" easing="ease-out"]
 [endmacro]
 
@@ -74,11 +76,11 @@
     tf.needShowMessage = ('showMessage' in mp) ? parseBool(mp.showMessage) : f.needHideMessage;
     tf.needWaitAnime = ('waitAnime' in mp) ? parseBool(mp.waitAnime) : true;
   [endscript]
-  [free_filter layer="0"]
-  [free_filter layer="1"]
+  [free_filter layer="0" cond="f.windowLayer > 0"]
+  [free_filter layer="1" cond="f.windowLayer > 1"]
   [free_filter layer="base"]
-  [freeimage layer="2" page="fore" time="130" wait="false"]
-  [freeimage layer="2" page="back" time="130" wait="false"]
+  [freeimage layer="&f.windowLayer" page="fore" time="130" wait="false"]
+  [freeimage layer="&f.windowLayer" page="back" time="130" wait="false"]
   [layopt layer="message0" visible="true" cond="tf.needShowMessage"]
   [wa cond="tf.needWaitAnime"]
 [endmacro]

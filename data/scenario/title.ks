@@ -4,7 +4,7 @@
 [bg storage="voivojinrou_title_v4.png" time="1" wait="true"]
 
 ; バージョン表示
-[ptext layer="1" x="5" y="685" text="ver.0.12.4" color="white" size="24"]
+[ptext layer="1" x="5" y="685" text="ver.0.12.6" color="white" size="24"]
 [layopt layer="1" visible="true"]
 
 ; ボイス停止（人狼ゲームから戻ってきたとき用）
@@ -48,7 +48,7 @@
 [if exp="tf.isInstructionCleared"]
   [glink color="&tf.buttonColor" size="30" width="300" x="138" y="460" name="buttonhover" text="シアター" target="*theater"]
   [glink color="&tf.buttonColor" size="30" width="300" x="488" y="580" name="buttonhover" text="カスタマイズ" target="*customize"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="580" name="buttonhover" text="遊び方" target="*help"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="580" name="buttonhover" text="ヘルプ" target="*help"]
 
   ; 視聴済みエピソードスキップ要否ボタンを表示
   [iscript]
@@ -61,10 +61,9 @@
 [endif]
 
 ; デバッグ系ボタン表示
-[if exp="sf.isDebugMode"]
-  [glink color="black" size="15" x="1125" y="4" width="90" text="進捗リセット" name="buttonhover" target="*resetProgress"]
-  [glink color="black" size="15" x="1125" y="40" width="90" text="開発者用" name="buttonhover" target="*developerSettings"]
-[endif]
+[glink color="black" size="15" x="1125" y="4" width="90" text="進捗リセット" name="buttonhover" target="*resetProgress" cond="sf.isDebugMode"]
+[glink color="black" size="15" x="1125" y="40" width="90" text="開発者用" name="buttonhover" target="*developerSettings" cond="sf.isDebugMode"]
+
 
 [iscript]
   tf.isFirstTime = false;
@@ -120,7 +119,7 @@
 
 
 *help
-; 遊び方ウィンドウを表示する
+; ヘルプウィンドウを表示する
 [jump storage="window/helpWindow.ks"]
 
 

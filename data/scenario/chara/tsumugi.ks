@@ -37,6 +37,7 @@
       draw: 'wrysmile.png',
     };
 
+    // キャラ立ち絵のfaceとstorageの紐づけ
     f.charaFaceObjects = [
       {face: '通常', storage: 'normal'},
       {face: 'ワクワク', storage: 'excited'},
@@ -45,8 +46,13 @@
       {face: '悲しみ', storage: 'sad'},
       {face: 'テンアゲ', storage: 'smug'},
       {face: '苦笑', storage: 'wrysmile'},
-      {face: '敗北', storage: 'sad'},
     ];
+
+    // 規定のイベントとfaceの紐づけ
+    f.charaFaceForEvent[tf.characterId] = {
+      '被襲撃': '悲しみ',
+      '投票': '通常',
+    }
   [endscript]
 
   [call storage="./chara/common.ks" target="*executeCharaNewFaceShow"]

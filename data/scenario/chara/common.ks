@@ -16,6 +16,8 @@
     f.color.character = {}
     // ステータス画面等の立ち絵用オブジェクト
     f.statusFace = {}
+    // 規定のイベントとfaceの紐づけ用オブジェクト
+    f.charaFaceForEvent = {}
   [endscript]
   ; ここに来るまでにシナリオの都合でフィルターをかけている可能性があるので、外しておく。
   ; MEMO: 現状全フィルター外してしまっているので、問題がある場合はlayer指定やname指定やcond指定などすること
@@ -75,13 +77,17 @@
 ; tf.jname = キャラクター名
 ; f.defaultPosition[tf.characterId] = デフォルトポジションオブジェクト
 ; f.charaFaceObjects = {face: String, storage: String}のオブジェクトの配列
+; tf.layer = 立ち絵を表示するレイヤー。デフォルト0
+; tf.page = 立ち絵を表示するpage（fore/back）。デフォルトfore
 *executeCharaNewFaceShow
   [iscript]
     // chara_newのstorage用パスを変数に格納しておく
     tf.normalPath = 'chara/' + tf.characterId + '/normal.png';
     // ループ用カウンター
     tf.cnt = 0;
+
     tf.layer = tf.layer || 0;
+    tf.page = tf.page || 'fore';
   [endscript]
   [chara_new name="&tf.characterId" storage="&tf.normalPath" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" jname="&tf.jname" reflect="&f.defaultPosition[tf.characterId].reflect"]
 
@@ -99,6 +105,10 @@
   *executeCharaFace_loopend
 
   ; chara_showで通常の立ち絵だけをデフォルトの位置に表示しておく
-  [chara_show name="&tf.characterId" face="通常" time="0" wait="true" layer="&tf.layer" left="&f.defaultPosition[tf.characterId].leftOnDefautRight" top="&f.defaultPosition[tf.characterId].top"]
-  [eval exp="tf.layer = null"]
+  [chara_show name="&tf.characterId" face="通常" time="0" wait="true" layer="&tf.layer" page="&tf.page" left="&f.defaultPosition[tf.characterId].leftOnDefautRight" top="&f.defaultPosition[tf.characterId].top"]
+  [iscript]
+    // 次呼び出すときに引き継がないよう、一時変数をリセット
+    tf.layer = null;
+    tf.page = null;
+  [endscript]
 [return]

@@ -37,6 +37,7 @@
       draw: 'troubled.png',
     };
 
+    // キャラ立ち絵のfaceとstorageの紐づけ
     f.charaFaceObjects = [
       {face: '通常', storage: 'normal'},
       {face: '否定', storage: 'deny'},
@@ -48,8 +49,13 @@
       {face: '驚き', storage: 'surprised'},
       {face: '困惑', storage: 'troubled'},
       {face: '考える', storage: 'thinking'},
-      {face: '敗北', storage: 'sad'},
     ];
+
+    // 規定のイベントとfaceの紐づけ
+    f.charaFaceForEvent[tf.characterId] = {
+      '被襲撃': '悲しみ',
+      '投票': '考える',
+    }
   [endscript]
 
   [call storage="./chara/common.ks" target="*executeCharaNewFaceShow"]

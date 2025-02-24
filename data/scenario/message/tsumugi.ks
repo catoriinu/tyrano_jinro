@@ -20,6 +20,92 @@
 [return]
 
 
+; noticeRole_{roleId}
+; シーン：初日、役職を告知されたときの反応
+; 備考：PCのみ想定
+*noticeRole_villager
+[eval exp="tf.face = '通常'"]
+[call storage="./message/utility.ks" target="prepareMessage"]
+;[playse storage="chara/zundamon/zundamon_noticeRole_villager_01.ogg"]
+
+あーしは村人かぁ。[r]
+みんなと一緒ならなんとかなるよね！[p]
+[return]
+
+
+*noticeRole_fortuneTeller
+[eval exp="tf.face = '通常'"]
+[call storage="./message/utility.ks" target="prepareMessage"]
+;[playse storage="chara/zundamon/zundamon_noticeRole_fortuneTeller_01.ogg"]
+
+あーしが占い師なんだ。[r]
+じゃあみんなのこと占っちゃお！[p]
+[return]
+
+
+*noticeRole_werewolf
+[eval exp="tf.face = '通常'"]
+[call storage="./message/utility.ks" target="prepareMessage"]
+;[playse storage="chara/zundamon/zundamon_noticeRole_werewolf_01.ogg"]
+
+あーしは人狼…。[r]
+バレちゃダメってなんかドキドキするかも！[p]
+[return]
+
+
+*noticeRole_madman
+[eval exp="tf.face = '通常'"]
+[call storage="./message/utility.ks" target="prepareMessage"]
+;[playse storage="chara/zundamon/zundamon_noticeRole_madman_01.ogg"]
+
+あーしが狂人なんだね。[r]
+人狼くんの役に立てるように頑張るね！[p]
+[return]
+
+
+; announcedFortuneTellingResult_{result}
+; シーン：真占い師で、占い実行結果を知ったときの反応
+; NOTE:事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
+; 備考：PCのみ想定
+*announcedFortuneTellingResult_true
+[eval exp="tf.face = '通常'"]
+[call storage="./message/utility.ks" target="prepareMessage"]
+
+[if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
+
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
+;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_true_01.ogg"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
+;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_true_02.ogg"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
+;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_true_03.ogg"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
+;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_true_04.ogg"]
+[endif]
+
+あっ、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]が人狼だったんだ！[p]
+[return]
+
+
+*announcedFortuneTellingResult_false
+[eval exp="tf.face = '通常'"]
+[call storage="./message/utility.ks" target="prepareMessage"]
+
+[if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
+
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
+;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_false_01.ogg"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
+;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_false_02.ogg"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
+;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_false_03.ogg"]
+[elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
+;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_false_04.ogg"]
+[endif]
+
+[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったよ。[p]
+[return]
+
 
 ; COFortuneTelling_voice_{result}_{feeling}
 ; COFortuneTellingのボイス用サブルーチン
@@ -419,6 +505,16 @@
 （未作成）[p]
 [return]
 
+
+; chooseWhoToBite
+; シーン：人狼で、誰を噛むか選ぶときのセリフ
+*chooseWhoToBite
+[eval exp="tf.face = '通常'"]
+[call storage="./message/utility.ks" target="prepareMessage"]
+;[playse storage="chara/zundamon/zundamon_chooseWhoToBite_01.ogg"]
+
+お腹減ったな…。あ、あの人美味しそうかも…！[p]
+[return]
 
 
 ; このサブルーチンのボイスファイルを全てpreloadするためのサブルーチン
