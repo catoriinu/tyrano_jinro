@@ -147,7 +147,6 @@ const BUTTON_MARGIN_HEIGHT = 30 // ボタンの上下の余白
 function resetJDevelopmentSettingToDefault() {
   TYRANO.kag.variable.sf.j_development = {
     dictatorMode: false,
-    doShuffle: true,
     maxDoActionCount: MAX_DO_ACTION_COUNT,
     thinking: 'default'
   }
