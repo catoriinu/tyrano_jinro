@@ -754,7 +754,29 @@
 
     // 実行するアクションを決める
     // TODO 選ばれるアクションは一旦ランダムとする。何らかの基準で比重を変えたい場合はここを修正する。
-    const actionId = getRandomElement([ACTION_SUSPECT, ACTION_TRUST]);
+    // MEMO ここはアクションを増やすときには絶対に仕組みごと作り直すこと
+    const timeStr = getTimeStr();
+    const thisTimeActionHistory = f.doActionHistory[f.day][timeStr];
+    let actionId = "";
+    if (!Array.isArray(f.doActionHistory[f.day][timeStr]) || f.doActionHistory[f.day][timeStr].length === 0) {
+      // まだその日のアクションがない場合は、疑うか信じるかをランダムで決める
+      actionId = getRandomElement([ACTION_SUSPECT, ACTION_TRUST]);
+
+    } else {
+      // その日のアクションの中から、自分の直前のアクションを取得する
+      const latestAction = getLatestAction(f.doActionCandidateId, thisTimeActionHistory, [ACTION_SUSPECT, ACTION_TRUST]);
+      console.log("★★latestAction");
+      console.log(latestAction);
+      if (latestAction === null) {
+        // まだアクションしていなかった場合は、疑うか信じるかをランダムで決める
+        actionId = getRandomElement([ACTION_SUSPECT, ACTION_TRUST]);
+      } else {
+        // すでにアクションしていた場合は、自分の直前のアクションとは違うアクションを取る
+        const latestActionId = latestAction.actionId;
+        actionId = (latestActionId === ACTION_SUSPECT) ? ACTION_TRUST : ACTION_SUSPECT;
+      }
+    }
+
 
     // アクションの対象を決める
     // TODO アクションID定数の中にmax,minを持っていた方が、アクションを増やしやすいかも
