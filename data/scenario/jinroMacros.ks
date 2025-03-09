@@ -828,9 +828,9 @@
     f.pcActionObject = {};
     f.npcActionObject = {};
 
-    // アクション実行履歴オブジェクトに、トリガーアクションを0要素目とするアクションオブジェクト配列をpushする
+    // アクション実行履歴オブジェクトに、空配列をpushする。[j_doActionImpl]内で、この配列にアクションオブジェクトを保存する
     const timeStr = getTimeStr();
-    f.doActionHistory[f.day][timeStr].push([f.triggerActionObject]);
+    f.doActionHistory[f.day][timeStr].push([]);
 
     // トリガーアクションで1回のみ行う処理はここでやる
     // アクション実行者の主張力を下げて、同日中は再発言しにくくする
@@ -859,6 +859,7 @@
     // アクション実行者がプレイヤーの場合、ここで判断基準IDを入れる
     if (f.actionObject.characterId === f.playerCharacterId) {
       // TODO 信じる：表の視点で同陣営割合が50%以上なら論理的な判断　疑う：表の視点で同陣営割合が50%未満なら論理的な判断
+      // MEMO 自身の論理力次第とする。例：0.8なら、同陣営割合が20%以上なら論理的な判断みたいな
       f.actionObject.decision = DECISION_LOGICAL; //DECISION_EMOTIONAL;
     }
 
