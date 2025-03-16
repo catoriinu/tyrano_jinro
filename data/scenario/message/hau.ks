@@ -26,7 +26,7 @@
 *noticeRole_villager
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-;[playse storage="chara/zundamon/zundamon_noticeRole_villager_01.ogg"]
+[playse storage="chara/hau/hau_noticeRole_villager_01.ogg"]
 
 僕は村人ですね。[r]
 どこまで村に貢献できるか分かりませんが、努力します。[p]
@@ -36,7 +36,7 @@
 *noticeRole_fortuneTeller
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-;[playse storage="chara/zundamon/zundamon_noticeRole_fortuneTeller_01.ogg"]
+[playse storage="chara/hau/hau_noticeRole_fortuneTeller_01.ogg"]
 
 僕が占い師ですか。[r]
 はうぅ、責任重大ですね…。[p]
@@ -46,7 +46,7 @@
 *noticeRole_werewolf
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-;[playse storage="chara/zundamon/zundamon_noticeRole_werewolf_01.ogg"]
+[playse storage="chara/hau/hau_noticeRole_werewolf_01.ogg"]
 
 僕は人狼なんですね。[r]
 こんなときまで夜勤しないといけないなんて…。[p]
@@ -56,7 +56,7 @@
 *noticeRole_madman
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-;[playse storage="chara/zundamon/zundamon_noticeRole_madman_01.ogg"]
+[playse storage="chara/hau/hau_noticeRole_madman_01.ogg"]
 
 僕が狂人ですか。[r]
 つまり、好き放題やっていいってことですよね！？[p]
@@ -72,15 +72,15 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-
+[playse storage="chara/hau/hau_announcedFortuneTellingResult_true_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_true_01.ogg"]
+[playse storage="chara/hau/hau_announcedFortuneTellingResult_true_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_true_02.ogg"]
+[playse storage="chara/hau/hau_announcedFortuneTellingResult_true_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_true_03.ogg"]
+
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_true_04.ogg"]
+[playse storage="chara/hau/hau_announcedFortuneTellingResult_true_04.ogg"]
 [endif]
 
 [j_callName targetId="&tf.targetId" targetName="&tf.targetName"]が人狼だったなんて…！[r]
@@ -93,15 +93,15 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-
+[playse storage="chara/hau/hau_announcedFortuneTellingResult_false_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_false_01.ogg"]
+[playse storage="chara/hau/hau_announcedFortuneTellingResult_false_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_false_02.ogg"]
+[playse storage="chara/hau/hau_announcedFortuneTellingResult_false_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_false_03.ogg"]
+
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_false_04.ogg"]
+[playse storage="chara/hau/hau_announcedFortuneTellingResult_false_04.ogg"]
 [endif]
 
 [j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではなかったようですね。[p]
@@ -508,7 +508,7 @@
 *chooseWhoToBite
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-;[playse storage="chara/zundamon/zundamon_chooseWhoToBite_01.ogg"]
+[playse storage="chara/hau/hau_chooseWhoToBite_01.ogg"]
 
 ちょっとチクッとしますよ。[r]
 大丈夫です、ほら、力を抜いて…。[p]
@@ -519,6 +519,18 @@
 *preloadVoice
   [iscript]
     tf.preloadList.push(
+      "data/sound/chara/hau/hau_noticeRole_villager_01.ogg",
+      "data/sound/chara/hau/hau_noticeRole_fortuneTeller_01.ogg",
+      "data/sound/chara/hau/hau_noticeRole_werewolf_01.ogg",
+      "data/sound/chara/hau/hau_noticeRole_madman_01.ogg",
+      "data/sound/chara/hau/hau_announcedFortuneTellingResult_true_01.ogg",
+      "data/sound/chara/hau/hau_announcedFortuneTellingResult_true_02.ogg",
+      "data/sound/chara/hau/hau_announcedFortuneTellingResult_true_03.ogg",
+      "data/sound/chara/hau/hau_announcedFortuneTellingResult_true_04.ogg",
+      "data/sound/chara/hau/hau_announcedFortuneTellingResult_false_01.ogg",
+      "data/sound/chara/hau/hau_announcedFortuneTellingResult_false_02.ogg",
+      "data/sound/chara/hau/hau_announcedFortuneTellingResult_false_03.ogg",
+      "data/sound/chara/hau/hau_announcedFortuneTellingResult_false_04.ogg",
       "data/sound/chara/hau/hau_COFortuneTelling_voice_true_positive_01.ogg",
       "data/sound/chara/hau/hau_COFortuneTelling_voice_true_positive_02.ogg",
       "data/sound/chara/hau/hau_COFortuneTelling_voice_true_positive_03.ogg",
@@ -574,6 +586,7 @@
       "data/sound/chara/hau/hau_doAction_reaction_ask_01.ogg",
       "data/sound/chara/hau/hau_doAction_talkToMuch_01.ogg",
       "data/sound/chara/hau/hau_executed_01.ogg",
+      "data/sound/chara/hau/hau_chooseWhoToBite_01.ogg",
     );
   [endscript]
 [return]

@@ -26,7 +26,7 @@
 *noticeRole_villager
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-;[playse storage="chara/zundamon/zundamon_noticeRole_villager_01.ogg"]
+[playse storage="chara/ritsu/ritsu_noticeRole_villager_01.ogg"]
 
 あたしは村人。[r]
 敵に回すと恐ろしく、味方にすると頼りないとはあたしのことよ。[p]
@@ -36,7 +36,7 @@
 *noticeRole_fortuneTeller
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-;[playse storage="chara/zundamon/zundamon_noticeRole_fortuneTeller_01.ogg"]
+[playse storage="chara/ritsu/ritsu_noticeRole_fortuneTeller_01.ogg"]
 
 あたしは占い師。[r]
 特定班の実力、見せつけてやるわ。[p]
@@ -46,7 +46,7 @@
 *noticeRole_werewolf
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-;[playse storage="chara/zundamon/zundamon_noticeRole_werewolf_01.ogg"]
+[playse storage="chara/ritsu/ritsu_noticeRole_werewolf_01.ogg"]
 
 あたしは人狼。[r]
 ふふ、人狼ゲームのアイドルにあたしはなるわ！[p]
@@ -56,7 +56,7 @@
 *noticeRole_madman
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-;[playse storage="chara/zundamon/zundamon_noticeRole_madman_01.ogg"]
+[playse storage="chara/ritsu/ritsu_noticeRole_madman_01.ogg"]
 
 あたしは狂人。[r]
 狂ってる？それ、褒め言葉ね。[p]
@@ -72,15 +72,15 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-
+[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_true_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_true_01.ogg"]
+[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_true_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_true_02.ogg"]
+[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_true_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_true_03.ogg"]
+[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_true_04.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_true_04.ogg"]
+
 [endif]
 
 [j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼、と。[r]
@@ -93,15 +93,15 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-
+[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_false_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_false_01.ogg"]
+[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_false_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_false_02.ogg"]
+[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_false_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_false_03.ogg"]
+[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_false_04.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-;[playse storage="chara/zundamon/zundamon_announcedFortuneTellingResult_false_04.ogg"]
+
 [endif]
 
 [j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃない、と。[r]
@@ -509,7 +509,7 @@ NGリストにぶち込んでやるわ。[p]
 *chooseWhoToBite
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-;[playse storage="chara/zundamon/zundamon_chooseWhoToBite_01.ogg"]
+[playse storage="chara/ritsu/ritsu_chooseWhoToBite_01.ogg"]
 
 ふふふ…！奇跡の人狼カーニバル、開幕よ！[p]
 [return]
@@ -519,6 +519,18 @@ NGリストにぶち込んでやるわ。[p]
 *preloadVoice
   [iscript]
     tf.preloadList.push(
+      "data/sound/chara/ritsu/ritsu_noticeRole_villager_01.ogg",
+      "data/sound/chara/ritsu/ritsu_noticeRole_fortuneTeller_01.ogg",
+      "data/sound/chara/ritsu/ritsu_noticeRole_werewolf_01.ogg",
+      "data/sound/chara/ritsu/ritsu_noticeRole_madman_01.ogg",
+      "data/sound/chara/ritsu/ritsu_announcedFortuneTellingResult_true_01.ogg",
+      "data/sound/chara/ritsu/ritsu_announcedFortuneTellingResult_true_02.ogg",
+      "data/sound/chara/ritsu/ritsu_announcedFortuneTellingResult_true_03.ogg",
+      "data/sound/chara/ritsu/ritsu_announcedFortuneTellingResult_true_04.ogg",
+      "data/sound/chara/ritsu/ritsu_announcedFortuneTellingResult_false_01.ogg",
+      "data/sound/chara/ritsu/ritsu_announcedFortuneTellingResult_false_02.ogg",
+      "data/sound/chara/ritsu/ritsu_announcedFortuneTellingResult_false_03.ogg",
+      "data/sound/chara/ritsu/ritsu_announcedFortuneTellingResult_false_04.ogg",
       "data/sound/chara/ritsu/ritsu_COFortuneTelling_voice_true_positive_01.ogg",
       "data/sound/chara/ritsu/ritsu_COFortuneTelling_voice_true_positive_02.ogg",
       "data/sound/chara/ritsu/ritsu_COFortuneTelling_voice_true_positive_03.ogg",
@@ -574,6 +586,7 @@ NGリストにぶち込んでやるわ。[p]
       "data/sound/chara/ritsu/ritsu_doAction_reaction_ask_01.ogg",
       "data/sound/chara/ritsu/ritsu_doAction_talkToMuch_01.ogg",
       "data/sound/chara/ritsu/ritsu_executed_01.ogg",
+      "data/sound/chara/ritsu/ritsu_chooseWhoToBite_01.ogg",
     );
   [endscript]
 [return]
