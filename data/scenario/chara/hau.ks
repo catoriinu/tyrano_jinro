@@ -47,6 +47,8 @@
       {face: '考える', storage: 'thinking'},
       {face: 'げっそり', storage: 'tired'},
       {face: '苦笑', storage: 'wrysmile'},
+      {face: '怒り', storage: 'angry'},
+      {face: '恍惚', storage: 'ecstatic'},
     ];
 
     // 規定のイベントとfaceの紐づけ

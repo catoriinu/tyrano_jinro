@@ -49,6 +49,7 @@
       {face: '驚き', storage: 'surprised'},
       {face: '困惑', storage: 'troubled'},
       {face: '考える', storage: 'thinking'},
+      {face: '無', storage: 'nothing'},
     ];
 
     // 規定のイベントとfaceの紐づけ

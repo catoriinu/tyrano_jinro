@@ -47,6 +47,8 @@
       {face: '真剣', storage: 'serious'},
       {face: 'クスクス', storage: 'smug'},
       {face: '大喜び', storage: 'happy'},
+      {face: '興奮', storage: 'excite'},
+      {face: '夢中_ハイド', storage: 'trance_hide'},
     ];
 
     // 規定のイベントとfaceの紐づけ

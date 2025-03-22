@@ -46,6 +46,8 @@
       {face: '悲しみ', storage: 'sad'},
       {face: 'テンアゲ', storage: 'smug'},
       {face: '苦笑', storage: 'wrysmile'},
+      {face: 'アピール', storage: 'appeal'},
+      {face: '困惑', storage: 'panicked'},
     ];
 
     // 規定のイベントとfaceの紐づけ
