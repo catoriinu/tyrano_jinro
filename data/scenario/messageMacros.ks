@@ -243,8 +243,15 @@
 ; 現在のフレームと同じフレームに変える場合は何もしない
 ; NOTICE: [m_changeCharacter]と併用する場合、[m_changeCharacter]を先に実行してf.displayedCharacterを更新しておく必要がある
 ; @param characterId 発言者のキャラクターID。ない場合、発言者枠なしのメッセージフレームに変える。
+; @param frameId フレーム画像ID　フレーム直接指定用
 [macro name="m_changeFrameWithId"]
-  [if exp="!('characterId' in mp)"]
+  [if exp="('frameId' in mp)"]
+    [iscript]
+      tf.frameFileName = 'message_window_' + mp.frameId + '.png';
+    [endscript]
+    [position layer="message0" frame="&tf.frameFileName" cond="f.currentFrame !== mp.frameId"]
+    [eval exp="f.currentFrame = mp.frameId"]
+  [elsif exp="!('characterId' in mp)"]
     [position layer="message0" frame="message_window_none.png" cond="f.currentFrame !== 'none'"]
     [eval exp="f.currentFrame = 'none'"]
   [elsif exp="f.displayedCharacter.left.isDisplay && mp.characterId == f.displayedCharacter.left.characterId"]
