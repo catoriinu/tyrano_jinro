@@ -17,13 +17,13 @@ tf.actorsList = [
 
 // 初期背景用パラメータ
 tf.bgParams = {
-    storage: "living_day_nc238325.jpg",
+    storage: "living_day.jpg",
 }
 
 // 初期BGM用パラメータ
 tf.playbgmParams = {
-    storage: "honwakapuppu.ogg",
-    volume: "12",
+    storage: "hirusagari_kibun.ogg",
+    volume: "40",
 }
 [endscript]
 [t_setupChapter titleText="&f.titleText" actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
@@ -41,6 +41,7 @@ tf.playbgmParams = {
 占い師の能力と千里眼は関係ないのだ。[p]
 
 [m_changeCharacterFrameName name="四国めたん" face="困惑" side="left"]
+[playse storage="se/shock3.ogg" buf="1" volume="40"]
 [playse storage="theater/p01/e02/030.ogg"]
 なっ…！[r]
 あんた、味方だったのに裏切るつもり！？[p]
@@ -69,16 +70,20 @@ tf.playbgmParams = {
 今日の僕が何時に帰って来られるか、見てもらってもいいですか？[p]
 
 [m_changeCharacterFrameName name="四国めたん" face="クスクス" side="left"]
+[playse storage="shakiin1.ogg" volume="35" buf="1"]
 [playse storage="theater/p01/e02/036.ogg"]
 ふ、ふふっ。そのくらいなら造作もないわ。[r]
 さあ、全てを見通す[ruby text="サウ"]千[ruby text="ザンド"]里[ruby text="アイ"]眼よ、わたくしに時の壁を超える力を…！[p]
 
+[stopse buf="0"]
+[playse storage="se/mokugyo.ogg" buf="1" volume="60"]
 [m_changeCharacterFrameName name="ずんだもん" face="考える"]
 ……。[p]
 
 [m_changeCharacterFrameName name="雨晴はう" face="通常"]
 ……。[p]
 
+[stopse buf="1"]
 [m_changeCharacterFrameName name="四国めたん" face="興奮" side="left"]
 [playse storage="theater/p01/e02/039.ogg"]
 ぐ…！[r]
@@ -90,6 +95,7 @@ tf.playbgmParams = {
 わたくしにはまだまだ力不足だとでも言うの…！？[p]
 
 [m_changeCharacterFrameName name="雨晴はう" face="ため息"]
+[playse storage="se/shogeru.ogg" volume="70" buf="1"]
 [playse storage="theater/p01/e02/041.ogg"]
 はうう…やっぱり…。[r]
 めたんさんの千里眼…本物かもしれません…！[p]

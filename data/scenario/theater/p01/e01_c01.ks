@@ -19,7 +19,7 @@ tf.actorsList = [
 
 // 初期背景用パラメータ
 tf.bgParams = {
-    storage: "living_day_nc238325.jpg",
+    storage: "living_day.jpg",
 }
 
 // 初期BGM用パラメータ
@@ -50,9 +50,10 @@ tf.playbgmParams = {
 朝ごはんに食べようと思って冷蔵庫に入れてたのに、起きたら綺麗さっぱりなくなってたのだ！[p]
 
 [m_changeCharacterFrameName name="四国めたん" face="クスクス"]
+[playse storage="se/kira1.ogg" buf="1" volume="60"]
 [playse storage="theater/p01/e01/005.ogg"]
 ああ、昨日遊びに来たずん子たちのおみやげよね。[r]
-まさに翡翠の宝玉…頬が落ちるくらい美味しかったわ。[p]
+まさに[ruby text="エ"]翠[ruby text="メラ"]緑[ruby text="ルド"]の[ruby text="オー"]宝[ruby text="ブ"]珠…頬が落ちるくらい美味しかったわ。[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="悲しみ" side="left"]
 [playse storage="theater/p01/e01/006.ogg"]
@@ -60,6 +61,7 @@ tf.playbgmParams = {
 めたんならやりかねないのだ…！[p]
 
 [m_changeCharacterFrameName name="四国めたん" face="恥ずかしい"]
+[playse storage="se/shogeru.ogg" volume="70" buf="1"]
 [playse storage="theater/p01/e01/007.ogg"]
 ご、誤解しないでちょうだい。[r]
 今のはわたくしの分を食べたときの感想よ。[p]
@@ -73,6 +75,7 @@ tf.playbgmParams = {
 …たぶん。[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="否定" side="left"]
+[playse storage="se/surprised.ogg" buf="1" volume="60"]
 [playse storage="theater/p01/e01/010.ogg"]
 のだ！？[p]
 
@@ -121,6 +124,12 @@ tf.playbgmParams = {
 [playse storage="theater/p01/e01/020.ogg"]
 何よ、急にブツブツ言い始めて。要領を得ないわね。[p]
 
+[stopse buf="0"]
+#
+[m_changeFrameWithId frameId="none"]
+[playse storage="se/open_door1.ogg" buf="1"]
+[wse]
+
 [m_changeCharacterFrameName name="春日部つむぎ" face="テンアゲ"]
 [playse storage="theater/p01/e01/021.ogg"]
 おはよう、ずんだもん先輩、めたん先輩。[r]
@@ -166,6 +175,7 @@ tf.playbgmParams = {
 もしかして犯人を探す方法があるのだ？[p]
 
 [m_changeCharacterFrameName name="波音リツ" face="煽り"]
+[playse storage="se/wadaiko_dodon.ogg" buf="1" volume="60"]
 [playse storage="theater/p01/e01/031.ogg"]
 人狼ゲームで犯人を決めようじゃないか。[p]
 
@@ -189,6 +199,7 @@ tf.playbgmParams = {
 誰が犯人でも恨みっこなしです。[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="驚き" side="left"]
+[playse storage="se/surprised.ogg" buf="1" volume="60"]
 [playse storage="theater/p01/e01/036.ogg"]
 ちょ、ちょっと待つのだ！[r]
 そんなルールは初耳なのだ！[p]

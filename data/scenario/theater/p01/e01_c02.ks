@@ -19,12 +19,12 @@ tf.actorsList = [
 
 // 初期背景用パラメータ
 tf.bgParams = {
-    storage: "living_day_nc238325.jpg",
+    storage: "living_day.jpg",
 }
 
 // 初期BGM用パラメータ
 tf.playbgmParams = {
-    storage: "honwakapuppu.ogg",
+    storage: "gudagudana_kanji_1loop.ogg",
     volume: "12",
 }
 [endscript]
@@ -41,7 +41,7 @@ tf.playbgmParams = {
 [playse storage="theater/p01/e01/041.ogg"]
 わたくしたちの勝利ね、ずんだもん。[p]
 
-[m_changeCharacterFrameName name="春日部つむぎ" face="ガッカリ"]
+[m_changeCharacterFrameName name="春日部つむぎ" face="悲しみ"]
 [playse storage="theater/p01/e01/042.ogg"]
 あーあ、もう少しだったのになー。[r]
 あそこでずんだもん先輩をもっと疑ってれば…。[p]
@@ -51,7 +51,8 @@ tf.playbgmParams = {
 ですが負けは負けです。[r]
 ちゃんと認めましょう、つむぎさん。[p]
 
-[m_changeCharacterFrameName name="春日部つむぎ" face="悲しみ"]
+[m_changeCharacterFrameName name="春日部つむぎ" face="アピール"]
+[playse storage="se/shogeru.ogg" volume="70" buf="1"]
 [playse storage="theater/p01/e01/044.ogg"]
 うん、分かってるよ。[r]
 ごめんね、ずんだもん先輩。[p]
@@ -61,6 +62,7 @@ tf.playbgmParams = {
 ということは、つむぎが僕のずんだもちを食べたのだ？[p]
 
 [m_changeCharacterFrameName name="春日部つむぎ" face="通常"]
+[playse storage="se/hatena01-1.ogg" buf="1" volume="60"]
 [playse storage="theater/p01/e01/046.ogg"]
 え？ううん、違うけど？[p]
 
@@ -82,6 +84,7 @@ tf.playbgmParams = {
 そういえば僕のぶんのずんだもち、まだ食べてなかったのでずんだもんにあげますよ。[p]
 
 [m_changeCharacterFrameName name="雨晴はう" face="げっそり"]
+[playse storage="se/shogeru.ogg" volume="70" buf="1"]
 [playse storage="theater/p01/e01/051.ogg"]
 食べたいのはやまやまですが、どうせ僕は夜勤明けだから早く寝ないとなので…！[p]
 

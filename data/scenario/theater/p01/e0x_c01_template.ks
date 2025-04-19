@@ -19,7 +19,7 @@ tf.actorsList = [
 
 // 初期背景用パラメータ
 tf.bgParams = {
-    storage: "living_day_nc238325.jpg",
+    storage: "living_day.jpg",
 }
 
 // 初期BGM用パラメータ

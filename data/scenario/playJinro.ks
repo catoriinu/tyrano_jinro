@@ -7,7 +7,7 @@
 [clearfix]
 [start_keyconfig]
 
-[bg storage="living_night_close_nc238328.jpg" time="500"]
+[bg storage="living_night_close.jpg" time="500"]
 [fadeoutse time="500"]
 [fadeoutbgm time="500"]
 

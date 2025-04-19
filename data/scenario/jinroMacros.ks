@@ -1449,7 +1449,7 @@
   [endif]
 
   [playbgm storage="nc282335.ogg" loop="true" volume="11" restart="false"]
-  [bg storage="living_day_nc238325.jpg" time="1000" wait="true" effect="fadeInUp"]
+  [bg storage="living_day.jpg" time="1000" wait="true" effect="fadeInUp"]
 [endmacro]
 
 
@@ -1461,7 +1461,7 @@
 
   ; 夜時間開始時用の初期化を行う
   [eval exp="nightInitialize()"]
-  [bg storage="living_night_close_nc238328.jpg" time="1000" wait="true" effect="fadeInUp"]
+  [bg storage="living_night_close.jpg" time="1000" wait="true" effect="fadeInUp"]
 
   恐ろしい夜がやってきました。[p]
 

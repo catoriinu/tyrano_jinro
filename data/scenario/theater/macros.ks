@@ -88,6 +88,9 @@
 ; @param episodeId
 ; @param chapterId
 [macro name="t_teardownChapter"]
+  [fadeoutse buf="0" time="500"]
+  [fadeoutse buf="1" time="500"]
+  [fadeoutbgm time="500"]
 
   ; キャラ名を消すための#
   # 
@@ -163,6 +166,7 @@
   [m_exitCharacter characterId="&f.displayedCharacter.right.characterId" time="1"]
   [freeimage layer="1"]
   [freeimage layer="2"]
+  [free_filter layer="base"]
   [layopt layer="message0" visible="false"]
   [eval exp="f.currentFrame = null"]
 [endmacro]

@@ -14,7 +14,7 @@
     f.defaultPosition[tf.characterId] = {
       width: 664, // 画像の幅（画面幅1280pxの中での幅）
       haight: 836, // 画像の高さ（画面高さ720pxの中での高さ）
-      top: 121, // キャラが登場したときのtopの値
+      top: 120, // キャラが登場したときのtopの値
       widthCenter: 302, // 画像の幅の中央（立ち絵の見た目の中央の位置。画像の左端からのpxで指定）
       leftOnLeft: -153, // キャラが左側に登場したときのleftの値
       leftOnRight: 770, // キャラが右側に登場したときのleftの値
