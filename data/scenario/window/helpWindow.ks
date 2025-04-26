@@ -20,7 +20,7 @@
   [endscript]
 
   [w_openWindow]
-  [w_makeClickableAreaOuterWindow storage="window/helpWindow.ks" target="*close"]
+  [w_makeClickableAreaOuterWindow target="*close"]
 
   [ptext layer="2" page="back" text="ヘルプ" face="MPLUSRounded" size="36" x="180" y="80" width="920" align="center" name="helpTitle" overwrite="true"]
   [ptext layer="2" page="back" text="&tf.helpText" face="MPLUSRounded" size="24" x="185" y="150" width="920" align="left" name="helpText" overwrite="true"]

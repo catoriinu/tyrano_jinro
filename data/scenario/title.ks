@@ -38,6 +38,9 @@
   tf.isFirstTime = true;
 [endscript]
 
+; 初回クリア通知ウィンドウ表示（初回クリア時以外は何もせず戻ってくる）
+[jump storage="window/noticeClearedWindow.ks" target="*start"]
+
 *displayButton
 
 ; タイトル画面のボタン表示
@@ -121,7 +124,8 @@
 *help
 ; ヘルプウィンドウを表示する
 [jump storage="window/helpWindow.ks"]
-
+; メモ：初回クリア通知ウィンドウ表示テスト用
+;[jump storage="window/noticeClearedWindow.ks" target="*displayNoticeClearedWindow"]
 
 *resetProgress
 [html top="130" left="413.813" name="pause_menu_button_window"]

@@ -64,10 +64,18 @@
     // 再生中のチャプターのファイルパスを生成しておく（スキップからの再開のため・コンフィグでチャプター再生中と判定するため）
     f.chapterStorage = 'theater/' + f.pageId + '/' + f.episodeId + '_' + f.chapterId + '.ks';
 
+    // 今回の再生でエピソード解放ステータスが進んだか
+    tf.doAdvanceEpisodeStatus = false;
+
     // エピソード解放ステータスの更新
     // 解決編の場合、「2：導入編解放済みで解決編未解放」なら「3：解決編まで解放済み」に更新する
     if (f.chapterId === 'c02') {
-      sf.theaterProgress[f.pageId][f.episodeId] = advanceEpisodeStatus(f.pageId, f.episodeId, EPISODE_STATUS.OUTRO_UNLOCKED);
+      const targetStatus = EPISODE_STATUS.OUTRO_UNLOCKED;
+      const resultStatus = advanceEpisodeStatus(f.pageId, f.episodeId, targetStatus);
+      sf.theaterProgress[f.pageId][f.episodeId] = resultStatus;
+      if (targetStatus === resultStatus) {
+        tf.doAdvanceEpisodeStatus = true;
+      }
     }
   [endscript]
 
@@ -107,7 +115,12 @@
     // エピソード解放ステータスの更新
     // 導入編の場合、「1：導入編未解放かつ解放可」なら「2：導入編解放済みで解決編未解放」に更新する
     if (mp.chapterId === 'c01') {
-      sf.theaterProgress[mp.pageId][mp.episodeId] = advanceEpisodeStatus(mp.pageId, mp.episodeId, EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED);
+      const targetStatus = EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED
+      const resultStatus = advanceEpisodeStatus(mp.pageId, mp.episodeId, targetStatus);
+      sf.theaterProgress[mp.pageId][mp.episodeId] = resultStatus;
+      if (targetStatus === resultStatus) {
+        tf.doAdvanceEpisodeStatus = true;
+      }
     }
   [endscript]
 
