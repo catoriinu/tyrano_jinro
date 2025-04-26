@@ -24,7 +24,7 @@
 
   *displayButtons
   ; 閉じるボタンまたは枠外（左右上下）のクリックで閉じる
-  [glink color="&tf.selectedButtonColor" size="26" width="210" x="875" y="100" text="閉じる" target="*close"]
+  [glink color="&tf.selectedButtonColor" size="26" width="210" x="875" y="80" text="閉じる" target="*close"]
   [w_makeClickableAreaOuterWindow storage="window/noticeStartingSituation.ks" target="*close"]
 
   ; 開始条件テキストと解放条件テキスト。ボタンを押して表示する場合はここで表ページに表示させる。overwrite="true"を指定しているので既に表示済みの場合は上書き表示になる（＝重複表示はされない）
