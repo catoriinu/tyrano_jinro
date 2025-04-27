@@ -14,7 +14,7 @@
   [image storage="&f.displayEpisode.thumbnail" layer="2" page="back" left="424" top="80" height="243" name="thumbnail"]
   [ptext layer="2" page="back" text="&f.displayEpisode.title" face="MPLUSRounded" size="36" x="180" y="330" width="920" align="center"]
 
-  [ptext layer="2" page="back" text="解決編解放チャンス！" size="26" x="180" y="400" width="920" align="center"]
+  [ptext layer="2" page="back" text="解決編解放チャンス！" size="26" x="180" y="410" width="920" align="center"]
 
   ; 開始条件テキストと解放条件テキスト。初期から表示してよいならここで裏ページに表示して、直後にtransで表ページに切り替える
   [ptext layer="2" page="back" text="&f.displayEpisode.startConditionText" face="MPLUSRounded" size="26" x="180" y="475" width="920" align="center" name="startConditionText" overwrite="true" cond="tf.needDisplayStartConditionText"]
