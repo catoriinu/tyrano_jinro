@@ -1027,7 +1027,7 @@
         'normal.png',
         getBgColorFromCharacterId(f.voteResultObjects[i].targetId),
         votedCountText,
-        '→' + f.characterObjects[f.voteResultObjects[i].targetId].name
+        '投票→' + f.characterObjects[f.voteResultObjects[i].targetId].name
       ))
 
       // 投票数の先頭が'★'ではない場合、' 'を追加する（行頭を揃えるため）
