@@ -32,6 +32,8 @@
   // ボタンの色
   tf.buttonColor = CLASS_GLINK_DEFAULT;
   tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
+  // ボタンのSE
+  tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
 
   // タイトル画面初回表示フラグ
   // ゲームの初回起動の意味ではない。displayButtonラベルに戻るボタンを押したときに、初回表示時以外は実行したくない処理を弾くためのフラグ
@@ -44,14 +46,14 @@
 *displayButton
 
 ; タイトル画面のボタン表示
-[glink color="&tf.buttonColor" size="30" width="300" x="488" y="460" name="buttonhover" text="プレイスタート" target="*gamestart"]
-[glink color="&tf.buttonColor" size="30" width="300" x="838" y="460" name="buttonhover" text="コンフィグ" target="*config"]
+[glink color="&tf.buttonColor" size="30" width="300" x="488" y="460" name="&tf.classButtonSeHover" text="プレイスタート" target="*gamestart"]
+[glink color="&tf.buttonColor" size="30" width="300" x="838" y="460" name="&tf.classButtonSeHover" text="コンフィグ" target="*config"]
 
 ; インストラクションクリア済みなら
 [if exp="tf.isInstructionCleared"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="138" y="460" name="buttonhover" text="シアター" target="*theater"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="580" name="buttonhover" text="カスタマイズ" target="*customize"]
-  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="580" name="buttonhover" text="ヘルプ" target="*help"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="138" y="460" name="&tf.classButtonSeHover" text="シアター" target="*theater"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="488" y="580" name="&tf.classButtonSeHover" text="カスタマイズ" target="*customize"]
+  [glink color="&tf.buttonColor" size="30" width="300" x="838" y="580" name="&tf.classButtonSeHover" text="ヘルプ" target="*help"]
 
   ; 視聴済みエピソードスキップ要否ボタンを表示
   [iscript]
@@ -59,28 +61,18 @@
     tf.skipButtonColor = sf.doSkipWatchedEpisode ? tf.selectedButtonColor : tf.buttonColor;
   [endscript]
   [ptext layer="1" x="157" y="555" text="解決編未解放時の導入編" color="0x28332a" size="24" cond="tf.isFirstTime"]
-  [glink color="&tf.watchButtonColor" size="24" width="140" x="138" y="600" name="buttonhover" text="自動再生" exp="sf.doSkipWatchedEpisode = false" target="*displayButton"]
-  [glink color="&tf.skipButtonColor" size="24" width="140" x="298" y="600" name="buttonhover" text="スキップ" exp="sf.doSkipWatchedEpisode = true" target="*displayButton"]
+  [glink color="&tf.watchButtonColor" size="24" width="140" x="138" y="600" name="&tf.classButtonSeHover" text="自動再生" exp="sf.doSkipWatchedEpisode = false" target="*displayButton"]
+  [glink color="&tf.skipButtonColor" size="24" width="140" x="298" y="600" name="&tf.classButtonSeHover" text="スキップ" exp="sf.doSkipWatchedEpisode = true" target="*displayButton"]
 [endif]
 
 ; デバッグ系ボタン表示
-[glink color="black" size="15" x="1125" y="4" width="90" text="進捗リセット" name="buttonhover" target="*resetProgress" cond="sf.isDebugMode"]
-[glink color="black" size="15" x="1125" y="40" width="90" text="開発者用" name="buttonhover" target="*developerSettings" cond="sf.isDebugMode"]
+[glink color="black" size="15" x="1125" y="4" width="90" text="進捗リセット" name="&tf.classButtonSeHover" target="*resetProgress" cond="sf.isDebugMode"]
+[glink color="black" size="15" x="1125" y="40" width="90" text="開発者用" name="&tf.classButtonSeHover" target="*developerSettings" cond="sf.isDebugMode"]
 
 
 [iscript]
   tf.isFirstTime = false;
-
-  // ボタンにカーソルが乗ったときの処理
-  $(".buttonhover").hover(
-    function(e) {
-      // glinkのenterse属性だと細かい設定ができないため独自に設定（特にbufがデフォルトだと他で鳴っている効果音を打ち消してしまう）
-      TYRANO.kag.ftag.startTag("playse",{storage:"botan_b34.ogg",volume:40,buf:1});
-    },
-    function(e) {
-      // ボタンが離れても何もしない。第二引数を明記しておかないと、離れたときも乗ったときと同じ処理が発生する
-    }
-  );
+  setButtonSe();
 [endscript]
 [s]
 
@@ -130,11 +122,12 @@
 *resetProgress
 [html top="130" left="413.813" name="pause_menu_button_window"]
 [endhtml]
-[glink color="&tf.buttonColor" size="26" width="400" x="439" y="153" name="buttonhover" text="設定含めて完全初期化" target="*resetAll"]
-[glink color="&tf.buttonColor" size="26" width="400" x="439" y="238" name="buttonhover" text="シアターのみ初期化" target="*resetTheater"]
-[glink color="&tf.buttonColor" size="26" width="400" x="439" y="323" name="buttonhover" text="チュートリアル完了後" target="*resetAfterTutorial"]
-[glink color="&tf.buttonColor" size="26" width="400" x="439" y="408" name="buttonhover" text="エンディング後" target="*resetAfterEnding"]
-[glink color="&tf.buttonColor" size="26" width="400" x="439" y="493" name="buttonhover" text="何もしない" target="*start"]
+[glink color="&tf.buttonColor" size="26" width="400" x="439" y="153" name="&tf.classButtonSeHover" text="設定含めて完全初期化" target="*resetAll"]
+[glink color="&tf.buttonColor" size="26" width="400" x="439" y="238" name="&tf.classButtonSeHover" text="シアターのみ初期化" target="*resetTheater"]
+[glink color="&tf.buttonColor" size="26" width="400" x="439" y="323" name="&tf.classButtonSeHover" text="チュートリアル完了後" target="*resetAfterTutorial"]
+[glink color="&tf.buttonColor" size="26" width="400" x="439" y="408" name="&tf.classButtonSeHover" text="エンディング後" target="*resetAfterEnding"]
+[glink color="&tf.selectedButtonColor" size="26" width="400" x="439" y="493" name="&tf.classButtonSeHover" text="何もしない" target="*start"]
+[eval exp="setButtonSe()"]
 [s]
 
 *resetAll

@@ -4,6 +4,7 @@
   [iscript]
     tf.buttonColor = CLASS_GLINK_DEFAULT;
     tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
+    tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
 
     tf.helpText = `
       ・<b>「プレイスタート」</b>で人狼ゲームを開始することができます。<br>
@@ -27,8 +28,9 @@
 
   [trans layer="2" time="0"]
 
-  [glink color="&tf.buttonColor" size="24" width="450" x="413" y="595" text="インストラクションをリプレイ" target="*playInstruction"]
-  [glink color="&tf.selectedButtonColor" size="26" width="210" x="875" y="80" text="閉じる" target="*close"]
+  [glink color="&tf.buttonColor" size="24" width="450" x="413" y="595" text="インストラクションをリプレイ" target="*playInstruction" name="&tf.classButtonSeHover"]
+  [glink color="&tf.selectedButtonColor" size="26" width="210" x="875" y="80" text="閉じる" target="*close" name="&tf.classButtonSeHover"]
+  [eval exp="setButtonSe()"]
 [s]
 
 

@@ -38,6 +38,7 @@
 [loadjs storage="voivoJinro/theater/theaterScripts.js"]
 [loadjs storage="voivoJinro/theater/episodeData.js"]
 [loadjs storage="voivoJinro/record/recordScripts.js"]
+[loadjs storage="voivoJinro/front/buttonScripts.js"]
 
 [iscript]
 // デバッグモード

@@ -50,6 +50,7 @@
   // スライダーのX座標
   tf.slider_x = 435;
 
+  tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
 [endscript]
 
 [cm]
@@ -71,7 +72,7 @@
 [current layer="message1"]
 
 ; 画面右上の「もどる」ボタン
-[button fix="true" graphic="button/button_return_normal.png" enterimg="button/button_return_hover.png" target="*return" x="1143" y="17" width="114" height="103"]
+[button fix="true" graphic="button/button_return_normal.png" enterimg="button/button_return_hover.png" target="*return" x="1143" y="17" width="114" height="103" name="&tf.classButtonSeHover"]
 
 [jump target="*config_page"]
 
@@ -154,9 +155,10 @@
 *marker_button
 
 [iscript]
-  tf.mark0Color = CLASS_GLINK_DEFAULT;
-  tf.mark20Color = CLASS_GLINK_DEFAULT;
   tf.mark100Color = CLASS_GLINK_DEFAULT;
+  tf.mark20Color = CLASS_GLINK_DEFAULT;
+  tf.mark0Color = CLASS_GLINK_DEFAULT;
+
   if (sf.config.mark_size === 100) {
     tf.mark100Color += " " + CLASS_GLINK_SELECTED;
   } else if (sf.config.mark_size === 20) {
@@ -167,10 +169,11 @@
   }
 [endscript]
 
-[glink color="&tf.mark0Color" size="26" width="180" x="480" y="520" text="なし" exp="sf.config.mark_size = preexp" preexp="0" target="*marker_button"]
-[glink color="&tf.mark20Color" size="26" width="180" x="710" y="520" text="下線" exp="sf.config.mark_size = preexp" preexp="20" target="*marker_button"]
-[glink color="&tf.mark100Color" size="26" width="180" x="940" y="520" text="塗りつぶし" exp="sf.config.mark_size = preexp" preexp="100" target="*marker_button"]
+[glink color="&tf.mark100Color" name="&tf.classButtonSeHover" size="26" width="180" x="940" y="520" text="塗りつぶし" exp="sf.config.mark_size = preexp" preexp="100" target="*marker_button"]
+[glink color="&tf.mark20Color" name="&tf.classButtonSeHover" size="26" width="180" x="710" y="520" text="下線" exp="sf.config.mark_size = preexp" preexp="20" target="*marker_button"]
+[glink color="&tf.mark0Color" name="&tf.classButtonSeHover" size="26" width="180" x="480" y="520" text="なし" exp="sf.config.mark_size = preexp" preexp="0" target="*marker_button"]
 
+[eval exp="setButtonSe()"]
 [s]
 
 

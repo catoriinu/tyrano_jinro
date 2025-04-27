@@ -32,15 +32,16 @@ tf.baseTop = 155;
 tf.offsetTop = 110;
 
 tf.buttonColor = CLASS_GLINK_DEFAULT;
+tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
+tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
 [endscript]
 
 ; 画面上部のボタン表示
 [ptext layer="0" page="back" name="explainButtonText" x="475" y="18" text="現在のカスタマイズを" color="#28332a" size="28" overwrite="true"]
-[glink color="&tf.buttonColor" size="22" width="260" x="770" y="16" text="初期状態にリセット" target="*resetToDefault"]
-[glink color="&tf.buttonColor" size="22" width="260" x="770" y="80" text="反映してプレイスタート" target="*startPlay"]
-; TODO returnTitleを「破棄してもどる」「反映してもどる」用に修正する
-[glink color="&tf.buttonColor" size="22" width="200" x="1055" y="16" text="破棄してもどる" preexp="false" exp="tf.needUpdateJinrogGamedata = preexp" target="*returnTitle"]
-[glink color="&tf.buttonColor" size="22" width="200" x="1055" y="80" text="反映してもどる" preexp="true" exp="tf.needUpdateJinrogGamedata = preexp" target="*returnTitle"]
+[glink color="&tf.buttonColor" size="22" width="260" x="770" y="16" text="初期状態にリセット" target="*resetToDefault" name="&tf.classButtonSeHover"]
+[glink color="&tf.buttonColor" size="22" width="260" x="770" y="80" text="反映してプレイスタート" target="*startPlay" name="&tf.classButtonSeHover"]
+[glink color="&tf.selectedButtonColor" size="22" width="200" x="1055" y="16" text="破棄してもどる" target="*returnTitle" name="&tf.classButtonSeHover"]
+[glink color="&tf.buttonColor" size="22" width="200" x="1055" y="80" text="反映してもどる" target="*returnTitleWithUpdate" name="&tf.classButtonSeHover"]
 ; MEMO ver0.12.5to6 「参加者編集」ボタン及びドラッグ＆ドロッププラグインを利用した参加者編集機能は撤廃する。並び替え機能は不要、PC設定や参加不参加は別の形で実装予定。せっかく実装したのでコメントアウトで残してはおく。
 ;[glink color="&tf.buttonColor" size="26" width="220" x="645" y="22" text="参加者編集" target="*startEditMode" cond="tf.allowShowEditButton"]
 
@@ -70,6 +71,8 @@ tf.buttonColor = CLASS_GLINK_DEFAULT;
   // 現時点での参加者リストとプレイヤーキャラクターIDを保存しておく。
   // カスタマイズウィンドウを閉じたり、参加者編集が完了して、再度メイン画面を表示したときに画像更新判定をするため
   f.currentParticipantList = clone(f.currentJinroGameData.participantList);
+
+  setButtonSe();
 
   tf.needTeardownEditMode = false;
 [endscript]
@@ -132,10 +135,11 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 
 
 ; タイトル画面に戻る
-*returnTitle
-
+*returnTitleWithUpdate
 ; 「反映してもどる」の場合のみ、カスタマイズ画面での変更をシステム変数内の人狼ゲームデータに反映する
-[eval exp="sf.jinroGameDataObjects[sf.currentJinroGameDataKey] = f.currentJinroGameData" cond="tf.needUpdateJinrogGamedata"]
+[eval exp="sf.jinroGameDataObjects[sf.currentJinroGameDataKey] = f.currentJinroGameData"]
+
+*returnTitle
 
 ; fixボタンをクリア
 [clearfix]
