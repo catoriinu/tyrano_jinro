@@ -8,7 +8,7 @@
         if (getTheaterProgress('p01', 'e01') === EPISODE_STATUS.OUTRO_UNLOCKED) {
           const episodeList = ['e02', 'e03', 'e04', 'e05', 'e06', 'e07'];
           for (const episodeId of episodeList) {
-            sf.theaterProgress['p01'][episodeId] = advanceEpisodeStatus('p01', episodeId, EPISODE_STATUS.INTRO_LOCKED_AVAILABLE);
+            sf.theaterProgress['p01'][episodeId] = EPISODE_STATUS.INTRO_LOCKED_AVAILABLE;
           }
         }
       }
@@ -19,7 +19,7 @@
           ['p01'],
           ['e02', 'e03', 'e04', 'e05', 'e06', 'e07'],
         )) {
-          sf.theaterProgress['p01']['e08'] = advanceEpisodeStatus('p01', 'e08', EPISODE_STATUS.INTRO_LOCKED_AVAILABLE);
+          sf.theaterProgress['p01']['e08'] = EPISODE_STATUS.INTRO_LOCKED_AVAILABLE;
         }
       }
     }

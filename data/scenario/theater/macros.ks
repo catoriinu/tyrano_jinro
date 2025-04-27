@@ -70,12 +70,9 @@
     // エピソード解放ステータスの更新
     // 解決編の場合、「2：導入編解放済みで解決編未解放」なら「3：解決編まで解放済み」に更新する
     if (f.chapterId === 'c02') {
-      const targetStatus = EPISODE_STATUS.OUTRO_UNLOCKED;
-      const resultStatus = advanceEpisodeStatus(f.pageId, f.episodeId, targetStatus);
+      const [result, resultStatus] = advanceEpisodeStatus(f.pageId, f.episodeId, EPISODE_STATUS.OUTRO_UNLOCKED);
       sf.theaterProgress[f.pageId][f.episodeId] = resultStatus;
-      if (targetStatus === resultStatus) {
-        tf.doAdvanceEpisodeStatus = true;
-      }
+      tf.doAdvanceEpisodeStatus = result;
     }
   [endscript]
 
@@ -115,12 +112,9 @@
     // エピソード解放ステータスの更新
     // 導入編の場合、「1：導入編未解放かつ解放可」なら「2：導入編解放済みで解決編未解放」に更新する
     if (mp.chapterId === 'c01') {
-      const targetStatus = EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED
-      const resultStatus = advanceEpisodeStatus(mp.pageId, mp.episodeId, targetStatus);
+      const [result, resultStatus] = advanceEpisodeStatus(mp.pageId, mp.episodeId, EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED);
       sf.theaterProgress[mp.pageId][mp.episodeId] = resultStatus;
-      if (targetStatus === resultStatus) {
-        tf.doAdvanceEpisodeStatus = true;
-      }
+      tf.doAdvanceEpisodeStatus = result;
     }
   [endscript]
 

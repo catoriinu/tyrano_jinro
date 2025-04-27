@@ -121,16 +121,16 @@ function everyProgressMatch(targetEpisodeStatus, pageIdList, episodeIdList) {
  * @param {String} pageId 
  * @param {String} episodeId 
  * @param {Number} targetStatus 進めたいエピソード進捗ステータス
- * @returns 更新結果となるエピソード進捗ステータス
+ * @returns {Array} [true:更新あり|false:更新なし, 更新結果となるエピソード進捗ステータス]
  */
 function advanceEpisodeStatus(pageId, episodeId, targetStatus) {
   const currentStatus = getTheaterProgress(pageId, episodeId);
   // 現在のステータスが、指定のステータスの1つ前の場合のみ、1つ進めることができると判定する
   if (currentStatus === (targetStatus - 1)) {
-    return targetStatus;
+    return [true, targetStatus];
   }
   // 1つ前ではない場合は進められないので元々のステータスを返す（ステータスを飛ばしたり、巻き戻ったりはさせないという意味）
-  return currentStatus;
+  return [false, currentStatus];
 }
 
 
