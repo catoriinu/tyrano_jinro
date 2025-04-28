@@ -1,9 +1,5 @@
 ;一番最初に呼び出されるファイル
-
-[title name="ボイボ人狼 ver.0.12.6"]
-
 [stop_keyconfig]
-
 
 ; 素材ロード中にローディング表示をする
 [loading_log preload="notext" icon="true"]
@@ -39,8 +35,12 @@
 [loadjs storage="voivoJinro/theater/episodeData.js"]
 [loadjs storage="voivoJinro/record/recordScripts.js"]
 [loadjs storage="voivoJinro/front/buttonScripts.js"]
+[loadjs storage="voivoJinro/sf/Version.js"]
 
 [iscript]
+// ゲーム本体のバージョンをシナリオ変数に設定
+buildSfVersion(0, 12, 6, true);
+
 // デバッグモード
 if (!('isDebugMode' in sf)) {
   sf.isDebugMode = true;
@@ -90,6 +90,9 @@ tf.tmp_se_vol = sf.config.mute_se ? "0" : String(sf.config.current_se_vol);
 tf.tmp_voice_vol = sf.config.mute_voice ? "0" : String(sf.config.current_voice_vol);
 tf.tmp_ch_speed = String(sf.config.current_ch_speed);
 [endscript]
+
+; タイトル表示
+[title name="&sf.version.getVersionText('ボイボ人狼 ver.')"]
 
 [bgmopt volume="&tf.tmp_bgm_vol"]
 [seopt volume="&tf.tmp_se_vol" buf="1"]

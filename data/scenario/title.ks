@@ -4,7 +4,7 @@
 [bg storage="voivojinrou_title_v4.png" time="1" wait="true"]
 
 ; バージョン表示
-[ptext layer="1" x="5" y="685" text="ver.0.12.6" color="white" size="24"]
+[ptext layer="1" x="5" y="685" text="&sf.version.getVersionText()" color="white" size="24"]
 [layopt layer="1" visible="true"]
 
 ; ボイス停止（人狼ゲームから戻ってきたとき用）
