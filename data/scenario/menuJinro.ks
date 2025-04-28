@@ -10,22 +10,26 @@
 ; ボタンとその背景
 [html top="130" left="413.813" name="pause_menu_button_window"]
 [endhtml]
-[eval exp="tf.buttonColor = CLASS_GLINK_DEFAULT"]
-
+[iscript]
+  tf.buttonColor = CLASS_GLINK_DEFAULT;
+  tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
+  tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
+[endscript]
 
 [if exp="f.isSituationPlay"]
-  [glink color="&tf.buttonColor" size="30" width="400" x="439" y="180" name="buttonhover" text="シアターに戻る" target="*returnTheater"]
-  [glink color="&tf.buttonColor" size="30" width="400" x="439" y="273.3" name="buttonhover" text="タイトルに戻る" target="*returnTitle"]
-  [glink color="&tf.buttonColor" size="30" width="400" x="439" y="366.6" name="buttonhover" text="コンフィグ" target="*config"]
-  [glink color="&tf.buttonColor" size="30" width="400" x="439" y="460" name="buttonhover" text="メニューを閉じる" target="*closeMenu"]
+  [glink color="&tf.buttonColor" size="30" width="400" x="439" y="180" name="&tf.classButtonSeHover" text="シアターに戻る" target="*returnTheater"]
+  [glink color="&tf.buttonColor" size="30" width="400" x="439" y="273.3" name="&tf.classButtonSeHover" text="タイトルに戻る" target="*returnTitle"]
+  [glink color="&tf.buttonColor" size="30" width="400" x="439" y="366.6" name="&tf.classButtonSeHover" text="コンフィグ" target="*config"]
+  [glink color="&tf.selectedButtonColor" size="30" width="400" x="439" y="460" name="&tf.classButtonSeHover" text="メニューを閉じる" target="*closeMenu"]
 [else]
-  [glink color="&tf.buttonColor" size="30" width="400" x="439" y="180" name="buttonhover" text="タイトルに戻る" target="*returnTitle"]
-  [glink color="&tf.buttonColor" size="30" width="400" x="439" y="320" name="buttonhover" text="コンフィグ" target="*config"]
-  [glink color="&tf.buttonColor" size="30" width="400" x="439" y="460" name="buttonhover" text="メニューを閉じる" target="*closeMenu"]
+  [glink color="&tf.buttonColor" size="30" width="400" x="439" y="180" name="&tf.classButtonSeHover" text="タイトルに戻る" target="*returnTitle"]
+  [glink color="&tf.buttonColor" size="30" width="400" x="439" y="320" name="&tf.classButtonSeHover" text="コンフィグ" target="*config"]
+  [glink color="&tf.selectedButtonColor" size="30" width="400" x="439" y="460" name="&tf.classButtonSeHover" text="メニューを閉じる" target="*closeMenu"]
 [endif]
 ; 「現在の変数を出力」は問い合わせ用に常に表示する。ただし他のボタンの邪魔にならないよう、枠外で。
-[glink color="&tf.buttonColor" size="26" width="450" x="412" y="600" name="buttonhover" text="問い合わせ用 現在の変数を出力" target="*exportJson"]
+[glink color="&tf.buttonColor" size="26" width="450" x="412" y="600" name="&tf.classButtonSeHover" text="問い合わせ用 現在の変数を出力" target="*exportJson"]
 
+[eval exp="setButtonSe()"]
 [s]
 
 
