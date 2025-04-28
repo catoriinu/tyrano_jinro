@@ -18,8 +18,6 @@
   tf.system.backlog = [];
   // 人狼ゲーム中フラグ
   f.inJinroGame = false;
-  // シチュエーションプレイで人狼ゲームを開始したフラグ
-  f.isSituationPlay = false;
   // シアターで即座にエピソードウィンドウを開くフラグを初期化（タイトルに戻ってきたら次にシアターを開いてもウィンドウを開いてほしくないため）
   f.quickShowEpisodeWindow = false;
   // チャプターリストの初期化
