@@ -74,11 +74,12 @@ if (!f.quickShowEpisodeWindow) {
 [iscript]
   tf.buttonColor = CLASS_GLINK_DEFAULT;
   tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
+  tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
 
   // 表示するメッセージの判定用
   tf.isPage01AllCleared = (getTheaterProgress('p01', 'e08') === EPISODE_STATUS.OUTRO_UNLOCKED);
 [endscript]
-[glink color="&tf.buttonColor" size="30" width="270" x="975" y="38" text="タイトルに戻る" target="*returnTitle"]
+[glink color="&tf.selectedButtonColor" size="30" width="270" x="975" y="38" text="タイトルに戻る" target="*returnTitle" name="&tf.classButtonSeHover"]
 
 ; 以下、選択中のページのみボタンの色を変える
 ; TODO 初期リリース時はページ切り替え機能は不要なのでコメントアウトする
@@ -102,6 +103,8 @@ if (!f.quickShowEpisodeWindow) {
 [else]
 人狼ゲームで特定の条件を満たすと解決編が解放されます。
 [endif]
+
+[eval exp="setButtonSe()"]
 [s]
 
 
