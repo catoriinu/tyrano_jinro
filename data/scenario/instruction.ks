@@ -14,6 +14,7 @@
 
 
 [m_changeCharacterFrameName name="ずんだもん" face="否定" side="left"]
+[playse storage="se/surprised.ogg" buf="1" volume="60"]
 [playse storage="other/01_instruction/001.ogg"]
 …って、人狼って悪者なんじゃないのだ！？[r]
 このままだと僕が犯人ってことにされるのだ！[p]
@@ -58,6 +59,7 @@
 タイトル画面の「ヘルプ」から「インストラクションをリプレイ」を選べばOKです。[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="困惑" side="left"]
+[playse storage="se/hatena01-1.ogg" buf="1" volume="60"]
 [playse storage="other/01_instruction/010.ogg"]
 お姉さんは誰に向かって喋ってるのだ？[p]
 
@@ -91,6 +93,7 @@
 
 *continueInstruction
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
+[playse storage="se/kira1.ogg" buf="1" volume="60"]
 [playse storage="other/01_instruction/017.ogg"]
 了解です！[r]
 それではご説明いたしましょう！[p]
@@ -251,6 +254,7 @@
 ここからは実際にゲームをしつつ「ボイボ人狼」の説明をしますね。[p]
 
 ; 右側のキャラ退場、枠リセット
+[stopse buf="0"]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 [m_changeFrameWithId]
 #
@@ -262,6 +266,7 @@
 
 *skipInstruction
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
+[playse storage="se/kira1.ogg" buf="1" volume="60"]
 [playse storage="other/01_instruction/014.ogg"]
 了解です！[r]
 それでは人狼ゲーム自体の説明はスキップさせていただきます。[p]
@@ -271,6 +276,7 @@
 ここからは実際にゲームをしつつ「ボイボ人狼」の説明をしますね。[p]
 
 ; 右側のキャラ退場、枠リセット
+[stopse buf="0"]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 [m_changeFrameWithId]
 #
@@ -307,6 +313,7 @@
 さあ、どうしますか？[p]
 
 ; 右側のキャラ退場、枠リセット
+[stopse buf="0"]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 [m_changeFrameWithId]
 #
@@ -371,6 +378,7 @@
 つまりそういうことです。[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="困惑" side="left"]
+[playse storage="se/hatena01-1.ogg" buf="1" volume="60"]
 [playse storage="other/01_instruction/074.ogg"]
 のだ？[p]
 
@@ -419,6 +427,7 @@
 が、がんばるのだ…！[p]
 
 ; 右側のキャラ退場、枠リセット
+[stopse buf="0"]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 [m_changeFrameWithId]
 #
@@ -442,6 +451,7 @@
 けど、その人狼は僕なのだ…。[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="困惑" side="left"]
+[playse storage="se/manuke4.ogg" buf="1" volume="60"]
 [playse storage="other/01_instruction/089.ogg"]
 誰に投票すればいいのか悩むのだ…。[p]
 
@@ -474,6 +484,7 @@
 それでは、運命の投票に移りましょう！[p]
 
 ; 右側のキャラ退場、枠リセット
+[stopse buf="0"]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 [m_changeFrameWithId]
 #
@@ -516,6 +527,7 @@
 ここまで来たら、とことんやってやるのだー！[p]
 
 ; 右側のキャラ退場、枠リセット
+[stopse buf="0"]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 [m_changeFrameWithId]
 #
@@ -728,6 +740,7 @@
 [endscript]
 
 ; 右側のキャラ退場、枠リセット
+[stopse buf="0"]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 [m_changeFrameWithId]
 #
@@ -749,6 +762,7 @@
 ありがとうなのだ！[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="困惑" side="left"]
+[playse storage="se/hatena01-1.ogg" buf="1" volume="60"]
 [playse storage="other/01_instruction/142.ogg"]
 …あの、もう一度質問なのだ。[r]
 お姉さんは一体誰なのだ？[p]
@@ -789,6 +803,7 @@
 このまま濡れ衣なんて嫌なのだ！[p]
 
 ; 枠リセット
+[stopse buf="0"]
 [m_changeFrameWithId]
 #
 
@@ -810,6 +825,7 @@
 インストラクターのお姉さん、颯爽登場です！[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
+[playse storage="se/manuke4.ogg" buf="1" volume="60"]
 [playse storage="other/01_instruction/167.ogg"]
 あ、あれ、おかしいですね…？[r]
 あんまり驚いてくれませんね…。[p]
@@ -885,6 +901,7 @@
 
 ; 右側のキャラ退場。退場を待つ
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId" wait="true"]
+[stopse buf="0"]
 
 [m_changeCharacterFrameName name="ずんだもん" face="大喜び" side="left"]
 [playse storage="other/01_instruction/158.ogg"]
@@ -947,6 +964,7 @@
 [j_clearFixButton]
 [layopt layer="message0" visible="false"]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId" wait="true"]
+[stopse buf="0"]
 [free_filter name="mochiko"]
 [eval exp="f.currentFrame = null"]
 [jump storage="title.ks"]
