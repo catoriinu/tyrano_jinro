@@ -171,13 +171,3 @@ if (!f.quickShowEpisodeWindow) {
 [freeimage layer="0"]
 [jump storage="title.ks"]
 [s]
-
-
-*returnFromSituationPlay
-[iscript]
-  f.inJinroGame = false;
-  f.isSituationPlay = false;
-  f.quickShowEpisodeWindow = true;
-[endscript]
-[jump storage="theater/main.ks" target="*start"]
-[s]
