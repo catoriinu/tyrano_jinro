@@ -1268,40 +1268,40 @@
   [endscript]
 
   [if exp="!f.displaingButton.action && mp.action"]
-    [button graphic="button/button_action_normal.png" storage="action.ks" target="*start" x="23" y="17" width="100" height="100" fix="true" role="sleepgame" name="button_j_fix,button_j_action" enterimg="button/button_action_hover.png"]
+    [button graphic="button/button_action_normal.png" storage="action.ks" target="*start" x="23" y="17" width="100" height="100" fix="true" role="sleepgame" name="button-j-action" enterimg="button/button_action_hover.png"]
     [eval exp="f.displaingButton.action = mp.action"]
   [endif]
 
   [if exp="!f.displaingButton.menu && mp.menu"]
     ; 通常画面→メニュー画面に遷移する用。
-    [button cond="mp.menu === 'normal'" graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="1200" y="17" width="70" height="100" fix="true" role="sleepgame" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
+    [button cond="mp.menu === 'normal'" graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="1200" y="17" width="70" height="100" fix="true" role="sleepgame" name="button-j-menu" enterimg="button/button_menu_hover.png"]
     [eval exp="f.displaingButton.menu = mp.menu"]
   [endif]
 
   [if exp="!f.displaingButton.backlog && mp.backlog"]
-    [button graphic="button/button_backlog_normal.png" x="1118" y="17" width="70" height="100" fix="true" role="backlog" name="button_j_fix,button_j_backlog" enterimg="button/button_backlog_hover.png"]
+    [button graphic="button/button_backlog_normal.png" x="1118" y="17" width="70" height="100" fix="true" role="backlog" name="button-j-backlog" enterimg="button/button_backlog_hover.png"]
     [eval exp="f.displaingButton.backlog = mp.backlog"]
   [endif]
 
 
   ; status引数が渡されておりそれが表示中のボタンと異なる種類なら、この後ボタンを入れ替える前準備としてボタンとフラグを消去する
   [if exp="('status' in mp) && mp.status !== null && f.displaingButton.status !== null && f.displaingButton.status !== mp.status"]
-    [clearfix name="button_j_status"]
+    [clearfix name="button-j-status"]
     [eval exp="f.displaingButton.status = null"]
   [endif]
 
   [if exp="!f.displaingButton.status && mp.status"]
     ; 通常画面→ステータス画面への遷移
-    [button cond="mp.status === 'normal'" graphic="button/button_status_normal.png" storage="statusJinro.ks" target="*statusJinroMain" x="1005" y="17" width="100" height="100" fix="true" role="sleepgame" name="button_j_fix,button_j_status" enterimg="button/button_status_hover.png"]
+    [button cond="mp.status === 'normal'" graphic="button/button_status_normal.png" storage="statusJinro.ks" target="*statusJinroMain" x="1005" y="17" width="100" height="100" fix="true" role="sleepgame" name="button-j-status" enterimg="button/button_status_hover.png"]
     ; ステータス画面→元の画面へ戻る遷移
-    [button cond="mp.status === 'nofix_click'" graphic="button/button_return_selected.png" storage="statusJinro.ks" target="*awake" x="1005" y="17" width="100" height="100" enterimg="button/button_return_hover.png"]
+    [button cond="mp.status === 'nofix_click'" graphic="button/button_return_selected.png" storage="statusJinro.ks" target="*awake" x="1005" y="17" width="100" height="100" enterimg="button/button_return_hover.png" name="button-j-status"]
 
     [eval exp="f.displaingButton.status = mp.status"]
   [endif]
 
 
   [if exp="!f.displaingButton.pauseMenu && mp.pauseMenu"]
-    [button graphic="button/button_menu_normal.png" storage="theater/pauseMenu.ks" target="*start" x="1200" y="17" width="70" height="100" fix="true" role="sleepgame" name="button_j_fix,button_j_pauseMenu" enterimg="button/button_menu_hover.png"]
+    [button graphic="button/button_menu_normal.png" storage="theater/pauseMenu.ks" target="*start" x="1200" y="17" width="70" height="100" fix="true" role="sleepgame" name="button-j-pause-menu" enterimg="button/button_menu_hover.png"]
     [eval exp="f.displaingButton.pauseMenu = mp.pauseMenu"]
   [endif]
 [endmacro]
@@ -1331,27 +1331,27 @@
   [endscript]
 
   [if exp="f.displaingButton.action && mp.action"]
-    [clearfix name="button_j_action"]
+    [clearfix name="button-j-action"]
     [eval exp="f.displaingButton.action = null"]
   [endif]
 
   [if exp="f.displaingButton.menu && mp.menu"]
-    [clearfix name="button_j_menu"]
+    [clearfix name="button-j-menu"]
     [eval exp="f.displaingButton.menu = null"]
   [endif]
 
   [if exp="f.displaingButton.backlog && mp.backlog"]
-    [clearfix name="button_j_backlog"]
+    [clearfix name="button-j-backlog"]
     [eval exp="f.displaingButton.backlog = null"]
   [endif]
 
   [if exp="f.displaingButton.status && mp.status"]
-    [clearfix name="button_j_status"]
+    [clearfix name="button-j-status"]
     [eval exp="f.displaingButton.status = null"]
   [endif]
 
   [if exp="f.displaingButton.pauseMenu && mp.pauseMenu"]
-    [clearfix name="button_j_pauseMenu"]
+    [clearfix name="button-j-pause-menu"]
     [eval exp="f.displaingButton.pauseMenu = null"]
   [endif]
 [endmacro]
