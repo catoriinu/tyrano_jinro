@@ -8,7 +8,7 @@ function setButtonSe() {
         "playse",
         {
           storage: "botan_b34.ogg",
-          volume: 40,
+          volume: 30,
           buf: 1
         }
       );

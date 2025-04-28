@@ -91,7 +91,7 @@
       }
 
       // glinkのenterse属性だと細かい設定ができないため独自に設定（特にbufがデフォルトだと他で鳴っている効果音を打ち消してしまう）
-      TYRANO.kag.ftag.startTag("playse",{storage:"botan_b34.ogg",volume:40,buf:1});
+      TYRANO.kag.ftag.startTag("playse",{storage:"botan_b34.ogg",volume:30,buf:1});
     },
     function(e) {
       if (tf.doSlideInCharacter) {
