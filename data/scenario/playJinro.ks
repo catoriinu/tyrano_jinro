@@ -439,7 +439,7 @@
 [eval exp="f.currentFrame = null"]
 
 ; タイトル画面に戻るときのみ、背景をタイトル画面のものに変えておく
-[bg storage="voivojinrou_green.png" time="1" wait="false"]
+[bg storage="voivojinrou_title_v4.png" time="1" wait="true"]
 ; 勝利陣営キャラクターのレイヤーを消去する。wait=trueにして人狼ゲーム終了時に責任を持って消しておくこと。wait=falseだと遷移後の画面でfreeimageが発動して意図しない要素が消えてしまう
 [freeimage layer="1" time="500" wait="true"]
 [jump storage="title.ks"]
