@@ -93,7 +93,7 @@
 
 *continueInstruction
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
-[playse storage="se/kira1.ogg" buf="1" volume="60"]
+[playse storage="se/kira1.ogg" buf="1" volume="50"]
 [playse storage="other/01_instruction/017.ogg"]
 了解です！[r]
 それではご説明いたしましょう！[p]
@@ -266,7 +266,7 @@
 
 *skipInstruction
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
-[playse storage="se/kira1.ogg" buf="1" volume="60"]
+[playse storage="se/kira1.ogg" buf="1" volume="50"]
 [playse storage="other/01_instruction/014.ogg"]
 了解です！[r]
 それでは人狼ゲーム自体の説明はスキップさせていただきます。[p]

@@ -95,7 +95,7 @@ tf.playbgmParams = {
 わたくしにはまだまだ力不足だとでも言うの…！？[p]
 
 [m_changeCharacterFrameName name="雨晴はう" face="ため息"]
-[playse storage="se/shogeru.ogg" volume="70" buf="1"]
+[playse storage="se/shogeru.ogg" buf="1" volume="70"]
 [playse storage="theater/p01/e02/041.ogg"]
 はうう…やっぱり…。[r]
 めたんさんの千里眼…本物かもしれません…！[p]

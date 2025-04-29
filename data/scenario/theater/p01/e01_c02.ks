@@ -52,7 +52,7 @@ tf.playbgmParams = {
 ちゃんと認めましょう、つむぎさん。[p]
 
 [m_changeCharacterFrameName name="春日部つむぎ" face="アピール"]
-[playse storage="se/shogeru.ogg" volume="70" buf="1"]
+[playse storage="se/shogeru.ogg" buf="1" volume="70"]
 [playse storage="theater/p01/e01/044.ogg"]
 うん、分かってるよ。[r]
 ごめんね、ずんだもん先輩。[p]
@@ -84,7 +84,7 @@ tf.playbgmParams = {
 そういえば僕のぶんのずんだもち、まだ食べてなかったのでずんだもんにあげますよ。[p]
 
 [m_changeCharacterFrameName name="雨晴はう" face="げっそり"]
-[playse storage="se/shogeru.ogg" volume="70" buf="1"]
+[playse storage="se/shogeru.ogg" buf="1" volume="70"]
 [playse storage="theater/p01/e01/051.ogg"]
 食べたいのはやまやまですが、どうせ僕は夜勤明けだから早く寝ないとなので…！[p]
 

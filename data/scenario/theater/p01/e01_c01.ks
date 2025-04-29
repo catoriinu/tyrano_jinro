@@ -50,7 +50,7 @@ tf.playbgmParams = {
 朝ごはんに食べようと思って冷蔵庫に入れてたのに、起きたら綺麗さっぱりなくなってたのだ！[p]
 
 [m_changeCharacterFrameName name="四国めたん" face="クスクス"]
-[playse storage="se/kira1.ogg" buf="1" volume="60"]
+[playse storage="se/kira1.ogg" buf="1" volume="50"]
 [playse storage="theater/p01/e01/005.ogg"]
 ああ、昨日遊びに来たずん子たちのおみやげよね。[r]
 まさに[ruby text="エ"]翠[ruby text="メラ"]緑[ruby text="ルド"]の[ruby text="オー"]宝[ruby text="ブ"]珠…頬が落ちるくらい美味しかったわ。[p]
@@ -61,7 +61,7 @@ tf.playbgmParams = {
 めたんならやりかねないのだ…！[p]
 
 [m_changeCharacterFrameName name="四国めたん" face="恥ずかしい"]
-[playse storage="se/shogeru.ogg" volume="70" buf="1"]
+[playse storage="se/shogeru.ogg" buf="1" volume="70"]
 [playse storage="theater/p01/e01/007.ogg"]
 ご、誤解しないでちょうだい。[r]
 今のはわたくしの分を食べたときの感想よ。[p]
@@ -127,7 +127,7 @@ tf.playbgmParams = {
 [stopse buf="0"]
 #
 [m_changeFrameWithId frameId="none"]
-[playse storage="se/open_door1.ogg" buf="1"]
+[playse storage="se/open_door1.ogg" buf="1" volume="60"]
 [wse]
 
 [m_changeCharacterFrameName name="春日部つむぎ" face="テンアゲ"]
