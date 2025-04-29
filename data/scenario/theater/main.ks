@@ -11,7 +11,7 @@
 
 ; ボイス停止（エピソードから戻ってきたとき用）
 [stopse buf="0"]
-[playbgm storage="fun_fun_Ukelele_1loop.ogg" volume="20" loop="true" restart="false"]
+[playbgm storage="fun_fun_Ukelele_1loop.ogg" volume="15" loop="true" restart="false"]
 [bg storage="bg_fafafa.png" time="100"]
 
 [iscript]

@@ -1448,7 +1448,7 @@
 
   [endif]
 
-  [playbgm storage="nc282335.ogg" loop="true" volume="11" restart="false"]
+  [playbgm storage="nc282335.ogg" loop="true" volume="10" restart="false"]
   [bg storage="living_day.jpg" time="1000" wait="true" effect="fadeInUp"]
 [endmacro]
 

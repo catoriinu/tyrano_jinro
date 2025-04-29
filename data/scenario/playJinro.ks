@@ -62,7 +62,7 @@
 *startDaytime
 [j_turnIntoDaytime]
 [clearstack]
-[playbgm storage="nc282335.ogg" loop="true" volume="11" restart="false"]
+[playbgm storage="nc282335.ogg" loop="true" volume="10" restart="false"]
 
 ; 【チャプター再生】
 [t_playChapter target="secondDayDayPhase"]

@@ -25,7 +25,7 @@ tf.bgParams = {
 // 初期BGM用パラメータ
 tf.playbgmParams = {
     storage: "honwakapuppu.ogg",
-    volume: "12",
+    volume: "13",
 }
 [endscript]
 

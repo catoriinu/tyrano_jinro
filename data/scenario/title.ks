@@ -9,7 +9,7 @@
 
 ; ボイス停止（人狼ゲームから戻ってきたとき用）
 [stopse buf="0"]
-[playbgm storage="fun_fun_Ukelele_1loop.ogg" volume="20" loop="true" restart="false"]
+[playbgm storage="fun_fun_Ukelele_1loop.ogg" volume="15" loop="true" restart="false"]
 
 ; 変数の初期化
 [iscript]

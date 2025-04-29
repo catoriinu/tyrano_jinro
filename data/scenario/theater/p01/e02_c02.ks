@@ -23,7 +23,7 @@ tf.bgParams = {
 // 初期BGM用パラメータ
 tf.playbgmParams = {
     storage: "hirusagari_kibun.ogg",
-    volume: "40",
+    volume: "20",
 }
 [endscript]
 [t_setupChapter titleText="&f.titleText" actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
