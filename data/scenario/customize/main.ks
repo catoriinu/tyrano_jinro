@@ -65,7 +65,7 @@ tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
 
 ; 参加者編集完了後のみ実行する後処理
 ; 新しいアイコンのトランジションが完了してからドラッグレイヤーを消す
-[free_draglayer cond="tf.needTeardownEditMode"]
+;[free_draglayer cond="tf.needTeardownEditMode"]
 
 [iscript]
   // 現時点での参加者リストとプレイヤーキャラクターIDを保存しておく。
@@ -150,12 +150,10 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 [s]
 
 
-; 人狼ゲームを開始する
+; 反映してプレイスタート
 *startPlay
-
 ; カスタマイズ画面での変更をシステム変数内の人狼ゲームデータに反映する
-[eval exp="sf.jinroGameDataObjects[sf.currentJinroGameDataKey] = f.currentJinroGameData" cond="tf.needUpdateJinrogGamedata"]
-
+[eval exp="sf.jinroGameDataObjects[sf.currentJinroGameDataKey] = f.currentJinroGameData"]
 [clearfix]
 [layopt layer="message0" visible="false"]
 [freeimage layer="0" page="fore"]
@@ -296,11 +294,11 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
   [endscript]
 
   ; ドロップエリアとドラッグアイテムの定義
-  [droparea name="&tf.dropAreaName" width="&tf.iconSize" height="&tf.iconSize" left="100" top="&tf.top" oneonly="true" color="&tf.dropAreaColor" opacity="100"]
-  [dragitem name="&tf.charaIconName" return="true" fit="true" dropout="false" grabpos="center"]
+  ;[droparea name="&tf.dropAreaName" width="&tf.iconSize" height="&tf.iconSize" left="100" top="&tf.top" oneonly="true" color="&tf.dropAreaColor" opacity="100"]
+  ;[dragitem name="&tf.charaIconName" return="true" fit="true" dropout="false" grabpos="center"]
   ; 初期状態では、ドロップエリアとドラッグアイテムの位置は一致しているので、アイコンの位置は変えずに両者の紐づけだけする
   ; メモ：left, topはタグリファレンスには書いていないが必須パラメータ（両方指定しないと紐づけ処理まで辿り着けない）。明示的に"home"を指定することで今の位置のままにすることができる実装になっていた。
-  [move_dragitem name="&tf.charaIconName" area="&tf.dropAreaName" left="home" top="home"]
+  ;[move_dragitem name="&tf.charaIconName" area="&tf.dropAreaName" left="home" top="home"]
 [return]
 
 
