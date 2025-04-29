@@ -907,6 +907,7 @@
 [playse storage="other/01_instruction/158.ogg"]
 …よし、今度こそ僕の無実を証明してやるのだ！[p]
 
+[stopse buf="0"]
 ; 枠リセット
 [m_changeFrameWithId]
 #
