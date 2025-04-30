@@ -144,7 +144,7 @@ function initializeCharacterObjectsForJinro(jinroGameDataParam) {
   setDefaultPerspective(characterObjects, TYRANO.kag.stat.f.participantsIdList, jinroGameData.roleData);
 
   // 信頼度オブジェクトを各自のcharacterObject.reliabilityに格納する
-  setDefaultReliability(characterObjects, TYRANO.kag.stat.f.participantsIdList);
+  setDefaultReliability(characterObjects, TYRANO.kag.stat.f.participantsIdList, TYRANO.kag.stat.f.playerCharacterId);
 
   // 現在のフラストレーションオブジェクトを各自のcharacterObject.currentFrustrationに格納する
   setDefaultCurrentFrustration(characterObjects, TYRANO.kag.stat.f.participantsIdList);
@@ -207,12 +207,20 @@ function setDefaultPerspective(characterObjects, participantsIdList, roleData) {
  * 初期状態の、各キャラの信頼度オブジェクトを生成する
  * @param {Array} characterObjects キャラクターオブジェクト配列。このメソッド内でreliabilityを更新する。
  * @param {Array} participantsIdList 参加者のキャラクターID配列
+ * @param {String} playerCharacterId プレイヤーキャラクターID
  */
-function setDefaultReliability(characterObjects, participantsIdList) {
+function setDefaultReliability(characterObjects, participantsIdList, playerCharacterId) {
   for (let characterId of Object.keys(characterObjects)) {
     let reliabilityObject = {};
     for (let i = 0; i < participantsIdList.length; i++) {
-      reliabilityObject[participantsIdList[i]] = setReliability();
+      const targetCharacterId = participantsIdList[i];
+      if (targetCharacterId === playerCharacterId) {
+        // プレイヤーキャラに対しては高めの信頼度を設定する
+        // MEMO: この値を変えると難易度調整ができそう
+        reliabilityObject[targetCharacterId] = generateRandomReliability(0.4, 0.8);
+      } else {
+        reliabilityObject[targetCharacterId] = generateRandomReliability(0.3, 0.7);
+      }
     }
     characterObjects[characterId].reliability = reliabilityObject;
   }
@@ -220,16 +228,12 @@ function setDefaultReliability(characterObjects, participantsIdList) {
 
 
 /**
- * 信頼度を取得する
- * NOTE:仮に完全ランダムとする。何かの法則性を持たせたいならこのあたりに実装する。例）キャラAはキャラBに対してのみ信頼度が0.9以上で確定する
- * @return {Number} 
+ * 信頼度を引数の範囲でランダムに算出する
+ * @param {Number} min 最小値
+ * @param {Number} max 最大値
+ * @return {Number} min以上max未満の数値
  */
-function setReliability() {
-  // 0以上1未満の浮動小数点数
-  //return Math.round(Math.random()*100)/100;
-  // min以上、max未満
-  let max = 0.7;
-  let min = 0.3;
+function generateRandomReliability(min, max) {
   return Math.random() * (max - min) + min;
 }
 
