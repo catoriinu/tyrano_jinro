@@ -45,7 +45,7 @@ if (!('isDebugMode' in sf)) {
 }
 
 // ゲーム本体のバージョンをシナリオ変数に設定
-buildSfVersion(0, 12, 6, sf.isDebugMode, true);
+buildSfVersion(0, 13, 0, sf.isDebugMode, false);
 
 // シナリオ変数初期設定
 // シアター含む、全てのゲーム進捗の初期化
