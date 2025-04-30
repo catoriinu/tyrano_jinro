@@ -76,6 +76,16 @@
   // ボタンにカーソルが乗ったときの処理
   $(".buttonhover").hover(
     function(e) {
+      // glinkのenterse属性だと細かい設定ができないため独自に設定（特にbufがデフォルトだと他で鳴っている効果音を打ち消してしまう）
+      TYRANO.kag.ftag.startTag(
+        "playse",
+        {
+          storage: "se/button34.ogg",
+          volume: 30,
+          buf: 1
+        }
+      );
+
       // ホバーしたボタンのclass属性の中から、ボタン生成時に付与しておいたId部分を抽出する
       const classList = $(this).attr("class").split(" ");
 
@@ -89,9 +99,6 @@
         // 表示中のキャラを画面外に出してから、ホバーされたキャラを登場させる
         changeCharacter(f.selectedButtonId, '通常');
       }
-
-      // glinkのenterse属性だと細かい設定ができないため独自に設定（特にbufがデフォルトだと他で鳴っている効果音を打ち消してしまう）
-      TYRANO.kag.ftag.startTag("playse",{storage:"botan_b34.ogg",volume:30,buf:1});
     },
     function(e) {
       if (tf.doSlideInCharacter) {
