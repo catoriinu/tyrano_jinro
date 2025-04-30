@@ -38,13 +38,14 @@
 [loadjs storage="voivoJinro/sf/Version.js"]
 
 [iscript]
-// ゲーム本体のバージョンをシナリオ変数に設定
-buildSfVersion(0, 12, 6, true);
-
 // デバッグモード
+// TODO: リリース時にはfalseにすること
 if (!('isDebugMode' in sf)) {
   sf.isDebugMode = true;
 }
+
+// ゲーム本体のバージョンをシナリオ変数に設定
+buildSfVersion(0, 12, 6, sf.isDebugMode, true);
 
 // シナリオ変数初期設定
 // シアター含む、全てのゲーム進捗の初期化
@@ -60,10 +61,13 @@ if (!('doSkipWatchedEpisode' in sf)) {
   sf.doSkipWatchedEpisode = true;
 }
 // 紹介動画表示用の進捗
+// MEMO:必要になったら復活させる
+/*
 if (sf.isDebugMode) {
-  // MEMO:必要になったら復活させる
-  // setTheaterProgressForP99();
+  setTheaterProgressForP99();
 }
+*/
+
 // レコードの初期化
 if (!('record' in sf)) {
   resetRecordToDefault();

@@ -3,12 +3,14 @@
  * @param {number} major メジャーバージョン番号
  * @param {number} minor マイナーバージョン番号
  * @param {number} patch パッチバージョン番号
+ * @param {boolean} isDebugMode デバッグモードかどうか
  */
 class Version {
-    constructor(major, minor, patch) {
+    constructor(major, minor, patch, isDebugMode) {
         this.major = major;
         this.minor = minor;
         this.patch = patch;
+        this.isDebugMode = isDebugMode;
     }
 
     /**
@@ -17,7 +19,12 @@ class Version {
      * @returns {string} バージョン情報を表す文字列
      */
     getVersionText(prefix = 'ver.') {
-        return `${prefix}${this.major}.${this.minor}.${this.patch}`;
+        let versionText = `${prefix}${this.major}.${this.minor}.${this.patch}`;
+        // デバッグモードのときは、バージョン情報にデバッグモードであることを示す文字列を付加する
+        if (this.isDebugMode) {
+            return `${versionText} (debug)`;
+        }
+        return versionText;
     }
 
     /**
@@ -41,10 +48,11 @@ class Version {
  * @param {number} major メジャーバージョン番号
  * @param {number} minor マイナーバージョン番号
  * @param {number} patch パッチバージョン番号
+ * @param {boolean} isDebugMode デバッグモードかどうか。デフォルトはfalse
  * @param {boolean} forceUpdate 強制的にバージョン情報を更新するかどうか。デフォルトはfalse
  */
-function buildSfVersion(major, minor, patch, forceUpdate = false) {
-    const currentVersion = new Version(major, minor, patch);
+function buildSfVersion(major, minor, patch, isDebugMode, forceUpdate = false) {
+    const currentVersion = new Version(major, minor, patch, isDebugMode);
 
     if (!('version' in TYRANO.kag.variable.sf) || forceUpdate) {
         TYRANO.kag.variable.sf.version = currentVersion;
@@ -52,7 +60,7 @@ function buildSfVersion(major, minor, patch, forceUpdate = false) {
         const major = TYRANO.kag.variable.sf.version.major;
         const minor = TYRANO.kag.variable.sf.version.minor;
         const patch = TYRANO.kag.variable.sf.version.patch;
-        const lastVersion = new Version(major, minor, patch);
+        const lastVersion = new Version(major, minor, patch, isDebugMode);
         if (currentVersion.isNewerThan(lastVersion)) {
             // MEMO: lastVersionより新しかった場合、sfを最新版用にコンバートする必要があるかを判定、更新するようにする
             TYRANO.kag.variable.sf.version = currentVersion;
