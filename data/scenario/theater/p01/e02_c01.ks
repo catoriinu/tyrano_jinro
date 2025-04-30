@@ -68,7 +68,7 @@ tf.playbgmParams = {
 [playse storage="se/tsukkomi2.ogg" buf="1" volume="50"]
 [playse storage="theater/p01/e02/007.ogg"]
 しっかりはっきりばっちり見てるじゃない！[r]
-だったら『何を手に入れたのだ？』って聞きなさいよ。[p]
+だったら「何を手に入れたのだ？」って聞きなさいよ。[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="無"]
 [playse storage="theater/p01/e02/008.ogg"]
