@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# コマンド例
+# 1. シナリオファイルに、ボイスを入れたい箇所に「; ボイス」というコメントを入れていく
+# 2. 以下の例を参考にしてコマンドを実行すると、「; ボイス」の箇所が「001.ogg」から始まる連番のplayseタグに置換されていく
 # $ scripts/insert_sequential_playse_tags.sh data/scenario/theater/p01/e01_c02.ks "theater/p01/e01/" 40
 
 # 引数を取得

@@ -1261,6 +1261,30 @@ function increaseFrustration(characterObjects, participantsIdList, actionCandida
 
 
 /**
+ * アクション履歴の中から、指定したキャラの最新のアクションを返す。
+ * 検索するアクションIDはtargetActionIdListに含まれるもののみ。
+ * @param {String} characterId キャラクターID
+ * @param {Array} thisTimeActionHistory この日のアクション履歴配列
+ * @param {Array} targetActionIdList 検索対象のアクションID配列
+ * @returns {Object|null} 最新のアクションオブジェクト 見つからなければnull
+ */
+function getLatestAction(characterId, thisTimeActionHistory, targetActionIdList) {
+  if (!thisTimeActionHistory) return null; // データが存在しない場合は null を返す
+
+  for (let i = thisTimeActionHistory.length - 1; i >= 0; i--) { // 外側の配列を後ろからループ
+    const actionObjects = thisTimeActionHistory[i];
+    for (let j = actionObjects.length - 1; j >= 0; j--) { // 内側のアクション配列も後ろからループ
+      const action = actionObjects[j];
+      if (action.characterId === characterId && targetActionIdList.includes(action.actionId)) {
+          return action; // 指定したキャラの最新のアクションを返す
+      }
+    }
+  }
+
+  return null; // 見つからなかった場合
+}
+
+/**
  * 実行するカウンターアクションを決定する
  * @param {Array} triggerActionHistory 同一トリガーアクション内のアクション履歴配列
  * @returns 

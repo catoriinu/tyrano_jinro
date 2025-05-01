@@ -243,8 +243,15 @@
 ; 現在のフレームと同じフレームに変える場合は何もしない
 ; NOTICE: [m_changeCharacter]と併用する場合、[m_changeCharacter]を先に実行してf.displayedCharacterを更新しておく必要がある
 ; @param characterId 発言者のキャラクターID。ない場合、発言者枠なしのメッセージフレームに変える。
+; @param frameId フレーム画像ID　フレーム直接指定用
 [macro name="m_changeFrameWithId"]
-  [if exp="!('characterId' in mp)"]
+  [if exp="('frameId' in mp)"]
+    [iscript]
+      tf.frameFileName = 'message_window_' + mp.frameId + '.png';
+    [endscript]
+    [position layer="message0" frame="&tf.frameFileName" cond="f.currentFrame !== mp.frameId"]
+    [eval exp="f.currentFrame = mp.frameId"]
+  [elsif exp="!('characterId' in mp)"]
     [position layer="message0" frame="message_window_none.png" cond="f.currentFrame !== 'none'"]
     [eval exp="f.currentFrame = 'none'"]
   [elsif exp="f.displayedCharacter.left.isDisplay && mp.characterId == f.displayedCharacter.left.characterId"]
@@ -265,6 +272,7 @@
 ; すでにそのキャラがchara_newで登録,およびその表情がchara_faceで登録済みである前提とする。
 ; @param characterId 登場させたいキャラのキャラクターID。必須。
 ; @param face 登場させたいキャラのface。未指定の場合は表情は変えない。
+; @param eventFace イベント名。規定のイベントに紐づくfaceがあるときその表情に変える。face引数より優先する。
 ; @param side 画面のどちら側に登場させるか。'left'で左側。それ以外または未指定の場合は右側。
 [macro name="m_changeCharacter"]
   [iscript]
@@ -276,6 +284,11 @@
     if (!(('side' in tf.cc) && tf.cc.side == 'left')) {
       tf.cc.side = 'right';
       tf.cc.counterSide = 'left';
+    }
+
+    // eventFace引数が渡された場合、イベントに紐づくfaceに上書きする
+    if ('eventFace' in tf.cc && tf.cc.eventFace in f.charaFaceForEvent[mp.characterId]) {
+      tf.cc.face = f.charaFaceForEvent[mp.characterId][tf.cc.eventFace];
     }
 
     // スキップ中は表情切り替え時間を0にする。そうしないとフリーズする危険がある
@@ -356,7 +369,7 @@
 
 ; 退場マクロ
 ; 現在登場しているキャラを退場させる
-; @param characterId 退場させたいキャラのキャラクターID。必須。
+; @param characterId 退場させたいキャラのキャラクターID。指定しなければ何もせず終了
 ; @param time 退場にかかる時間（[chara_move]のtime）。指定しなければデフォルト600ミリ秒
 ; @param wait アニメーションの完了を待つかどうか。デフォルトfalse
 [macro name="m_exitCharacter"]
@@ -372,6 +385,7 @@
 
     // そのキャラがどちらのサイドに表示されているかを取得する
     tf.side = (function(){
+      if (!mp.characterId) return null; // キャラクターIDの指定がなかった場合何もせず終了させる
       if (f.displayedCharacter.right.isDisplay && f.displayedCharacter.right.characterId == mp.characterId) return 'right';
       if (f.displayedCharacter.left.isDisplay  && f.displayedCharacter.left.characterId  == mp.characterId) return 'left';
       return null;

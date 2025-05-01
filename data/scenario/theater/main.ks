@@ -11,7 +11,7 @@
 
 ; ボイス停止（エピソードから戻ってきたとき用）
 [stopse buf="0"]
-[playbgm storage="fun_fun_Ukelele_1loop.ogg" volume="20" loop="true" restart="false"]
+[playbgm storage="fun_fun_Ukelele_1loop.ogg" volume="15" loop="true" restart="false"]
 [bg storage="bg_fafafa.png" time="100"]
 
 [iscript]
@@ -74,12 +74,18 @@ if (!f.quickShowEpisodeWindow) {
 [iscript]
   tf.buttonColor = CLASS_GLINK_DEFAULT;
   tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
+  tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
+
+  // 表示するメッセージの判定用
+  tf.isPage01AllCleared = (getTheaterProgress('p01', 'e08') === EPISODE_STATUS.OUTRO_UNLOCKED);
 [endscript]
-[glink color="&tf.buttonColor" size="30" width="270" x="975" y="438" text="タイトルに戻る" target="*returnTitle"]
+[glink color="&tf.selectedButtonColor" size="30" width="270" x="975" y="38" text="タイトルに戻る" target="*returnTitle" name="&tf.classButtonSeHover"]
 
 ; 以下、選択中のページのみボタンの色を変える
-[glink color="&tf.selectedButtonColor" size="30" width="270" x="975" y="338" text="1期・2期" target="*loadEpisodeList" exp="f.displayPageId = 'p01'" cond="f.displayPageId === 'p01'"]
-[glink color="&tf.buttonColor" size="30" width="270" x="975" y="338" text="1期・2期" target="*loadEpisodeList" exp="f.displayPageId = 'p01'" cond="f.displayPageId !== 'p01'"]
+; TODO 初期リリース時はページ切り替え機能は不要なのでコメントアウトする
+; MEMO プログラム上の区切りはpageだが、ゲーム表現上の区切りはActとする予定
+;[glink color="&tf.selectedButtonColor" size="30" width="270" x="975" y="438" text="Act1" target="*loadEpisodeList" exp="f.displayPageId = 'p01'" cond="f.displayPageId === 'p01'"]
+;[glink color="&tf.buttonColor" size="30" width="270" x="975" y="438" text="Act1" target="*loadEpisodeList" exp="f.displayPageId = 'p01'" cond="f.displayPageId !== 'p01'"]
 
 ; TODO sf.theaterProgressのpageIdを参照して出し分けるべき。以下のように現在表示してよいページID一覧を取得するなど
 ; TYRANO.kag.stat.f.availablePageIdList = Object.keys(TYRANO.kag.variable.sf.theaterProgress);
@@ -90,8 +96,15 @@ if (!f.quickShowEpisodeWindow) {
 ;メッセージウィンドウの表示
 [layopt layer="message0" visible="true"]
 #
-視聴したいシアターを選択してください。[r]
+視聴したいエピソードを選択してください。[r]
+
+[if exp="tf.isPage01AllCleared"]
+将来のアップデートで新規エピソードを追加予定です。
+[else]
 人狼ゲームで特定の条件を満たすと解決編が解放されます。
+[endif]
+
+[eval exp="setButtonSe()"]
 [s]
 
 
@@ -140,7 +153,7 @@ if (!f.quickShowEpisodeWindow) {
 [eval exp="f.quickShowEpisodeWindow = false"]
 
 ; そのエピソードの導入編が解放済みなら、エピソードウィンドウ表示
-[t_isProgressLocked pageId="&f.displayPageId" episodeId="&f.displayEpisodeId" chapterId="c01"]
+[t_isProgressLocked pageId="&f.displayPageId" episodeId="&f.displayEpisodeId"]
 [jump storage="theater/episodeWindow.ks" target="*start" cond="!tf.isProgressLocked"]
 
 ; そのエピソードが未解放なら、詳細を表示させないで戻す
@@ -157,14 +170,4 @@ if (!f.quickShowEpisodeWindow) {
 [layopt layer="message0" visible="false"]
 [freeimage layer="0"]
 [jump storage="title.ks"]
-[s]
-
-
-*returnFromSituationPlay
-[iscript]
-  f.inJinroGame = false;
-  f.isSituationPlay = false;
-  f.quickShowEpisodeWindow = true;
-[endscript]
-[jump storage="theater/main.ks" target="*start"]
 [s]

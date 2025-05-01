@@ -1,8 +1,8 @@
-; タイトル：テンプレート（導入編）
-
 *start
-; ここからチャプターごとに設定が必要な項目
+; チャプターごとに設定が必要な項目
 [iscript]
+// チャプターのタイトル（カットイン表示用。改行が必要なら<br>を入れる）
+f.titleText = 'テンプレート<br>（導入編）';
 // このチャプターを表す通し番号
 f.pageId    = 'p01';
 f.episodeId = 'e01';
@@ -19,7 +19,7 @@ tf.actorsList = [
 
 // 初期背景用パラメータ
 tf.bgParams = {
-    storage: "living_day_nc238325.jpg",
+    storage: "living_day.jpg",
 }
 
 // 初期BGM用パラメータ
@@ -28,7 +28,7 @@ tf.playbgmParams = {
     volume: "12",
 }
 [endscript]
-[t_setupChapter actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
+[t_setupChapter titleText="&f.titleText" actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
 
 ; ここからチャプター視聴開始
 

@@ -10,6 +10,7 @@
 ; @param adjustParameters 性格調整用のパラメータオブジェクト。なければ無調整。
 ; @param isPlayer プレイヤーキャラクターかどうか。指定した時点で、他のキャラの登録は初期化される ※キーを指定した時点でtrue扱いになるので注意
 [macro name="j_registerParticipant"]
+; TODO: 後で消す
   [iscript]
     // 初回呼び出し、あるいはisPlayerを指定された場合、tmpParticipant配列を初期化
     if (!(('tmpParticipantObjectList' in tf) && Array.isArray(tf.tmpParticipantObjectList)) || ('isPlayer' in mp)) {
@@ -27,23 +28,22 @@
 
 ; 人狼ゲーム準備マクロ
 ; 事前に最低でも1人（プレイヤー）以上はj_registerParticipantで（または直接tf.tmpParticipantObjectListに）参加者を登録しておくこと
-; @param participantsNumber 参加者の総人数
+; TODO: 後で消す @param participantsNumber 参加者の総人数
+; @param jinroGameData 利用する人狼ゲームデータ。指定しない場合、sf.jinroGameDataObjects[sf.currentJinroGameDataKey]を利用する
 ; @param preload 人狼ゲームで使用するファイルをpreloadするか。デフォルト=false(しない)
 [macro name="j_prepareJinroGame"]
   [iscript]
-    // 参加者の人数はマクロの引数を優先する。もし未定義なら登録済みの参加者の数とする（未初期化だった場合はエラーになるはずだが考慮しない）
-    const participantsNumber = ('participantsNumber' in mp) ? parseInt(mp.participantsNumber) : tf.tmpParticipantObjectList.length;
-    // 登録済みの参加者オブジェクト配列を一時変数からcloneする
-    let participantObjectList = clone(tf.tmpParticipantObjectList);
+    const jinroGameData = mp.jinroGameData || sf.jinroGameDataObjects[sf.currentJinroGameDataKey];
 
-    const villagersRoleIdList = getVillagersRoleIdList(participantsNumber, participantObjectList);
-    participantObjectList = fillAndSortParticipantObjectList(participantsNumber, participantObjectList);
+    console.log('★jinroGameData');
+    console.log(jinroGameData);
 
     // キャラクターオブジェクト生成と各種変数の初期化
-    initializeCharacterObjectsForJinro(villagersRoleIdList, participantObjectList);
+    initializeCharacterObjectsForJinro(jinroGameData);
     initializeTyranoValiableForJinro();
 
     // 登録が済んだらティラノの一時変数は初期化しておく
+    // TODO: 後で消す
     tf.tmpParticipantObjectList = [];
 
     // ボイスのプリロードが必要か判定しておく
@@ -754,7 +754,29 @@
 
     // 実行するアクションを決める
     // TODO 選ばれるアクションは一旦ランダムとする。何らかの基準で比重を変えたい場合はここを修正する。
-    const actionId = getRandomElement([ACTION_SUSPECT, ACTION_TRUST]);
+    // MEMO ここはアクションを増やすときには絶対に仕組みごと作り直すこと
+    const timeStr = getTimeStr();
+    const thisTimeActionHistory = f.doActionHistory[f.day][timeStr];
+    let actionId = "";
+    if (!Array.isArray(f.doActionHistory[f.day][timeStr]) || f.doActionHistory[f.day][timeStr].length === 0) {
+      // まだその日のアクションがない場合は、疑うか信じるかをランダムで決める
+      actionId = getRandomElement([ACTION_SUSPECT, ACTION_TRUST]);
+
+    } else {
+      // その日のアクションの中から、自分の直前のアクションを取得する
+      const latestAction = getLatestAction(f.doActionCandidateId, thisTimeActionHistory, [ACTION_SUSPECT, ACTION_TRUST]);
+      console.log("★★latestAction");
+      console.log(latestAction);
+      if (latestAction === null) {
+        // まだアクションしていなかった場合は、疑うか信じるかをランダムで決める
+        actionId = getRandomElement([ACTION_SUSPECT, ACTION_TRUST]);
+      } else {
+        // すでにアクションしていた場合は、自分の直前のアクションとは違うアクションを取る
+        const latestActionId = latestAction.actionId;
+        actionId = (latestActionId === ACTION_SUSPECT) ? ACTION_TRUST : ACTION_SUSPECT;
+      }
+    }
+
 
     // アクションの対象を決める
     // TODO アクションID定数の中にmax,minを持っていた方が、アクションを増やしやすいかも
@@ -828,9 +850,9 @@
     f.pcActionObject = {};
     f.npcActionObject = {};
 
-    // アクション実行履歴オブジェクトに、トリガーアクションを0要素目とするアクションオブジェクト配列をpushする
+    // アクション実行履歴オブジェクトに、空配列をpushする。[j_doActionImpl]内で、この配列にアクションオブジェクトを保存する
     const timeStr = getTimeStr();
-    f.doActionHistory[f.day][timeStr].push([f.triggerActionObject]);
+    f.doActionHistory[f.day][timeStr].push([]);
 
     // トリガーアクションで1回のみ行う処理はここでやる
     // アクション実行者の主張力を下げて、同日中は再発言しにくくする
@@ -859,6 +881,7 @@
     // アクション実行者がプレイヤーの場合、ここで判断基準IDを入れる
     if (f.actionObject.characterId === f.playerCharacterId) {
       // TODO 信じる：表の視点で同陣営割合が50%以上なら論理的な判断　疑う：表の視点で同陣営割合が50%未満なら論理的な判断
+      // MEMO 自身の論理力次第とする。例：0.8なら、同陣営割合が20%以上なら論理的な判断みたいな
       f.actionObject.decision = DECISION_LOGICAL; //DECISION_EMOTIONAL;
     }
 
@@ -1004,7 +1027,7 @@
         'normal.png',
         getBgColorFromCharacterId(f.voteResultObjects[i].targetId),
         votedCountText,
-        '→' + f.characterObjects[f.voteResultObjects[i].targetId].name
+        '投票→' + f.characterObjects[f.voteResultObjects[i].targetId].name
       ))
 
       // 投票数の先頭が'★'ではない場合、' 'を追加する（行頭を揃えるため）
@@ -1137,7 +1160,8 @@
 
   ; ボタン復元
   [j_loadFixButton buf="gameover"]
-  詳細はステータス画面を確認してください。[p]
+  詳細はステータス画面を確認してください。[r]
+  クリックすると次に進みます。[p]
 
   ; キャラクター画像を表示していたレイヤーを解放するのは呼び元に任せる
 [endmacro]
@@ -1244,40 +1268,40 @@
   [endscript]
 
   [if exp="!f.displaingButton.action && mp.action"]
-    [button graphic="button/button_action_normal.png" storage="action.ks" target="*start" x="23" y="17" width="100" height="100" fix="true" role="sleepgame" name="button_j_fix,button_j_action" enterimg="button/button_action_hover.png"]
+    [button graphic="button/button_action_normal.png" storage="action.ks" target="*start" x="23" y="17" width="100" height="100" fix="true" role="sleepgame" name="button-j-action" enterimg="button/button_action_hover.png"]
     [eval exp="f.displaingButton.action = mp.action"]
   [endif]
 
   [if exp="!f.displaingButton.menu && mp.menu"]
     ; 通常画面→メニュー画面に遷移する用。
-    [button cond="mp.menu === 'normal'" graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="1200" y="17" width="70" height="100" fix="true" role="sleepgame" name="button_j_fix,button_j_menu" enterimg="button/button_menu_hover.png"]
+    [button cond="mp.menu === 'normal'" graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="1200" y="17" width="70" height="100" fix="true" role="sleepgame" name="button-j-menu" enterimg="button/button_menu_hover.png"]
     [eval exp="f.displaingButton.menu = mp.menu"]
   [endif]
 
   [if exp="!f.displaingButton.backlog && mp.backlog"]
-    [button graphic="button/button_backlog_normal.png" x="1118" y="17" width="70" height="100" fix="true" role="backlog" name="button_j_fix,button_j_backlog" enterimg="button/button_backlog_hover.png"]
+    [button graphic="button/button_backlog_normal.png" x="1118" y="17" width="70" height="100" fix="true" role="backlog" name="button-j-backlog" enterimg="button/button_backlog_hover.png"]
     [eval exp="f.displaingButton.backlog = mp.backlog"]
   [endif]
 
 
   ; status引数が渡されておりそれが表示中のボタンと異なる種類なら、この後ボタンを入れ替える前準備としてボタンとフラグを消去する
   [if exp="('status' in mp) && mp.status !== null && f.displaingButton.status !== null && f.displaingButton.status !== mp.status"]
-    [clearfix name="button_j_status"]
+    [clearfix name="button-j-status"]
     [eval exp="f.displaingButton.status = null"]
   [endif]
 
   [if exp="!f.displaingButton.status && mp.status"]
     ; 通常画面→ステータス画面への遷移
-    [button cond="mp.status === 'normal'" graphic="button/button_status_normal.png" storage="statusJinro.ks" target="*statusJinroMain" x="1005" y="17" width="100" height="100" fix="true" role="sleepgame" name="button_j_fix,button_j_status" enterimg="button/button_status_hover.png"]
+    [button cond="mp.status === 'normal'" graphic="button/button_status_normal.png" storage="statusJinro.ks" target="*statusJinroMain" x="1005" y="17" width="100" height="100" fix="true" role="sleepgame" name="button-j-status" enterimg="button/button_status_hover.png"]
     ; ステータス画面→元の画面へ戻る遷移
-    [button cond="mp.status === 'nofix_click'" graphic="button/button_return_selected.png" storage="statusJinro.ks" target="*awake" x="1005" y="17" width="100" height="100" enterimg="button/button_return_hover.png"]
+    [button cond="mp.status === 'nofix_click'" graphic="button/button_return_selected.png" storage="statusJinro.ks" target="*awake" x="1005" y="17" width="100" height="100" enterimg="button/button_return_hover.png" name="button-j-status"]
 
     [eval exp="f.displaingButton.status = mp.status"]
   [endif]
 
 
   [if exp="!f.displaingButton.pauseMenu && mp.pauseMenu"]
-    [button graphic="button/button_menu_normal.png" storage="theater/pauseMenu.ks" target="*start" x="1200" y="17" width="70" height="100" fix="true" role="sleepgame" name="button_j_fix,button_j_pauseMenu" enterimg="button/button_menu_hover.png"]
+    [button graphic="button/button_menu_normal.png" storage="theater/pauseMenu.ks" target="*start" x="1200" y="17" width="70" height="100" fix="true" role="sleepgame" name="button-j-pause-menu" enterimg="button/button_menu_hover.png"]
     [eval exp="f.displaingButton.pauseMenu = mp.pauseMenu"]
   [endif]
 [endmacro]
@@ -1307,27 +1331,27 @@
   [endscript]
 
   [if exp="f.displaingButton.action && mp.action"]
-    [clearfix name="button_j_action"]
+    [clearfix name="button-j-action"]
     [eval exp="f.displaingButton.action = null"]
   [endif]
 
   [if exp="f.displaingButton.menu && mp.menu"]
-    [clearfix name="button_j_menu"]
+    [clearfix name="button-j-menu"]
     [eval exp="f.displaingButton.menu = null"]
   [endif]
 
   [if exp="f.displaingButton.backlog && mp.backlog"]
-    [clearfix name="button_j_backlog"]
+    [clearfix name="button-j-backlog"]
     [eval exp="f.displaingButton.backlog = null"]
   [endif]
 
   [if exp="f.displaingButton.status && mp.status"]
-    [clearfix name="button_j_status"]
+    [clearfix name="button-j-status"]
     [eval exp="f.displaingButton.status = null"]
   [endif]
 
   [if exp="f.displaingButton.pauseMenu && mp.pauseMenu"]
-    [clearfix name="button_j_pauseMenu"]
+    [clearfix name="button-j-pause-menu"]
     [eval exp="f.displaingButton.pauseMenu = null"]
   [endif]
 [endmacro]
@@ -1409,8 +1433,7 @@
     [playse storage="shock1.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
     ; 昨夜の襲撃結果が襲撃成功の場合
     ; キャラを登場させ、メッセージ表示
-    ; TODO face="敗北"が登録必須なのを汎用的にしたい
-    [m_changeCharacter characterId="&f.bitingObjectLastNight.targetId" face="敗北"]
+    [m_changeCharacter characterId="&f.bitingObjectLastNight.targetId" eventFace="被襲撃"]
     [emb exp="f.characterObjects[f.bitingObjectLastNight.targetId].name + 'は無残な姿で発見されました……。'"][p]
 
     ; 噛まれたということは人狼ではないので、視点オブジェクトを更新する（TODO：人狼以外にも噛まれない役職が増えたら修正する）
@@ -1425,8 +1448,8 @@
 
   [endif]
 
-  [playbgm storage="nc282335.ogg" loop="true" volume="11" restart="false"]
-  [bg storage="living_day_nc238325.jpg" time="1000" wait="true" effect="fadeInUp"]
+  [playbgm storage="nc282335.ogg" loop="true" volume="10" restart="false"]
+  [bg storage="living_day.jpg" time="1000" wait="true" effect="fadeInUp"]
 [endmacro]
 
 
@@ -1438,7 +1461,7 @@
 
   ; 夜時間開始時用の初期化を行う
   [eval exp="nightInitialize()"]
-  [bg storage="living_night_close_nc238328.jpg" time="1000" wait="true" effect="fadeInUp"]
+  [bg storage="living_night_close.jpg" time="1000" wait="true" effect="fadeInUp"]
 
   恐ろしい夜がやってきました。[p]
 

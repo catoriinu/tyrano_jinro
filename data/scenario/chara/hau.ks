@@ -37,6 +37,7 @@
       draw: 'tired.png',
     };
 
+    // キャラ立ち絵のfaceとstorageの紐づけ
     f.charaFaceObjects = [
       {face: '通常', storage: 'normal'},
       {face: 'ため息', storage: 'astonished'},
@@ -46,8 +47,15 @@
       {face: '考える', storage: 'thinking'},
       {face: 'げっそり', storage: 'tired'},
       {face: '苦笑', storage: 'wrysmile'},
-      {face: '敗北', storage: 'astonished'},
+      {face: '怒り', storage: 'angry'},
+      {face: '恍惚', storage: 'ecstatic'},
     ];
+
+    // 規定のイベントとfaceの紐づけ
+    f.charaFaceForEvent[tf.characterId] = {
+      '被襲撃': 'ため息',
+      '投票': '考える',
+    }
   [endscript]
 
   [call storage="./chara/common.ks" target="*executeCharaNewFaceShow"]

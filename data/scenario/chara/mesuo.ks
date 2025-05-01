@@ -12,8 +12,8 @@
 
     // キャラ画像のデフォルト座標をゲーム変数に格納する
     f.defaultPosition[tf.characterId] = {
-      width: 629, // 画像の幅（画面幅1280pxの中での幅）
-      haight: 1058, // 画像の高さ（画面高さ720pxの中での高
+      width: 612, // 画像の幅（画面幅1280pxの中での幅）
+      haight: 657, // 画像の高さ（画面高さ720pxの中での高
       top: 69, // キャラが登場したときのtopの値
       widthCenter: 343, // 画像の幅の中央（立ち絵の見た目の中央の位置。画像の左端からのpxで指定）
       leftOnLeft: -94, // キャラが左側に登場したときのleftの値
@@ -39,6 +39,10 @@
 
     f.charaFaceObjects = [
       {face: '通常', storage: 'normal'},
+      {face: '笑顔', storage: 'laughing'},
+      {face: '煽り', storage: 'scorn'},
+      {face: '驚き', storage: 'surprised'},
+      {face: '困惑', storage: 'troubled'},
     ];
   [endscript]
 

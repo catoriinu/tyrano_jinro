@@ -68,6 +68,7 @@ const ROLE_ID_MADMAN         = 'madman'; // 狂人
 const ROLE_ID_PHYCHIC        = 'psychic'; // 霊能力者
 const ROLE_ID_HUNTER         = 'hunter'; // 狩人
 const ROLE_ID_FOX            = 'fox'; // 妖狐
+const ROLE_ID_UNKNOWN        = 'unknown'; // 不明、ランダム
 
 // 陣営
 const FACTION_VILLAGERS  = 'villagers'; // 村人陣営
@@ -84,6 +85,19 @@ const ROLE_ID_TO_FACTION = {
     [ROLE_ID_HUNTER]: FACTION_VILLAGERS,
     [ROLE_ID_FOX]: 'TODO',
 }
+
+// 実装済みの全ての役職IDと名前、およびその基本的な序列
+// TODO：ROLE_ID_TO_FACTIONもこちらに混ぜられそうなら混ぜる
+// メモ：
+// 陣営順：村人陣営→人狼陣営
+// 陣営内の順番：少人数ルールでも登場する役職が先
+const ROLES_LIST = [
+  {roleId: ROLE_ID_VILLAGER,       name: '村人'},
+  {roleId: ROLE_ID_FORTUNE_TELLER, name: '占い師'},
+  {roleId: ROLE_ID_WEREWOLF,       name: '人狼'},
+  {roleId: ROLE_ID_MADMAN,         name: '狂人'},
+];
+
 
 // アクション実行上限回数
 const MAX_DO_ACTION_COUNT = 5;
@@ -122,6 +136,11 @@ const CLASS_GLINK_SELECTED = 'btn_voivo_selected'; // glinkのname用。現在�
 const CLASS_GLINK_WHITE = 'btn_voivo_white'; // glinkのname用。白色のテーマ（未作成）
 const CLASS_GLINK_BLACK = 'btn_voivo_black'; // glinkのname用。黒色のテーマ（未作成）
 
+// ボタンにカーソルが乗ったときの処理
+const CLASS_BUTTON_SE_HOVER = 'button-se-hover';
+//const CLASS_BUTTON_SE_HOVER_SELECT = 'button-se-hover button-se-select';
+//const CLASS_BUTTON_SE_HOVER_CANCEL = 'button-se-hover button-se-cancel';
+
 // 設定値
 // ボタン配置範囲
 const BUTTON_RANGE_Y_UPPER = -30 // 上限
@@ -133,7 +152,6 @@ const BUTTON_MARGIN_HEIGHT = 30 // ボタンの上下の余白
 function resetJDevelopmentSettingToDefault() {
   TYRANO.kag.variable.sf.j_development = {
     dictatorMode: false,
-    doShuffle: true,
     maxDoActionCount: MAX_DO_ACTION_COUNT,
     thinking: 'default'
   }

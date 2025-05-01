@@ -1,8 +1,8 @@
-; タイトル：誰がずんだもちを食べたのだ？（解決編）
-
 *start
-; ここからチャプターごとに設定が必要な項目
+; チャプターごとに設定が必要な項目
 [iscript]
+// チャプターのタイトル（カットイン表示用。改行が必要なら<br>を入れる）
+f.titleText = '誰がずんだもちを食べたのだ？<br>（解決編）';
 // このチャプターを表す通し番号
 f.pageId    = 'p01';
 f.episodeId = 'e01';
@@ -19,16 +19,16 @@ tf.actorsList = [
 
 // 初期背景用パラメータ
 tf.bgParams = {
-    storage: "living_day_nc238325.jpg",
+    storage: "living_day.jpg",
 }
 
 // 初期BGM用パラメータ
 tf.playbgmParams = {
-    storage: "honwakapuppu.ogg",
+    storage: "gudagudana_kanji_1loop.ogg",
     volume: "12",
 }
 [endscript]
-[t_setupChapter actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
+[t_setupChapter titleText="&f.titleText" actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
 
 ; ここからチャプター視聴開始
 
@@ -41,17 +41,18 @@ tf.playbgmParams = {
 [playse storage="theater/p01/e01/041.ogg"]
 わたくしたちの勝利ね、ずんだもん。[p]
 
-[m_changeCharacterFrameName name="春日部つむぎ" face="ガッカリ"]
+[m_changeCharacterFrameName name="春日部つむぎ" face="悲しみ"]
 [playse storage="theater/p01/e01/042.ogg"]
 あーあ、もう少しだったのになー。[r]
 あそこでずんだもん先輩をもっと疑ってれば…。[p]
 
-[m_changeCharacterFrameName name="雨晴はう" face="苦笑"]
+[m_changeCharacterFrameName name="雨晴はう" face="苦笑" side="left"]
 [playse storage="theater/p01/e01/043.ogg"]
 ですが負けは負けです。[r]
 ちゃんと認めましょう、つむぎさん。[p]
 
-[m_changeCharacterFrameName name="春日部つむぎ" face="悲しみ"]
+[m_changeCharacterFrameName name="春日部つむぎ" face="アピール"]
+[playse storage="se/shogeru.ogg" buf="1" volume="70"]
 [playse storage="theater/p01/e01/044.ogg"]
 うん、分かってるよ。[r]
 ごめんね、ずんだもん先輩。[p]
@@ -61,6 +62,7 @@ tf.playbgmParams = {
 ということは、つむぎが僕のずんだもちを食べたのだ？[p]
 
 [m_changeCharacterFrameName name="春日部つむぎ" face="通常"]
+[playse storage="se/hatena01-1.ogg" buf="1" volume="60"]
 [playse storage="theater/p01/e01/046.ogg"]
 え？ううん、違うけど？[p]
 
@@ -82,6 +84,7 @@ tf.playbgmParams = {
 そういえば僕のぶんのずんだもち、まだ食べてなかったのでずんだもんにあげますよ。[p]
 
 [m_changeCharacterFrameName name="雨晴はう" face="げっそり"]
+[playse storage="se/shogeru.ogg" buf="1" volume="70"]
 [playse storage="theater/p01/e01/051.ogg"]
 食べたいのはやまやまですが、どうせ僕は夜勤明けだから早く寝ないとなので…！[p]
 
@@ -124,5 +127,5 @@ tf.playbgmParams = {
 *end
 
 [t_teardownChapter pageId="&f.pageId" episodeId="&f.episodeId" chapterId="&f.chapterId"]
-[jump storage="theater/main.ks" target="*start"]
+[jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
 [s]

@@ -90,17 +90,17 @@ function Personality_zundamon() {
     {
       action: {}
     },
-    1,
+    1.1,
     {
       action: {},
       actor: {}
     },
     { // assertiveness 主張力（originalとcurrentは同値にすること）
-      original: 1,  // 元々の値（毎日currentをoriginalで初期化する）
-      current: 1,   // 現在の値（判定処理にはcurrentを用いる）
-      decrease: 0.1 // 減少値（発言一回ごとに減少値分currentを減らす）
+      original: 1.2,  // 元々の値（毎日currentをoriginalで初期化する）
+      current: 1.2,   // 現在の値（判定処理にはcurrentを用いる）
+      decrease: 0.2 // 減少値（発言一回ごとに減少値分currentを減らす）
     },
-    1.8,
+    2.1,
     // COProbability {自身のRoleId : その役職としてCOする可能性}
     {
       [ROLE_ID_FORTUNE_TELLER]: {
@@ -114,7 +114,7 @@ function Personality_zundamon() {
       }
     },
     { // feelingBorder {hate:仲間度がこれ未満ならhate状態, love:仲間度がこれ超過ならlove状態}
-      hate: 0.3,
+      hate: 0.2,
       love: 0.7
     }
   );
@@ -184,9 +184,9 @@ function Personality_tsumugi() {
       actor: {}
     },
     { // assertiveness 主張力（originalとcurrentは同値にすること）
-      original: 1.1,  // 元々の値（毎日currentをoriginalで初期化する）
-      current: 1.1,   // 現在の値（判定処理にはcurrentを用いる）
-      decrease: 0.2 // 減少値（発言一回ごとに減少値分currentを減らす）
+      original: 1.25,  // 元々の値（毎日currentをoriginalで初期化する）
+      current: 1.25,   // 現在の値（判定処理にはcurrentを用いる）
+      decrease: 0.3 // 減少値（発言一回ごとに減少値分currentを減らす）
     },
     1.7,
     // COProbability {自身のRoleId : その役職としてCOする可能性}
@@ -221,7 +221,7 @@ function Personality_hau() {
     {
       action: {}
     },
-    1,
+    0.9,
     {
       action: {
         [ACTION_FORTUNE_TELLING]: 0.6,
@@ -269,7 +269,7 @@ function Personality_ritsu() {
         [ACTION_SUSPECT]: 1.2
       }
     },
-    1.2,
+    1.25,
     {
       action: {},
       actor: {}
@@ -294,7 +294,7 @@ function Personality_ritsu() {
     },
     { // feelingBorder {hate:仲間度がこれ未満ならhate状態, love:仲間度がこれ超過ならlove状態}
       hate: 0.35,
-      love: 0.75
+      love: 0.8
     }
   );
 }

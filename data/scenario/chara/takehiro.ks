@@ -39,6 +39,8 @@
 
     f.charaFaceObjects = [
       {face: '通常', storage: 'normal'},
+      {face: '喜び', storage: 'happy'},
+      {face: '安心', storage: 'relieved'},
     ];
   [endscript]
 

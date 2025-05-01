@@ -7,6 +7,7 @@
 [loadjs storage="plugin/jinro/first/discussion.js"]
 [loadjs storage="plugin/jinro/first/prepare.js"]
 [loadjs storage="plugin/jinro/first/calcReliability.js"]
+[loadjs storage="plugin/jinro/first/jinroGameData.js"]
 ; ゲーム内のマクロから呼び出す実体メソッドを実装したファイルも読み込む
 [loadjs storage="plugin/jinro/macro/impl.js"]
 [loadjs storage="plugin/jinro/macro/status.js"]

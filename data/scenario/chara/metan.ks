@@ -37,6 +37,7 @@
       draw: 'panicked.png',
     };
 
+    // キャラ立ち絵のfaceとstorageの紐づけ
     f.charaFaceObjects = [
       {face: '通常', storage: 'normal'},
       {face: '目閉じ', storage: 'blank'},
@@ -46,8 +47,15 @@
       {face: '真剣', storage: 'serious'},
       {face: 'クスクス', storage: 'smug'},
       {face: '大喜び', storage: 'happy'},
-      {face: '敗北', storage: 'sad'},
+      {face: '興奮', storage: 'excite'},
+      {face: '夢中_ハイド', storage: 'trance_hide'},
     ];
+
+    // 規定のイベントとfaceの紐づけ
+    f.charaFaceForEvent[tf.characterId] = {
+      '被襲撃': '悲しみ',
+      '投票': '真剣',
+    }
   [endscript]
 
   [call storage="./chara/common.ks" target="*executeCharaNewFaceShow"]

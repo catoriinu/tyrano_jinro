@@ -7,7 +7,7 @@
 [start_keyconfig]
 
 
-[bg storage="living_night_open_nc238329_GB.jpg" time="300"]
+[bg storage="living_night_open.jpg" time="300"]
 
 ;メッセージウィンドウの設定、文字が表示される領域を調整
 [position layer="message0" left="53" top="484" width="1174" height="235" margint="65" marginl="75" marginr="80" marginb="65" opacity="210" page="fore"]
@@ -213,7 +213,7 @@ VOICEVOX3周年、おめでとうございます！[p]
 あっ、もち子ちゃん！[r]
 そういうメタ発言をしちゃうと――[p]
 
-[bg storage="living_night_open_nc238329.jpg" time="1" wait="true"]
+[bg storage="living_night_open.jpg" time="1" wait="true"]
 [playse storage="ufo03.ogg" buf="1" volume="50" sprite_time="100-4100"]
 [layopt layer="message0" visible="false"]
 [layopt layer="1" opacity="210"]
@@ -266,12 +266,12 @@ VOICEVOX3周年、おめでとうございます！[p]
 [playse storage="theater/p99/movie_20240803/048_もち子さん（ノーマル）_え…っ？.ogg" loop="false" sprite_time="50-20000"]
 え…っ？[p]
 
-[mask time="1500" effect="rotateIn" graphic="voivojinrou_title_v3.png" folder="bgimage"]
+[mask time="1500" effect="rotateIn" graphic="voivojinrou_title_v4.png" folder="bgimage"]
 
 [m_exitCharacter characterId="&f.displayedCharacter.left.characterId" time="1"]
 [m_exitCharacter characterId="&f.displayedCharacter.right.characterId" time="1"]
 [layopt layer="message0" visible="false"]
-[bg storage="voivojinrou_title_v3.png" time="1" wait="false"]
+[bg storage="voivojinrou_title_v4.png" time="1" wait="false"]
 [mask_off]
 
 [backlay]

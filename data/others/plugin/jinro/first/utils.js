@@ -406,6 +406,19 @@ function pushElement(array, element) {
 }
 
 
+/**
+ * 引数のオブジェクトの、値の数だけキー名を繰り返した状態の配列を返却する
+ * @param {Object} object {String:Number, String:Number,...}形式のオブジェクト
+ * @returns {Array} [String, String,...]形式の配列
+ */
+function convertNumberValueObjectToArray(object) {
+  const resultArray = [];
+  for (const key in object) {
+      resultArray.push(...Array(object[key]).fill(key));
+  }
+  return resultArray;
+};
+
 
 /**
  * chara/{characterId}.ksで設定した、そのキャラクターのイメージカラーのコードを取得する
@@ -454,6 +467,22 @@ function setSpeakersName(characterId = '', name = '') {
 
   // 条件を満たさなかった場合、nameのまま表示する
   return name;
+}
+
+
+/**
+ * 引数をbool型として評価した結果を返却する
+ * 注意：String型の'false'はfalseと判定する
+ * @param {*} value 
+ * @returns 引数をbool型として評価した結果
+ */
+function parseBool(value) {
+  if (typeof value === 'string') {
+    const lowerValue = value.toLowerCase().trim();
+    if (lowerValue === 'false') return false;
+    if (lowerValue === 'true') return true;
+  }
+  return Boolean(value);
 }
 
 
