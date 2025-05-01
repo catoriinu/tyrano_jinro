@@ -15,16 +15,17 @@ class Version {
 
     /**
      * バージョン情報を表す文字列を返却する
-     * @param {string} prefix バージョン情報のプレフィックス。デフォルトは'ver.'
+     * @param {string} prefixParam バージョン情報のプレフィックス。デフォルトは'ver.'
+     * @param {string} suffixParam バージョン情報のサフィックス。デフォルトは''
      * @returns {string} バージョン情報を表す文字列
      */
-    getVersionText(prefix = 'ver.') {
-        let versionText = `${prefix}${this.major}.${this.minor}.${this.patch}`;
+    getVersionText(prefixParam = 'ver.', suffixParam = '') {
+        let suffix = suffixParam;
         // デバッグモードのときは、バージョン情報にデバッグモードであることを示す文字列を付加する
         if (this.isDebugMode) {
-            return `${versionText} (debug)`;
+            suffix = `(debug)${suffix}`;
         }
-        return versionText;
+        return `${prefixParam}${this.major}.${this.minor}.${this.patch}${suffix}`;
     }
 
     /**
@@ -55,7 +56,7 @@ function buildSfVersion(major, minor, patch, isDebugMode, forceUpdate = false) {
     const currentVersion = new Version(major, minor, patch, isDebugMode);
 
     if (!('version' in TYRANO.kag.variable.sf) || forceUpdate) {
-        TYRANO.kag.variable.sf.version = currentVersion;
+        return currentVersion;
     } else {
         const major = TYRANO.kag.variable.sf.version.major;
         const minor = TYRANO.kag.variable.sf.version.minor;
@@ -63,9 +64,9 @@ function buildSfVersion(major, minor, patch, isDebugMode, forceUpdate = false) {
         const lastVersion = new Version(major, minor, patch, isDebugMode);
         if (currentVersion.isNewerThan(lastVersion)) {
             // MEMO: lastVersionより新しかった場合、sfを最新版用にコンバートする必要があるかを判定、更新するようにする
-            TYRANO.kag.variable.sf.version = currentVersion;
+            return currentVersion;
         } else {
-            TYRANO.kag.variable.sf.version = lastVersion;
+            return lastVersion;
         }
     }
 }
