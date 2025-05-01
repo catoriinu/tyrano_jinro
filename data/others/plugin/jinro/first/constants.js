@@ -1,4 +1,10 @@
 // 定数定義
+// jinroプラグインのバージョン
+const JINRO_PLUGIN_VERSION = {
+  major: 0,
+  minor: 13,
+  patch: 0,
+};
 
 // キャラクターID
 const CHARACTER_ID_AI     = 'ai'; // アイ

@@ -45,7 +45,16 @@ if (!('isDebugMode' in sf)) {
 }
 
 // ゲーム本体のバージョンをシナリオ変数に設定
-buildSfVersion(0, 13, 0, sf.isDebugMode, false);
+sf.version = buildSfVersion(0, 13, 0, sf.isDebugMode, false);
+
+// jinroプラグインのバージョンをシナリオ変数に設定
+sf.jinroPluginVersion = buildSfVersion(
+  JINRO_PLUGIN_VERSION.major,
+  JINRO_PLUGIN_VERSION.minor,
+  JINRO_PLUGIN_VERSION.patch,
+  false,
+  true
+);
 
 // シナリオ変数初期設定
 // シアター含む、全てのゲーム進捗の初期化
