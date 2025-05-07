@@ -284,7 +284,7 @@
 ; 音量変更
 [seopt volume="&tf.tmp_se_vol" buf="0"]
 ; サンプルとしてSEを再生する
-[playse storage="shock1.ogg" buf="0" loop="false" volume="35" sprite_time="50-20000"]
+[playse storage="se/shock1.ogg" buf="0" loop="false" volume="35" sprite_time="50-20000"]
 
 [return]
 

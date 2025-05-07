@@ -18,7 +18,7 @@
 ; ステータス、バックログ、メニューボタン表示
 [j_displayFixButton status="true" backlog="true" menu="true"]
 
-[playse storage="dodon.ogg" buf="0" loop="false" volume="40" sprite_time="50-20000"]
+[playse storage="se/wadaiko_dodon.ogg" buf="0" loop="false" volume="60" sprite_time="50-20000"]
 [m_changeFrameWithId]
 #
 人狼ゲームの幕開けです……！[p]

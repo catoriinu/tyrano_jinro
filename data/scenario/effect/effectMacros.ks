@@ -1,7 +1,7 @@
 ; 画面にノイズを走らせる演出のマクロ
 [macro name="e_noiseDisplay"]
   [stopse buf="1"]
-  [playse storage="ufo03.ogg" buf="0" volume="50" sprite_time="100-4100"]
+  [playse storage="se/ufo03.ogg" buf="0" volume="50" sprite_time="100-4100"]
   [layopt layer="message0" visible="false"]
   [layopt layer="1" opacity="210"]
   [image storage="TVStaticColor03.gif" layer="1" width="1280" height="900" visible="true" time="2000" wait="true"]

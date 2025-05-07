@@ -102,7 +102,7 @@ tf.playbgmParams = {
 まあいいわ。わたくしの[ruby text="サウ"]千[ruby text="ザンド"]里[ruby text="アイ"]眼の力を思い知れば、そんな減らず口は叩けなくなるのだから。[p]
 
 [m_changeCharacterFrameName name="四国めたん" face="目閉じ" side="left"]
-[playse storage="shakiin1.ogg" volume="35" buf="0"]
+[playse storage="se/shakiin1.ogg" volume="35" buf="0"]
 [playse storage="theater/p01/e02/015.ogg" buf="1"]
 むむむ…見える。見えるわ。[r]
 まもなくはうさんがここにやってくる姿が。[p]

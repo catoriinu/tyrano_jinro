@@ -70,7 +70,7 @@ tf.playbgmParams = {
 今日の僕が何時に帰って来られるか、見てもらってもいいですか？[p]
 
 [m_changeCharacterFrameName name="四国めたん" face="クスクス" side="left"]
-[playse storage="shakiin1.ogg" volume="35" buf="0"]
+[playse storage="se/shakiin1.ogg" volume="35" buf="0"]
 [playse storage="theater/p01/e02/036.ogg" buf="1"]
 ふ、ふふっ。そのくらいなら造作もないわ。[r]
 さあ、全てを見通す[ruby text="サウ"]千[ruby text="ザンド"]里[ruby text="アイ"]眼よ、わたくしに時の壁を超える力を…！[p]
