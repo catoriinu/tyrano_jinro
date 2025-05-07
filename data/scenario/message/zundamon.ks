@@ -114,13 +114,13 @@
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_voice_true_positive_01.ogg"]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_voice_true_positive_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_voice_true_positive_02.ogg"]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_voice_true_positive_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_voice_true_positive_03.ogg"]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_voice_true_positive_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_voice_true_positive_04.ogg"]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_voice_true_positive_04.ogg"]
 [endif]
 [return]
 
@@ -129,13 +129,13 @@
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_voice_true_negative_01.ogg"]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_voice_true_negative_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_voice_true_negative_02.ogg"]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_voice_true_negative_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_voice_true_negative_03.ogg"]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_voice_true_negative_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_voice_true_negative_04.ogg"]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_voice_true_negative_04.ogg"]
 [endif]
 [return]
 
@@ -148,8 +148,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_positive"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_true_neutral_alive_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_true_neutral_alive_01.ogg"]
+[playselist buf="1"]
 
 みんな、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼だったのだ！[r]
 力を合わせてやっつけるのだ！[p]
@@ -161,8 +161,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_negative"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_true_love_alive_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_true_love_alive_01.ogg"]
+[playselist buf="1"]
 
 みんな、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼だったのだ。[r]
 僕も今まで騙されてたのだ…。[p]
@@ -174,8 +174,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_positive"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_true_hate_alive_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_true_hate_alive_01.ogg"]
+[playselist buf="1"]
 
 みんな、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼だったのだ！[r]
 ふふん！僕にはお見通しなのだ！[p]
@@ -186,13 +186,13 @@
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_voice_false_positive_01.ogg"]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_voice_false_positive_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_voice_false_positive_02.ogg"]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_voice_false_positive_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_voice_false_positive_03.ogg"]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_voice_false_positive_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_voice_false_positive_04.ogg"]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_voice_false_positive_04.ogg"]
 [endif]
 [return]
 
@@ -201,13 +201,13 @@
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_voice_false_negative_01.ogg"]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_voice_false_negative_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_voice_false_negative_02.ogg"]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_voice_false_negative_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_voice_false_negative_03.ogg"]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_voice_false_negative_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_voice_false_negative_04.ogg"]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_voice_false_negative_04.ogg"]
 [endif]
 [return]
 
@@ -217,8 +217,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_false_neutral_alive_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_false_neutral_alive_01.ogg"]
+[playselist buf="1"]
 
 みんな、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったのだ。[r]
 つまり人狼は他にいるってことなのだ。[p]
@@ -230,8 +230,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_positive"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_false_love_alive_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_false_love_alive_01.ogg"]
+[playselist buf="1"]
 
 みんな、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったのだ！[r]
 無実が証明できてよかったのだ！[p]
@@ -243,8 +243,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_false_hate_alie_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_false_hate_alie_01.ogg"]
+[playselist buf="1"]
 
 みんな、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったのだ。[r]
 自分の占い結果が信じられないのだ。[p]
@@ -256,8 +256,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_false_neutral_died_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_false_neutral_died_01.ogg"]
+[playselist buf="1"]
 
 みんな、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったのだ。[r]
 けど、残念ながら手遅れだったのだ。[p]
@@ -269,8 +269,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_false_love_died_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_false_love_died_01.ogg"]
+[playselist buf="1"]
 
 みんな、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったのだ。[r]
 ひどいのだ…誰がこんなことをしたのだ…！[p]
@@ -282,8 +282,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
-[add_playselist storage="chara/zundamon/zundamon_COFortuneTelling_false_hate_died_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/zundamon/zundamon_COFortuneTelling_false_hate_died_01.ogg"]
+[playselist buf="1"]
 
 みんな、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったのだ。[r]
 これじゃあ占った意味がないのだ。[p]

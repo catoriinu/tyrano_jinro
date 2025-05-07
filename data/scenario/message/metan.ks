@@ -114,15 +114,15 @@
 ; NOTE:事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 *COFortuneTelling_voice_true_positive
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_voice_true_positive_01.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_voice_true_positive_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_voice_true_positive_02.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_voice_true_positive_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_voice_true_positive_03.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_voice_true_positive_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_voice_true_positive_04.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_voice_true_positive_04.ogg"]
 [endif]
 [return]
 
@@ -140,8 +140,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_positive"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_true_neutral_alive_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_true_neutral_alive_01.ogg"]
+[playselist buf="1"]
 
 聞きなさい。[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼だったわ！[r]
 ふふっ、わたくしの千里眼に見抜けぬものはないわ。[p]
@@ -153,8 +153,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_positive"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_true_love_alive_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_true_love_alive_01.ogg"]
+[playselist buf="1"]
 
 聞きなさい。[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼だったわ！[r]
 わたくしの心を弄んだこと、後悔させてやるわ。[p]
@@ -166,8 +166,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_positive"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_true_hate_alive_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_true_hate_alive_01.ogg"]
+[playselist buf="1"]
 
 聞きなさい。[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼だったわ！[r]
 まあ、千里眼を使う前から視えていたけれど。[p]
@@ -176,30 +176,30 @@
 
 *COFortuneTelling_voice_false_positive
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_voice_false_positive_01.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_voice_false_positive_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_voice_false_positive_02.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_voice_false_positive_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_voice_false_positive_03.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_voice_false_positive_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_voice_false_positive_04.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_voice_false_positive_04.ogg"]
 [endif]
 [return]
 
 
 *COFortuneTelling_voice_false_negative
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_voice_false_negative_01.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_voice_false_negative_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_voice_false_negative_02.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_voice_false_negative_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_voice_false_negative_03.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_voice_false_negative_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_voice_false_negative_04.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_voice_false_negative_04.ogg"]
 [endif]
 [return]
 
@@ -209,8 +209,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_positive"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_false_neutral_alive_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_false_neutral_alive_01.ogg"]
+[playselist buf="1"]
 
 聞きなさい。[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではなかったわ。[r]
 信頼の証に、同盟を結ばせてもらえるかしら。[p]
@@ -222,8 +222,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_positive"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_false_love_alive_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_false_love_alive_01.ogg"]
+[playselist buf="1"]
 
 聞きなさい。[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではなかったわ。[r]
 これ以上疑いの眼を向けることは、わたくしが許さないわ。[p]
@@ -235,8 +235,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_false_hate_alie_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_false_hate_alie_01.ogg"]
+[playselist buf="1"]
 
 聞きなさい。[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではなかったわ。[r]
 この千里眼の力、わたくしにも制御できないというの…?[p]
@@ -248,8 +248,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_false_neutral_died_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_false_neutral_died_01.ogg"]
+[playselist buf="1"]
 
 聞きなさい。[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではなかったわ。[r]
 わたくしたちが共に手を取り合えた未来もあったのかしら。[p]
@@ -261,8 +261,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_false_love_died_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_false_love_died_01.ogg"]
+[playselist buf="1"]
 
 聞きなさい。[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではなかったわ。[r]
 仇は必ずとるわ。どうかわたくしを見守ってちょうだい…！[p]
@@ -274,8 +274,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
-[add_playselist storage="chara/metan/metan_COFortuneTelling_false_hate_died_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/metan/metan_COFortuneTelling_false_hate_died_01.ogg"]
+[playselist buf="1"]
 
 聞きなさい。[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではなかったわ。[r]
 どうやら人狼はわたくしを陥れるつもりのようね。[p]
@@ -289,18 +289,18 @@
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/metan/metan_doAction_suspect_logical_01.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_suspect_logical_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[add_playselist storage="chara/metan/metan_doAction_suspect_logical_02.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_suspect_logical_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[add_playselist storage="chara/metan/metan_doAction_suspect_logical_03.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_suspect_logical_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/metan/metan_doAction_suspect_logical_04.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_suspect_logical_04.ogg"]
 [endif]
-[add_playselist storage="chara/metan/metan_doAction_suspect_logical_05.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_suspect_logical_05.ogg"]
+[playselist buf="1"]
 
 [j_callName targetId="&tf.targetId" targetName="&tf.targetName"]、足掻いても無駄よ。[r]
 あなたの犯した罪は決して消えないわ。[p]
@@ -311,17 +311,17 @@
 [eval exp="tf.face = '真剣'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/metan/metan_doAction_suspect_emotional_01.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_suspect_emotional_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[add_playselist storage="chara/metan/metan_doAction_suspect_emotional_02.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_suspect_emotional_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[add_playselist storage="chara/metan/metan_doAction_suspect_emotional_03.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_suspect_emotional_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/metan/metan_doAction_suspect_emotional_04.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_suspect_emotional_04.ogg"]
 [endif]
-[playselist]
+[playselist buf="1"]
 
 [j_callName targetId="&tf.targetId" targetName="&tf.targetName"]、そろそろ認めたらどうかしら？[r]
 自分が人狼だということを。[p]
@@ -333,18 +333,18 @@
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/metan/metan_doAction_trust_logical_01.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_trust_logical_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[add_playselist storage="chara/metan/metan_doAction_trust_logical_02.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_trust_logical_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[add_playselist storage="chara/metan/metan_doAction_trust_logical_03.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_trust_logical_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/metan/metan_doAction_trust_logical_04.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_trust_logical_04.ogg"]
 [endif]
-[add_playselist storage="chara/metan/metan_doAction_trust_logical_05.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_trust_logical_05.ogg"]
+[playselist buf="1"]
 
 [j_callName targetId="&tf.targetId" targetName="&tf.targetName"]とわたくしが手を携えることは、[r]
 運命の女神によって定められているわ。[p]
@@ -355,17 +355,17 @@
 [eval exp="tf.face = 'クスクス'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/metan/metan_doAction_trust_emotional_01.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_trust_emotional_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[add_playselist storage="chara/metan/metan_doAction_trust_emotional_02.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_trust_emotional_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[add_playselist storage="chara/metan/metan_doAction_trust_emotional_03.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_trust_emotional_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/metan/metan_doAction_trust_emotional_04.ogg"]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_trust_emotional_04.ogg"]
 [endif]
-[playselist]
+[playselist buf="1"]
 
 [j_callName targetId="&tf.targetId" targetName="&tf.targetName"]、わたくしと共にこの苦難を乗り越えましょう。[p]
 [return]
@@ -389,8 +389,8 @@
 [eval exp="tf.face = '目閉じ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
-[add_playselist storage="chara/metan/metan_doAction_reaction_suspect_neutral_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_reaction_suspect_neutral_01.ogg"]
+[playselist buf="1"]
 
 心外ね。あなたはもう少し賢いと思っていたのだけど。[p]
 [return]
@@ -400,8 +400,8 @@
 [eval exp="tf.face = '困惑'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
-[add_playselist storage="chara/metan/metan_doAction_reaction_suspect_love_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_reaction_suspect_love_01.ogg"]
+[playselist buf="1"]
 
 わ、わたくしを裏切るというのね！[r]
 この代償は高くつくわよ…！[p]
@@ -412,8 +412,8 @@
 [eval exp="tf.face = '目閉じ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
-[add_playselist storage="chara/metan/metan_doAction_reaction_suspect_hate_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_reaction_suspect_hate_01.ogg"]
+[playselist buf="1"]
 
 そう、わたくしたちは光と闇の両極。[r]
 決して相容れない存在よ。[p]
@@ -425,8 +425,8 @@
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
-[add_playselist storage="chara/metan/metan_doAction_reaction_trust_neutral_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_reaction_trust_neutral_01.ogg"]
+[playselist buf="1"]
 
 ふふ。わたくしがあなたを勝利に導いてあげるわ。[p]
 [return]
@@ -436,8 +436,8 @@
 [eval exp="tf.face = '恥ずかしい'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
-[add_playselist storage="chara/metan/metan_doAction_reaction_trust_love_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_reaction_trust_love_01.ogg"]
+[playselist buf="1"]
 
 べ、別に嬉しくなんてないわ…！[p]
 [return]
@@ -447,8 +447,8 @@
 [eval exp="tf.face = '困惑'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
-[add_playselist storage="chara/metan/metan_doAction_reaction_trust_hate_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_reaction_trust_hate_01.ogg"]
+[playselist buf="1"]
 
 まさか、あなたの口からそんな言葉が聞けるとはね。[p]
 [return]
@@ -464,8 +464,8 @@
 *doAction_talkToMuch
 [eval exp="tf.face = '真剣'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[add_playselist storage="chara/metan/metan_doAction_talkToMuch_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/metan/metan_doAction_talkToMuch_01.ogg"]
+[playselist buf="1"]
 
 そのよく回る口を封印できる魔導書はどこかしら？[p]
 [return]
@@ -476,8 +476,8 @@
 *executed
 [eval exp="tf.face = '悲しみ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[add_playselist storage="chara/metan/metan_executed_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/metan/metan_executed_01.ogg"]
+[playselist buf="1"]
 
 これがわたくしの運命なら、受け入れるしかないのでしょうね。[p]
 [return]

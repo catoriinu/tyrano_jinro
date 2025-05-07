@@ -113,30 +113,30 @@
 ; NOTE:事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 *COFortuneTelling_voice_true_positive
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_voice_true_positive_01.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_voice_true_positive_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_voice_true_positive_02.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_voice_true_positive_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_voice_true_positive_03.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_voice_true_positive_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_voice_true_positive_04.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_voice_true_positive_04.ogg"]
 [endif]
 [return]
 
 
 *COFortuneTelling_voice_true_negative
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_voice_true_negative_01.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_voice_true_negative_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_voice_true_negative_02.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_voice_true_negative_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_voice_true_negative_03.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_voice_true_negative_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_voice_true_negative_04.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_voice_true_negative_04.ogg"]
 [endif]
 [return]
 
@@ -149,8 +149,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_negative"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_true_neutral_alive_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_true_neutral_alive_01.ogg"]
+[playselist buf="1"]
 
 僕が占った[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼でした…！[r]
 潔く認めていただけると嬉しいのですが…。[p]
@@ -162,8 +162,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_negative"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_true_love_alive_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_true_love_alive_01.ogg"]
+[playselist buf="1"]
 
 僕が占った[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼でした…！[r]
 こんな結果、未だに信じられません…！[p]
@@ -175,8 +175,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_positive"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_true_hate_alive_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_true_hate_alive_01.ogg"]
+[playselist buf="1"]
 
 僕が占った[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼でした…！[r]
 人狼さん、もう隠れても無駄ですよ？[p]
@@ -185,30 +185,30 @@
 
 *COFortuneTelling_voice_false_positive
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_voice_false_positive_01.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_voice_false_positive_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_voice_false_positive_02.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_voice_false_positive_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_voice_false_positive_03.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_voice_false_positive_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_voice_false_positive_04.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_voice_false_positive_04.ogg"]
 [endif]
 [return]
 
 
 *COFortuneTelling_voice_false_negative
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_voice_false_negative_01.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_voice_false_negative_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_voice_false_negative_02.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_voice_false_negative_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_voice_false_negative_03.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_voice_false_negative_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_voice_false_negative_04.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_voice_false_negative_04.ogg"]
 [endif]
 [return]
 
@@ -218,8 +218,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_positive"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_false_neutral_alive_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_false_neutral_alive_01.ogg"]
+[playselist buf="1"]
 
 僕が占った[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではありませんでした。[r]
 みなさん、安心して大丈夫ですよ。[p]
@@ -231,8 +231,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_false_love_alive_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_false_love_alive_01.ogg"]
+[playselist buf="1"]
 
 僕が占った[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではありませんでした。[r]
 もし人狼ならどうしようって思ってました…！[p]
@@ -244,8 +244,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_positive"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_false_hate_alie_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_false_hate_alie_01.ogg"]
+[playselist buf="1"]
 
 僕が占った[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではありませんでした。[r]
 もう怪しまれるようなことしないでくださいね。[p]
@@ -257,8 +257,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_false_neutral_died_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_false_neutral_died_01.ogg"]
+[playselist buf="1"]
 
 僕が占った[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではありませんでした。[r]
 ああ、間に合いませんでしたか…！[p]
@@ -270,8 +270,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_false_love_died_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_false_love_died_01.ogg"]
+[playselist buf="1"]
 
 僕が占った[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではありませんでした。[r]
 僕が力不足なばっかりに、すみません…！[p]
@@ -283,8 +283,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
-[add_playselist storage="chara/hau/hau_COFortuneTelling_false_hate_died_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/hau/hau_COFortuneTelling_false_hate_died_01.ogg"]
+[playselist buf="1"]
 
 僕が占った[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではありませんでした。[r]
 …いえ、僕がやったんじゃないですからね？[p]
@@ -298,19 +298,19 @@
 [eval exp="tf.face = '考える'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/hau/hau_doAction_suspect_logical_01.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_suspect_logical_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[add_playselist storage="chara/hau/hau_doAction_suspect_logical_02.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_suspect_logical_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[add_playselist storage="chara/hau/hau_doAction_suspect_logical_03.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_suspect_logical_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/hau/hau_doAction_suspect_logical_04.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_suspect_logical_04.ogg"]
 [endif]
 
-[add_playselist storage="chara/hau/hau_doAction_suspect_logical_05.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_suspect_logical_05.ogg"]
+[playselist buf="1"]
 
 人狼は[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]ですよね？[r]
 どう考えてもそうとしか思えないのですが…。[p]
@@ -321,17 +321,17 @@
 [eval exp="tf.face = 'ため息'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/hau/hau_doAction_suspect_emotional_01.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_suspect_emotional_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[add_playselist storage="chara/hau/hau_doAction_suspect_emotional_02.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_suspect_emotional_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[add_playselist storage="chara/hau/hau_doAction_suspect_emotional_03.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_suspect_emotional_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/hau/hau_doAction_suspect_emotional_04.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_suspect_emotional_04.ogg"]
 [endif]
-[playselist]
+[playselist buf="1"]
 
 僕は[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]が怪しいと思います。[r]
 か、勘違いだったらすみません…！[p]
@@ -343,18 +343,18 @@
 [eval exp="tf.face = '笑顔'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/hau/hau_doAction_trust_logical_01.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_trust_logical_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[add_playselist storage="chara/hau/hau_doAction_trust_logical_02.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_trust_logical_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[add_playselist storage="chara/hau/hau_doAction_trust_logical_03.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_trust_logical_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/hau/hau_doAction_trust_logical_04.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_trust_logical_04.ogg"]
 [endif]
-[add_playselist storage="chara/hau/hau_doAction_trust_logical_05.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_trust_logical_05.ogg"]
+[playselist buf="1"]
 
 [j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は信頼に値する方です。[r]
 少なくとも、僕にとっては確実に。[p]
@@ -365,17 +365,17 @@
 [eval exp="tf.face = '安心'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/hau/hau_doAction_trust_emotional_01.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_trust_emotional_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[add_playselist storage="chara/hau/hau_doAction_trust_emotional_02.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_trust_emotional_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[add_playselist storage="chara/hau/hau_doAction_trust_emotional_03.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_trust_emotional_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/hau/hau_doAction_trust_emotional_04.ogg"]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_trust_emotional_04.ogg"]
 [endif]
-[playselist]
+[playselist buf="1"]
 
 [j_callName targetId="&tf.targetId" targetName="&tf.targetName"]はきっと大丈夫です。[r]
 僕はそう信じてます。[p]
@@ -399,8 +399,8 @@
 [eval exp="tf.face = 'ため息'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
-[add_playselist storage="chara/hau/hau_doAction_reaction_suspect_neutral_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_reaction_suspect_neutral_01.ogg"]
+[playselist buf="1"]
 
 どうせ僕なんて、疑われても仕方ないですよね…。[p]
 [return]
@@ -410,8 +410,8 @@
 [eval exp="tf.face = '悲しみ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
-[add_playselist storage="chara/hau/hau_doAction_reaction_suspect_love_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_reaction_suspect_love_01.ogg"]
+[playselist buf="1"]
 
 …僕がどんなに頑張っても、報われることなんてないんですね。[p]
 [return]
@@ -421,8 +421,8 @@
 [eval exp="tf.face = '苦笑'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
-[add_playselist storage="chara/hau/hau_doAction_reaction_suspect_hate_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_reaction_suspect_hate_01.ogg"]
+[playselist buf="1"]
 
 はいはい、分かりました。お薬出しておきますね。[p]
 [return]
@@ -433,8 +433,8 @@
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
-[add_playselist storage="chara/hau/hau_doAction_reaction_trust_neutral_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_reaction_trust_neutral_01.ogg"]
+[playselist buf="1"]
 
 ありがとうございます。僕も精一杯サポートしますね！[p]
 [return]
@@ -444,8 +444,8 @@
 [eval exp="tf.face = '安心'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
-[add_playselist storage="chara/hau/hau_doAction_reaction_trust_love_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_reaction_trust_love_01.ogg"]
+[playselist buf="1"]
 
 あなたと一緒だと心強いです。最後まで頑張りましょう！[p]
 [return]
@@ -455,8 +455,8 @@
 [eval exp="tf.face = '考える'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
-[add_playselist storage="chara/hau/hau_doAction_reaction_trust_hate_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_reaction_trust_hate_01.ogg"]
+[playselist buf="1"]
 
 …まあ、あなたのことも見捨てはしませんよ。[r]
 僕は看護師ですから。[p]
@@ -474,8 +474,8 @@
 [eval exp="tf.face = '苦笑'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
-[add_playselist storage="chara/hau/hau_doAction_talkToMuch_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/hau/hau_doAction_talkToMuch_01.ogg"]
+[playselist buf="1"]
 
 あの…そろそろお口にチャックお願いします。[p]
 [return]
@@ -487,8 +487,8 @@
 [eval exp="tf.face = 'げっそり'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
-[add_playselist storage="chara/hau/hau_executed_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/hau/hau_executed_01.ogg"]
+[playselist buf="1"]
 
 これ以上、頑張らなくてもいいんですね。[r]
 それじゃあ、おやすみなさい…。[p]
