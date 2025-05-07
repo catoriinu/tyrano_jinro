@@ -43,7 +43,7 @@
   [w_openWindow]
   [w_makeClickableAreaOuterWindow target="*close"]
 
-  [playse storage="kirakira4.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
+  [playse storage="kirakira4.ogg" buf="0" loop="false" volume="35" sprite_time="50-20000"]
 
   [image folder="bgimage" storage="living_day.jpg" layer="2" page="back" left="424" top="80" height="243" name="thumbnail"]
   [image storage="eleven_members.png" layer="2" page="back" left="424" top="80" height="243" name="thumbnail"]

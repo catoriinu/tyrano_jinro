@@ -26,7 +26,7 @@
 *noticeRole_villager
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/metan/metan_noticeRole_villager_01.ogg"]
+[playse storage="chara/metan/metan_noticeRole_villager_01.ogg" buf="1"]
 
 わたくしは村人なのね。[r]
 無能力者に紛れるのもまた一興かしら。[p]
@@ -36,7 +36,7 @@
 *noticeRole_fortuneTeller
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/metan/metan_noticeRole_fortuneTeller_01.ogg"]
+[playse storage="chara/metan/metan_noticeRole_fortuneTeller_01.ogg" buf="1"]
 
 わたくしは占い師。[r]
 この千里眼で真実を見通してみせるわ！[p]
@@ -46,7 +46,7 @@
 *noticeRole_werewolf
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/metan/metan_noticeRole_werewolf_01.ogg"]
+[playse storage="chara/metan/metan_noticeRole_werewolf_01.ogg" buf="1"]
 
 わたくしは人狼。[r]
 脆弱な人間どもよ、この漆黒のめたんの前に慄きなさい！[p]
@@ -56,7 +56,7 @@
 *noticeRole_madman
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/metan/metan_noticeRole_madman_01.ogg"]
+[playse storage="chara/metan/metan_noticeRole_madman_01.ogg" buf="1"]
 
 わたくしは狂人。[r]
 人狼様の仰せのままに、村を闇で支配してみせましょう。[p]
@@ -72,15 +72,15 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[playse storage="chara/metan/metan_announcedFortuneTellingResult_true_01.ogg"]
+[playse storage="chara/metan/metan_announcedFortuneTellingResult_true_01.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[playse storage="chara/metan/metan_announcedFortuneTellingResult_true_02.ogg"]
+[playse storage="chara/metan/metan_announcedFortuneTellingResult_true_02.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[playse storage="chara/metan/metan_announcedFortuneTellingResult_true_03.ogg"]
+[playse storage="chara/metan/metan_announcedFortuneTellingResult_true_03.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[playse storage="chara/metan/metan_announcedFortuneTellingResult_true_04.ogg"]
+[playse storage="chara/metan/metan_announcedFortuneTellingResult_true_04.ogg" buf="1"]
 [endif]
 
 漆黒の気配…。[r]
@@ -93,15 +93,15 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[playse storage="chara/metan/metan_announcedFortuneTellingResult_false_01.ogg"]
+[playse storage="chara/metan/metan_announcedFortuneTellingResult_false_01.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[playse storage="chara/metan/metan_announcedFortuneTellingResult_false_02.ogg"]
+[playse storage="chara/metan/metan_announcedFortuneTellingResult_false_02.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[playse storage="chara/metan/metan_announcedFortuneTellingResult_false_03.ogg"]
+[playse storage="chara/metan/metan_announcedFortuneTellingResult_false_03.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[playse storage="chara/metan/metan_announcedFortuneTellingResult_false_04.ogg"]
+[playse storage="chara/metan/metan_announcedFortuneTellingResult_false_04.ogg" buf="1"]
 [endif]
 
 純白の気配…。[r]
@@ -496,7 +496,7 @@
 *chooseWhoToBite
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/metan/metan_chooseWhoToBite_01.ogg"]
+[playse storage="chara/metan/metan_chooseWhoToBite_01.ogg" buf="1"]
 
 わたくしは血に飢えた獣…。[r]
 さあ、今宵の生贄は誰かしら？[p]

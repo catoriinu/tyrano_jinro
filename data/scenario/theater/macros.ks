@@ -132,7 +132,8 @@
 ; @param text 表示するテキスト。タイトルなど。
 ; @param waitAnime true: アニメーション処理待機する（デフォルト） | false: 待機しない（String型のfalseを渡してもこちらになる）[t_waitClickCutIn]を併用するならfalseでよい
 [macro name="t_cutIn"]
-  [fadeoutse time="500"]
+  [fadeoutse time="500" buf="0"]
+  [fadeoutse time="500" buf="1"]
   [fadeoutbgm time="500"]
 
   [iscript]

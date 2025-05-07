@@ -282,9 +282,9 @@
 [endif]
 
 ; 音量変更
-[seopt volume="&tf.tmp_se_vol" buf="1"]
+[seopt volume="&tf.tmp_se_vol" buf="0"]
 ; サンプルとしてSEを再生する
-[playse storage="shock1.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
+[playse storage="shock1.ogg" buf="0" loop="false" volume="35" sprite_time="50-20000"]
 
 [return]
 
@@ -322,9 +322,9 @@
 [endif]
 
 ; 音量変更
-[seopt volume="&tf.tmp_voice_vol" buf="0"]
+[seopt volume="&tf.tmp_voice_vol" buf="1"]
 ; サンプルとしてボイスを再生する
-[playse storage="chara/zundamon/zundamon_noticeRole_villager_01.ogg"]
+[playse storage="chara/zundamon/zundamon_noticeRole_villager_01.ogg" buf="1"]
 
 [return]
 

@@ -26,7 +26,7 @@
 *noticeRole_villager
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/ritsu/ritsu_noticeRole_villager_01.ogg"]
+[playse storage="chara/ritsu/ritsu_noticeRole_villager_01.ogg" buf="1"]
 
 あたしは村人。[r]
 敵に回すと恐ろしく、味方にすると頼りないとはあたしのことよ。[p]
@@ -36,7 +36,7 @@
 *noticeRole_fortuneTeller
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/ritsu/ritsu_noticeRole_fortuneTeller_01.ogg"]
+[playse storage="chara/ritsu/ritsu_noticeRole_fortuneTeller_01.ogg" buf="1"]
 
 あたしは占い師。[r]
 特定班の実力、見せつけてやるわ。[p]
@@ -46,7 +46,7 @@
 *noticeRole_werewolf
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/ritsu/ritsu_noticeRole_werewolf_01.ogg"]
+[playse storage="chara/ritsu/ritsu_noticeRole_werewolf_01.ogg" buf="1"]
 
 あたしは人狼。[r]
 ふふ、人狼ゲームのアイドルにあたしはなるわ！[p]
@@ -56,7 +56,7 @@
 *noticeRole_madman
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/ritsu/ritsu_noticeRole_madman_01.ogg"]
+[playse storage="chara/ritsu/ritsu_noticeRole_madman_01.ogg" buf="1"]
 
 あたしは狂人。[r]
 狂ってる？それ、褒め言葉ね。[p]
@@ -72,13 +72,13 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_true_01.ogg"]
+[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_true_01.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_true_02.ogg"]
+[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_true_02.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_true_03.ogg"]
+[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_true_03.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_true_04.ogg"]
+[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_true_04.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
 
 [endif]
@@ -93,13 +93,13 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_false_01.ogg"]
+[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_false_01.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_false_02.ogg"]
+[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_false_02.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_false_03.ogg"]
+[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_false_03.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_false_04.ogg"]
+[playse storage="chara/ritsu/ritsu_announcedFortuneTellingResult_false_04.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
 
 [endif]
@@ -509,7 +509,7 @@ NGリストにぶち込んでやるわ。[p]
 *chooseWhoToBite
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/ritsu/ritsu_chooseWhoToBite_01.ogg"]
+[playse storage="chara/ritsu/ritsu_chooseWhoToBite_01.ogg" buf="1"]
 
 ふふふ…！奇跡の人狼カーニバル、開幕よ！[p]
 [return]

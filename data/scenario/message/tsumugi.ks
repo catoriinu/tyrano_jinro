@@ -26,7 +26,7 @@
 *noticeRole_villager
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/tsumugi/tsumugi_noticeRole_villager_01.ogg"]
+[playse storage="chara/tsumugi/tsumugi_noticeRole_villager_01.ogg" buf="1"]
 
 あーしは村人かぁ。[r]
 みんなと一緒ならなんとかなるよね！[p]
@@ -36,7 +36,7 @@
 *noticeRole_fortuneTeller
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/tsumugi/tsumugi_noticeRole_fortuneTeller_01.ogg"]
+[playse storage="chara/tsumugi/tsumugi_noticeRole_fortuneTeller_01.ogg" buf="1"]
 
 あーしが占い師なんだ。[r]
 じゃあみんなのこと占っちゃお！[p]
@@ -46,7 +46,7 @@
 *noticeRole_werewolf
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/tsumugi/tsumugi_noticeRole_werewolf_01.ogg"]
+[playse storage="chara/tsumugi/tsumugi_noticeRole_werewolf_01.ogg" buf="1"]
 
 あーしは人狼…。[r]
 バレちゃダメってなんかドキドキするかも！[p]
@@ -56,7 +56,7 @@
 *noticeRole_madman
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/tsumugi/tsumugi_noticeRole_madman_01.ogg"]
+[playse storage="chara/tsumugi/tsumugi_noticeRole_madman_01.ogg" buf="1"]
 
 あーしが狂人なんだね。[r]
 人狼くんの役に立てるように頑張るね！[p]
@@ -72,15 +72,15 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_true_01.ogg"]
+[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_true_01.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_true_02.ogg"]
+[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_true_02.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_true_03.ogg"]
+[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_true_03.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_true_04.ogg"]
+[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_true_04.ogg" buf="1"]
 [endif]
 
 あっ、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]が人狼だったんだ！[p]
@@ -92,15 +92,15 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_false_01.ogg"]
+[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_false_01.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_false_02.ogg"]
+[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_false_02.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_false_03.ogg"]
+[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_false_03.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_false_04.ogg"]
+[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_false_04.ogg" buf="1"]
 [endif]
 
 [j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったよ。[p]
@@ -511,7 +511,7 @@
 *chooseWhoToBite
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/tsumugi/tsumugi_chooseWhoToBite_01.ogg"]
+[playse storage="chara/tsumugi/tsumugi_chooseWhoToBite_01.ogg" buf="1"]
 
 お腹減ったな…。あ、あの人美味しそうかも…！[p]
 [return]

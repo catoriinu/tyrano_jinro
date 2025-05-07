@@ -111,8 +111,8 @@ tf.tmp_ch_speed = String(sf.config.current_ch_speed);
 [preload storage="data/sound/se/button34.ogg" single_use="false"]
 
 [bgmopt volume="&tf.tmp_bgm_vol"]
-[seopt volume="&tf.tmp_se_vol" buf="1"]
-[seopt volume="&tf.tmp_voice_vol" buf="0"]
+[seopt volume="&tf.tmp_se_vol" buf="0"]
+[seopt volume="&tf.tmp_voice_vol" buf="1"]
 [configdelay speed="&tf.tmp_ch_speed"]
 
 ; デフォルトフォントの設定

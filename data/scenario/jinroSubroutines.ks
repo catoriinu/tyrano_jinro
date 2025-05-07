@@ -82,7 +82,7 @@
         {
           storage: "se/button34.ogg",
           volume: 30,
-          buf: 1
+          buf: 0
         }
       );
 

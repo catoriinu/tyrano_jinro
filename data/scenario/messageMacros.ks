@@ -24,7 +24,7 @@
   [endscript]
 
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
-  [stopse]
+  [stopse buf="1"]
 [endmacro]
 
 
@@ -38,7 +38,7 @@
   [endscript]
 
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
-  [stopse]
+  [stopse buf="1"]
 [endmacro]
 
 
@@ -66,7 +66,7 @@
   [endscript]
 
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
-  [stopse]
+  [stopse buf="1"]
 [endmacro]
 
 
@@ -83,7 +83,7 @@
   [endscript]
 
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
-  [stopse]
+  [stopse buf="1"]
 [endmacro]
 
 
@@ -100,7 +100,7 @@
   [endscript]
 
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
-  [stopse]
+  [stopse buf="1"]
   [m_exitCharacter characterId="&mp.characterId"]
 [endmacro]
 
@@ -132,7 +132,7 @@
   [endscript]
 
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
-  [stopse]
+  [stopse buf="1"]
 [endmacro]
 
 

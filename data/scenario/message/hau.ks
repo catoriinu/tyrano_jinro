@@ -26,7 +26,7 @@
 *noticeRole_villager
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/hau/hau_noticeRole_villager_01.ogg"]
+[playse storage="chara/hau/hau_noticeRole_villager_01.ogg" buf="1"]
 
 僕は村人ですね。[r]
 どこまで村に貢献できるか分かりませんが、努力します。[p]
@@ -36,7 +36,7 @@
 *noticeRole_fortuneTeller
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/hau/hau_noticeRole_fortuneTeller_01.ogg"]
+[playse storage="chara/hau/hau_noticeRole_fortuneTeller_01.ogg" buf="1"]
 
 僕が占い師ですか。[r]
 はうぅ、責任重大ですね…。[p]
@@ -46,7 +46,7 @@
 *noticeRole_werewolf
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/hau/hau_noticeRole_werewolf_01.ogg"]
+[playse storage="chara/hau/hau_noticeRole_werewolf_01.ogg" buf="1"]
 
 僕は人狼なんですね。[r]
 こんなときまで夜勤しないといけないなんて…。[p]
@@ -56,7 +56,7 @@
 *noticeRole_madman
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/hau/hau_noticeRole_madman_01.ogg"]
+[playse storage="chara/hau/hau_noticeRole_madman_01.ogg" buf="1"]
 
 僕が狂人ですか。[r]
 つまり、好き放題やっていいってことですよね！？[p]
@@ -72,15 +72,15 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[playse storage="chara/hau/hau_announcedFortuneTellingResult_true_01.ogg"]
+[playse storage="chara/hau/hau_announcedFortuneTellingResult_true_01.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[playse storage="chara/hau/hau_announcedFortuneTellingResult_true_02.ogg"]
+[playse storage="chara/hau/hau_announcedFortuneTellingResult_true_02.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[playse storage="chara/hau/hau_announcedFortuneTellingResult_true_03.ogg"]
+[playse storage="chara/hau/hau_announcedFortuneTellingResult_true_03.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[playse storage="chara/hau/hau_announcedFortuneTellingResult_true_04.ogg"]
+[playse storage="chara/hau/hau_announcedFortuneTellingResult_true_04.ogg" buf="1"]
 [endif]
 
 [j_callName targetId="&tf.targetId" targetName="&tf.targetName"]が人狼だったなんて…！[r]
@@ -93,15 +93,15 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[playse storage="chara/hau/hau_announcedFortuneTellingResult_false_01.ogg"]
+[playse storage="chara/hau/hau_announcedFortuneTellingResult_false_01.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[playse storage="chara/hau/hau_announcedFortuneTellingResult_false_02.ogg"]
+[playse storage="chara/hau/hau_announcedFortuneTellingResult_false_02.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
-[playse storage="chara/hau/hau_announcedFortuneTellingResult_false_03.ogg"]
+[playse storage="chara/hau/hau_announcedFortuneTellingResult_false_03.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[playse storage="chara/hau/hau_announcedFortuneTellingResult_false_04.ogg"]
+[playse storage="chara/hau/hau_announcedFortuneTellingResult_false_04.ogg" buf="1"]
 [endif]
 
 [j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼ではなかったようですね。[p]
@@ -508,7 +508,7 @@
 *chooseWhoToBite
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/hau/hau_chooseWhoToBite_01.ogg"]
+[playse storage="chara/hau/hau_chooseWhoToBite_01.ogg" buf="1"]
 
 ちょっとチクッとしますよ。[r]
 大丈夫です、ほら、力を抜いて…。[p]

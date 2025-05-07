@@ -9,7 +9,7 @@ function setButtonSe() {
         {
           storage: "se/button34.ogg",
           volume: 30,
-          buf: 1
+          buf: 0
         }
       );
       //console.log("button-se-hover end");
@@ -37,7 +37,7 @@ function setButtonSe() {
       {
         storage: "se/button13.ogg",
         volume: 40,
-        buf: 1
+        buf: 0
       }
     );
     console.log("button-se-select clicked end");
@@ -49,7 +49,7 @@ function setButtonSe() {
       {
           storage: "se/button15.ogg",
           volume: 40,
-          buf: 1
+          buf: 0
       }
     );
   });

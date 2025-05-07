@@ -11,7 +11,7 @@
 [layopt layer="1" visible="true"]
 
 ; ボイス停止（人狼ゲームから戻ってきたとき用）
-[stopse buf="0"]
+[stopse buf="1"]
 [playbgm storage="fun_fun_Ukelele_1loop.ogg" volume="15" loop="true" restart="false"]
 
 ; 変数の初期化
