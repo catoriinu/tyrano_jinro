@@ -697,20 +697,20 @@
   $(".layer.layer_free").css("z-index", 99);
 [endscript]
 
+; memo:インストラクションでのステータス画面表示中は、キャラの立ち絵を表示する必要はない。
+; そもそも立ち絵よりもfreeレイヤーのほうが前面なので、立ち絵は表示されない。
+
 [if exp="f.chapterList.flags.forceStatusButton"]
-  [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="ドヤ顔"]
   [playse storage="other/01_instruction/137.ogg"]
   ふっふっふ！どうですか？[r]
   ここでは私に逆らうことなんてできないんですよーだ！[p]
 
 [elsif exp="f.chapterList.flags.thankStatusButton"]
-  [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
   [playse storage="other/01_instruction/138.ogg"]
   円滑なゲーム進行にご協力いただき、ありがとうございます！[p]
 
 [endif]
 
-[m_changeCharacterFrameName name="？？？" characterId="mochiko" face="紹介"]
 [playse storage="other/01_instruction/106.ogg"]
 ここはステータス画面です。[r]
 現在の状況や、過去の行動履歴を確認することができます。[p]
@@ -719,7 +719,6 @@
 [playse storage="other/01_instruction/107.ogg"]
 「住人一覧」では誰が生存中か脱落済みかや、役職のCO状況を確認できます。また、プレイヤーの役職は常時表示されます。[p]
 
-[m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
 [playse storage="other/01_instruction/108.ogg"]
 「投票履歴」では、その日に誰が誰に投票したかを確認できます。[r]
 再投票があった日の履歴は上から下への順番で並んでいます。[p]
@@ -730,7 +729,6 @@
 [playse storage="other/01_instruction/110.ogg"]
 これらの情報を活用して、人狼ゲームを有利に進めましょう！[p]
 
-[m_changeCharacterFrameName name="？？？" characterId="mochiko" face="説明"]
 [playse storage="other/01_instruction/111.ogg"]
 元の画面に戻るには、「もどる」ボタンを押してくださいね。[p]
 
@@ -739,9 +737,9 @@
   $(".layer.layer_free").css("z-index", 9999999);
 [endscript]
 
-; 右側のキャラ退場、枠リセット
+; 枠リセット
+; キャラ退場はしない。そもそもキャラは表示されていないため。
 [stopse buf="0"]
-[m_exitCharacter characterId="&f.displayedCharacter.right.characterId"]
 [m_changeFrameWithId]
 #
 
