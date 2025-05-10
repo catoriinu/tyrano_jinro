@@ -609,7 +609,10 @@
         id,
         text,
         'center',
-        CLASS_GLINK_DEFAULT
+        CLASS_GLINK_DEFAULT,
+        '',
+        'se/button34.ogg',
+        'se/button13.ogg',
       ));
     }
 
@@ -619,7 +622,9 @@
       '役職COしない',
       'center',
       CLASS_GLINK_DEFAULT,
-      CLASS_GLINK_SELECTED
+      CLASS_GLINK_SELECTED,
+      'se/button34.ogg',
+      'se/button15.ogg',
     ));
   [endscript]
 [endmacro]
@@ -644,7 +649,10 @@
       id,
       text,
       'center',
-      CLASS_GLINK_DEFAULT
+      CLASS_GLINK_DEFAULT,
+      '',
+      'se/button34.ogg',
+      'se/button13.ogg',
     ));
 
     f.buttonObjects.push(new Button(
@@ -652,7 +660,10 @@
       '何もしない',
       'center',
       CLASS_GLINK_DEFAULT,
-      CLASS_GLINK_SELECTED
+      CLASS_GLINK_SELECTED,
+      '',
+      'se/button34.ogg',
+      'se/button15.ogg',
     ));
   [endscript]
 [endmacro]

@@ -189,7 +189,9 @@
       '人狼だった',
       'left',
       CLASS_GLINK_DEFAULT,
-      classBlack
+      classBlack,
+      'se/button34.ogg',
+      'se/button13.ogg',
     ));
 
     const classWhite = (f.selectedActionId === 'white') ? CLASS_GLINK_SELECTED : CLASS_GLINK_WHITE;
@@ -198,7 +200,9 @@
       '人狼ではなかった',
       'left',
       CLASS_GLINK_DEFAULT,
-      classWhite
+      classWhite,
+      'se/button34.ogg',
+      'se/button13.ogg',
     ));
 
     // 黒か白を選択済みなら基本色、未選択なら選択済みの色
@@ -209,6 +213,8 @@
       'left',
       CLASS_GLINK_DEFAULT,
       classCancel,
+      'se/button34.ogg',
+      'se/button15.ogg',
     ));
   [endscript]
   [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]

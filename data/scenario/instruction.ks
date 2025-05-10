@@ -71,6 +71,7 @@
 [playse storage="other/01_instruction/012.ogg" buf="1"]
 ということで、あなたに人狼ゲームのルール説明をしてもよろしいでしょうか？[p]
 
+[stopse buf="1"]
 [iscript]
   // ボタン生成（初回用）
   f.buttonObjects = [];
@@ -78,13 +79,19 @@
     'continueInstruction',
     '全て説明して',
     'center',
-    CLASS_GLINK_DEFAULT
+    CLASS_GLINK_DEFAULT,
+    '',
+    'se/button34.ogg',
+    'se/button13.ogg',
   ));
   f.buttonObjects.push(new Button(
     'skipInstruction',
     'ボイボ人狼の説明だけ',
     'center',
     CLASS_GLINK_DEFAULT,
+    '',
+    'se/button34.ogg',
+    'se/button13.ogg',
   ));
 [endscript]
 [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
@@ -838,6 +845,7 @@
 ふぅん、なるほど…。[r]
 それでは人狼ゲームと「ボイボ人狼」の説明も要らないですか？[p]
 
+[stopse buf="1"]
 [iscript]
   // ボタン生成（2回目以降用）
   f.buttonObjects = [];
@@ -845,13 +853,19 @@
     'continueInstruction',
     '全て説明して',
     'center',
-    CLASS_GLINK_DEFAULT
+    CLASS_GLINK_DEFAULT,
+    '',
+    'se/button34.ogg',
+    'se/button13.ogg',
   ));
   f.buttonObjects.push(new Button(
     'skipInstruction',
     'ボイボ人狼の説明だけ',
     'center',
     CLASS_GLINK_DEFAULT,
+    '',
+    'se/button34.ogg',
+    'se/button13.ogg',
   ));
   f.buttonObjects.push(new Button(
     'skipSecondInstruction',
@@ -859,6 +873,8 @@
     'center',
     CLASS_GLINK_DEFAULT,
     CLASS_GLINK_SELECTED,
+    'se/button34.ogg',
+    'se/button15.ogg',
   ));
 [endscript]
 [call storage="./jinroSubroutines.ks" target="*glinkFromButtonObjects"]
