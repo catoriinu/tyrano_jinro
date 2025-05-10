@@ -58,12 +58,23 @@
 
   ; 視聴済みエピソードスキップ要否ボタンを表示
   [iscript]
-    tf.watchButtonColor = sf.doSkipWatchedEpisode ? tf.buttonColor : tf.selectedButtonColor;
-    tf.skipButtonColor = sf.doSkipWatchedEpisode ? tf.selectedButtonColor : tf.buttonColor;
+    const selectButtonSe = 'se/button13.ogg';
+    const cancelButtonSe = 'se/button15.ogg';
+    if (sf.doSkipWatchedEpisode) {
+        tf.watchButtonColor = tf.buttonColor;
+        tf.watchButtonSe = selectButtonSe;
+        tf.skipButtonColor = tf.selectedButtonColor;
+        tf.skipButtonSe = cancelButtonSe;
+    } else {
+        tf.watchButtonColor = tf.selectedButtonColor;
+        tf.watchButtonSe = cancelButtonSe;
+        tf.skipButtonColor = tf.buttonColor;
+        tf.skipButtonSe = selectButtonSe;
+    }
   [endscript]
   [ptext layer="1" x="157" y="555" text="解決編未解放時の導入編" color="0x28332a" size="24" cond="tf.isFirstTime"]
-  [glink color="&tf.watchButtonColor" size="24" width="140" x="138" y="600" enterse="se/button34.ogg" clickse="se/button13.ogg" text="自動再生" exp="sf.doSkipWatchedEpisode = false" target="*displayButton"]
-  [glink color="&tf.skipButtonColor" size="24" width="140" x="298" y="600" enterse="se/button34.ogg" clickse="se/button13.ogg" text="スキップ" exp="sf.doSkipWatchedEpisode = true" target="*displayButton"]
+  [glink color="&tf.watchButtonColor" size="24" width="140" x="138" y="600" enterse="se/button34.ogg" clickse="&tf.watchButtonSe" text="自動再生" exp="sf.doSkipWatchedEpisode = false" target="*displayButton"]
+  [glink color="&tf.skipButtonColor" size="24" width="140" x="298" y="600" enterse="se/button34.ogg" clickse="&tf.skipButtonSe" text="スキップ" exp="sf.doSkipWatchedEpisode = true" target="*displayButton"]
 [endif]
 
 ; デバッグ系ボタン表示

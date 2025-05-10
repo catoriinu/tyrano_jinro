@@ -74,8 +74,6 @@
 ; 画面右上の「もどる」ボタン
 [button fix="true" graphic="button/button_return_normal.png" enterimg="button/button_return_hover.png" target="*return" x="1143" y="17" width="114" height="103" enterse="se/button34.ogg" clickse="se/button15.ogg"]
 
-[jump target="*config_page"]
-
 
 *config_page
 ;------------------------------------------------------------------------------------------------------
@@ -158,20 +156,28 @@
   tf.mark100Color = CLASS_GLINK_DEFAULT;
   tf.mark20Color = CLASS_GLINK_DEFAULT;
   tf.mark0Color = CLASS_GLINK_DEFAULT;
+  const selectButtonSe = 'se/button13.ogg';
+  const cancelButtonSe = 'se/button15.ogg';
+  tf.mark100Se = selectButtonSe;
+  tf.mark20Se = selectButtonSe;
+  tf.mark0Se = selectButtonSe;
 
   if (sf.config.mark_size === 100) {
     tf.mark100Color += " " + CLASS_GLINK_SELECTED;
+    tf.mark100Se = cancelButtonSe;
   } else if (sf.config.mark_size === 20) {
     tf.mark20Color += " " + CLASS_GLINK_SELECTED;
+    tf.mark20Se = cancelButtonSe;
   } else {
     tf.mark0Color += " " + CLASS_GLINK_SELECTED;
+    tf.mark0Se = cancelButtonSe;
     sf.config.mark_size = 0;
   }
 [endscript]
 
-[glink color="&tf.mark100Color" enterse="se/button34.ogg" clickse="se/button13.ogg"size="26" width="180" x="940" y="520" text="塗りつぶし" exp="sf.config.mark_size = preexp" preexp="100" target="*marker_button"]
-[glink color="&tf.mark20Color" enterse="se/button34.ogg" clickse="se/button13.ogg" size="26" width="180" x="710" y="520" text="下線" exp="sf.config.mark_size = preexp" preexp="20" target="*marker_button"]
-[glink color="&tf.mark0Color" enterse="se/button34.ogg" clickse="se/button13.ogg" size="26" width="180" x="480" y="520" text="なし" exp="sf.config.mark_size = preexp" preexp="0" target="*marker_button"]
+[glink color="&tf.mark100Color" enterse="se/button34.ogg" clickse="&tf.mark100Se"size="26" width="180" x="940" y="520" text="塗りつぶし" exp="sf.config.mark_size = preexp" preexp="100" target="*marker_button"]
+[glink color="&tf.mark20Color" enterse="se/button34.ogg" clickse="&tf.mark20Se" size="26" width="180" x="710" y="520" text="下線" exp="sf.config.mark_size = preexp" preexp="20" target="*marker_button"]
+[glink color="&tf.mark0Color" enterse="se/button34.ogg" clickse="&tf.mark0Se" size="26" width="180" x="480" y="520" text="なし" exp="sf.config.mark_size = preexp" preexp="0" target="*marker_button"]
 
 [eval exp="setButtonSe()"]
 [s]
