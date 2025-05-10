@@ -108,6 +108,8 @@ tf.tmp_ch_speed = String(sf.config.current_ch_speed);
 
 ; ボタンホバー時のSEをプリロードしておく（jsで非同期で鳴らす処理が遅れることによるボタン表示系のバグが頻発しているため、おまじないとして）
 [preload storage="data/sound/se/button34.ogg" single_use="false"]
+[preload storage="data/sound/se/button13.ogg" single_use="false"]
+[preload storage="data/sound/se/button15.ogg" single_use="false"]
 
 [bgmopt volume="&tf.tmp_bgm_vol"]
 [seopt volume="&tf.tmp_se_vol" buf="0"]
