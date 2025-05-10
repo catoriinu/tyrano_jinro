@@ -147,13 +147,20 @@ if (!f.quickShowEpisodeWindow) {
 
 
 *showEpisodeWindow
+; そのエピソードの導入編が解放済みかを一時変数に格納
+[t_isProgressLocked pageId="&f.displayPageId" episodeId="&f.displayEpisodeId"]
+
+; 解放済みかつクリッカブル領域を押したときだけ、選択のボタンSEを鳴らす（=エピソード再生から戻ってきたときは鳴らさない）
+[playse storage="se/button13.ogg" buf="0" cond="!tf.isProgressLocked && !f.quickShowEpisodeWindow"]
+
+; エピソード再生から戻ってきたときだけ立っているフラグを、このタイミングで折る
 [eval exp="f.quickShowEpisodeWindow = false"]
 
-; そのエピソードの導入編が解放済みなら、エピソードウィンドウ表示
-[t_isProgressLocked pageId="&f.displayPageId" episodeId="&f.displayEpisodeId"]
+; 解放済みならエピソードウィンドウを開く
 [jump storage="theater/episodeWindow.ks" target="*start" cond="!tf.isProgressLocked"]
 
-; そのエピソードが未解放なら、詳細を表示させないで戻す
+; 以下、未解放なら詳細を表示させない。キャンセルのボタンSEを鳴らして注意文を表示する
+[playse storage="se/button15.ogg" buf="0"]
 未解放のエピソードのため選択できません。[p]
 
 *hideEpisodeWindow

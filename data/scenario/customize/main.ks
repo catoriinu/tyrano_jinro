@@ -238,6 +238,7 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 *jump_customizeWindow
 ; fixボタンをクリア
 [clearfix]
+[playse storage="se/button13.ogg" buf="0"]
 [jump storage="customize/customizeWindow.ks" target="*start"]
 [s]
 
