@@ -72,7 +72,7 @@
 [current layer="message1"]
 
 ; 画面右上の「もどる」ボタン
-[button fix="true" graphic="button/button_return_normal.png" enterimg="button/button_return_hover.png" target="*return" x="1143" y="17" width="114" height="103" enterse="se/button34.ogg" clickse="se/button15.ogg"]
+[button fix="true" graphic="button/button_return_selected.png" enterimg="button/button_return_hover.png" target="*return" x="1143" y="17" width="114" height="103" enterse="se/button34.ogg" clickse="se/button15.ogg"]
 
 
 *config_page
