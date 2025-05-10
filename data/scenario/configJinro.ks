@@ -72,7 +72,7 @@
 [current layer="message1"]
 
 ; 画面右上の「もどる」ボタン
-[button fix="true" graphic="button/button_return_normal.png" enterimg="button/button_return_hover.png" target="*return" x="1143" y="17" width="114" height="103" name="&tf.classButtonSeHover"]
+[button fix="true" graphic="button/button_return_normal.png" enterimg="button/button_return_hover.png" target="*return" x="1143" y="17" width="114" height="103" enterse="se/button34.ogg" clickse="se/button15.ogg"]
 
 [jump target="*config_page"]
 
@@ -169,9 +169,9 @@
   }
 [endscript]
 
-[glink color="&tf.mark100Color" name="&tf.classButtonSeHover" size="26" width="180" x="940" y="520" text="塗りつぶし" exp="sf.config.mark_size = preexp" preexp="100" target="*marker_button"]
-[glink color="&tf.mark20Color" name="&tf.classButtonSeHover" size="26" width="180" x="710" y="520" text="下線" exp="sf.config.mark_size = preexp" preexp="20" target="*marker_button"]
-[glink color="&tf.mark0Color" name="&tf.classButtonSeHover" size="26" width="180" x="480" y="520" text="なし" exp="sf.config.mark_size = preexp" preexp="0" target="*marker_button"]
+[glink color="&tf.mark100Color" enterse="se/button34.ogg" clickse="se/button13.ogg"size="26" width="180" x="940" y="520" text="塗りつぶし" exp="sf.config.mark_size = preexp" preexp="100" target="*marker_button"]
+[glink color="&tf.mark20Color" enterse="se/button34.ogg" clickse="se/button13.ogg" size="26" width="180" x="710" y="520" text="下線" exp="sf.config.mark_size = preexp" preexp="20" target="*marker_button"]
+[glink color="&tf.mark0Color" enterse="se/button34.ogg" clickse="se/button13.ogg" size="26" width="180" x="480" y="520" text="なし" exp="sf.config.mark_size = preexp" preexp="0" target="*marker_button"]
 
 [eval exp="setButtonSe()"]
 [s]

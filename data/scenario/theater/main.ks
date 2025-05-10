@@ -79,7 +79,7 @@ if (!f.quickShowEpisodeWindow) {
   // 表示するメッセージの判定用
   tf.isPage01AllCleared = (getTheaterProgress('p01', 'e08') === EPISODE_STATUS.OUTRO_UNLOCKED);
 [endscript]
-[glink color="&tf.selectedButtonColor" size="30" width="270" x="975" y="38" text="タイトルに戻る" target="*returnTitle" name="&tf.classButtonSeHover"]
+[glink color="&tf.selectedButtonColor" size="30" width="270" x="975" y="38" text="タイトルに戻る" target="*returnTitle" enterse="se/button34.ogg" clickse="se/button15.ogg"]
 
 ; 以下、選択中のページのみボタンの色を変える
 ; TODO 初期リリース時はページ切り替え機能は不要なのでコメントアウトする

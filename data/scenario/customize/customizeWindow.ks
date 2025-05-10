@@ -80,7 +80,7 @@
 [endscript]
 
 *show
-[glink color="&tf.selectedButtonColor" size="26" width="210" x="875" y="80" text="閉じる" target="*returnMain" name="&tf.classButtonSeHover"]
+[glink color="&tf.selectedButtonColor" size="26" width="210" x="875" y="80" text="閉じる" target="*returnMain" enterse="se/button34.ogg" clickse="se/button15.ogg"]
 [w_makeClickableAreaOuterWindow storage="customize/customizeWindow.ks" target="*returnMain"]
 
 ; これから表示する要素以外は消す
@@ -118,7 +118,7 @@
 
 ; 役職設定用サブルーチン
 *selectRole
-  [glink color="&tf.buttonColor" size="26" width="210" x="192" y="80" text="プロフィール" target="*show" preexp="'profile'" exp="tf.windowElements = preexp" name="&tf.classButtonSeHover"]
+  [glink color="&tf.buttonColor" size="26" width="210" x="192" y="80" text="プロフィール" target="*show" preexp="'profile'" exp="tf.windowElements = preexp" enterse="se/button34.ogg" clickse="se/button13.ogg"]
   [ptext layer="1" page="&tf.elementPage" text="役職設定" face="MPLUSRounded" size="36" x="180" y="80" width="920" align="center" name="windowTitle" overwrite="true"]
 
   ; 役職設定ボタン表示用ループ
@@ -133,11 +133,11 @@
   ; プレイヤーキャラクター設定ボタン
   [ptext layer="1" page="&tf.elementPage" size="26" x="580" y="580" text="操作" color="#28332a" name="selectRoleElement"]
   ; main画面で定義したtf.allowShowEditButtonフラグをここでも使い回す。第一章クリアまたはデバッグモード時のみ、切り替えられるようにする。
-  [glink color="&tf.buttonColor" size="26" width="90" x="650" y="575" text="PC" target="*show" cond="!tf.isPlayer && tf.allowShowEditButton" preexp="true" exp="tf.isPlayer = preexp" name="&tf.classButtonSeHover"]
-  [glink color="&tf.selectedButtonColor" size="26" width="90" x="650" y="575" text="PC" target="*show" cond="tf.isPlayer" preexp="true" exp="tf.isPlayer = preexp" name="&tf.classButtonSeHover"]
+  [glink color="&tf.buttonColor" size="26" width="90" x="650" y="575" text="PC" target="*show" cond="!tf.isPlayer && tf.allowShowEditButton" preexp="true" exp="tf.isPlayer = preexp" enterse="se/button34.ogg" clickse="se/button13.ogg"]
+  [glink color="&tf.selectedButtonColor" size="26" width="90" x="650" y="575" text="PC" target="*show" cond="tf.isPlayer" preexp="true" exp="tf.isPlayer = preexp" enterse="se/button34.ogg" clickse="se/button15.ogg"]
   ; NPC設定ボタン（現在そのキャラがPCの場合は表示しない。誰もPCがいなくなってしまうので。オートプレイをできるようにするなら表示させてもいいがまだ考慮しない）
-  [glink color="&tf.buttonColor" size="26" width="90" x="760" y="575" text="NPC" target="*show" cond="!tf.isCurrentPlayer && tf.isPlayer && tf.allowShowEditButton" preexp="false" exp="tf.isPlayer = preexp" name="&tf.classButtonSeHover"]
-  [glink color="&tf.selectedButtonColor" size="26" width="90" x="760" y="575" text="NPC" target="*show" cond="!tf.isPlayer" preexp="false" exp="tf.isPlayer = preexp" name="&tf.classButtonSeHover"]
+  [glink color="&tf.buttonColor" size="26" width="90" x="760" y="575" text="NPC" target="*show" cond="!tf.isCurrentPlayer && tf.isPlayer && tf.allowShowEditButton" preexp="false" exp="tf.isPlayer = preexp" enterse="se/button34.ogg" clickse="se/button13.ogg"]
+  [glink color="&tf.selectedButtonColor" size="26" width="90" x="760" y="575" text="NPC" target="*show" cond="!tf.isPlayer" preexp="false" exp="tf.isPlayer = preexp" enterse="se/button34.ogg" clickse="se/button15.ogg"]
 [return]
 
 
@@ -164,16 +164,16 @@ tf.roleStorage = 'role/icon_' + tf.roleId + '.png';
 ; 参加不可能な役職はボタンではなくテキストを表示
 [ptext layer="1" page="&tf.elementPage" size="26" x="&(tf.buttonX + 25)" y="&(tf.buttonY + 5)" text="人数オーバー" color="#28332a" cond="!tf.roleButtonAvailable" name="selectRoleElement"]
 ; 参加可能な役職のボタン
-[glink color="&tf.buttonColor"         size="26" width="200" x="&tf.buttonX" y="&tf.buttonY" text="&tf.roleButtonText" target="*returnMain" preexp="tf.roleId" exp="tf.currentRoleId = preexp" cond="tf.roleButtonAvailable && tf.roleId !== tf.currentRoleId" name="&tf.classButtonSeHover"]
+[glink color="&tf.buttonColor"         size="26" width="200" x="&tf.buttonX" y="&tf.buttonY" text="&tf.roleButtonText" target="*returnMain" preexp="tf.roleId" exp="tf.currentRoleId = preexp" cond="tf.roleButtonAvailable && tf.roleId !== tf.currentRoleId" enterse="se/button34.ogg" clickse="se/button13.ogg"]
 ; そのキャラの役職として選択中の役職のボタン
-[glink color="&tf.selectedButtonColor" size="26" width="200" x="&tf.buttonX" y="&tf.buttonY" text="&tf.roleButtonText" target="*returnMain" preexp="tf.roleId" exp="tf.currentRoleId = preexp" cond="tf.roleButtonAvailable && tf.roleId === tf.currentRoleId" name="&tf.classButtonSeHover"]
+[glink color="&tf.selectedButtonColor" size="26" width="200" x="&tf.buttonX" y="&tf.buttonY" text="&tf.roleButtonText" target="*returnMain" preexp="tf.roleId" exp="tf.currentRoleId = preexp" cond="tf.roleButtonAvailable && tf.roleId === tf.currentRoleId" enterse="se/button34.ogg" clickse="se/button15.ogg"]
 [return]
 
 
 
 ; プロフィール用サブルーチン
 *profile
-  [glink color="&tf.buttonColor" size="26" width="210" x="192" y="80" text="役職設定" target="*show" preexp="'selectRole'" exp="tf.windowElements = preexp" name="&tf.classButtonSeHover"]
+  [glink color="&tf.buttonColor" size="26" width="210" x="192" y="80" text="役職設定" target="*show" preexp="'selectRole'" exp="tf.windowElements = preexp" enterse="se/button34.ogg" clickse="se/button13.ogg"]
   [ptext layer="1" page="&tf.elementPage" text="プロフィール" face="MPLUSRounded" size="36" x="180" y="80" width="920" align="center" name="windowTitle" overwrite="true"]
 
   ; プロフィールテキストをサブルーチン内で変数に格納してから、表示する
