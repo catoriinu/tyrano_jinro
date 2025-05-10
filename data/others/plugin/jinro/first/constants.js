@@ -3,7 +3,7 @@
 const JINRO_PLUGIN_VERSION = {
   major: 0,
   minor: 13,
-  patch: 1,
+  patch: 2,
 };
 
 // キャラクターID

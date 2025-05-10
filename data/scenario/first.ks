@@ -44,7 +44,7 @@ if (!('isDebugMode' in sf)) {
 }
 
 // ゲーム本体のバージョンをシナリオ変数に設定
-sf.version = buildSfVersion(0, 13, 1, sf.isDebugMode, false);
+sf.version = buildSfVersion(0, 13, 2, sf.isDebugMode, false);
 
 // jinroプラグインのバージョンをシナリオ変数に設定
 sf.jinroPluginVersion = buildSfVersion(
