@@ -33,7 +33,6 @@ tf.offsetTop = 110;
 
 tf.buttonColor = CLASS_GLINK_DEFAULT;
 tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
-tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
 [endscript]
 
 ; 画面上部のボタン表示
@@ -71,8 +70,6 @@ tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
   // 現時点での参加者リストとプレイヤーキャラクターIDを保存しておく。
   // カスタマイズウィンドウを閉じたり、参加者編集が完了して、再度メイン画面を表示したときに画像更新判定をするため
   f.currentParticipantList = clone(f.currentJinroGameData.participantList);
-
-  setButtonSe();
 
   tf.needTeardownEditMode = false;
 [endscript]

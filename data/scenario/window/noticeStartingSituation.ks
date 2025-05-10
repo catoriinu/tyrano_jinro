@@ -5,7 +5,6 @@
   [iscript]
     tf.buttonColor = CLASS_GLINK_DEFAULT;
     tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
-    tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
 
     // 開始条件テキストとプレイスタートボタン、および解放条件テキストを表示するかのフラグ。ウィンドウ表示時点では表示しない
     tf.needDisplayStartConditionText = false;
@@ -34,8 +33,6 @@
 
   [glink color="&tf.buttonColor" size="26" width="450" x="413" y="490" text="開始条件を見る（ネタバレ注意）" target="*displayStartConditionText" cond="!tf.needDisplayStartConditionText" enterse="se/button34.ogg" clickse="se/button13.ogg"]
   [glink color="&tf.buttonColor" size="26" width="450" x="413" y="580" text="解放条件を見る（ネタバレ注意）" target="*displayUnlockConditionText" cond="!tf.needDisplayUnlockConditionText" enterse="se/button34.ogg" clickse="se/button13.ogg"]
-
-  [eval exp="setButtonSe()"]
 [s]
 
 

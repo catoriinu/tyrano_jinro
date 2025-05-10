@@ -74,7 +74,6 @@ if (!f.quickShowEpisodeWindow) {
 [iscript]
   tf.buttonColor = CLASS_GLINK_DEFAULT;
   tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
-  tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
 
   // 表示するメッセージの判定用
   tf.isPage01AllCleared = (getTheaterProgress('p01', 'e08') === EPISODE_STATUS.OUTRO_UNLOCKED);
@@ -103,8 +102,6 @@ if (!f.quickShowEpisodeWindow) {
 [else]
 人狼ゲームで特定の条件を満たすと解決編が解放されます。
 [endif]
-
-[eval exp="setButtonSe()"]
 [s]
 
 

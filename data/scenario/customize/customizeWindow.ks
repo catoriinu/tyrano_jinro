@@ -18,7 +18,6 @@
     // 利用する変数の初期化
     tf.buttonColor = CLASS_GLINK_DEFAULT;
     tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
-    tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
 
     // トランジション要否（elementPageは、トランジションするなら'back'に、トランジションしないなら'fore'にすること）
     tf.needTrans = true;
@@ -96,7 +95,6 @@
 [iscript]
   tf.needTrans = false;
   tf.elementPage = 'fore';
-  setButtonSe();
 [endscript]
 [s]
 

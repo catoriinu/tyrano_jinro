@@ -13,12 +13,10 @@
 [iscript]
   tf.buttonColor = CLASS_GLINK_DEFAULT;
   tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
-  tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
 [endscript]
 [glink color="&tf.buttonColor" size="30" width="400" x="439" y="180" enterse="se/button34.ogg" clickse="se/button13.ogg" text="終了までスキップする" target="*skip"]
 [glink color="&tf.buttonColor" size="30" width="400" x="439" y="320" enterse="se/button34.ogg" clickse="se/button13.ogg" text="コンフィグ" target="*config"]
 [glink color="&tf.selectedButtonColor" size="30" width="400" x="439" y="460" enterse="se/button34.ogg" clickse="se/button15.ogg" text="メニューを閉じる" target="*resume"]
-[eval exp="setButtonSe()"]
 [s]
 
 

@@ -142,11 +142,6 @@ const CLASS_GLINK_SELECTED = 'btn_voivo_selected'; // glinkのname用。現在�
 const CLASS_GLINK_WHITE = 'btn_voivo_white'; // glinkのname用。白色のテーマ（未作成）
 const CLASS_GLINK_BLACK = 'btn_voivo_black'; // glinkのname用。黒色のテーマ（未作成）
 
-// ボタンにカーソルが乗ったときの処理
-const CLASS_BUTTON_SE_HOVER = 'button-se-hover';
-//const CLASS_BUTTON_SE_HOVER_SELECT = 'button-se-hover button-se-select';
-//const CLASS_BUTTON_SE_HOVER_CANCEL = 'button-se-hover button-se-cancel';
-
 // 設定値
 // ボタン配置範囲
 const BUTTON_RANGE_Y_UPPER = -30 // 上限

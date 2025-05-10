@@ -49,8 +49,6 @@
 
   // スライダーのX座標
   tf.slider_x = 435;
-
-  tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
 [endscript]
 
 [cm]
@@ -178,8 +176,6 @@
 [glink color="&tf.mark100Color" enterse="se/button34.ogg" clickse="&tf.mark100Se"size="26" width="180" x="940" y="520" text="塗りつぶし" exp="sf.config.mark_size = preexp" preexp="100" target="*marker_button"]
 [glink color="&tf.mark20Color" enterse="se/button34.ogg" clickse="&tf.mark20Se" size="26" width="180" x="710" y="520" text="下線" exp="sf.config.mark_size = preexp" preexp="20" target="*marker_button"]
 [glink color="&tf.mark0Color" enterse="se/button34.ogg" clickse="&tf.mark0Se" size="26" width="180" x="480" y="520" text="なし" exp="sf.config.mark_size = preexp" preexp="0" target="*marker_button"]
-
-[eval exp="setButtonSe()"]
 [s]
 
 

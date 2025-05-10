@@ -33,8 +33,6 @@
   // ボタンの色
   tf.buttonColor = CLASS_GLINK_DEFAULT;
   tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
-  // ボタンのSE
-  tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
 
   // タイトル画面初回表示フラグ
   // ゲームの初回起動の意味ではない。displayButtonラベルに戻るボタンを押したときに、初回表示時以外は実行したくない処理を弾くためのフラグ
@@ -84,7 +82,6 @@
 
 [iscript]
   tf.isFirstTime = false;
-  setButtonSe();
 [endscript]
 [s]
 
@@ -139,7 +136,6 @@
 [glink color="&tf.buttonColor" size="26" width="400" x="439" y="323" enterse="se/button34.ogg" clickse="se/button13.ogg" text="チュートリアル完了後" target="*resetAfterTutorial"]
 [glink color="&tf.buttonColor" size="26" width="400" x="439" y="408" enterse="se/button34.ogg" clickse="se/button13.ogg" text="エンディング後" target="*resetAfterEnding"]
 [glink color="&tf.selectedButtonColor" size="26" width="400" x="439" y="493" enterse="se/button34.ogg" clickse="se/button15.ogg" text="何もしない" target="*start"]
-[eval exp="setButtonSe()"]
 [s]
 
 *resetAll
