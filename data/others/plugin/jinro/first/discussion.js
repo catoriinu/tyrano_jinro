@@ -560,15 +560,19 @@ function countTargetedId(actionObjects, countId) {
  * @param {String} additionalClassName ボタンに追加したいクラス名。追加不要の場合は空文字。以下補足
  * ・glinkのnameに追加され、ボタンのclass属性になる。colorのclass属性より後ろに追加されるので、より優先される。
  * ・基本的にaddClassName()を使って追加すること。使えない理由がある場合、同等の処理をしておくこと。
- * @param {*} target ボタン押下時にジャンプするラベル名
- * @param {*} storage ボタン押下時にジャンプするファイル名
+ * @param {*} enterse ボタンにマウスオーバーしたときのSE
+ * @param {*} clickse ボタン押下時のSE
+ * //@param {*} target ボタン押下時にジャンプするラベル名
+ * //@param {*} storage ボタン押下時にジャンプするファイル名
  */
-function Button (id, text, side = 'center', color = '', additionalClassName = '', target = '', storage = '') {
+function Button (id, text, side = 'center', color = '', additionalClassName = '', enterse = '', clickse = '', target = '', storage = '') {
   this.id = id;
   this.text = text;
   this.side = side;
   this.color = color;
   this.additionalClassName = ''; // this.addClassName()を定義したあとで引数を入れるので、今は空文字固定
+  this.enterse = enterse;
+  this.clickse = clickse;
   //this.target = target;
   //this.storage = storage;
 

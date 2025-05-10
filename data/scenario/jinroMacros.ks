@@ -669,10 +669,17 @@
       // ボタン表示したくないアクションIDはf.buttonObjectsに格納しない
       if (tf.disableActionIdList.includes(aId)) continue;
 
-      // 選択中のアクションIDのボタンは選択中の色に変える
       let additionalClassName = '';
+      let clickse = 'se/button13.ogg';
       if (f.actionButtonList[aId].id === f.selectedActionId) {
+        // 選択中のアクションIDのボタンは選択中の色に変える
         additionalClassName = CLASS_GLINK_SELECTED;
+
+        // 対象をとらないアクション（現時点では「発言しない」のみ）はキャンセル用SEに変える
+        //（対象をとるアクションは、キャラ選択時にキャンセル用SEを鳴らせばいいので）
+        if (f.selectedActionId === ACTION_CANCEL) {
+          clickse = 'se/button15.ogg';
+        }
       }
 
       // ボタンオブジェクトをf.buttonObjectsに格納する
@@ -681,7 +688,9 @@
         f.actionButtonList[aId].text,
         'left',
         CLASS_GLINK_DEFAULT,
-        additionalClassName
+        additionalClassName,
+        'se/button34.ogg',
+        clickse
       ));
     }
   [endscript]
@@ -711,9 +720,12 @@
       if (!mp.characterIds.includes(cId)) continue;
 
       let additionalClassName = '';
-      // 選択中のキャラクターIDかつ選択中のアクションである（つまり、実行予定だったアクションと同じ）ボタンは選択中の色に変える
+      let clickse = 'se/button13.ogg';
       if (cId === f.originalSelectedCharacterId && 'actionId' in f.pcActionObject && f.selectedActionId === f.pcActionObject.actionId) {
+        // 選択中のキャラクターIDかつ選択中のアクションである（つまり、実行予定だったアクションと同じ）ボタンは
+        // 選択中の色&キャンセル用SEに変える
         additionalClassName = CLASS_GLINK_SELECTED;
+        clickse = 'se/button15.ogg';
       }
 
       // ボタンオブジェクトをf.buttonObjectsに格納する
@@ -722,7 +734,9 @@
         f.characterObjects[cId].name,
         mp.side,
         CLASS_GLINK_DEFAULT,
-        additionalClassName
+        additionalClassName,
+        'se/button34.ogg',
+        clickse
       ));
     }
   [endscript]

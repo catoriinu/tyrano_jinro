@@ -293,7 +293,7 @@ function initializeTyranoValiableForJinro() {
   TYRANO.kag.stat.f.actionButtonList = {
     [ACTION_SUSPECT]: new Button(
         ACTION_SUSPECT,
-        '疑う'
+        '疑う',
     ),
     [ACTION_TRUST]: new Button(
         ACTION_TRUST,
@@ -305,7 +305,7 @@ function initializeTyranoValiableForJinro() {
     ),
     [ACTION_CANCEL]: new Button(
         ACTION_CANCEL,
-        "発言しない"
+        "発言しない",
     )
   }
 
