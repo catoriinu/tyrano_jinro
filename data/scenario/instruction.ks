@@ -14,7 +14,7 @@
 
 
 [m_changeCharacterFrameName name="ずんだもん" face="否定" side="left"]
-[playse storage="se/surprised.ogg" buf="0" volume="60"]
+[playse storage="se/surprised.ogg" buf="2" volume="60"]
 [playse storage="other/01_instruction/001.ogg" buf="1"]
 …って、人狼って悪者なんじゃないのだ！？[r]
 このままだと僕が犯人ってことにされるのだ！[p]
@@ -59,7 +59,7 @@
 タイトル画面の「ヘルプ」から「インストラクションをリプレイ」を選べばOKです。[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="困惑" side="left"]
-[playse storage="se/hatena01-1.ogg" buf="0" volume="60"]
+[playse storage="se/hatena01-1.ogg" buf="2" volume="60"]
 [playse storage="other/01_instruction/010.ogg" buf="1"]
 お姉さんは誰に向かって喋ってるのだ？[p]
 
@@ -100,7 +100,7 @@
 
 *continueInstruction
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
-[playse storage="se/kira1.ogg" buf="0" volume="50"]
+[playse storage="se/kira1.ogg" buf="2" volume="50"]
 [playse storage="other/01_instruction/017.ogg" buf="1"]
 了解です！[r]
 それではご説明いたしましょう！[p]
@@ -273,7 +273,7 @@
 
 *skipInstruction
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
-[playse storage="se/kira1.ogg" buf="0" volume="50"]
+[playse storage="se/kira1.ogg" buf="2" volume="50"]
 [playse storage="other/01_instruction/014.ogg" buf="1"]
 了解です！[r]
 それでは人狼ゲーム自体の説明はスキップさせていただきます。[p]
@@ -385,7 +385,7 @@
 つまりそういうことです。[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="困惑" side="left"]
-[playse storage="se/hatena01-1.ogg" buf="0" volume="60"]
+[playse storage="se/hatena01-1.ogg" buf="2" volume="60"]
 [playse storage="other/01_instruction/074.ogg" buf="1"]
 のだ？[p]
 
@@ -458,7 +458,7 @@
 けど、その人狼は僕なのだ…。[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="困惑" side="left"]
-[playse storage="se/manuke4.ogg" buf="0" volume="60"]
+[playse storage="se/manuke4.ogg" buf="2" volume="60"]
 [playse storage="other/01_instruction/089.ogg" buf="1"]
 誰に投票すればいいのか悩むのだ…。[p]
 
@@ -767,7 +767,7 @@
 ありがとうなのだ！[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="困惑" side="left"]
-[playse storage="se/hatena01-1.ogg" buf="0" volume="60"]
+[playse storage="se/hatena01-1.ogg" buf="2" volume="60"]
 [playse storage="other/01_instruction/142.ogg" buf="1"]
 …あの、もう一度質問なのだ。[r]
 お姉さんは一体誰なのだ？[p]
@@ -830,7 +830,7 @@
 インストラクターのお姉さん、颯爽登場です！[p]
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
-[playse storage="se/manuke4.ogg" buf="0" volume="60"]
+[playse storage="se/manuke4.ogg" buf="2" volume="60"]
 [playse storage="other/01_instruction/167.ogg" buf="1"]
 あ、あれ、おかしいですね…？[r]
 あんまり驚いてくれませんね…。[p]

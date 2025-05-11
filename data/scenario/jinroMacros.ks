@@ -546,12 +546,12 @@
 [macro name="j_cutin1"]
 
     ;[image layer="1" x="0" y="150" width="1280" height="200" time="700" wait="false" storage="cutin.gif" name="cutin"]
-    ; ボイスとのスロットの競合を避けるためにbuf="0"を指定
-    [playse storage="se/shakiin1.ogg" volume="35" buf="0"]
+    ; ボイスとのスロットの競合を避けるためにbuf="2"を指定
+    [playse storage="se/shakiin1.ogg" volume="35" buf="2"]
     ;[image layer="1" x="-1000" y="160" height="180" visible="true" reflect="true" storage="00_angry_eye.png" name="00"]
     ;[anim name="00" left=100 time=700]
     ;[wait time=700]
-    [fadeoutse time="1800" buf="0"]
+    [fadeoutse time="1800" buf="2"]
 
 [endmacro]
 
@@ -1233,13 +1233,13 @@
 [macro name="j_playSePlayerResult"]
   [if exp="isResultDraw(mp.winnerFaction)"]
     ; 引き分け
-    [playse storage="se/megaten.ogg" buf="0" loop="false" volume="35" sprite_time="50-20000"]
+    [playse storage="se/megaten.ogg" buf="2" loop="false" volume="35" sprite_time="50-20000"]
   [elsif exp="isResultPlayersWin(mp.winnerFaction, f.characterObjects[f.playerCharacterId].role.faction)"]
     ; 勝利
-    [playse storage="se/kirakira4.ogg" buf="0" loop="false" volume="35" sprite_time="50-20000"]
+    [playse storage="se/kirakira4.ogg" buf="2" loop="false" volume="35" sprite_time="50-20000"]
   [else]
     ; 敗北
-    [playse storage="se/chiin1.ogg" buf="0" loop="false" volume="35" sprite_time="50-20000"]
+    [playse storage="se/chiin1.ogg" buf="2" loop="false" volume="35" sprite_time="50-20000"]
   [endif]
 [endmacro]
 
@@ -1444,10 +1444,10 @@
 
   [bg storage="black.png" time="1000" wait="true" effect="fadeInDown"]
 
-  [playse storage="se/shock1.ogg" buf="0" loop="false" volume="35" sprite_time="50-20000"]
+  [playse storage="se/shock1.ogg" buf="2" loop="false" volume="35" sprite_time="50-20000"]
   [emb exp="f.day + '日目の朝を迎えました。'"][l][r]
   [if exp="typeof f.bitingObjectLastNight === 'undefined'"]
-    [playse storage="se/shock1.ogg" buf="0" loop="false" volume="35" sprite_time="50-20000"]
+    [playse storage="se/shock1.ogg" buf="2" loop="false" volume="35" sprite_time="50-20000"]
     ; 昨夜の襲撃結果が取得できなかった（＝初日犠牲者のいない1日目昼）場合
     ; TODO 人狼の人数を可変で出力する
     ; FIXME 役職の内訳を表示してもいいかも。
@@ -1455,7 +1455,7 @@
     [j_introductionCharacters]
 
   [elsif exp="f.bitingObjectLastNight.result"]
-    [playse storage="se/shock1.ogg" buf="0" loop="false" volume="35" sprite_time="50-20000"]
+    [playse storage="se/shock1.ogg" buf="2" loop="false" volume="35" sprite_time="50-20000"]
     ; 昨夜の襲撃結果が襲撃成功の場合
     ; キャラを登場させ、メッセージ表示
     [m_changeCharacter characterId="&f.bitingObjectLastNight.targetId" eventFace="被襲撃"]

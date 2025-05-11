@@ -52,7 +52,7 @@ tf.playbgmParams = {
 ちゃんと認めましょう、つむぎさん。[p]
 
 [m_changeCharacterFrameName name="春日部つむぎ" face="アピール"]
-[playse storage="se/shogeru.ogg" buf="0" volume="70"]
+[playse storage="se/shogeru.ogg" buf="2" volume="70"]
 [playse storage="theater/p01/e01/044.ogg" buf="1"]
 うん、分かってるよ。[r]
 ごめんね、ずんだもん先輩。[p]
@@ -62,7 +62,7 @@ tf.playbgmParams = {
 ということは、つむぎが僕のずんだもちを食べたのだ？[p]
 
 [m_changeCharacterFrameName name="春日部つむぎ" face="通常"]
-[playse storage="se/hatena01-1.ogg" buf="0" volume="60"]
+[playse storage="se/hatena01-1.ogg" buf="2" volume="60"]
 [playse storage="theater/p01/e01/046.ogg" buf="1"]
 え？ううん、違うけど？[p]
 
@@ -84,7 +84,7 @@ tf.playbgmParams = {
 そういえば僕のぶんのずんだもち、まだ食べてなかったのでずんだもんにあげますよ。[p]
 
 [m_changeCharacterFrameName name="雨晴はう" face="げっそり"]
-[playse storage="se/shogeru.ogg" buf="0" volume="70"]
+[playse storage="se/shogeru.ogg" buf="2" volume="70"]
 [playse storage="theater/p01/e01/051.ogg" buf="1"]
 食べたいのはやまやまですが、どうせ僕は夜勤明けだから早く寝ないとなので…！[p]
 

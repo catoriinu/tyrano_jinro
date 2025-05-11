@@ -93,8 +93,8 @@
 ; @param episodeId
 ; @param chapterId
 [macro name="t_teardownChapter"]
-  [fadeoutse buf="0" time="500"]
   [fadeoutse buf="1" time="500"]
+  [fadeoutse buf="2" time="500"]
   [fadeoutbgm time="500"]
 
   ; キャラ名を消すための#
@@ -132,8 +132,8 @@
 ; @param text 表示するテキスト。タイトルなど。
 ; @param waitAnime true: アニメーション処理待機する（デフォルト） | false: 待機しない（String型のfalseを渡してもこちらになる）[t_waitClickCutIn]を併用するならfalseでよい
 [macro name="t_cutIn"]
-  [fadeoutse time="500" buf="0"]
   [fadeoutse time="500" buf="1"]
+  [fadeoutse time="500" buf="2"]
   [fadeoutbgm time="500"]
 
   [iscript]

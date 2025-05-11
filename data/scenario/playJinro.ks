@@ -8,8 +8,8 @@
 [start_keyconfig]
 
 [bg storage="living_night_close.jpg" time="500"]
-[fadeoutse time="500" buf="0"]
 [fadeoutse time="500" buf="1"]
+[fadeoutse time="500" buf="2"]
 [fadeoutbgm time="500"]
 
 ;このゲームで登場するキャラクターを宣言、表情登録
@@ -18,7 +18,7 @@
 ; ステータス、バックログ、メニューボタン表示
 [j_displayFixButton status="true" backlog="true" menu="true"]
 
-[playse storage="se/wadaiko_dodon.ogg" buf="0" loop="false" volume="60" sprite_time="50-20000"]
+[playse storage="se/wadaiko_dodon.ogg" buf="2" loop="false" volume="60" sprite_time="50-20000"]
 [m_changeFrameWithId]
 #
 人狼ゲームの幕開けです……！[p]
