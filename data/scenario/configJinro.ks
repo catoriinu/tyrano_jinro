@@ -20,9 +20,10 @@
   /* sf.configはfirst.ksで初期設定しておくこと */
 
   /* スライダーの初期位置 */
-  tf.tmp_bgm_vol   = sf.config.current_bgm_vol;
-  tf.tmp_se_vol    = sf.config.current_se_vol;
-  tf.tmp_voice_vol = sf.config.current_voice_vol;
+  tf.tmp_bgm_vol       = sf.config.current_bgm_vol;
+  tf.tmp_button_se_vol = sf.config.current_button_se_vol;
+  tf.tmp_se_vol        = sf.config.current_se_vol;
+  tf.tmp_voice_vol     = sf.config.current_voice_vol;
   tf.tmp_ch_speed_reverse = String(105 - sf.config.current_ch_speed);
   /*
    * tf.tmp_ch_speed_reverseについて：
@@ -57,15 +58,16 @@
 [image storage="&tf.img_path +'voivo_config_bg_v2.png'" layer="1" visible="true" left="0" top="0" width="1280" height="720" name="config_bg" time="100"]
 
 [ptext layer="1" x="490" y="25"  text="コンフィグ" color="#28332a" size="60"]
-[ptext layer="1" x="100" y="170" text="音量" color="#28332a" size="44"]
-[ptext layer="1" x="245" y="170" text="BGM" color="#28332a" size="44"]
-[ptext layer="1" x="245" y="255" text="SE" color="#28332a" size="44"]
-[ptext layer="1" x="245" y="340" text="VOICE" color="#28332a" size="44"]
-[ptext layer="1" x="100" y="425" text="テキスト速度" color="#28332a" size="44"]
-[ptext layer="1" x="100" y="510" text="キャラ名マーカー" color="#28332a" size="44"]
+[ptext layer="1" x="100" y="150" text="音量" color="#28332a" size="42"]
+[ptext layer="1" x="230" y="150" text="BGM" color="#28332a" size="42"]
+[ptext layer="1" x="230" y="225" text="ボタンSE" color="#28332a" size="42"]
+[ptext layer="1" x="230" y="300" text="その他SE" color="#28332a" size="42"]
+[ptext layer="1" x="230" y="375" text="VOICE" color="#28332a" size="42"]
+[ptext layer="1" x="100" y="455" text="テキスト速度" color="#28332a" size="42"]
+[ptext layer="1" x="100" y="530" text="キャラ名マーカー" color="#28332a" size="42"]
 
 ; テキスト表示速度のサンプルに使用するメッセージレイヤの設定
-[position layer="message1" left="50" top="600" width="1174" height="80" page="fore" color="0xffffff" border_color="0x000000" border_size="7" radius="45" margint="8" marginl="40" opacity="210"]
+[position layer="message1" left="50" top="610" width="1174" height="80" page="fore" color="0xffffff" border_color="0x000000" border_size="7" radius="45" margint="8" marginl="40" opacity="210"]
 [layopt layer="message1" visible="true"]
 [current layer="message1"]
 
@@ -90,15 +92,35 @@
     })
   }
 [endscript]
-[slider name="bgm_vol_slider" exp="tf.bgm_exp()" target="*vol_bgm_change" var="tf.tmp_bgm_vol" x="&tf.slider_x" y="200" width="560" height="10" active_color="#A5D4AD" thumb_width="30" thumb_height="30" thumb_color="#A5D4AD" tip_width="60" tip_height="30" tip_color="#A5D4AD" tip_text_color="#242424" tip_text_size="20" tip_tail="false" tip_margin="15"]
+[slider name="bgm_vol_slider" exp="tf.bgm_exp()" target="*vol_bgm_change" var="tf.tmp_bgm_vol" x="&tf.slider_x" y="180" width="560" height="10" active_color="#A5D4AD" thumb_width="30" thumb_height="30" thumb_color="#A5D4AD" tip_width="60" tip_height="30" tip_color="#A5D4AD" tip_text_color="#242424" tip_text_size="20" tip_tail="false" tip_margin="15"]
 
 ; ミュートボタン/アンミュートボタン
 [eval exp="tf.bgm_mute_button = sf.config.mute_bgm ? tf.muting_button_path : tf.unmuting_button_path"]
-[button name="bgmvol,bgmvol_0" fix="true" target="*vol_bgm_change" graphic="&tf.bgm_mute_button" width="&tf.btn_w" height="&tf.btn_h" x="&tf.btn_x" y="177"]
+[button name="bgmvol,bgmvol_0" fix="true" target="*vol_bgm_change" graphic="&tf.bgm_mute_button" width="&tf.btn_w" height="&tf.btn_h" x="&tf.btn_x" y="155"]
 
 
 ;------------------------------------------------------------------------------------------------------
-; SE音量
+; ボタンSE音量
+;------------------------------------------------------------------------------------------------------
+
+; スライダー
+[iscript]
+  tf.button_se_exp = function(){
+    // スライダーを動かしたら、アンミュートボタンを表示する
+    // 実際のミュート解除ロジックはサブルーチン側で行う
+    $(".button_sevol_0").attr("src","data/image/config/unmuting_button.png");
+    tf.use_slider_button_se = true;
+  }
+[endscript]
+[slider name="button_se_vol_slider" exp="tf.button_se_exp()" target="*vol_button_se_change" var="tf.tmp_button_se_vol" x="&tf.slider_x" y="255" width="560" height="10" active_color="#A5D4AD" thumb_width="30" thumb_height="30" thumb_color="#A5D4AD" tip_width="60" tip_height="30" tip_color="#A5D4AD" tip_text_color="#242424" tip_text_size="20" tip_tail="false" tip_margin="15"]
+
+; ミュートボタン/アンミュートボタン
+[eval exp="tf.button_se_mute_button = sf.config.mute_button_se ? tf.muting_button_path : tf.unmuting_button_path"]
+[button name="button_sevol,button_sevol_0" fix="true" target="*vol_button_se_change" graphic="&tf.button_se_mute_button" width="&tf.btn_w" height="&tf.btn_h" x="&tf.btn_x" y="230"]
+
+
+;------------------------------------------------------------------------------------------------------
+; その他SE音量
 ;------------------------------------------------------------------------------------------------------
 
 ; スライダー
@@ -110,11 +132,11 @@
     tf.use_slider_se = true;
   }
 [endscript]
-[slider name="se_vol_slider" exp="tf.se_exp()" target="*vol_se_change" var="tf.tmp_se_vol" x="&tf.slider_x" y="285" width="560" height="10" active_color="#A5D4AD" thumb_width="30" thumb_height="30" thumb_color="#A5D4AD" tip_width="60" tip_height="30" tip_color="#A5D4AD" tip_text_color="#242424" tip_text_size="20" tip_tail="false" tip_margin="15"]
+[slider name="se_vol_slider" exp="tf.se_exp()" target="*vol_se_change" var="tf.tmp_se_vol" x="&tf.slider_x" y="330" width="560" height="10" active_color="#A5D4AD" thumb_width="30" thumb_height="30" thumb_color="#A5D4AD" tip_width="60" tip_height="30" tip_color="#A5D4AD" tip_text_color="#242424" tip_text_size="20" tip_tail="false" tip_margin="15"]
 
 ; ミュートボタン/アンミュートボタン
 [eval exp="tf.se_mute_button = sf.config.mute_se ? tf.muting_button_path : tf.unmuting_button_path"]
-[button name="sevol,sevol_0" fix="true" target="*vol_se_change" graphic="&tf.se_mute_button" width="&tf.btn_w" height="&tf.btn_h" x="&tf.btn_x" y="262"]
+[button name="sevol,sevol_0" fix="true" target="*vol_se_change" graphic="&tf.se_mute_button" width="&tf.btn_w" height="&tf.btn_h" x="&tf.btn_x" y="305"]
 
 
 ;------------------------------------------------------------------------------------------------------
@@ -130,11 +152,11 @@
     tf.use_slider_voice = true;
   }
 [endscript]
-[slider name="voice_vol_slider" exp="tf.voice_exp()" target="*vol_voice_change" var="tf.tmp_voice_vol" x="&tf.slider_x" y="370" width="560" height="10" active_color="#A5D4AD" thumb_width="30" thumb_height="30" thumb_color="#A5D4AD" tip_width="60" tip_height="30" tip_color="#A5D4AD" tip_text_color="#242424" tip_text_size="20" tip_tail="false" tip_margin="15"]
+[slider name="voice_vol_slider" exp="tf.voice_exp()" target="*vol_voice_change" var="tf.tmp_voice_vol" x="&tf.slider_x" y="405" width="560" height="10" active_color="#A5D4AD" thumb_width="30" thumb_height="30" thumb_color="#A5D4AD" tip_width="60" tip_height="30" tip_color="#A5D4AD" tip_text_color="#242424" tip_text_size="20" tip_tail="false" tip_margin="15"]
 
 ; ミュートボタン/アンミュートボタン
 [eval exp="tf.voice_mute_button = sf.config.mute_voice ? tf.muting_button_path : tf.unmuting_button_path"]
-[button name="vol,voicevol_0" fix="true" target="*vol_voice_change" graphic="&tf.voice_mute_button" width="&tf.btn_w" height="&tf.btn_h" x="&tf.btn_x" y="347"]
+[button name="vol,voicevol_0" fix="true" target="*vol_voice_change" graphic="&tf.voice_mute_button" width="&tf.btn_w" height="&tf.btn_h" x="&tf.btn_x" y="380"]
 
 
 ;------------------------------------------------------------------------------------------------------
@@ -142,7 +164,7 @@
 ;------------------------------------------------------------------------------------------------------
 
 ; スライダー
-[slider name="ch_speed_slider" target="*ch_speed_change" var="tf.tmp_ch_speed_reverse" x="&tf.slider_x" y="455" width="560" height="10" active_color="#A5D4AD" thumb_width="30" thumb_height="30" thumb_color="#A5D4AD" tip_width="60" tip_height="30" tip_color="#A5D4AD" tip_text_color="#242424" tip_text_size="20" tip_tail="false" tip_margin="15"]
+[slider name="ch_speed_slider" target="*ch_speed_change" var="tf.tmp_ch_speed_reverse" x="&tf.slider_x" y="485" width="560" height="10" active_color="#A5D4AD" thumb_width="30" thumb_height="30" thumb_color="#A5D4AD" tip_width="60" tip_height="30" tip_color="#A5D4AD" tip_text_color="#242424" tip_text_size="20" tip_tail="false" tip_margin="15"]
 
 
 ;------------------------------------------------------------------------------------------------------
@@ -173,9 +195,9 @@
   }
 [endscript]
 
-[glink color="&tf.mark100Color" enterse="se/button34.ogg" clickse="&tf.mark100Se"size="26" width="180" x="940" y="520" text="塗りつぶし" exp="sf.config.mark_size = preexp" preexp="100" target="*marker_button"]
-[glink color="&tf.mark20Color" enterse="se/button34.ogg" clickse="&tf.mark20Se" size="26" width="180" x="710" y="520" text="下線" exp="sf.config.mark_size = preexp" preexp="20" target="*marker_button"]
-[glink color="&tf.mark0Color" enterse="se/button34.ogg" clickse="&tf.mark0Se" size="26" width="180" x="480" y="520" text="なし" exp="sf.config.mark_size = preexp" preexp="0" target="*marker_button"]
+[glink color="&tf.mark100Color" enterse="se/button34.ogg" clickse="&tf.mark100Se"size="26" width="180" x="940" y="540" text="塗りつぶし" exp="sf.config.mark_size = preexp" preexp="100" target="*marker_button"]
+[glink color="&tf.mark20Color" enterse="se/button34.ogg" clickse="&tf.mark20Se" size="26" width="180" x="710" y="540" text="下線" exp="sf.config.mark_size = preexp" preexp="20" target="*marker_button"]
+[glink color="&tf.mark0Color" enterse="se/button34.ogg" clickse="&tf.mark0Se" size="26" width="180" x="480" y="540" text="なし" exp="sf.config.mark_size = preexp" preexp="0" target="*marker_button"]
 [s]
 
 
@@ -252,7 +274,47 @@
 
 
 ;--------------------------------------------------------------------------------
-; SE音量
+; ボタンSE音量
+;--------------------------------------------------------------------------------
+
+*vol_button_se_change
+
+[if exp="tf.use_slider_button_se || sf.config.mute_button_se"]
+  ; スライダーを動かした、またはミュート状態でアンミュートボタンを押した場合はミュートを解除する
+  [iscript]
+    $(".button_sevol_0").attr("src","data/image/config/unmuting_button.png");
+    sf.config.mute_button_se = false;
+
+    if (tf.use_slider_button_se) {
+      // スライダーを動かしたときは、スライダーで決めた値でシステム変数を更新する
+      sf.config.current_button_se_vol = tf.tmpbutton__se_vol = String(tf.tmp_button_se_vol); // 数字の0だと無視される仕様なので必ず文字列変換すること
+      // スライダーフラグはfalseに戻す
+      tf.use_slider_button_se = false;
+    } else {
+      // アンミュートボタンを押したときは、システム変数に入っている値を使う
+      tf.tmp_button_se_vol = sf.config.current_button_se_vol;
+    }
+  [endscript]
+ 
+[else]
+  ; アンミュート状態でミュートボタンを押した場合はミュートにする
+  [iscript]
+    $(".button_sevol_0").attr("src","data/image/config/muting_button.png");
+    sf.config.mute_button_se = true;
+    tf.tmp_button_se_vol = "0"; // 数字の0だと無視される仕様なので必ず文字列の"0"を指定すること
+  [endscript]
+[endif]
+
+; 音量変更
+[seopt volume="&tf.tmp_button_se_vol" buf="0"]
+; サンプルとしてSEを再生する
+[playse storage="se/button13.ogg" buf="0"]
+
+[return]
+
+
+;--------------------------------------------------------------------------------
+; その他SE音量
 ;--------------------------------------------------------------------------------
 
 *vol_se_change
@@ -284,7 +346,6 @@
 [endif]
 
 ; 音量変更
-[seopt volume="&tf.tmp_se_vol" buf="0"]
 [seopt volume="&tf.tmp_se_vol" buf="2"]
 ; サンプルとしてSEを再生する
 [playse storage="se/shock1.ogg" buf="2" loop="false" volume="35" sprite_time="50-20000"]

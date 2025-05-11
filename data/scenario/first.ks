@@ -85,9 +85,10 @@ if (!('record' in sf)) {
 if (!('config' in sf)) {
   console.log("★RESET config★");
   sf.config = {
-    current_bgm_vol:    70, // TG.config.defaultBgmVolume, // BGM音量
-    current_se_vol:     70, // TG.config.defaultSeVolume, // SE音量
-    current_voice_vol:  70, // TG.config.defaultSeVolume, // VOICE音量 デフォルトではSEと同じ
+    current_bgm_vol:       70, // TG.config.defaultBgmVolume, // BGM音量
+    current_button_se_vol: 70, // TG.config.defaultSeVolume, // ボタンSE音量
+    current_se_vol:        70, // TG.config.defaultSeVolume, // その他SE音量
+    current_voice_vol:     70, // TG.config.defaultSeVolume, // VOICE音量 デフォルトではSEと同じ
     current_ch_speed:   TG.config.chSpeed, // テキスト表示速度
     current_auto_speed: TG.config.autoSpeed, // オート時のテキスト表示速度 現在未使用
     mute_bgm:   false,
@@ -97,10 +98,11 @@ if (!('config' in sf)) {
     show_icon: false, // キャラアイコン表示の有無 現在未使用
   }
 }
-tf.tmp_bgm_vol = sf.config.mute_bgm ? "0" : String(sf.config.current_bgm_vol);
-tf.tmp_se_vol = sf.config.mute_se ? "0" : String(sf.config.current_se_vol);
-tf.tmp_voice_vol = sf.config.mute_voice ? "0" : String(sf.config.current_voice_vol);
-tf.tmp_ch_speed = String(sf.config.current_ch_speed);
+tf.tmp_bgm_vol       = sf.config.mute_bgm       ? "0" : String(sf.config.current_bgm_vol);
+tf.tmp_button_se_vol = sf.config.mute_button_se ? "0" : String(sf.config.current_button_se_vol);
+tf.tmp_se_vol        = sf.config.mute_se        ? "0" : String(sf.config.current_se_vol);
+tf.tmp_voice_vol     = sf.config.mute_voice     ? "0" : String(sf.config.current_voice_vol);
+tf.tmp_ch_speed      = String(sf.config.current_ch_speed);
 [endscript]
 
 ; タイトル表示
@@ -111,12 +113,10 @@ tf.tmp_ch_speed = String(sf.config.current_ch_speed);
 [preload storage="data/sound/se/button13.ogg" single_use="false"]
 [preload storage="data/sound/se/button15.ogg" single_use="false"]
 
+; 音量（BGM、ボタンSE、その他SE、VOICE）、テキスト速度の初期値を設定
 [bgmopt volume="&tf.tmp_bgm_vol"]
-; ボタンSE
-[seopt volume="&tf.tmp_se_vol" buf="0"]
-; ボイスSE
+[seopt volume="&tf.tmp_button_se_vol" buf="0"]
 [seopt volume="&tf.tmp_voice_vol" buf="1"]
-; 上記以外のSE
 [seopt volume="&tf.tmp_se_vol" buf="2"]
 [configdelay speed="&tf.tmp_ch_speed"]
 
