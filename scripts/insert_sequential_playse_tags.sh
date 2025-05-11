@@ -18,7 +18,7 @@ fi
 # ループ処理
 while grep -q "; ボイス" "$input_file"; do
     # 置換を行うためのsedコマンド
-    sed -i -E "0,/; ボイス/s|; ボイス|[playse storage=\"${directory_path}$(printf "%03d" $count).ogg\"]|" "$input_file"
+    sed -i -E "0,/; ボイス/s|; ボイス|[playse storage=\"${directory_path}$(printf "%03d" $count).ogg\" buf=\"1\"]|" "$input_file"
     
     # インクリメント
     count=$((count + 1))

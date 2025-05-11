@@ -546,12 +546,12 @@
 [macro name="j_cutin1"]
 
     ;[image layer="1" x="0" y="150" width="1280" height="200" time="700" wait="false" storage="cutin.gif" name="cutin"]
-    ; ボイスとのスロットの競合を避けるためにbuf="1"を指定
-    [playse storage="shakiin1.ogg" volume="35" buf="1"]
+    ; ボイスとのスロットの競合を避けるためにbuf="0"を指定
+    [playse storage="se/shakiin1.ogg" volume="35" buf="0"]
     ;[image layer="1" x="-1000" y="160" height="180" visible="true" reflect="true" storage="00_angry_eye.png" name="00"]
     ;[anim name="00" left=100 time=700]
     ;[wait time=700]
-    [fadeoutse time="1800"]
+    [fadeoutse time="1800" buf="0"]
 
 [endmacro]
 
@@ -609,7 +609,10 @@
         id,
         text,
         'center',
-        CLASS_GLINK_DEFAULT
+        CLASS_GLINK_DEFAULT,
+        '',
+        'se/button34.ogg',
+        'se/button13.ogg',
       ));
     }
 
@@ -619,7 +622,9 @@
       '役職COしない',
       'center',
       CLASS_GLINK_DEFAULT,
-      CLASS_GLINK_SELECTED
+      CLASS_GLINK_SELECTED,
+      'se/button34.ogg',
+      'se/button15.ogg',
     ));
   [endscript]
 [endmacro]
@@ -644,7 +649,10 @@
       id,
       text,
       'center',
-      CLASS_GLINK_DEFAULT
+      CLASS_GLINK_DEFAULT,
+      '',
+      'se/button34.ogg',
+      'se/button13.ogg',
     ));
 
     f.buttonObjects.push(new Button(
@@ -652,7 +660,10 @@
       '何もしない',
       'center',
       CLASS_GLINK_DEFAULT,
-      CLASS_GLINK_SELECTED
+      CLASS_GLINK_SELECTED,
+      '',
+      'se/button34.ogg',
+      'se/button15.ogg',
     ));
   [endscript]
 [endmacro]
@@ -669,10 +680,17 @@
       // ボタン表示したくないアクションIDはf.buttonObjectsに格納しない
       if (tf.disableActionIdList.includes(aId)) continue;
 
-      // 選択中のアクションIDのボタンは選択中の色に変える
       let additionalClassName = '';
+      let clickse = 'se/button13.ogg';
       if (f.actionButtonList[aId].id === f.selectedActionId) {
+        // 選択中のアクションIDのボタンは選択中の色に変える
         additionalClassName = CLASS_GLINK_SELECTED;
+
+        // 対象をとらないアクション（現時点では「発言しない」のみ）はキャンセル用SEに変える
+        //（対象をとるアクションは、キャラ選択時にキャンセル用SEを鳴らせばいいので）
+        if (f.selectedActionId === ACTION_CANCEL) {
+          clickse = 'se/button15.ogg';
+        }
       }
 
       // ボタンオブジェクトをf.buttonObjectsに格納する
@@ -681,7 +699,9 @@
         f.actionButtonList[aId].text,
         'left',
         CLASS_GLINK_DEFAULT,
-        additionalClassName
+        additionalClassName,
+        'se/button34.ogg',
+        clickse
       ));
     }
   [endscript]
@@ -711,9 +731,12 @@
       if (!mp.characterIds.includes(cId)) continue;
 
       let additionalClassName = '';
-      // 選択中のキャラクターIDかつ選択中のアクションである（つまり、実行予定だったアクションと同じ）ボタンは選択中の色に変える
+      let clickse = 'se/button13.ogg';
       if (cId === f.originalSelectedCharacterId && 'actionId' in f.pcActionObject && f.selectedActionId === f.pcActionObject.actionId) {
+        // 選択中のキャラクターIDかつ選択中のアクションである（つまり、実行予定だったアクションと同じ）ボタンは
+        // 選択中の色&キャンセル用SEに変える
         additionalClassName = CLASS_GLINK_SELECTED;
+        clickse = 'se/button15.ogg';
       }
 
       // ボタンオブジェクトをf.buttonObjectsに格納する
@@ -722,7 +745,9 @@
         f.characterObjects[cId].name,
         mp.side,
         CLASS_GLINK_DEFAULT,
-        additionalClassName
+        additionalClassName,
+        'se/button34.ogg',
+        clickse
       ));
     }
   [endscript]
@@ -1208,13 +1233,13 @@
 [macro name="j_playSePlayerResult"]
   [if exp="isResultDraw(mp.winnerFaction)"]
     ; 引き分け
-    [playse storage="megaten.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
+    [playse storage="se/megaten.ogg" buf="0" loop="false" volume="35" sprite_time="50-20000"]
   [elsif exp="isResultPlayersWin(mp.winnerFaction, f.characterObjects[f.playerCharacterId].role.faction)"]
     ; 勝利
-    [playse storage="kirakira4.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
+    [playse storage="se/kirakira4.ogg" buf="0" loop="false" volume="35" sprite_time="50-20000"]
   [else]
     ; 敗北
-    [playse storage="chiin1.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
+    [playse storage="se/chiin1.ogg" buf="0" loop="false" volume="35" sprite_time="50-20000"]
   [endif]
 [endmacro]
 
@@ -1268,18 +1293,18 @@
   [endscript]
 
   [if exp="!f.displaingButton.action && mp.action"]
-    [button graphic="button/button_action_normal.png" storage="action.ks" target="*start" x="23" y="17" width="100" height="100" fix="true" role="sleepgame" name="button-j-action" enterimg="button/button_action_hover.png"]
+    [button graphic="button/button_action_normal.png" storage="action.ks" target="*start" x="23" y="17" width="100" height="100" fix="true" role="sleepgame" name="button-j-action" enterimg="button/button_action_hover.png" enterse="se/button34.ogg" clickse="se/button13.ogg"]
     [eval exp="f.displaingButton.action = mp.action"]
   [endif]
 
   [if exp="!f.displaingButton.menu && mp.menu"]
     ; 通常画面→メニュー画面に遷移する用。
-    [button cond="mp.menu === 'normal'" graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="1200" y="17" width="70" height="100" fix="true" role="sleepgame" name="button-j-menu" enterimg="button/button_menu_hover.png"]
+    [button cond="mp.menu === 'normal'" graphic="button/button_menu_normal.png" storage="menuJinro.ks" target="*menuJinroMain" x="1200" y="17" width="70" height="100" fix="true" role="sleepgame" name="button-j-menu" enterimg="button/button_menu_hover.png" enterse="se/button34.ogg" clickse="se/button13.ogg"]
     [eval exp="f.displaingButton.menu = mp.menu"]
   [endif]
 
   [if exp="!f.displaingButton.backlog && mp.backlog"]
-    [button graphic="button/button_backlog_normal.png" x="1118" y="17" width="70" height="100" fix="true" role="backlog" name="button-j-backlog" enterimg="button/button_backlog_hover.png"]
+    [button graphic="button/button_backlog_normal.png" x="1118" y="17" width="70" height="100" fix="true" role="backlog" name="button-j-backlog" enterimg="button/button_backlog_hover.png" enterse="se/button34.ogg" clickse="se/button13.ogg"]
     [eval exp="f.displaingButton.backlog = mp.backlog"]
   [endif]
 
@@ -1292,16 +1317,16 @@
 
   [if exp="!f.displaingButton.status && mp.status"]
     ; 通常画面→ステータス画面への遷移
-    [button cond="mp.status === 'normal'" graphic="button/button_status_normal.png" storage="statusJinro.ks" target="*statusJinroMain" x="1005" y="17" width="100" height="100" fix="true" role="sleepgame" name="button-j-status" enterimg="button/button_status_hover.png"]
+    [button cond="mp.status === 'normal'" graphic="button/button_status_normal.png" storage="statusJinro.ks" target="*statusJinroMain" x="1005" y="17" width="100" height="100" fix="true" role="sleepgame" name="button-j-status" enterimg="button/button_status_hover.png" enterse="se/button34.ogg" clickse="se/button13.ogg"]
     ; ステータス画面→元の画面へ戻る遷移
-    [button cond="mp.status === 'nofix_click'" graphic="button/button_return_selected.png" storage="statusJinro.ks" target="*awake" x="1005" y="17" width="100" height="100" enterimg="button/button_return_hover.png" name="button-j-status"]
+    [button cond="mp.status === 'nofix_click'" graphic="button/button_return_selected.png" storage="statusJinro.ks" target="*awake" x="1005" y="17" width="100" height="100" enterimg="button/button_return_hover.png" name="button-j-status" enterse="se/button34.ogg" clickse="se/button15.ogg"]
 
     [eval exp="f.displaingButton.status = mp.status"]
   [endif]
 
 
   [if exp="!f.displaingButton.pauseMenu && mp.pauseMenu"]
-    [button graphic="button/button_menu_normal.png" storage="theater/pauseMenu.ks" target="*start" x="1200" y="17" width="70" height="100" fix="true" role="sleepgame" name="button-j-pause-menu" enterimg="button/button_menu_hover.png"]
+    [button graphic="button/button_menu_normal.png" storage="theater/pauseMenu.ks" target="*start" x="1200" y="17" width="70" height="100" fix="true" role="sleepgame" name="button-j-pause-menu" enterimg="button/button_menu_hover.png" enterse="se/button34.ogg" clickse="se/button13.ogg"]
     [eval exp="f.displaingButton.pauseMenu = mp.pauseMenu"]
   [endif]
 [endmacro]
@@ -1419,10 +1444,10 @@
 
   [bg storage="black.png" time="1000" wait="true" effect="fadeInDown"]
 
-  [playse storage="shock1.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
+  [playse storage="se/shock1.ogg" buf="0" loop="false" volume="35" sprite_time="50-20000"]
   [emb exp="f.day + '日目の朝を迎えました。'"][l][r]
   [if exp="typeof f.bitingObjectLastNight === 'undefined'"]
-    [playse storage="shock1.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
+    [playse storage="se/shock1.ogg" buf="0" loop="false" volume="35" sprite_time="50-20000"]
     ; 昨夜の襲撃結果が取得できなかった（＝初日犠牲者のいない1日目昼）場合
     ; TODO 人狼の人数を可変で出力する
     ; FIXME 役職の内訳を表示してもいいかも。
@@ -1430,7 +1455,7 @@
     [j_introductionCharacters]
 
   [elsif exp="f.bitingObjectLastNight.result"]
-    [playse storage="shock1.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
+    [playse storage="se/shock1.ogg" buf="0" loop="false" volume="35" sprite_time="50-20000"]
     ; 昨夜の襲撃結果が襲撃成功の場合
     ; キャラを登場させ、メッセージ表示
     [m_changeCharacter characterId="&f.bitingObjectLastNight.targetId" eventFace="被襲撃"]

@@ -33,15 +33,14 @@ tf.offsetTop = 110;
 
 tf.buttonColor = CLASS_GLINK_DEFAULT;
 tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
-tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
 [endscript]
 
 ; 画面上部のボタン表示
 [ptext layer="0" page="back" name="explainButtonText" x="475" y="18" text="現在のカスタマイズを" color="#28332a" size="28" overwrite="true"]
-[glink color="&tf.buttonColor" size="22" width="260" x="770" y="16" text="初期状態にリセット" target="*resetToDefault" name="&tf.classButtonSeHover"]
-[glink color="&tf.buttonColor" size="22" width="260" x="770" y="80" text="反映してプレイスタート" target="*startPlay" name="&tf.classButtonSeHover"]
-[glink color="&tf.selectedButtonColor" size="22" width="200" x="1055" y="16" text="破棄してもどる" target="*returnTitle" name="&tf.classButtonSeHover"]
-[glink color="&tf.buttonColor" size="22" width="200" x="1055" y="80" text="反映してもどる" target="*returnTitleWithUpdate" name="&tf.classButtonSeHover"]
+[glink color="&tf.buttonColor" size="22" width="260" x="770" y="16" text="初期状態にリセット" target="*resetToDefault" enterse="se/button34.ogg" clickse="se/button13.ogg"]
+[glink color="&tf.buttonColor" size="22" width="260" x="770" y="80" text="反映してプレイスタート" target="*startPlay" enterse="se/button34.ogg" clickse="se/button13.ogg"]
+[glink color="&tf.selectedButtonColor" size="22" width="200" x="1055" y="16" text="破棄してもどる" target="*returnTitle" enterse="se/button34.ogg" clickse="se/button15.ogg"]
+[glink color="&tf.buttonColor" size="22" width="200" x="1055" y="80" text="反映してもどる" target="*returnTitleWithUpdate" enterse="se/button34.ogg" clickse="se/button13.ogg"]
 ; MEMO ver0.12.5to6 「参加者編集」ボタン及びドラッグ＆ドロッププラグインを利用した参加者編集機能は撤廃する。並び替え機能は不要、PC設定や参加不参加は別の形で実装予定。せっかく実装したのでコメントアウトで残してはおく。
 ;[glink color="&tf.buttonColor" size="26" width="220" x="645" y="22" text="参加者編集" target="*startEditMode" cond="tf.allowShowEditButton"]
 
@@ -71,8 +70,6 @@ tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
   // 現時点での参加者リストとプレイヤーキャラクターIDを保存しておく。
   // カスタマイズウィンドウを閉じたり、参加者編集が完了して、再度メイン画面を表示したときに画像更新判定をするため
   f.currentParticipantList = clone(f.currentJinroGameData.participantList);
-
-  setButtonSe();
 
   tf.needTeardownEditMode = false;
 [endscript]
@@ -241,6 +238,7 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 *jump_customizeWindow
 ; fixボタンをクリア
 [clearfix]
+[playse storage="se/button13.ogg" buf="0"]
 [jump storage="customize/customizeWindow.ks" target="*start"]
 [s]
 

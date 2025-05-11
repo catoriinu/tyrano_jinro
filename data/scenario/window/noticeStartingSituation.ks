@@ -5,7 +5,6 @@
   [iscript]
     tf.buttonColor = CLASS_GLINK_DEFAULT;
     tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
-    tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
 
     // 開始条件テキストとプレイスタートボタン、および解放条件テキストを表示するかのフラグ。ウィンドウ表示時点では表示しない
     tf.needDisplayStartConditionText = false;
@@ -25,17 +24,15 @@
 
   *displayButtons
   ; 閉じるボタンまたは枠外（左右上下）のクリックで閉じる
-  [glink color="&tf.selectedButtonColor" size="26" width="210" x="875" y="80" text="閉じる" target="*close" name="&tf.classButtonSeHover"]
+  [glink color="&tf.selectedButtonColor" size="26" width="210" x="875" y="80" text="閉じる" target="*close" enterse="se/button34.ogg" clickse="se/button15.ogg"]
   [w_makeClickableAreaOuterWindow storage="window/noticeStartingSituation.ks" target="*close"]
 
   ; 開始条件テキストと解放条件テキスト。ボタンを押して表示する場合はここで表ページに表示させる。overwrite="true"を指定しているので既に表示済みの場合は上書き表示になる（＝重複表示はされない）
   [ptext layer="2" page="fore" text="&f.displayEpisode.startConditionText" face="MPLUSRounded" size="26" x="180" y="475" width="920" align="center" name="startConditionText" overwrite="true" cond="tf.needDisplayStartConditionText"]
   [ptext layer="2" page="fore" text="&f.displayEpisode.unlockConditionText" face="MPLUSRounded" size="26" x="180" y="565" width="920" align="center" name="unlockConditionText" overwrite="true" cond="tf.needDisplayUnlockConditionText"]
 
-  [glink color="&tf.buttonColor" size="26" width="450" x="413" y="490" text="開始条件を見る（ネタバレ注意）" target="*displayStartConditionText" cond="!tf.needDisplayStartConditionText" name="&tf.classButtonSeHover"]
-  [glink color="&tf.buttonColor" size="26" width="450" x="413" y="580" text="解放条件を見る（ネタバレ注意）" target="*displayUnlockConditionText" cond="!tf.needDisplayUnlockConditionText" name="&tf.classButtonSeHover"]
-
-  [eval exp="setButtonSe()"]
+  [glink color="&tf.buttonColor" size="26" width="450" x="413" y="490" text="開始条件を見る（ネタバレ注意）" target="*displayStartConditionText" cond="!tf.needDisplayStartConditionText" enterse="se/button34.ogg" clickse="se/button13.ogg"]
+  [glink color="&tf.buttonColor" size="26" width="450" x="413" y="580" text="解放条件を見る（ネタバレ注意）" target="*displayUnlockConditionText" cond="!tf.needDisplayUnlockConditionText" enterse="se/button34.ogg" clickse="se/button13.ogg"]
 [s]
 
 

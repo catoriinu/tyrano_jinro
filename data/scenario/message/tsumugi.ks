@@ -26,7 +26,7 @@
 *noticeRole_villager
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/tsumugi/tsumugi_noticeRole_villager_01.ogg"]
+[playse storage="chara/tsumugi/tsumugi_noticeRole_villager_01.ogg" buf="1"]
 
 あーしは村人かぁ。[r]
 みんなと一緒ならなんとかなるよね！[p]
@@ -36,7 +36,7 @@
 *noticeRole_fortuneTeller
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/tsumugi/tsumugi_noticeRole_fortuneTeller_01.ogg"]
+[playse storage="chara/tsumugi/tsumugi_noticeRole_fortuneTeller_01.ogg" buf="1"]
 
 あーしが占い師なんだ。[r]
 じゃあみんなのこと占っちゃお！[p]
@@ -46,7 +46,7 @@
 *noticeRole_werewolf
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/tsumugi/tsumugi_noticeRole_werewolf_01.ogg"]
+[playse storage="chara/tsumugi/tsumugi_noticeRole_werewolf_01.ogg" buf="1"]
 
 あーしは人狼…。[r]
 バレちゃダメってなんかドキドキするかも！[p]
@@ -56,7 +56,7 @@
 *noticeRole_madman
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/tsumugi/tsumugi_noticeRole_madman_01.ogg"]
+[playse storage="chara/tsumugi/tsumugi_noticeRole_madman_01.ogg" buf="1"]
 
 あーしが狂人なんだね。[r]
 人狼くんの役に立てるように頑張るね！[p]
@@ -72,15 +72,15 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_true_01.ogg"]
+[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_true_01.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_true_02.ogg"]
+[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_true_02.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_true_03.ogg"]
+[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_true_03.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_true_04.ogg"]
+[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_true_04.ogg" buf="1"]
 [endif]
 
 あっ、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]が人狼だったんだ！[p]
@@ -92,15 +92,15 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_false_01.ogg"]
+[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_false_01.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_false_02.ogg"]
+[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_false_02.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_false_03.ogg"]
+[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_false_03.ogg" buf="1"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_false_04.ogg"]
+[playse storage="chara/tsumugi/tsumugi_announcedFortuneTellingResult_false_04.ogg" buf="1"]
 [endif]
 
 [j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったよ。[p]
@@ -112,30 +112,30 @@
 ; NOTE:事前にf.actionObjectに占いのアクションオブジェクトを格納しておくこと
 *COFortuneTelling_voice_true_positive
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_true_positive_01.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_true_positive_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_true_positive_02.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_true_positive_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_true_positive_03.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_true_positive_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_true_positive_04.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_true_positive_04.ogg"]
 [endif]
 [return]
 
 
 *COFortuneTelling_voice_true_negative
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_true_negative_01.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_true_negative_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_true_negative_02.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_true_negative_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_true_negative_03.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_true_negative_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_true_negative_04.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_true_negative_04.ogg"]
 [endif]
 [return]
 
@@ -148,8 +148,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_positive"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_true_neutral_alive_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_true_neutral_alive_01.ogg"]
+[playselist buf="1"]
 
 あーしの占いだと、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼だったんだよねー。[r]
 隠し通せると思った？残念だったね。[p]
@@ -161,8 +161,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_negative"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_true_love_alive_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_true_love_alive_01.ogg"]
+[playselist buf="1"]
 
 あーしの占いだと、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼だったんだよねー。[r]
 友達だと思ってたのはあーしだけだったんだね。[p]
@@ -174,8 +174,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_true_negative"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_true_hate_alive_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_true_hate_alive_01.ogg"]
+[playselist buf="1"]
 
 あーしの占いだと、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼だったんだよねー。[r]
 ぶっちゃけ、やっぱりそっか、って感じかな。[p]
@@ -184,30 +184,30 @@
 
 *COFortuneTelling_voice_false_positive
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_false_positive_01.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_false_positive_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_false_positive_02.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_false_positive_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_false_positive_03.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_false_positive_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_false_positive_04.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_false_positive_04.ogg"]
 [endif]
 [return]
 
 
 *COFortuneTelling_voice_false_negative
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_false_negative_01.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_false_negative_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_false_negative_02.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_false_negative_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_false_negative_03.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_false_negative_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_false_negative_04.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_voice_false_negative_04.ogg"]
 [endif]
 [return]
 
@@ -217,8 +217,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_positive"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_false_neutral_alive_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_false_neutral_alive_01.ogg"]
+[playselist buf="1"]
 
 あーしの占いだと、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったよ。[r]
 友達になってくれるかな？[p]
@@ -230,8 +230,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_positive"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_false_love_alive_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_false_love_alive_01.ogg"]
+[playselist buf="1"]
 
 あーしの占いだと、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったよ。[r]
 みんなにもきみのこと、信じてもらえるように頑張るね！[p]
@@ -243,8 +243,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_false_hate_alie_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_false_hate_alie_01.ogg"]
+[playselist buf="1"]
 
 あーしの占いだと、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったよ。[r]
 ごめんね、ちょっと疑っちゃってたかも…。[p]
@@ -256,8 +256,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_false_neutral_died_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_false_neutral_died_01.ogg"]
+[playselist buf="1"]
 
 あーしの占いだと、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったよ。[r]
 って言っても、ちょっと遅かったけどね…。[p]
@@ -269,8 +269,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_false_love_died_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_false_love_died_01.ogg"]
+[playselist buf="1"]
 
 あーしの占いだと、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったよ。[r]
 こんなのウソだよね？ねえ、早く戻ってきてよ…。[p]
@@ -282,8 +282,8 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 
 [call target="COFortuneTelling_voice_false_negative"]
-[add_playselist storage="chara/tsumugi/tsumugi_COFortuneTelling_false_hate_died_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_COFortuneTelling_false_hate_died_01.ogg"]
+[playselist buf="1"]
 
 あーしの占いだと、[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]は人狼じゃなかったよ。[r]
 こんなことになるなら、もっと仲良くすればよかったかな。[p]
@@ -296,20 +296,20 @@
 *doAction_suspect_logical
 [eval exp="tf.face = 'テンアゲ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_suspect_logical_01.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_suspect_logical_01.ogg"]
 
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_suspect_logical_02.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_suspect_logical_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_suspect_logical_03.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_suspect_logical_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_suspect_logical_04.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_suspect_logical_04.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_suspect_logical_05.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_suspect_logical_05.ogg"]
 [endif]
-[playselist]
+[playselist buf="1"]
 
 あーし、全部分かっちゃった。[r]
 [j_callName targetId="&tf.targetId" targetName="&tf.targetName"]が人狼なんでしょ？[p]
@@ -320,19 +320,19 @@
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_suspect_emotional_01.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_suspect_emotional_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_suspect_emotional_02.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_suspect_emotional_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_suspect_emotional_03.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_suspect_emotional_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_suspect_emotional_04.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_suspect_emotional_04.ogg"]
 [endif]
 
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_suspect_emotional_05.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_suspect_emotional_05.ogg"]
+[playselist buf="1"]
 
 [j_callName targetId="&tf.targetId" targetName="&tf.targetName"]ってもしかして人狼？[r]
 ちょっとヤバい感じするし。[p]
@@ -344,19 +344,19 @@
 [eval exp="tf.face = 'テンアゲ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_trust_logical_01.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_trust_logical_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_trust_logical_02.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_trust_logical_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_trust_logical_03.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_trust_logical_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_trust_logical_04.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_trust_logical_04.ogg"]
 [endif]
 
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_trust_logical_05.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_trust_logical_05.ogg"]
+[playselist buf="1"]
 
 [j_callName targetId="&tf.targetId" targetName="&tf.targetName"]とあーしは最強の友達だよね。[r]
 これから先も、ずっと！[p]
@@ -367,19 +367,19 @@
 [eval exp="tf.face = 'ワクワク'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 [if exp="f.actionObject.targetId == CHARACTER_ID_ZUNDAMON"]
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_trust_emotional_01.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_trust_emotional_01.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_METAN"]
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_trust_emotional_02.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_trust_emotional_02.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_TSUMUGI"]
 
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_HAU"]
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_trust_emotional_03.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_trust_emotional_03.ogg"]
 [elsif exp="f.actionObject.targetId == CHARACTER_ID_RITSU"]
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_trust_emotional_04.ogg"]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_trust_emotional_04.ogg"]
 [endif]
 
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_trust_emotional_05.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_trust_emotional_05.ogg"]
+[playselist buf="1"]
 
 あーしは[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]を味方だと思ってるよ。[r]
 できたらきみもあーしのこと、信じてほしいな。[p]
@@ -403,8 +403,8 @@
 [eval exp="tf.face = '苦笑'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_reaction_suspect_neutral_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_reaction_suspect_neutral_01.ogg"]
+[playselist buf="1"]
 
 そんな風に思われてたんだ…。[r]
 ちょっとショックかも。[p]
@@ -415,8 +415,8 @@
 [eval exp="tf.face = 'ガッカリ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_reaction_suspect_love_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_reaction_suspect_love_01.ogg"]
+[playselist buf="1"]
 
 あ…うん、今まで馴れ馴れしくしてごめんね。[p]
 [return]
@@ -426,8 +426,8 @@
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_reaction_suspect_hate_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_reaction_suspect_hate_01.ogg"]
+[playselist buf="1"]
 
 そっか、分かった。しばらく距離置こっか。[p]
 [return]
@@ -438,8 +438,8 @@
 [eval exp="tf.face = 'ニコニコ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_reaction_trust_neutral_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_reaction_trust_neutral_01.ogg"]
+[playselist buf="1"]
 
 マジ？なんか嬉しいかも！[p]
 [return]
@@ -449,8 +449,8 @@
 [eval exp="tf.face = 'テンアゲ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_reaction_trust_love_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_reaction_trust_love_01.ogg"]
+[playselist buf="1"]
 
 やった！きみに信じてもらえるなんて、最高！[p]
 [return]
@@ -460,8 +460,8 @@
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
 
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_reaction_trust_hate_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_reaction_trust_hate_01.ogg"]
+[playselist buf="1"]
 
 えー？[r]
 もしきみが激辛カレーを食べ切れたら、本気だって信じてあげるけど。[p]
@@ -478,8 +478,8 @@
 *doAction_talkToMuch
 [eval exp="tf.face = 'ガッカリ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[add_playselist storage="chara/tsumugi/tsumugi_doAction_talkToMuch_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_doAction_talkToMuch_01.ogg"]
+[playselist buf="1"]
 
 もう！あーしも言いたいことあったのに！[p]
 [return]
@@ -490,8 +490,8 @@
 *executed
 [eval exp="tf.face = '悲しみ'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[add_playselist storage="chara/tsumugi/tsumugi_executed_01.ogg"]
-[playselist]
+[add_playselist buf="1" storage="chara/tsumugi/tsumugi_executed_01.ogg"]
+[playselist buf="1"]
 
 うそ。あーし選ばれちゃったの？[r]
 そんなに怪しかったのかな……[p]
@@ -511,7 +511,7 @@
 *chooseWhoToBite
 [eval exp="tf.face = '通常'"]
 [call storage="./message/utility.ks" target="prepareMessage"]
-[playse storage="chara/tsumugi/tsumugi_chooseWhoToBite_01.ogg"]
+[playse storage="chara/tsumugi/tsumugi_chooseWhoToBite_01.ogg" buf="1"]
 
 お腹減ったな…。あ、あの人美味しそうかも…！[p]
 [return]

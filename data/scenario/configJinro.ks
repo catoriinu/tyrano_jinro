@@ -49,8 +49,6 @@
 
   // スライダーのX座標
   tf.slider_x = 435;
-
-  tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
 [endscript]
 
 [cm]
@@ -72,9 +70,7 @@
 [current layer="message1"]
 
 ; 画面右上の「もどる」ボタン
-[button fix="true" graphic="button/button_return_normal.png" enterimg="button/button_return_hover.png" target="*return" x="1143" y="17" width="114" height="103" name="&tf.classButtonSeHover"]
-
-[jump target="*config_page"]
+[button fix="true" graphic="button/button_return_selected.png" enterimg="button/button_return_hover.png" target="*return" x="1143" y="17" width="114" height="103" enterse="se/button34.ogg" clickse="se/button15.ogg"]
 
 
 *config_page
@@ -158,22 +154,28 @@
   tf.mark100Color = CLASS_GLINK_DEFAULT;
   tf.mark20Color = CLASS_GLINK_DEFAULT;
   tf.mark0Color = CLASS_GLINK_DEFAULT;
+  const selectButtonSe = 'se/button13.ogg';
+  const cancelButtonSe = 'se/button15.ogg';
+  tf.mark100Se = selectButtonSe;
+  tf.mark20Se = selectButtonSe;
+  tf.mark0Se = selectButtonSe;
 
   if (sf.config.mark_size === 100) {
     tf.mark100Color += " " + CLASS_GLINK_SELECTED;
+    tf.mark100Se = cancelButtonSe;
   } else if (sf.config.mark_size === 20) {
     tf.mark20Color += " " + CLASS_GLINK_SELECTED;
+    tf.mark20Se = cancelButtonSe;
   } else {
     tf.mark0Color += " " + CLASS_GLINK_SELECTED;
+    tf.mark0Se = cancelButtonSe;
     sf.config.mark_size = 0;
   }
 [endscript]
 
-[glink color="&tf.mark100Color" name="&tf.classButtonSeHover" size="26" width="180" x="940" y="520" text="塗りつぶし" exp="sf.config.mark_size = preexp" preexp="100" target="*marker_button"]
-[glink color="&tf.mark20Color" name="&tf.classButtonSeHover" size="26" width="180" x="710" y="520" text="下線" exp="sf.config.mark_size = preexp" preexp="20" target="*marker_button"]
-[glink color="&tf.mark0Color" name="&tf.classButtonSeHover" size="26" width="180" x="480" y="520" text="なし" exp="sf.config.mark_size = preexp" preexp="0" target="*marker_button"]
-
-[eval exp="setButtonSe()"]
+[glink color="&tf.mark100Color" enterse="se/button34.ogg" clickse="&tf.mark100Se"size="26" width="180" x="940" y="520" text="塗りつぶし" exp="sf.config.mark_size = preexp" preexp="100" target="*marker_button"]
+[glink color="&tf.mark20Color" enterse="se/button34.ogg" clickse="&tf.mark20Se" size="26" width="180" x="710" y="520" text="下線" exp="sf.config.mark_size = preexp" preexp="20" target="*marker_button"]
+[glink color="&tf.mark0Color" enterse="se/button34.ogg" clickse="&tf.mark0Se" size="26" width="180" x="480" y="520" text="なし" exp="sf.config.mark_size = preexp" preexp="0" target="*marker_button"]
 [s]
 
 
@@ -282,9 +284,9 @@
 [endif]
 
 ; 音量変更
-[seopt volume="&tf.tmp_se_vol" buf="1"]
+[seopt volume="&tf.tmp_se_vol" buf="0"]
 ; サンプルとしてSEを再生する
-[playse storage="shock1.ogg" buf="1" loop="false" volume="35" sprite_time="50-20000"]
+[playse storage="se/shock1.ogg" buf="0" loop="false" volume="35" sprite_time="50-20000"]
 
 [return]
 
@@ -322,9 +324,9 @@
 [endif]
 
 ; 音量変更
-[seopt volume="&tf.tmp_voice_vol" buf="0"]
+[seopt volume="&tf.tmp_voice_vol" buf="1"]
 ; サンプルとしてボイスを再生する
-[playse storage="chara/zundamon/zundamon_noticeRole_villager_01.ogg"]
+[playse storage="chara/zundamon/zundamon_noticeRole_villager_01.ogg" buf="1"]
 
 [return]
 

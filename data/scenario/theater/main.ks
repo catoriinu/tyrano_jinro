@@ -10,7 +10,7 @@
 [nowait]
 
 ; ボイス停止（エピソードから戻ってきたとき用）
-[stopse buf="0"]
+[stopse buf="1"]
 [playbgm storage="fun_fun_Ukelele_1loop.ogg" volume="15" loop="true" restart="false"]
 [bg storage="bg_fafafa.png" time="100"]
 
@@ -74,12 +74,11 @@ if (!f.quickShowEpisodeWindow) {
 [iscript]
   tf.buttonColor = CLASS_GLINK_DEFAULT;
   tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
-  tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
 
   // 表示するメッセージの判定用
   tf.isPage01AllCleared = (getTheaterProgress('p01', 'e08') === EPISODE_STATUS.OUTRO_UNLOCKED);
 [endscript]
-[glink color="&tf.selectedButtonColor" size="30" width="270" x="975" y="38" text="タイトルに戻る" target="*returnTitle" name="&tf.classButtonSeHover"]
+[glink color="&tf.selectedButtonColor" size="30" width="270" x="975" y="38" text="タイトルに戻る" target="*returnTitle" enterse="se/button34.ogg" clickse="se/button15.ogg"]
 
 ; 以下、選択中のページのみボタンの色を変える
 ; TODO 初期リリース時はページ切り替え機能は不要なのでコメントアウトする
@@ -103,8 +102,6 @@ if (!f.quickShowEpisodeWindow) {
 [else]
 人狼ゲームで特定の条件を満たすと解決編が解放されます。
 [endif]
-
-[eval exp="setButtonSe()"]
 [s]
 
 
@@ -150,13 +147,20 @@ if (!f.quickShowEpisodeWindow) {
 
 
 *showEpisodeWindow
+; そのエピソードの導入編が解放済みかを一時変数に格納
+[t_isProgressLocked pageId="&f.displayPageId" episodeId="&f.displayEpisodeId"]
+
+; 解放済みかつクリッカブル領域を押したときだけ、選択のボタンSEを鳴らす（=エピソード再生から戻ってきたときは鳴らさない）
+[playse storage="se/button13.ogg" buf="0" cond="!tf.isProgressLocked && !f.quickShowEpisodeWindow"]
+
+; エピソード再生から戻ってきたときだけ立っているフラグを、このタイミングで折る
 [eval exp="f.quickShowEpisodeWindow = false"]
 
-; そのエピソードの導入編が解放済みなら、エピソードウィンドウ表示
-[t_isProgressLocked pageId="&f.displayPageId" episodeId="&f.displayEpisodeId"]
+; 解放済みならエピソードウィンドウを開く
 [jump storage="theater/episodeWindow.ks" target="*start" cond="!tf.isProgressLocked"]
 
-; そのエピソードが未解放なら、詳細を表示させないで戻す
+; 以下、未解放なら詳細を表示させない。キャンセルのボタンSEを鳴らして注意文を表示する
+[playse storage="se/button15.ogg" buf="0"]
 未解放のエピソードのため選択できません。[p]
 
 *hideEpisodeWindow
