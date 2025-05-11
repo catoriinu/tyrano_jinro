@@ -39,10 +39,10 @@ tf.playbgmParams = {
 
 [stopse buf="1"]
 [m_changeCharacterFrameName name="ずんだもん" face="無"]
-[playse storage="se/mokugyo.ogg" buf="0" volume="60"]
+[playse storage="se/mokugyo.ogg" buf="2" volume="60"]
 ……。[p]
 
-[stopse buf="0"]
+[stopse buf="2"]
 [m_changeCharacterFrameName name="四国めたん" face="クスクス" side="left"]
 [playse storage="theater/p01/e02/003.ogg" buf="1"]
 ああ、ついに手に入れてしまったわ…！[r]
@@ -50,10 +50,10 @@ tf.playbgmParams = {
 
 [stopse buf="1"]
 [m_changeCharacterFrameName name="ずんだもん" face="無"]
-[playse storage="se/mokugyo.ogg" buf="0" volume="60"]
+[playse storage="se/mokugyo.ogg" buf="2" volume="60"]
 ……。[p]
 
-[stopse buf="0"]
+[stopse buf="2"]
 [m_changeCharacterFrameName name="四国めたん" face="真剣" side="left"]
 [playse storage="theater/p01/e02/005.ogg" buf="1"]
 ちょっと、ずんだもん！[r]
@@ -65,7 +65,7 @@ tf.playbgmParams = {
 リビングで独り言呟いてるめたんなんて見てないのだ。[p]
 
 [m_changeCharacterFrameName name="四国めたん" face="興奮" side="left"]
-[playse storage="se/tsukkomi2.ogg" buf="0" volume="50"]
+[playse storage="se/tsukkomi2.ogg" buf="2" volume="50"]
 [playse storage="theater/p01/e02/007.ogg" buf="1"]
 しっかりはっきりばっちり見てるじゃない！[r]
 だったら「何を手に入れたのだ？」って聞きなさいよ。[p]
@@ -93,7 +93,7 @@ tf.playbgmParams = {
 何のひねりもないのだ。[p]
 
 [m_changeCharacterFrameName name="四国めたん" face="真剣" side="left"]
-[playse storage="se/wadaiko_don.ogg" buf="0" volume="60"]
+[playse storage="se/wadaiko_don.ogg" buf="2" volume="60"]
 [playse storage="theater/p01/e02/013.ogg" buf="1"]
 お黙り！[p]
 
@@ -102,7 +102,7 @@ tf.playbgmParams = {
 まあいいわ。わたくしの[ruby text="サウ"]千[ruby text="ザンド"]里[ruby text="アイ"]眼の力を思い知れば、そんな減らず口は叩けなくなるのだから。[p]
 
 [m_changeCharacterFrameName name="四国めたん" face="目閉じ" side="left"]
-[playse storage="se/shakiin1.ogg" volume="35" buf="0"]
+[playse storage="se/shakiin1.ogg" volume="35" buf="2"]
 [playse storage="theater/p01/e02/015.ogg" buf="1"]
 むむむ…見える。見えるわ。[r]
 まもなくはうさんがここにやってくる姿が。[p]
@@ -110,7 +110,7 @@ tf.playbgmParams = {
 [stopse buf="1"]
 #
 [m_changeFrameWithId frameId="none"]
-[playse storage="se/open_door1.ogg" buf="0" volume="60"]
+[playse storage="se/open_door1.ogg" buf="2" volume="60"]
 [wse]
 
 [m_changeCharacterFrameName name="雨晴はう" face="通常"]
@@ -119,13 +119,13 @@ tf.playbgmParams = {
 二人とも今日もお元気そうですね。[p]
 
 [m_changeCharacterFrameName name="四国めたん" face="クスクス" side="left"]
-[playse storage="se/kira1.ogg" buf="0" volume="50"]
+[playse storage="se/kira1.ogg" buf="2" volume="50"]
 [playse storage="theater/p01/e02/017.ogg" buf="1"]
 ほーら！見たでしょう！[r]
 どうかしらわたくしの[ruby text="サウ"]千[ruby text="ザンド"]里[ruby text="アイ"]眼の実力は！[p]
 
 [m_changeCharacterFrameName name="雨晴はう" face="考える"]
-[playse storage="se/hatena01-1.ogg" buf="0" volume="60"]
+[playse storage="se/hatena01-1.ogg" buf="2" volume="60"]
 [playse storage="theater/p01/e02/018.ogg" buf="1"]
 ええっと…いったい何の話ですか？[p]
 
@@ -155,7 +155,7 @@ tf.playbgmParams = {
 黒歴史という名前の特効薬です。[p]
 
 [m_changeCharacterFrameName name="四国めたん" face="悲しみ" side="left"]
-[playse storage="se/gogogogo_fadeout4s.ogg" buf="0" volume="40"]
+[playse storage="se/gogogogo_fadeout4s.ogg" buf="2" volume="40"]
 [playse storage="theater/p01/e02/025.ogg" buf="1"]
 二人とも好き放題言ってくれるじゃない…！[p]
 
