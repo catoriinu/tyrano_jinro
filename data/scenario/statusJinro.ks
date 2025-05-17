@@ -45,7 +45,7 @@
 [iscript]
     $(document).ready(function() {
         // ラジオボタンをクリックした時の処理
-        $('input[type="radio"]').click(function() {
+        $('input[type="radio"]').on('change', function() {
             // 「住人一覧」をクリックしたら情報を表示。それ以外の場合は非表示
             if ($(this).val() === "participants") {
                 $('.participantsInfo').show();
