@@ -17,7 +17,8 @@
 [eval exp="f.color = {}"]
 [loadcss file="./data/others/jinro.css"]
 
-[plugin name="playselist"] 
+[plugin name="playselist"]
+[plugin name="auto_wse"]
 
 ; さくた氏の「拡張UIパーツプラグイン」
 [plugin name="uiparts_set"]

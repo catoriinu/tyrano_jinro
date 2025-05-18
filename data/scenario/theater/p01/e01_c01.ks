@@ -35,49 +35,50 @@ tf.playbgmParams = {
 
 [m_changeCharacterFrameName name="ずんだもん" face="否定" side="left"]
 [playse storage="theater/p01/e01/001.ogg" buf="1"]
-うわあああ！？ない！ないのだ！[p]
+うわあああ！？ない！ないのだ！[auto_wse]
 
 [m_changeCharacterFrameName name="四国めたん" face="通常"]
 [playse storage="theater/p01/e01/002.ogg" buf="1"]
-どうしたのよずんだもん、朝から騒々しいわね。[p]
+どうしたのよずんだもん、朝から騒々しいわね。[auto_wse]
 
 [m_changeCharacterFrameName name="ずんだもん" face="否定" side="left"]
 [playse storage="theater/p01/e01/003.ogg" buf="1"]
 どうもこうもないのだ！[r]
-僕のずんだもちがないのだ！[p]
+僕のずんだもちがないのだ！[auto_wse]
 
 [playse storage="theater/p01/e01/004.ogg" buf="1"]
-朝ごはんに食べようと思って冷蔵庫に入れてたのに、起きたら綺麗さっぱりなくなってたのだ！[p]
+朝ごはんに食べようと思って冷蔵庫に入れてたのに、起きたら綺麗さっぱりなくなってたのだ！[auto_wse]
 
 [m_changeCharacterFrameName name="四国めたん" face="クスクス"]
-[playse storage="se/kira1.ogg" buf="2" volume="50"]
 [playse storage="theater/p01/e01/005.ogg" buf="1"]
+[playse storage="se/kira1.ogg" buf="2" volume="50"]
 ああ、昨日遊びに来たずん子たちのおみやげよね。[r]
-まさに[ruby text="エ"]翠[ruby text="メラ"]緑[ruby text="ルド"]の[ruby text="オー"]宝[ruby text="ブ"]珠…頬が落ちるくらい美味しかったわ。[p]
+まさに[ruby text="エ"]翠[ruby text="メラ"]緑[ruby text="ルド"]の[ruby text="オー"]宝[ruby text="ブ"]珠…頬が落ちるくらい美味しかったわ。
+[auto_wse]
 
 [m_changeCharacterFrameName name="ずんだもん" face="悲しみ" side="left"]
 [playse storage="theater/p01/e01/006.ogg" buf="1"]
 …もしかしてめたんが犯人なのだ？[r]
-めたんならやりかねないのだ…！[p]
+めたんならやりかねないのだ…！[auto_wse]
 
 [m_changeCharacterFrameName name="四国めたん" face="恥ずかしい"]
 [playse storage="se/shogeru.ogg" buf="2" volume="70"]
 [playse storage="theater/p01/e01/007.ogg" buf="1"]
 ご、誤解しないでちょうだい。[r]
-今のはわたくしの分を食べたときの感想よ。[p]
+今のはわたくしの分を食べたときの感想よ。[auto_wse]
 
 [playse storage="theater/p01/e01/008.ogg" buf="1"]
 こうしてボイボ寮に住んでいる今、そんな食い意地の張ったことしないわよ。[r]
-テント暮らしだったあの頃ならともかくね。[p]
+テント暮らしだったあの頃ならともかくね。[auto_wse]
 
 [m_changeCharacterFrameName name="四国めたん" face="目閉じ"]
 [playse storage="theater/p01/e01/009.ogg" buf="1"]
-…たぶん。[p]
+…たぶん。[auto_wse]
 
 [m_changeCharacterFrameName name="ずんだもん" face="否定" side="left"]
 [playse storage="se/surprised.ogg" buf="2" volume="60"]
 [playse storage="theater/p01/e01/010.ogg" buf="1"]
-のだ！？[p]
+のだ！？[auto_wse]
 
 [m_changeCharacterFrameName name="四国めたん" face="通常"]
 [playse storage="theater/p01/e01/011.ogg" buf="1"]
