@@ -43,7 +43,7 @@ class Version {
 }
 
 /**
- * ゲーム本体のバージョン情報を指定し、シナリオ変数にVersionインスタンスとして保存する。
+ * ゲーム本体のバージョン情報を指定し、Versionインスタンスとして返却する。
  * シナリオ変数内にバージョン情報がある場合、現在のバージョンがそれより新しい場合は更新し、同じ以下の場合はインスタンスを生成するのみとする。
  * 
  * @param {number} major メジャーバージョン番号
@@ -51,6 +51,7 @@ class Version {
  * @param {number} patch パッチバージョン番号
  * @param {boolean} isDebugMode デバッグモードかどうか。デフォルトはfalse
  * @param {boolean} forceUpdate 強制的にバージョン情報を更新するかどうか。デフォルトはfalse
+ * @returns {Version} Versionインスタンス
  */
 function buildSfVersion(major, minor, patch, isDebugMode, forceUpdate = false) {
     const currentVersion = new Version(major, minor, patch, isDebugMode);

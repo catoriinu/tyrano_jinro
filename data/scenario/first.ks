@@ -47,12 +47,11 @@ if (!('isDebugMode' in sf)) {
 sf.version = buildSfVersion(0, 13, 1, sf.isDebugMode, false);
 
 // jinroプラグインのバージョンをシナリオ変数に設定
-sf.jinroPluginVersion = buildSfVersion(
-  JINRO_PLUGIN_VERSION.major,
-  JINRO_PLUGIN_VERSION.minor,
-  JINRO_PLUGIN_VERSION.patch,
-  false,
-  true
+sf.jinroPluginVersion = new Version(
+  sf.jinro.version.major,
+  sf.jinro.version.minor,
+  sf.jinro.version.patch,
+  sf.jinro.isDebugMode,
 );
 
 // シナリオ変数初期設定
