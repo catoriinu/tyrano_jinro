@@ -73,7 +73,7 @@ function incrementPlayHistoryCount(characterObject, winnerFaction) {
     TYRANO.kag.variable.sf.record.winningStreak.current = 0;
   }
   playHistory.play++;
-  console.log(TYRANO.kag.variable.sf.record);
+  console.debug(TYRANO.kag.variable.sf.record);
 }
 
 /**

@@ -35,8 +35,8 @@
   [iscript]
     const jinroGameData = mp.jinroGameData || sf.jinroGameDataObjects[sf.currentJinroGameDataKey];
 
-    console.log('★jinroGameData');
-    console.log(jinroGameData);
+    console.debug('★jinroGameData');
+    console.debug(jinroGameData);
 
     // キャラクターオブジェクト生成と各種変数の初期化
     initializeCharacterObjectsForJinro(jinroGameData);
@@ -346,7 +346,7 @@
   [iscript]
     ; 生存者を走査し、占い師COをしているキャラクターIDを抽出する（騙りも含む）
     for (let i = 0; i < f.participantsIdList.length; i++) {
-      console.log(f.participantsIdList[i]);
+      console.debug(f.participantsIdList[i]);
 
       if (f.characterObjects[f.participantsIdList[i]].isAlive) {
         ; 真占い師なら
@@ -435,7 +435,7 @@
         getRoleIdsForOrganizePerspective(f.actionObject.result)
       );
     } catch (error) {
-      console.log(mp.fortuneTellerId + 'は、破綻した占い結果のCOをしてしまいました!');
+      console.debug(mp.fortuneTellerId + 'は、破綻した占い結果のCOをしてしまいました!');
       // 破綻フラグを立てる
       TYRANO.kag.stat.f.characterObjects[mp.fortuneTellerId].isContradicted = true;
       // 視点オブジェクトが破綻してしまったので、共通視点オブジェクトを入れておく
@@ -534,7 +534,7 @@
 ; @param CORoleId COする役職ID。roleに格納されていることが前提。必須。
 [macro name=j_cloneRolePerspectiveForCO]
   [iscript]
-    console.log('j_cloneRolePerspectiveForCO');
+    console.debug('j_cloneRolePerspectiveForCO');
     if (f.characterObjects[mp.characterId].role.roleId == mp.CORoleId) {
       f.characterObjects[mp.characterId].perspective = clone(f.characterObjects[mp.characterId].role.rolePerspective);
     }
@@ -790,8 +790,8 @@
     } else {
       // その日のアクションの中から、自分の直前のアクションを取得する
       const latestAction = getLatestAction(f.doActionCandidateId, thisTimeActionHistory, [ACTION_SUSPECT, ACTION_TRUST]);
-      console.log("★★latestAction");
-      console.log(latestAction);
+      console.debug("★★latestAction");
+      console.debug(latestAction);
       if (latestAction === null) {
         // まだアクションしていなかった場合は、疑うか信じるかをランダムで決める
         actionId = getRandomElement([ACTION_SUSPECT, ACTION_TRUST]);
@@ -835,7 +835,7 @@
       // 信頼度をもとに対象を決める
       targetCharacterId = getCharacterIdByReliability(f.characterObjects[f.doActionCandidateId], needsMax);
     }
-    console.log('actionId:' + actionId);
+    console.debug('actionId:' + actionId);
 
     // ここまでに決定した情報を、NPCのアクションオブジェクトに格納する
     f.npcActionObject = new Action(f.doActionCandidateId, actionId, targetCharacterId);
@@ -1288,8 +1288,8 @@
       mp.backlog = 'normal';
       mp.status = 'normal';
     }
-    console.log('表示');
-    console.log(mp);
+    console.debug('表示');
+    console.debug(mp);
   [endscript]
 
   [if exp="!f.displaingButton.action && mp.action"]
@@ -1351,8 +1351,8 @@
       mp.status = true;
       mp.pauseMenu = true;
     }
-    console.log('消去');
-    console.log(mp);
+    console.debug('消去');
+    console.debug(mp);
   [endscript]
 
   [if exp="f.displaingButton.action && mp.action"]

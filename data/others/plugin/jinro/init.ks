@@ -1,3 +1,16 @@
+[iscript]
+  // jinroプラグイン用の変数をシナリオ変数に格納する
+  sf.jinro = {};
+  sf.jinro.version = {
+    major: 0,
+    minor: 13,
+    patch: 1,
+  };
+  // TODO: リリース時にはfalseにすること！
+  sf.jinro.isDebugMode = true;
+[endscript]
+
+
 ;人狼プラグインのfirstディレクトリ以下を読み込む
 [loadjs storage="plugin/jinro/first/constants.js"]
 [loadjs storage="plugin/jinro/first/utils.js"]

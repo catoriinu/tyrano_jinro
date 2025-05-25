@@ -63,7 +63,7 @@ function getEpisodes(
   const pageData = {};
   const pageProgress = theaterProgress[pageId];
   if (pageProgress == null) {
-    console.log('未定義のpageIdのためスキップします。pageId='+ pageId);
+    console.debug('未定義のpageIdのためスキップします。pageId='+ pageId);
     return pageData;
   }
 
@@ -103,11 +103,11 @@ function getTheaterProgress(pageId, episodeId, defaultProgress = EPISODE_STATUS.
  * @returns {Boolean} true: 全チャプターが満たしている / false: 満たしていないチャプターがある
  */
 function everyProgressMatch(targetEpisodeStatus, pageIdList, episodeIdList) {
-  console.log('everyProgressMatch targetEpisodeStatus=' + targetEpisodeStatus);
+  console.debug('everyProgressMatch targetEpisodeStatus=' + targetEpisodeStatus);
   for (let pageId of pageIdList) {
     for (let episodeId of episodeIdList) {
       const currentProgress = getTheaterProgress(pageId, episodeId);
-      console.log(pageId + '_' + episodeId + '=' + currentProgress);
+      console.debug(pageId + '_' + episodeId + '=' + currentProgress);
       if (currentProgress !== targetEpisodeStatus) return false;
     }
   }
@@ -206,7 +206,7 @@ function isMatchEpisodeSituation(situationJinroGameData, targetJinroGameData) {
   if (situationJinroGameData.playerCharacterId) {
     // プレイヤーキャラクターが合致していなければNG
     if (tmpTargetJinroGameData.playerCharacterId !== situationJinroGameData.playerCharacterId) {
-      console.log('★false playerCharacterId');
+      console.debug('★false playerCharacterId');
       return [false, null];
     }
   }
@@ -236,7 +236,7 @@ function isMatchEpisodeSituation(situationJinroGameData, targetJinroGameData) {
 
       } else {
         // 上記以外（=「参加必須」）ならNG
-        console.log('★false declined Participant');
+        console.debug('★false declined Participant');
         return [false, null];
       }
 
@@ -245,7 +245,7 @@ function isMatchEpisodeSituation(situationJinroGameData, targetJinroGameData) {
 
       // 人狼ゲームデータ側に参加者オブジェクトが存在しなかった場合はNG
       if (!tmpTargetParticipant) {
-        console.log('★false undefined Participant');
+        console.debug('★false undefined Participant');
         return [false, null];
       }
 
@@ -264,7 +264,7 @@ function isMatchEpisodeSituation(situationJinroGameData, targetJinroGameData) {
           );
           if (tmpCandidateRoleIds.length <= 0) {
             // 指定されている役職が残っていなければNG
-            console.log('★false remainRoleData');
+            console.debug('★false remainRoleData');
             return [false, null];
           }
 
@@ -275,7 +275,7 @@ function isMatchEpisodeSituation(situationJinroGameData, targetJinroGameData) {
 
         // その参加者に、役職候補に含まれていない役職IDが設定されていた場合はNG
         if (!situationParticipant.candidateRoleIds.includes(tmpTargetParticipant.roleId)) {
-          console.log('★false roleCandidate');
+          console.debug('★false roleCandidate');
           return [false, null];
         }
       }
@@ -302,7 +302,7 @@ function isMatchEpisodeSituation(situationJinroGameData, targetJinroGameData) {
     tmpTargetComfirmedNumber > situationConfirmedNumber &&
     situationConfirmedNumber > (tmpTargetComfirmedNumber + tmpTargetCandidateNumber)
   ) {
-    console.log('★false ComfirmedNumber');
+    console.debug('★false ComfirmedNumber');
     return [false, null];
   }
 

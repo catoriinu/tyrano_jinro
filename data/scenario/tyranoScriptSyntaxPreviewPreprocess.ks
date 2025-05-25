@@ -71,7 +71,7 @@ if (!('record' in sf)) {
 
 // コンフィグ用初期設定
 if (!('config' in sf)) {
-  console.log("★RESET config★");
+  console.debug("★RESET config★");
   sf.config = {
     current_bgm_vol:       70, // TG.config.defaultBgmVolume, // BGM音量
     current_button_se_vol: 70, // TG.config.defaultSeVolume, // ボタンSE音量

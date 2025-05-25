@@ -9,7 +9,7 @@
   // （現在の）ボイボ人狼ではエピソード数は1ページにつき8つ（e01-e08）
   const episodeIdList = ['e01', 'e02', 'e03', 'e04', 'e05', 'e06', 'e07', 'e08']
   // 導入編が未解放（取得できなかった、または0：導入編未解放かつ現時点では解放不可）のエピソードは、代わりに未解放用のエピソードを格納する
-  console.log(f.episodeList);
+  console.debug(f.episodeList);
   for (let episodeId of episodeIdList) {
     const theaterProgress = getTheaterProgress(mp.pageId, episodeId);
     if (!(episodeId in f.episodeList) || theaterProgress === EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE){
@@ -250,8 +250,8 @@
       }
     }
 
-    console.log('★f.startingSituation');
-    console.log(f.startingSituation);
+    console.debug('★f.startingSituation');
+    console.debug(f.startingSituation);
   [endscript]
 [endmacro]
 
