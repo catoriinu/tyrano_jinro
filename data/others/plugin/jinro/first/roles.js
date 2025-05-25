@@ -60,8 +60,8 @@ function FortuneTeller() {
       // NOTE:真占い師かつターゲットが妖狐の場合、妖狐を呪殺する
     }
     
-    console.log(fortuneTellerId + ' fortuneTelled ' + targetCharacterId);
-    console.log('result : ' + result);
+    console.debug(fortuneTellerId + ' fortuneTelled ' + targetCharacterId);
+    console.debug('result : ' + result);
     
     // 指定された日（デフォルトは今日）の占い結果をアクションオブジェクトに保存＆返却する
     const todayResult = new Action(

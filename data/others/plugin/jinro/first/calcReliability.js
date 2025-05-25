@@ -12,7 +12,7 @@ function calcReliabilityUtility(character, action, influenceMultiplier) {
     this.sameFactionPossivility = {}; // インスタンス生成処理の最後でthis.setLatestSameFactionPossivilityを呼ぶ
 
     this.updateReliability = function (influenceBaseValue, updateTargetId) {
-        console.log(this);
+        console.debug(this);
 
         // 更新後の信頼度の差分を計算する
         const differenceReliability = calcDifferenceReliability(
@@ -61,7 +61,7 @@ function calcReliabilityUtility(character, action, influenceMultiplier) {
  * @returns 算出された信頼度の差分（呼び出し元で、自身の相手への現在の信頼度に加算すること）
  */
 function calcDifferenceReliability(influenceBaseValue, sameFactionPossivility, character, action, influenceMultiplier) {
-    console.log('influenceBaseValue:' + influenceBaseValue + ' sameFactionPossivility:' + sameFactionPossivility);
+    console.debug('influenceBaseValue:' + influenceBaseValue + ' sameFactionPossivility:' + sameFactionPossivility);
 
     // 自身の抵抗力
     const resistanceMultiplier = calcResistanceMultiplier(character, action);
@@ -72,7 +72,7 @@ function calcDifferenceReliability(influenceBaseValue, sameFactionPossivility, c
     // 信頼度の差分を計算する
     const differenceReliability = influenceBaseValue * (1 + influenceMultiplier - resistanceMultiplier) * sameFactionMultiplier;
 
-    console.log('calcDifferenceReliability:' + differenceReliability);
+    console.debug('calcDifferenceReliability:' + differenceReliability);
     return differenceReliability;
 }
 
@@ -90,8 +90,8 @@ function calcInfluenceMultiplier(characterObject, actionObject) {
 
     const resultInfluence = influenceMultiplier * actionAdjustmentInfluenceMultiplier;
 
-    console.log('influenceM:' +  influenceMultiplier + ' actionARM:' + actionAdjustmentInfluenceMultiplier);
-    console.log('resultInfluence:' + resultInfluence);
+    console.debug('influenceM:' +  influenceMultiplier + ' actionARM:' + actionAdjustmentInfluenceMultiplier);
+    console.debug('resultInfluence:' + resultInfluence);
     return resultInfluence;
 }
 
@@ -119,7 +119,7 @@ function calcResistanceMultiplier(characterObject, actionObject) {
 
     // 自身の感情力に基づく信頼度（感情力が0のとき結果は0となり、感情力が1のとき結果は信頼度になる）
     const reliabilityBasedOnEmotional = emotional * reliability;
-    console.log(
+    console.debug(
         'reliability:' + reliability +
         ' emotional:' + emotional +
         ' reliabilityBasedOnEmotional:' + reliabilityBasedOnEmotional
@@ -139,13 +139,13 @@ function calcResistanceMultiplier(characterObject, actionObject) {
 
     // 全てを掛け合わせて抵抗力倍率を計算する
     const resultResistiance = registanceMultiplier * reliabilityAdjustmentRegistanceMultiplier * actionAdjustmentRegistanceMultiplier * actorAdjustmentRegistanceMultiplier;
-    console.log(
+    console.debug(
         'registanceM:' + registanceMultiplier +
         ' reliabilityARM:' + reliabilityAdjustmentRegistanceMultiplier +
         ' actionARM:' + actionAdjustmentRegistanceMultiplier +
         ' actorARM:' + actorAdjustmentRegistanceMultiplier
     );
-    console.log('resultResistiance:' + resultResistiance);
+    console.debug('resultResistiance:' + resultResistiance);
     return resultResistiance;
 }
 
@@ -165,7 +165,7 @@ function calcSameFactionMultiplier(sameFactionPossivility) {
     // 仲間度倍率の計算。vertexが0.5なので、仲間度が0または1のときに仲間度倍率は最小値をとる
     const resultSameFactionMultiplier = 4 * (min - max) * ((sameFactionPossivility - vertex) ** 2) + max;
 
-    console.log('sameFactionPossivility:' + sameFactionPossivility);
-    console.log('resultSameFactionMultiplier:' + resultSameFactionMultiplier);
+    console.debug('sameFactionPossivility:' + sameFactionPossivility);
+    console.debug('resultSameFactionMultiplier:' + resultSameFactionMultiplier);
     return resultSameFactionMultiplier;
 }

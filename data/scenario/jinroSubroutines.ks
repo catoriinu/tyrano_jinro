@@ -103,7 +103,7 @@
 
 *glinkFromButtonObjects_end
 [iscript]
-  console.log('button clicked side=' + f.selectedSide + ' id=' + f.selectedButtonId);
+  console.debug('button clicked side=' + f.selectedSide + ' id=' + f.selectedButtonId);
 
   // ボタン用変数の初期化
   f.buttonObjects = []

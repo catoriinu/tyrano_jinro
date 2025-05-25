@@ -947,7 +947,7 @@
 ; 「誰がずんだもちを食べたのだ？」が「3:解決編まで解放済み」ではない（＝インストラクションで勝利していない）
 [iscript]
   tf.needPlayEncourageRetry = (getTheaterProgress('p01', 'e01') !== EPISODE_STATUS.OUTRO_UNLOCKED);
-  console.log('needEncourageRetry: ' + tf.needEncourageRetry);
+  console.debug('needEncourageRetry: ' + tf.needEncourageRetry);
 [endscript]
 [jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget" cond="!tf.needPlayEncourageRetry"]
 

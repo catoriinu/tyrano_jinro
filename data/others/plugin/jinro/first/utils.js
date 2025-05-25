@@ -125,7 +125,7 @@ function isWinWerewolves(survivorObjects) {
   // 人狼が、生存者数の半数以上であれば、人狼陣営の勝利
   const survivorsCount = survivorObjects.length;
   const werewolvesCount = getIsWerewolvesObjects(survivorObjects).length;
-  console.log('生存者数:' + survivorsCount + '名 うち人狼の数:' + werewolvesCount + '名');
+  console.debug('生存者数:' + survivorsCount + '名 うち人狼の数:' + werewolvesCount + '名');
   return werewolvesCount >= Math.ceil(survivorsCount / 2);
 }
 
@@ -159,7 +159,7 @@ function causeDeathToCharacter(actionObject) {
     actionObject.result = true;
   } else {
     // 未定義の死因は、死ななかった判定にしておく
-    //console.log(characterObject.name + '（' + characterObject.role.roleName + '）は何故か死ななかった！');
+    //console.debug(characterObject.name + '（' + characterObject.role.roleName + '）は何故か死ななかった！');
   }
   return actionObject;
 }
@@ -213,7 +213,7 @@ function getCharacterObjectsFromCharacterIds(characterObjects, CharacterIds, sea
  * @return {Array} 値の配列
  */
 function getValuesFromObjectArray(objectArray, key) {
-  // console.log(objectArray);
+  // console.debug(objectArray);
   const resultArray = [];
   for (let i = 0; i < objectArray.length; i++) {
     resultArray.push(objectArray[i][key]);
@@ -278,8 +278,8 @@ function daytimeInitialize() {
     for (let targetId of TYRANO.kag.stat.f.participantsIdList) {
       TYRANO.kag.stat.f.characterObjects[cId].currentFrustration[targetId] *= frustrationDecreasingRate;
     }
-    console.log(cId + ' currentFrustration:');
-    console.log(TYRANO.kag.stat.f.characterObjects[cId].currentFrustration);
+    console.debug(cId + ' currentFrustration:');
+    console.debug(TYRANO.kag.stat.f.characterObjects[cId].currentFrustration);
   }
 }
 
@@ -312,7 +312,7 @@ function nightInitialize() {
       // 判定する視点は、表の視点（つまり、騙り占い師なら占い師としての視点）とする
       let perspective = TYRANO.kag.stat.f.characterObjects[cId].perspective;
       if (isLastOneInPerspective(executedId, ROLE_ID_WEREWOLF, perspective)) {
-        console.log(cId + '視点で' + executedId + 'は最後の' + ROLE_ID_WEREWOLF + 'の生存者でした。つまり破綻です');
+        console.debug(cId + '視点で' + executedId + 'は最後の' + ROLE_ID_WEREWOLF + 'の生存者でした。つまり破綻です');
         updateCharacterObjectToContradicted(cId);
       }
     }
@@ -400,8 +400,8 @@ function pushElement(array, element) {
   } else {
     array = [element];
   }
-  console.log('【pushElement】');
-  console.log(array);
+  console.debug('【pushElement】');
+  console.debug(array);
   return array;
 }
 
@@ -603,7 +603,7 @@ var clone = (function() {
     create: function(object) {
       var type = typeOf(object);
       var method = this[type];
-      //console.log('★★type:' + type);
+      //console.debug('★★type:' + type);
 
       //ここで列挙されていない型は対応していないので、nullを返す;
       if(method === undefined) {
@@ -722,13 +722,13 @@ var clone = (function() {
         //同じにしないならプロパティの内容だけクローンする;
         defineProperty(cloneObject, propName, descriptor, cloneParams);
       }else {
-        //console.log('ディスクリプタも同一にしてプロパティの内容をクローンする;');
+        //console.debug('ディスクリプタも同一にしてプロパティの内容をクローンする;');
         //ディスクリプタも同一にしてプロパティの内容をクローンする;
-        //console.log('start equalizeDescriptor propNames.forEach 3');
-        //console.log(cloneObject);
+        //console.debug('start equalizeDescriptor propNames.forEach 3');
+        //console.debug(cloneObject);
         equalizeDescriptor(cloneObject, propName, descriptor, cloneParams);
-        //console.log('end equalizeDescriptor');
-        //console.log(cloneObject);
+        //console.debug('end equalizeDescriptor');
+        //console.debug(cloneObject);
       }
     });
 

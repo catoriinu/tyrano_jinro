@@ -11,7 +11,7 @@
 [eval exp="tf.defaultMaxDoActionCount = MAX_DO_ACTION_COUNT"]
 
 *displayButtons
-[eval exp="console.log(sf.j_development)"]
+[eval exp="console.debug(sf.j_development)"]
 
 ; 独裁者モード
 [eval exp="tf.dictatorMode_true = sf.j_development.dictatorMode ? 'red' : 'blue'"]

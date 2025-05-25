@@ -67,7 +67,7 @@ function changeCharacter(characterId, face = null, side = 'right') {
  */
 function enterCharacter(characterId, face, side) {
 
-  console.log('★enter ' + characterId);
+  console.debug('★enter ' + characterId);
 
   // sideに合わせて、キャラクター画像を移動させるべき量を格納する（左側の場合は次のif文で書き換える）
   let left = TYRANO.kag.stat.f.defaultPosition[characterId].leftOnRight;
@@ -139,7 +139,7 @@ function exitCharacter(characterId, time = 600) {
   // 現在そのキャラが表示されていないなら、何もせず終了
   if (side === null) return;
 
-  console.log('★exit ' + characterId);
+  console.debug('★exit ' + characterId);
 
   // そのキャラをデフォルトの位置に移動させる
   TYRANO.kag.ftag.startTag('chara_move', {

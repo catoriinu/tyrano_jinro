@@ -35,7 +35,7 @@
 ; 関連マクロ：[t_setStartingSituation]
 *checkOutroUnlockCondition
 [iscript]
-  console.log('★checkOutroUnlockCondition start');
+  console.debug('★checkOutroUnlockCondition start');
 
   // ゲーム開始時に、シチュエーション開始条件に合致したエピソードがあったか
   const pageId = f.startingSituation.pageId;
@@ -43,8 +43,8 @@
   if (pageId && episodeId) {
 
     const episode = episodeData(pageId, episodeId);
-    console.log('★episode');
-    console.log(episode);
+    console.debug('★episode');
+    console.debug(episode);
 
     // そのエピソードに解決編の解放条件が設定されているか
     if (episode.outroUnlockCondition !== null) {
@@ -55,12 +55,12 @@
         f.winnerFaction,
         convertCharacterObjectsToCharacterConditions(f.characterObjects),
       );
-      console.log('★resultCondition');
-      console.log(resultCondition);
+      console.debug('★resultCondition');
+      console.debug(resultCondition);
 
       // シチュエーション完遂チェックで完遂したか
       if (isOutroUnlockConditionMet(episode.outroUnlockCondition, resultCondition)) {
-        console.log('★check OK checkOutroUnlockCondition');
+        console.debug('★check OK checkOutroUnlockCondition');
 
         // 完遂したら、基本的には解放編を自動再生する
         // 例外として、視聴済みエピソードをスキップする設定、かつエピソード進捗ステータスが既に「3：解決編まで解放済み」の場合は再生しない
