@@ -102,7 +102,22 @@ tf.tmp_button_se_vol = sf.config.mute_button_se ? "0" : String(sf.config.current
 tf.tmp_se_vol        = sf.config.mute_se        ? "0" : String(sf.config.current_se_vol);
 tf.tmp_voice_vol     = sf.config.mute_voice     ? "0" : String(sf.config.current_voice_vol);
 tf.tmp_ch_speed      = String(sf.config.current_ch_speed);
+
+// ローディング表示
+if (!('doShowLoadingIcon' in sf)) {
+  sf.doShowLoadingIcon = true;
+}
+// まとめてロードするか
+// TODO:タイトル画面で、初期値入ってなければ強制的にウィンドウ出す
+if (!('needPreload' in sf)) {
+  sf.needPreload = true;
+}
 [endscript]
+
+
+; 素材ロード中にローディング表示をするか
+[loading_log preload="notext" icon="&sf.doShowLoadingIcon"]
+
 
 ; タイトル表示
 [title name="&sf.version.getVersionText('ボイボ人狼 ver.')"]
