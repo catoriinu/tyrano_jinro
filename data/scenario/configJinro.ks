@@ -26,12 +26,12 @@
   tf.tmp_voice_vol     = sf.config.current_voice_vol;
   tf.tmp_ch_speed_reverse = String(105 - sf.config.current_ch_speed);
   /*
-   * tf.tmp_ch_speed_reverseについて：
-   * ティラノの[configdelay]のspeedは「次の1文字を表示するまでのミリ秒」であり、値が小さいほど表示が早くなる。
-   * それをスライダーで表すと、左の方が早くなり直感に反する。
-   * なので、スライダーが0（左）なら最も遅い（speed="105"）、スライダーが100（右）なら最も早い（speed="5"）になるようにするため、
-   * 一時変数には、105からシステム変数を引いた値を入れておく。
-   * （※105の5は処理の猶予時間。猶予0だと変数格納が間に合わないエラーが多発したため）
+    tf.tmp_ch_speed_reverseについて：
+    ティラノの[configdelay]のspeedは「次の1文字を表示するまでのミリ秒」であり、値が小さいほど表示が早くなる。
+    それをスライダーで表すと、左の方が早くなり直感に反する。
+    なので、スライダーが0（左）なら最も遅い（speed="105"）、スライダーが100（右）なら最も早い（speed="5"）になるようにするため、
+    一時変数には、105からシステム変数を引いた値を入れておく。
+    （※105の5は処理の猶予時間。猶予0だと変数格納が間に合わないエラーが多発したため）
    */
 
   /* 画像類のパス */
@@ -68,8 +68,11 @@
 
 ; テキスト表示速度のサンプルに使用するメッセージレイヤの設定
 [position layer="message1" left="50" top="610" width="1174" height="80" page="fore" color="0xffffff" border_color="0x000000" border_size="7" radius="45" margint="8" marginl="40" opacity="210"]
-[layopt layer="message1" visible="true"]
 [current layer="message1"]
+
+*returnFromWindow
+
+[layopt layer="message1" visible="true"]
 
 ; 画面右上の「もどる」ボタン
 [button fix="true" graphic="button/button_return_selected.png" enterimg="button/button_return_hover.png" target="*return" x="1143" y="17" width="114" height="103" enterse="se/button34.ogg" clickse="se/button15.ogg"]
@@ -198,6 +201,9 @@
 [glink color="&tf.mark100Color" enterse="se/button34.ogg" clickse="&tf.mark100Se"size="26" width="180" x="940" y="540" text="塗りつぶし" exp="sf.config.mark_size = preexp" preexp="100" target="*marker_button"]
 [glink color="&tf.mark20Color" enterse="se/button34.ogg" clickse="&tf.mark20Se" size="26" width="180" x="710" y="540" text="下線" exp="sf.config.mark_size = preexp" preexp="20" target="*marker_button"]
 [glink color="&tf.mark0Color" enterse="se/button34.ogg" clickse="&tf.mark0Se" size="26" width="180" x="480" y="540" text="なし" exp="sf.config.mark_size = preexp" preexp="0" target="*marker_button"]
+
+; ファイルロード設定ウィンドウ
+[glink color="&tf.buttonColor" size="22" x="25" y="16" width="250" enterse="se/button34.ogg" clickse="se/button13.ogg" text="ファイルロード設定" target="*fileLoadSettings"]
 [s]
 
 
@@ -429,3 +435,17 @@
 ; テストメッセージを消すためにクリックを待つことによって完全に操作不可能になるデッドロックが発生してしまったため。
 
 [return]
+
+
+;---------------------------------------------------------------------------------
+; ファイルロード設定ウィンドウ
+;--------------------------------------------------------------------------------
+
+*fileLoadSettings
+  ;	テキスト速度のサンプル表示に使用していたメッセージレイヤを非表示に
+  [layopt layer="message1" visible="false"]
+  ; fixボタンをクリア
+  [clearfix]
+
+  [jump storage="window/fileLoadSettingsWindow.ks" target="*start"]
+[s]
