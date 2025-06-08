@@ -228,9 +228,6 @@
 ; キーコンフィグの有効化
 [start_keyconfig]
 
-; コールスタックのクリア
-[clearstack]
-
 ; チャプター再生中ならポーズメニュー画面に戻る
 [jump storage="theater/pauseMenu.ks" cond="f.chapterStorage != null"]
 ; 人狼ゲーム中ならメニュー画面に戻る
