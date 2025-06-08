@@ -76,6 +76,9 @@
     }
   [endscript]
 
+  ; シアター内のファイルのプリロード
+  [call storage="&f.chapterStorage" target="*preloadFiles" cond="sf.needPreload"]
+
   [t_waitClickCutIn]
 
   [bg storage="&mp.bgParams.storage" time="1" wait="true"]
