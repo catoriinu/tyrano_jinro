@@ -2,35 +2,8 @@
 ;first.ksでサブルーチンとして読み込んでおくこと
 
 
-; 参加者登録マクロ
-; 登録をした後はすぐにj_prepareJinroGameを実行すること
-; @param characterId キャラクターID。必須
-; @param roleId 役職ID。指定しない場合、役職はランダムに決定される
-; @param personalityName 性格名。指定しない場合、キャラクターのデフォルトの性格になる
-; @param adjustParameters 性格調整用のパラメータオブジェクト。なければ無調整。
-; @param isPlayer プレイヤーキャラクターかどうか。指定した時点で、他のキャラの登録は初期化される ※キーを指定した時点でtrue扱いになるので注意
-[macro name="j_registerParticipant"]
-; TODO: 後で消す
-  [iscript]
-    // 初回呼び出し、あるいはisPlayerを指定された場合、tmpParticipant配列を初期化
-    if (!(('tmpParticipantObjectList' in tf) && Array.isArray(tf.tmpParticipantObjectList)) || ('isPlayer' in mp)) {
-      tf.tmpParticipantObjectList = [];
-    };
-
-    const characterId = mp.characterId;
-    const roleId = ('roleId' in mp) ? mp.roleId : null;
-    const personalityName = ('personalityName' in mp) ? mp.personalityName : null;
-    const adjustParameters = ('adjustParameters' in mp) ? mp.adjustParameters : {};
-    tf.tmpParticipantObjectList.push(new Participant(characterId, roleId, personalityName, adjustParameters));
-  [endscript]
-[endmacro]
-
-
 ; 人狼ゲーム準備マクロ
-; 事前に最低でも1人（プレイヤー）以上はj_registerParticipantで（または直接tf.tmpParticipantObjectListに）参加者を登録しておくこと
-; TODO: 後で消す @param participantsNumber 参加者の総人数
 ; @param jinroGameData 利用する人狼ゲームデータ。指定しない場合、sf.jinroGameDataObjects[sf.currentJinroGameDataKey]を利用する
-; @param preload 人狼ゲームで使用するファイルをpreloadするか。デフォルト=false(しない)
 [macro name="j_prepareJinroGame"]
   [iscript]
     const jinroGameData = mp.jinroGameData || sf.jinroGameDataObjects[sf.currentJinroGameDataKey];
@@ -41,17 +14,7 @@
     // キャラクターオブジェクト生成と各種変数の初期化
     initializeCharacterObjectsForJinro(jinroGameData);
     initializeTyranoValiableForJinro();
-
-    // 登録が済んだらティラノの一時変数は初期化しておく
-    // TODO: 後で消す
-    tf.tmpParticipantObjectList = [];
-
-    // ボイスのプリロードが必要か判定しておく
-    tf.needPreloadVoice = (('preload' in mp) && (mp.preload === 'true' || mp.preload === true));
   [endscript]
-
-  ; 必要ならボイスをプリロードする
-  [call storage="message/utility.ks" target="*preloadVoice" cond="tf.needPreloadVoice"]
 [endmacro]
 
 
