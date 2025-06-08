@@ -110,6 +110,7 @@ if (!('doShowLoadingIcon' in sf)) {
 // loading_logのiconを有効にするには、文字列の'true'を設定する必要があるため変換
 tf.doShowLoadingIcon = sf.doShowLoadingIcon ? 'true' : 'false';
 
+// 必須ファイルのプリロード用
 tf.preloadList = {
   multiUse: [
     // タイトル画面の背景画像
@@ -120,6 +121,13 @@ tf.preloadList = {
     "data/sound/se/button34.ogg",
     "data/sound/se/button13.ogg",
     "data/sound/se/button15.ogg",
+    // メッセージウィンドウ
+    "data/image/message_window_none.png",
+    "data/image/message_window_left.png",
+    "data/image/message_window_right.png",
+    "data/image/message_window_double.png",
+    // ウィンドウ
+    "data/fgimage/window_rectangle.png"
   ]
 };
 
