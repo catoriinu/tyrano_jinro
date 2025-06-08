@@ -171,3 +171,55 @@ tf.playbgmParams = {
 [t_teardownChapter pageId="&f.pageId" episodeId="&f.episodeId" chapterId="&f.chapterId"]
 [jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
 [s]
+
+
+
+; チャプター内で使うファイルをプリロードするサブルーチン
+*preloadFiles
+  [iscript]
+    tf.preloadList = {
+      singleUse: [
+        "data/bgm/nichiyouno_gogo_1loop.ogg",
+        "data/sound/se/gogogogo_fadeout4s.ogg",
+        "data/sound/se/hatena01-1.ogg",
+        "data/sound/se/kira1.ogg",
+        "data/sound/se/open_door1.ogg",
+        "data/sound/se/shakiin1.ogg",
+        "data/sound/se/tsukkomi2.ogg",
+        "data/sound/se/wadaiko_don.ogg",
+        "data/sound/theater/p01/e02/001.ogg",
+        "data/sound/theater/p01/e02/003.ogg",
+        "data/sound/theater/p01/e02/005.ogg",
+        "data/sound/theater/p01/e02/006.ogg",
+        "data/sound/theater/p01/e02/007.ogg",
+        "data/sound/theater/p01/e02/008.ogg",
+        "data/sound/theater/p01/e02/009.ogg",
+        "data/sound/theater/p01/e02/010.ogg",
+        "data/sound/theater/p01/e02/011.ogg",
+        "data/sound/theater/p01/e02/012.ogg",
+        "data/sound/theater/p01/e02/013.ogg",
+        "data/sound/theater/p01/e02/014.ogg",
+        "data/sound/theater/p01/e02/015.ogg",
+        "data/sound/theater/p01/e02/016.ogg",
+        "data/sound/theater/p01/e02/017.ogg",
+        "data/sound/theater/p01/e02/018.ogg",
+        "data/sound/theater/p01/e02/019.ogg",
+        "data/sound/theater/p01/e02/020.ogg",
+        "data/sound/theater/p01/e02/021.ogg",
+        "data/sound/theater/p01/e02/022.ogg",
+        "data/sound/theater/p01/e02/023.ogg",
+        "data/sound/theater/p01/e02/024.ogg",
+        "data/sound/theater/p01/e02/025.ogg",
+        "data/sound/theater/p01/e02/026.ogg",
+        "data/bgimage/living_day.jpg",
+      ],
+      multiUse: [
+        "data/sound/se/mokugyo.ogg",
+      ]
+    };
+  [endscript]
+  [preload storage="&tf.preloadList.singleUse" single_use="true"  name="chapterFilesSingleUse" cond="tf.preloadList.singleUse.length > 0"]
+  [preload storage="&tf.preloadList.multiUse"  single_use="false" name="chapterFilesMultiUse" cond="tf.preloadList.multiUse.length > 0"]
+
+  [return]
+[s]

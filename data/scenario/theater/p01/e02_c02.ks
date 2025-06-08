@@ -118,3 +118,42 @@ tf.playbgmParams = {
 [t_teardownChapter pageId="&f.pageId" episodeId="&f.episodeId" chapterId="&f.chapterId"]
 [jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
 [s]
+
+
+
+; チャプター内で使うファイルをプリロードするサブルーチン
+*preloadFiles
+  [iscript]
+    tf.preloadList = {
+      singleUse: [
+        "data/bgm/hirusagari_kibun.ogg",
+        "data/sound/se/mokugyo.ogg",
+        "data/sound/se/shakiin1.ogg",
+        "data/sound/se/shock3.ogg",
+        "data/sound/se/shogeru.ogg",
+        "data/sound/theater/p01/e02/028.ogg",
+        "data/sound/theater/p01/e02/029.ogg",
+        "data/sound/theater/p01/e02/030.ogg",
+        "data/sound/theater/p01/e02/031.ogg",
+        "data/sound/theater/p01/e02/032.ogg",
+        "data/sound/theater/p01/e02/033.ogg",
+        "data/sound/theater/p01/e02/034.ogg",
+        "data/sound/theater/p01/e02/035.ogg",
+        "data/sound/theater/p01/e02/036.ogg",
+        "data/sound/theater/p01/e02/039.ogg",
+        "data/sound/theater/p01/e02/040.ogg",
+        "data/sound/theater/p01/e02/041.ogg",
+        "data/sound/theater/p01/e02/042.ogg",
+        "data/sound/theater/p01/e02/043.ogg",
+        "data/sound/theater/p01/e02/044.ogg",
+        "data/bgimage/living_day.jpg",
+      ],
+      multiUse: [
+      ]
+    };
+  [endscript]
+  [preload storage="&tf.preloadList.singleUse" single_use="true"  name="chapterFilesSingleUse" cond="tf.preloadList.singleUse.length > 0"]
+  [preload storage="&tf.preloadList.multiUse"  single_use="false" name="chapterFilesMultiUse" cond="tf.preloadList.multiUse.length > 0"]
+
+  [return]
+[s]

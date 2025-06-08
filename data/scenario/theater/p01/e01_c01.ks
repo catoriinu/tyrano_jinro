@@ -220,3 +220,66 @@ tf.playbgmParams = {
 
 [jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
 [s]
+
+
+
+; チャプター内で使うファイルをプリロードするサブルーチン
+*preloadFiles
+  [iscript]
+    tf.preloadList = {
+      singleUse: [
+        "data/bgm/honwakapuppu.ogg",
+        "data/sound/se/kira1.ogg",
+        "data/sound/se/open_door1.ogg",
+        "data/sound/se/shogeru.ogg",
+        "data/sound/se/wadaiko_dodon.ogg",
+        "data/sound/theater/p01/e01/001.ogg",
+        "data/sound/theater/p01/e01/002.ogg",
+        "data/sound/theater/p01/e01/003.ogg",
+        "data/sound/theater/p01/e01/004.ogg",
+        "data/sound/theater/p01/e01/005.ogg",
+        "data/sound/theater/p01/e01/006.ogg",
+        "data/sound/theater/p01/e01/007.ogg",
+        "data/sound/theater/p01/e01/008.ogg",
+        "data/sound/theater/p01/e01/009.ogg",
+        "data/sound/theater/p01/e01/010.ogg",
+        "data/sound/theater/p01/e01/011.ogg",
+        "data/sound/theater/p01/e01/012.ogg",
+        "data/sound/theater/p01/e01/013.ogg",
+        "data/sound/theater/p01/e01/014.ogg",
+        "data/sound/theater/p01/e01/015.ogg",
+        "data/sound/theater/p01/e01/016.ogg",
+        "data/sound/theater/p01/e01/017.ogg",
+        "data/sound/theater/p01/e01/018.ogg",
+        "data/sound/theater/p01/e01/019.ogg",
+        "data/sound/theater/p01/e01/020.ogg",
+        "data/sound/theater/p01/e01/021.ogg",
+        "data/sound/theater/p01/e01/022.ogg",
+        "data/sound/theater/p01/e01/023.ogg",
+        "data/sound/theater/p01/e01/024.ogg",
+        "data/sound/theater/p01/e01/025.ogg",
+        "data/sound/theater/p01/e01/026.ogg",
+        "data/sound/theater/p01/e01/027.ogg",
+        "data/sound/theater/p01/e01/028.ogg",
+        "data/sound/theater/p01/e01/029.ogg",
+        "data/sound/theater/p01/e01/030.ogg",
+        "data/sound/theater/p01/e01/031.ogg",
+        "data/sound/theater/p01/e01/032.ogg",
+        "data/sound/theater/p01/e01/033.ogg",
+        "data/sound/theater/p01/e01/034.ogg",
+        "data/sound/theater/p01/e01/035.ogg",
+        "data/sound/theater/p01/e01/036.ogg",
+        "data/sound/theater/p01/e01/037.ogg",
+        "data/sound/theater/p01/e01/038.ogg",
+        "data/bgimage/living_day.jpg",
+      ],
+      multiUse: [
+        "data/sound/se/surprised.ogg",
+      ]
+    };
+  [endscript]
+  [preload storage="&tf.preloadList.singleUse" single_use="true"  name="chapterFilesSingleUse" cond="tf.preloadList.singleUse.length > 0"]
+  [preload storage="&tf.preloadList.multiUse"  single_use="false" name="chapterFilesMultiUse" cond="tf.preloadList.multiUse.length > 0"]
+
+  [return]
+[s]
