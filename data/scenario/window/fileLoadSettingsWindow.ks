@@ -37,7 +37,9 @@
 
   *showButtons
   [w_makeClickableAreaOuterWindow target="*close"]
-  [loading_log preload="notext" icon="&sf.doShowLoadingIcon"]
+  ; loading_logのiconを有効にするには、文字列の'true'を設定する必要があるため変換
+  [eval exp="tf.doShowLoadingIcon = sf.doShowLoadingIcon ? 'true' : 'false'"]
+  [loading_log preload="notext" icon="&tf.doShowLoadingIcon"]
 
   [glink color="&tf.selectedButtonColor" size="26" width="210" x="875" y="80" text="閉じる" target="*close"]
 

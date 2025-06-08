@@ -107,6 +107,9 @@ tf.tmp_ch_speed      = String(sf.config.current_ch_speed);
 if (!('doShowLoadingIcon' in sf)) {
   sf.doShowLoadingIcon = true;
 }
+// loading_logのiconを有効にするには、文字列の'true'を設定する必要があるため変換
+tf.doShowLoadingIcon = sf.doShowLoadingIcon ? 'true' : 'false';
+
 // まとめてロードするか
 // TODO:タイトル画面で、初期値入ってなければ強制的にウィンドウ出す
 if (!('needPreload' in sf)) {
@@ -114,9 +117,8 @@ if (!('needPreload' in sf)) {
 }
 [endscript]
 
-
 ; 素材ロード中にローディング表示をするか
-[loading_log preload="notext" icon="&sf.doShowLoadingIcon"]
+[loading_log preload="notext" icon="&tf.doShowLoadingIcon"]
 
 
 ; タイトル表示
