@@ -129,6 +129,7 @@
 ;[jump storage="window/noticeClearedWindow.ks" target="*displayNoticeClearedWindow"]
 
 *resetProgress
+[freeimage layer="1"]
 [html top="130" left="413.813" name="pause_menu_button_window"]
 [endhtml]
 [glink color="&tf.buttonColor" size="26" width="400" x="439" y="153" enterse="se/button34.ogg" clickse="se/button13.ogg" text="設定含めて完全初期化" target="*resetAll"]
