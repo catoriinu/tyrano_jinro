@@ -64,7 +64,7 @@
 
         // 完遂したら、基本的には解放編を自動再生する
         // 例外として、再生済みエピソードをスキップする設定、かつエピソード進捗ステータスが既に「3：解決編まで解放済み」の場合は再生しない
-        if (!(sf.doSkipWatchedEpisode && getTheaterProgress(pageId, episodeId) === EPISODE_STATUS.OUTRO_UNLOCKED)) {
+        if (!(sf.doSkipPlayedEpisode && getTheaterProgress(pageId, episodeId) === EPISODE_STATUS.OUTRO_UNLOCKED)) {
           f.chapterList.outroChapter.needPlay = true;
         }
       }

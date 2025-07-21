@@ -248,7 +248,7 @@
       [f.needPlayIntroChapter, f.startingSituation.pageId, f.startingSituation.episodeId, f.targetJinroGameData] = checkMatchingEpisodeSituation(introUnlockedEpisodes, f.targetJinroGameData);
 
       // 合致したエピソードがあったとしても、再生済みエピソードをスキップする設定なら自動再生はしない（ここに入ってきている＝再生済みなので）
-      if (sf.doSkipWatchedEpisode) {
+      if (sf.doSkipPlayedEpisode) {
         f.needPlayIntroChapter = false;
       }
     }
