@@ -20,8 +20,8 @@
 
 ; シーン：時間が経過したときのシステムメッセージ
 *timePasses_true
-  夜が明けた……。[r]
-  この中に人狼が潜んでいる……。[p]
+  夜が明けた…。[r]
+  この中に人狼が潜んでいる…。[p]
 [return]
 
 *timePasses_false
@@ -41,7 +41,7 @@
 
 ; シーン：騙り占いCO時、過去の占い履歴を決めていく際の日付を表示するシステムメッセージ
 *fakeFortuneTelledDayMsg
-  [emb exp="f.fakeFortuneTelledDayMsg"]の占い先は……
+  [emb exp="f.fakeFortuneTelledDayMsg"]の占い先は…
 [return]
 
 ; シーン：ゲームの勝敗判定結果を表示するシステムメッセージ

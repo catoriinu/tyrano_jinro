@@ -376,7 +376,7 @@
 [eval exp="tf.targetId = tf.selectedCharacterId"]
 [call target="changeIdToCallName"]
 
-状況が混沌としてきたわね……。[r]
+状況が混沌としてきたわね…。[r]
 [j_callName targetId="&tf.targetId" targetName="&tf.targetName"]の考えを聞かせてくれるかしら？[p]
 [return]
 
