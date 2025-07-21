@@ -54,7 +54,7 @@
   [glink color="&tf.buttonColor" size="30" width="300" x="488" y="580" enterse="se/button34.ogg" clickse="se/button13.ogg" text="カスタマイズ" target="*customize"]
   [glink color="&tf.buttonColor" size="30" width="300" x="838" y="580" enterse="se/button34.ogg" clickse="se/button13.ogg" text="ヘルプ" target="*help"]
 
-  ; 視聴済みエピソードスキップ要否ボタンを表示
+  ; 再生済みエピソードスキップ要否ボタンを表示
   [iscript]
     const selectButtonSe = 'se/button13.ogg';
     const cancelButtonSe = 'se/button15.ogg';

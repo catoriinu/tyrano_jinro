@@ -63,7 +63,7 @@ if (!('theaterProgress' in sf)) {
 if (!('jinroGameDataObjects' in sf)) {
   resetJinroGameDataObjectsToDefault();
 }
-// 視聴済みエピソードスキップ要否フラグ
+// 再生済みエピソードスキップ要否フラグ
 if (!('doSkipWatchedEpisode' in sf)) {
   sf.doSkipWatchedEpisode = true;
 }

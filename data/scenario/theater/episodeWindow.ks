@@ -29,7 +29,7 @@
   [ptext layer="2" page="back" text="&f.displayEpisode.startConditionText" face="MPLUSRounded" size="26" x="180" y="475" width="920" align="center" name="startConditionText" overwrite="true" cond="tf.needDisplayStartConditionText"]
   [ptext layer="2" page="back" text="&f.displayEpisode.unlockConditionText" face="MPLUSRounded" size="26" x="180" y="565" width="920" align="center" name="unlockConditionText" overwrite="true" cond="tf.needDisplayUnlockConditionText"]
   ; 導入編も未解放なら代替テキストを表示する
-  [ptext layer="2" page="back" text="開始条件を満たしてプレイスタートすると、導入編が視聴できます" face="MPLUSRounded" size="26" x="180" y="410" width="920" align="center" cond="!tf.isUnlockedIntro && !tf.isUnlockedOutro"]
+  [ptext layer="2" page="back" text="開始条件を満たしてプレイスタートすると、導入編が自動再生されます" face="MPLUSRounded" size="26" x="180" y="410" width="920" align="center" cond="!tf.isUnlockedIntro && !tf.isUnlockedOutro"]
 
   [trans layer="2" time="0"]
 

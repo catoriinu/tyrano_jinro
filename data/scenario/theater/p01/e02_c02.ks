@@ -28,7 +28,7 @@ tf.playbgmParams = {
 [endscript]
 [t_setupChapter titleText="&f.titleText" actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
 
-; ここからチャプター視聴開始
+; ここからチャプター再生開始
 
 [m_changeCharacterFrameName name="四国めたん" face="クスクス" side="left"]
 [playse storage="theater/p01/e02/028.ogg" buf="1"]

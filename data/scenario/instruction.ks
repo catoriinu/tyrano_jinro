@@ -701,7 +701,7 @@
 
 
 *statusButton
-; 視聴済みフラグを立てる
+; 再生済みフラグを立てる
 [eval exp="f.chapterList.flags.playedStatusButton = true"]
 
 ; ステータス画面では、HTMLがfreeレイヤーに描画されており、それがメッセージレイヤーよりも前面に出ているためメッセージ送りができない状態になっている。

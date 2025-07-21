@@ -95,7 +95,7 @@ if (!f.quickShowEpisodeWindow) {
 ;メッセージウィンドウの表示
 [layopt layer="message0" visible="true"]
 #
-視聴したいエピソードを選択してください。[r]
+再生したいエピソードを選択してください。[r]
 
 [if exp="tf.isPage01AllCleared"]
 将来のアップデートで新規エピソードを追加予定です。
