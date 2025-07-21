@@ -119,7 +119,7 @@ tf.playbgmParams = {
 
 [m_changeCharacterFrameName name="ずんだもん" face="否定" side="left"]
 [playse storage="theater/p01/e01/059.ogg" buf="1"]
-で、でも、結局何も解決してないのだ！[r]
+でも、結局何も解決してないのだ！[r]
 僕のずんだもちを食べたのは、誰なのだー！[p]
 
 
