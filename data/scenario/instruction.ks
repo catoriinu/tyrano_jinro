@@ -9,6 +9,8 @@
 ; ただしプレイヤー途中でゲームを抜けてしまうことを防ぐことはできないので、次に立ち絵を読み込んだタイミングでもfree_filterしておくこと。
 [filter name="mochiko" brightness="30"]
 
+[call target="*preloadFilesStartInstruction" cond="sf.needPreload"]
+
 ; 本当の初回起動時以外は2回目以降用のシナリオにジャンプさせる
 [jump target="*secondInstruction" cond="!f.chapterList.flags.isFirstContact"]
 
@@ -99,6 +101,8 @@
 [s]
 
 *continueInstruction
+[call target="*preloadFilesContinueInstruction" cond="sf.needPreload"]
+
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
 [playse storage="se/kira1.ogg" buf="2" volume="50"]
 [playse storage="other/01_instruction/017.ogg" buf="1"]
@@ -272,6 +276,8 @@
 
 
 *skipInstruction
+[call target="*preloadFilesContinueInstruction" cond="sf.needPreload"]
+
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="通常"]
 [playse storage="se/kira1.ogg" buf="2" volume="50"]
 [playse storage="other/01_instruction/014.ogg" buf="1"]
@@ -983,4 +989,215 @@
 [free_filter name="mochiko"]
 [eval exp="f.currentFrame = null"]
 [jump storage="title.ks"]
+[s]
+
+
+
+; チャプター内で使うファイルをプリロードするサブルーチン
+*preloadFilesStartInstruction
+  [iscript]
+    tf.preloadList = {
+      singleUse: [
+        // startInstruction
+        "data/sound/se/surprised.ogg",
+        "data/sound/other/01_instruction/001.ogg",
+        "data/sound/other/01_instruction/002.ogg",
+        "data/sound/other/01_instruction/003.ogg",
+        "data/sound/other/01_instruction/004.ogg",
+        "data/sound/other/01_instruction/005.ogg",
+        "data/sound/other/01_instruction/006.ogg",
+        "data/sound/other/01_instruction/007.ogg",
+        "data/sound/other/01_instruction/008.ogg",
+        "data/sound/other/01_instruction/009.ogg",
+        "data/sound/other/01_instruction/010.ogg",
+        "data/sound/other/01_instruction/011.ogg",
+        "data/sound/other/01_instruction/012.ogg",
+        // skipSecondInstruction
+        "data/sound/other/01_instruction/151.ogg",
+        "data/sound/other/01_instruction/152.ogg",
+        "data/sound/other/01_instruction/153.ogg",
+        "data/sound/other/01_instruction/154.ogg",
+        "data/sound/other/01_instruction/155.ogg",
+        "data/sound/other/01_instruction/156.ogg",
+        "data/sound/other/01_instruction/157.ogg",
+        "data/sound/other/01_instruction/158.ogg",
+        // encourageRetry
+        "data/sound/other/01_instruction/160.ogg",
+        "data/sound/other/01_instruction/161.ogg",
+        "data/sound/other/01_instruction/162.ogg",
+        "data/sound/other/01_instruction/163.ogg",
+        // secondInstruction
+        "data/sound/other/01_instruction/165.ogg",
+        "data/sound/other/01_instruction/166.ogg",
+        "data/sound/se/manuke4.ogg",
+        "data/sound/other/01_instruction/167.ogg",
+        "data/sound/other/01_instruction/168.ogg",
+        "data/sound/other/01_instruction/169.ogg",
+      ],
+      multiUse: [
+        "data/sound/se/hatena01-1.ogg",
+        "data/sound/se/kira1.ogg",
+        "data/sound/se/manuke4.ogg",
+      ]
+    };
+  [endscript]
+  [preload storage="&tf.preloadList.singleUse" single_use="true"  name="instructionFilesSingleUse" cond="tf.preloadList.singleUse.length > 0"]
+  [preload storage="&tf.preloadList.multiUse"  single_use="false" name="instructionFilesMultiUse" cond="tf.preloadList.multiUse.length > 0"]
+
+  [return]
+[s]
+
+
+*preloadFilesContinueInstruction
+  [iscript]
+    tf.preloadList = {
+      singleUse: [
+        // skipInstruction
+        "data/sound/other/01_instruction/014.ogg",
+        "data/sound/other/01_instruction/015.ogg",
+        // continueInstruction
+        "data/sound/other/01_instruction/017.ogg",
+        "data/sound/other/01_instruction/018.ogg",
+        "data/sound/other/01_instruction/019.ogg",
+        "data/sound/other/01_instruction/020.ogg",
+        "data/sound/other/01_instruction/021.ogg",
+        "data/sound/other/01_instruction/022.ogg",
+        "data/sound/other/01_instruction/023.ogg",
+        "data/sound/other/01_instruction/024.ogg",
+        "data/sound/other/01_instruction/025.ogg",
+        "data/sound/other/01_instruction/026.ogg",
+        "data/sound/other/01_instruction/027.ogg",
+        "data/sound/other/01_instruction/028.ogg",
+        "data/sound/other/01_instruction/029.ogg",
+        "data/sound/other/01_instruction/030.ogg",
+        "data/sound/other/01_instruction/031.ogg",
+        "data/fgimage/icon_instruction_v2.png",
+        "data/sound/other/01_instruction/032.ogg",
+        "data/sound/other/01_instruction/033.ogg",
+        "data/sound/other/01_instruction/034.ogg",
+        "data/sound/other/01_instruction/035.ogg",
+        "data/sound/other/01_instruction/036.ogg",
+        "data/sound/other/01_instruction/037.ogg",
+        "data/sound/other/01_instruction/038.ogg",
+        "data/sound/other/01_instruction/039.ogg",
+        "data/sound/other/01_instruction/040.ogg",
+        "data/sound/other/01_instruction/041.ogg",
+        "data/sound/other/01_instruction/042.ogg",
+        "data/sound/other/01_instruction/043.ogg",
+        "data/sound/other/01_instruction/044.ogg",
+        "data/sound/other/01_instruction/045.ogg",
+        "data/sound/other/01_instruction/046.ogg",
+        "data/sound/other/01_instruction/047.ogg",
+        "data/sound/other/01_instruction/048.ogg",
+        "data/sound/other/01_instruction/049.ogg",
+        "data/sound/other/01_instruction/050.ogg",
+        "data/sound/other/01_instruction/051.ogg",
+        "data/sound/other/01_instruction/052.ogg",
+        // COPhase
+        "data/sound/other/01_instruction/054.ogg",
+        "data/sound/other/01_instruction/055.ogg",
+        "data/sound/other/01_instruction/056.ogg",
+        "data/sound/other/01_instruction/057.ogg",
+        "data/sound/other/01_instruction/058.ogg",
+        "data/sound/other/01_instruction/059.ogg",
+        // discussionPhase
+        "data/sound/other/01_instruction/061.ogg",
+        "data/sound/other/01_instruction/062.ogg",
+        "data/sound/other/01_instruction/063.ogg",
+        "data/sound/other/01_instruction/064.ogg",
+        "data/sound/other/01_instruction/065.ogg",
+        "data/sound/other/01_instruction/066.ogg",
+        "data/sound/other/01_instruction/067.ogg",
+        "data/sound/other/01_instruction/068.ogg",
+        "data/sound/other/01_instruction/069.ogg",
+        "data/sound/other/01_instruction/070.ogg",
+        "data/sound/other/01_instruction/071.ogg",
+        "data/sound/other/01_instruction/072.ogg",
+        "data/sound/other/01_instruction/073.ogg",
+        "data/sound/other/01_instruction/074.ogg",
+        "data/sound/other/01_instruction/075.ogg",
+        "data/sound/other/01_instruction/076.ogg",
+        "data/sound/other/01_instruction/077.ogg",
+        "data/sound/other/01_instruction/078.ogg",
+        "data/sound/other/01_instruction/079.ogg",
+        "data/sound/other/01_instruction/080.ogg",
+        "data/sound/other/01_instruction/081.ogg",
+        "data/sound/other/01_instruction/082.ogg",
+        "data/sound/other/01_instruction/083.ogg",
+        "data/sound/other/01_instruction/084.ogg",
+        // votePhase
+        "data/sound/other/01_instruction/086.ogg",
+        "data/sound/other/01_instruction/087.ogg",
+        "data/sound/other/01_instruction/088.ogg",
+        "data/sound/other/01_instruction/089.ogg",
+        "data/sound/other/01_instruction/090.ogg",
+        "data/sound/other/01_instruction/091.ogg",
+        "data/sound/other/01_instruction/092.ogg",
+        "data/sound/other/01_instruction/093.ogg",
+        "data/sound/other/01_instruction/094.ogg",
+        "data/sound/other/01_instruction/095.ogg",
+        "data/sound/other/01_instruction/096.ogg",
+        // firstDayNightPhase
+        "data/sound/other/01_instruction/097.ogg",
+        "data/sound/other/01_instruction/098.ogg",
+        "data/sound/other/01_instruction/099.ogg",
+        "data/sound/other/01_instruction/100.ogg",
+        "data/sound/other/01_instruction/101.ogg",
+        "data/sound/other/01_instruction/102.ogg",
+        // secondDayDayPhase
+        "data/sound/other/01_instruction/104.ogg",
+        "data/sound/other/01_instruction/105.ogg",
+        "data/sound/other/01_instruction/106.ogg",
+        "data/sound/other/01_instruction/107.ogg",
+        "data/sound/other/01_instruction/108.ogg",
+        "data/sound/other/01_instruction/109.ogg",
+        "data/sound/other/01_instruction/110.ogg",
+        "data/sound/other/01_instruction/111.ogg",
+        "data/sound/other/01_instruction/113.ogg",
+        "data/sound/other/01_instruction/114.ogg",
+        "data/sound/other/01_instruction/115.ogg",
+        "data/sound/other/01_instruction/116.ogg",
+        "data/sound/other/01_instruction/117.ogg",
+        "data/sound/other/01_instruction/118.ogg",
+        "data/sound/other/01_instruction/119.ogg",
+        "data/sound/other/01_instruction/120.ogg",
+        "data/sound/other/01_instruction/121.ogg",
+        "data/sound/other/01_instruction/122.ogg",
+        "data/sound/other/01_instruction/123.ogg",
+        "data/sound/other/01_instruction/124.ogg",
+        "data/sound/other/01_instruction/125.ogg",
+        "data/sound/other/01_instruction/126.ogg",
+        "data/sound/other/01_instruction/127.ogg",
+        "data/sound/other/01_instruction/128.ogg",
+        "data/sound/other/01_instruction/129.ogg",
+        "data/sound/other/01_instruction/130.ogg",
+        "data/sound/other/01_instruction/131.ogg",
+        "data/sound/other/01_instruction/132.ogg",
+        "data/sound/other/01_instruction/133.ogg",
+        "data/sound/other/01_instruction/134.ogg",
+        "data/sound/other/01_instruction/135.ogg",
+        "data/sound/other/01_instruction/136.ogg",
+        // statusButton
+        "data/sound/other/01_instruction/137.ogg",
+        "data/sound/other/01_instruction/138.ogg",
+        // endInstruction
+        "data/sound/other/01_instruction/140.ogg",
+        "data/sound/other/01_instruction/141.ogg",
+        "data/sound/other/01_instruction/142.ogg",
+        "data/sound/other/01_instruction/143.ogg",
+        "data/sound/other/01_instruction/144.ogg",
+        "data/sound/other/01_instruction/145.ogg",
+        "data/sound/other/01_instruction/146.ogg",
+        "data/sound/other/01_instruction/147.ogg",
+        "data/sound/other/01_instruction/148.ogg",
+        "data/sound/other/01_instruction/149.ogg",
+      ],
+      multiUse: [
+      ]
+    };
+  [endscript]
+  [preload storage="&tf.preloadList.singleUse" single_use="true"  name="instructionFilesSingleUse" cond="tf.preloadList.singleUse.length > 0"]
+  [preload storage="&tf.preloadList.multiUse"  single_use="false" name="instructionFilesMultiUse" cond="tf.preloadList.multiUse.length > 0"]
+
+  [return]
 [s]

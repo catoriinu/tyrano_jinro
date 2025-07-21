@@ -102,15 +102,50 @@ tf.tmp_button_se_vol = sf.config.mute_button_se ? "0" : String(sf.config.current
 tf.tmp_se_vol        = sf.config.mute_se        ? "0" : String(sf.config.current_se_vol);
 tf.tmp_voice_vol     = sf.config.mute_voice     ? "0" : String(sf.config.current_voice_vol);
 tf.tmp_ch_speed      = String(sf.config.current_ch_speed);
+
+// ローディング表示
+if (!('doShowLoadingIcon' in sf)) {
+  sf.doShowLoadingIcon = true;
+}
+// loading_logのiconを有効にするには、文字列の'true'を設定する必要があるため変換
+tf.doShowLoadingIcon = sf.doShowLoadingIcon ? 'true' : 'false';
+
+// 必須ファイルのプリロード用
+tf.preloadList = {
+  multiUse: [
+    // タイトル画面の背景画像
+    "data/bgimage/voivojinrou_title_v4.png",
+    // タイトル画面のBGM
+    "data/bgm/fun_fun_Ukelele_1loop.ogg",
+    // ボタンホバー時、クリック時のSE
+    "data/sound/se/button34.ogg",
+    "data/sound/se/button13.ogg",
+    "data/sound/se/button15.ogg",
+    // メッセージウィンドウ
+    "data/image/message_window_none.png",
+    "data/image/message_window_left.png",
+    "data/image/message_window_right.png",
+    "data/image/message_window_double.png",
+    // ウィンドウ
+    "data/fgimage/window_rectangle.png"
+  ]
+};
+
+// まとめてロードするか
+// TODO:タイトル画面で、初期値入ってなければ強制的にウィンドウ出す
+if (!('needPreload' in sf)) {
+  sf.needPreload = true;
+}
 [endscript]
+
+; 素材ロード中にローディング表示をするか
+[loading_log preload="notext" icon="&tf.doShowLoadingIcon"]
 
 ; タイトル表示
 [title name="&sf.version.getVersionText('ボイボ人狼 ver.')"]
 
-; ボタンホバー時、クリック時のSEをプリロードしておく（jsで非同期で鳴らす処理が遅れることによるボタン表示系のバグが頻発しているため、おまじないとして）
-[preload storage="data/sound/se/button34.ogg" single_use="false"]
-[preload storage="data/sound/se/button13.ogg" single_use="false"]
-[preload storage="data/sound/se/button15.ogg" single_use="false"]
+; 必須ファイルのプリロード
+[preload storage="&tf.preloadList.multiUse" single_use="false"]
 
 ; 音量（BGM、ボタンSE、その他SE、VOICE）、テキスト速度の初期値を設定
 [bgmopt volume="&tf.tmp_bgm_vol"]

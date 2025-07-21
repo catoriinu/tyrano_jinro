@@ -49,7 +49,7 @@
   [filter layer="0" blur="10" cond="f.windowLayer > 0"]
   [filter layer="1" blur="10" cond="f.windowLayer > 1"]
   [filter layer="base" blur="5"]
-  [image storage="theater/episodeWindow_rectangle.png" layer="&f.windowLayer" page="back" name="windowElement" x="158.5" y="38"]
+  [image storage="window_rectangle.png" layer="&f.windowLayer" page="back" name="windowElement" x="158.5" y="38"]
   [kanim name="windowElement" keyframe="open_episodeWindow" time="150" easing="ease-out"]
 [endmacro]
 

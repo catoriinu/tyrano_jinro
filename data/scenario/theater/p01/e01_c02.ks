@@ -129,3 +129,45 @@ tf.playbgmParams = {
 [t_teardownChapter pageId="&f.pageId" episodeId="&f.episodeId" chapterId="&f.chapterId"]
 [jump storage="&f.returnJumpStorage" target="&f.returnJumpTarget"]
 [s]
+
+
+
+; チャプター内で使うファイルをプリロードするサブルーチン
+*preloadFiles
+  [iscript]
+    tf.preloadList = {
+      singleUse: [
+        "data/bgm/gudagudana_kanji_1loop.ogg",
+        "data/sound/se/hatena01-1.ogg",
+        "data/sound/theater/p01/e01/040.ogg",
+        "data/sound/theater/p01/e01/041.ogg",
+        "data/sound/theater/p01/e01/042.ogg",
+        "data/sound/theater/p01/e01/043.ogg",
+        "data/sound/theater/p01/e01/044.ogg",
+        "data/sound/theater/p01/e01/045.ogg",
+        "data/sound/theater/p01/e01/046.ogg",
+        "data/sound/theater/p01/e01/047.ogg",
+        "data/sound/theater/p01/e01/048.ogg",
+        "data/sound/theater/p01/e01/049.ogg",
+        "data/sound/theater/p01/e01/050.ogg",
+        "data/sound/theater/p01/e01/051.ogg",
+        "data/sound/theater/p01/e01/052.ogg",
+        "data/sound/theater/p01/e01/053.ogg",
+        "data/sound/theater/p01/e01/054.ogg",
+        "data/sound/theater/p01/e01/055.ogg",
+        "data/sound/theater/p01/e01/056.ogg",
+        "data/sound/theater/p01/e01/057.ogg",
+        "data/sound/theater/p01/e01/058.ogg",
+        "data/sound/theater/p01/e01/059.ogg",
+        "data/bgimage/living_day.jpg",
+      ],
+      multiUse: [
+        "data/sound/se/shogeru.ogg",
+      ]
+    };
+  [endscript]
+  [preload storage="&tf.preloadList.singleUse" single_use="true"  name="chapterFilesSingleUse" cond="tf.preloadList.singleUse.length > 0"]
+  [preload storage="&tf.preloadList.multiUse"  single_use="false" name="chapterFilesMultiUse" cond="tf.preloadList.multiUse.length > 0"]
+
+  [return]
+[s]
