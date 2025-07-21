@@ -31,7 +31,7 @@ tf.playbgmParams = {
 
 [t_setupChapter titleText="&f.titleText" actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
 
-; ここからチャプター視聴開始
+; ここからチャプター再生開始
 
 [m_changeCharacterFrameName name="ずんだもん" face="否定" side="left"]
 [playse storage="theater/p01/e01/001.ogg" buf="1"]

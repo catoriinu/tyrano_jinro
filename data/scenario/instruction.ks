@@ -187,7 +187,7 @@
 だからこそよく観察して推理をし、誰が人狼かを突き止めなくてはなりません。[p]
 
 [playse storage="other/01_instruction/035.ogg" buf="1"]
-「占い師」は夜、生存者から1人を選び、その人が[ruby text="クロ"]●（人狼である）か[ruby text="シロ"]◯（人狼ではない）かを知ることができる能力を持っています。[p]
+「占い師」は夜、生存者から1人を選び、その人が[ruby text="クロ"]●（人狼である）か[ruby text="シロ"]○（人狼ではない）かを知ることができる能力を持っています。[p]
 
 [playse storage="other/01_instruction/036.ogg" buf="1"]
 昼には「自分は占い師だ」と宣言して占い結果を公開できます。[p]
@@ -240,7 +240,7 @@
 人狼と同様に、占い師COをすることができます。[p]
 
 [playse storage="other/01_instruction/048.ogg" buf="1"]
-人狼陣営ですが人狼ではないので、占い結果は[ruby text="シロ"]◯となります。[r]
+人狼陣営ですが人狼ではないので、占い結果は[ruby text="シロ"]○となります。[r]
 その立場を活用して、村を混乱に陥れるのが狂人の役目です。[p]
 
 [playse storage="other/01_instruction/049.ogg" buf="1"]
@@ -356,7 +356,7 @@
 
 [m_changeCharacterFrameName name="？？？" characterId="mochiko" face="笑顔"]
 [playse storage="other/01_instruction/065.ogg" buf="1"]
-ずんだもんちゃんは、仲間だと思っている人に「信じてる」と言われたらどう思いますか？[p]
+ずんだもんちゃんは、仲間だと信頼している人に「信じてる」と言われたらどう思いますか？[p]
 
 [m_changeCharacterFrameName name="ずんだもん" face="大喜び" side="left"]
 [playse storage="other/01_instruction/066.ogg" buf="1"]
@@ -701,7 +701,7 @@
 
 
 *statusButton
-; 視聴済みフラグを立てる
+; 再生済みフラグを立てる
 [eval exp="f.chapterList.flags.playedStatusButton = true"]
 
 ; ステータス画面では、HTMLがfreeレイヤーに描画されており、それがメッセージレイヤーよりも前面に出ているためメッセージ送りができない状態になっている。
@@ -737,7 +737,7 @@
 再投票があった日の履歴は上から下への順番で並んでいます。[p]
 
 [playse storage="other/01_instruction/109.ogg" buf="1"]
-「占い履歴」では、誰がどの占い師から、何日目に、[ruby text="シロ"]◯[ruby text="クロ"]●どちらと占われたかを確認できます。[p]
+「占い履歴」では、誰がどの占い師から、何日目に、[ruby text="シロ"]○[ruby text="クロ"]●どちらと占われたかを確認できます。[p]
 
 [playse storage="other/01_instruction/110.ogg" buf="1"]
 これらの情報を活用して、人狼ゲームを有利に進めましょう！[p]

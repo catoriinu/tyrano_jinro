@@ -21,7 +21,7 @@
 [playse storage="se/wadaiko_dodon.ogg" buf="2" loop="false" volume="60" sprite_time="50-20000"]
 [m_changeFrameWithId]
 #
-人狼ゲームの幕開けです……！[p]
+人狼ゲームの幕開けです…！[p]
 
 [w_noticeStartingSituation]
 
@@ -130,7 +130,7 @@
   [eval exp="f.notExistCOCandidateNPC = true"]
   [m_changeFrameWithId]
   #
-  ……沈黙が流れた。これ以上、COしたい者はいないようだ。[p]
+  …沈黙が流れた。これ以上、COしたい者はいないようだ。[p]
 
   [j_setIsNeedToAskPCWantToCO]
   ; COフェイズ終了(PCはCO確認する必要がない状態のため、これ以上COする者はいないとする)

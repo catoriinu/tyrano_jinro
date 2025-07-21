@@ -41,7 +41,7 @@
 [endmacro]
 
 
-; チャプター視聴開始時の準備用マクロ
+; チャプター再生開始時の準備用マクロ
 ; @param titleText
 ; @param actorsList
 ; @param bgParams
@@ -91,7 +91,7 @@
 [endmacro]
 
 
-; チャプター視聴終了時の後片付け用マクロ
+; チャプター再生終了時の後片付け用マクロ
 ; @param pageId
 ; @param episodeId
 ; @param chapterId
@@ -121,7 +121,7 @@
     }
   [endscript]
 
-  ; 視聴終了時に解放すべきシアター進捗があれば解放する
+  ; 再生終了時に解放すべきシアター進捗があれば解放する
   [call storage="theater/episodeSubroutines.ks" target="*unlockNextEpisode"]
 
   ; チャプター再生中に表示している可能性があるものは全て画面から消す（途中でスキップされた場合もここで消せるようにするため）
@@ -239,7 +239,7 @@
     // 「1:導入編未解放かつ解放可」のエピソードに対して、シチュエーション開始条件に合致したかのチェック
     const introAvailableEpisodes = getEpisodesByStatus(EPISODE_STATUS.INTRO_LOCKED_AVAILABLE, sf.theaterProgress);
     [f.needPlayIntroChapter, f.startingSituation.pageId, f.startingSituation.episodeId, f.targetJinroGameData] = checkMatchingEpisodeSituation(introAvailableEpisodes, f.targetJinroGameData);
-    // 合致したエピソードがあった場合、視聴済みエピソードをスキップする設定でも自動再生する（未視聴なので）
+    // 合致したエピソードがあった場合、再生済みエピソードをスキップする設定でも自動再生する（未再生なので）
 
     // シチュエーション開始条件に合致した「1:導入編未解放かつ解放可」のエピソードがなかった場合
     if (!f.needPlayIntroChapter) {
@@ -247,8 +247,8 @@
       const introUnlockedEpisodes = getEpisodesByStatus(EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED, sf.theaterProgress);
       [f.needPlayIntroChapter, f.startingSituation.pageId, f.startingSituation.episodeId, f.targetJinroGameData] = checkMatchingEpisodeSituation(introUnlockedEpisodes, f.targetJinroGameData);
 
-      // 合致したエピソードがあったとしても、視聴済みエピソードをスキップする設定なら自動再生はしない（ここに入ってきている＝視聴済みなので）
-      if (sf.doSkipWatchedEpisode) {
+      // 合致したエピソードがあったとしても、再生済みエピソードをスキップする設定なら自動再生はしない（ここに入ってきている＝再生済みなので）
+      if (sf.doSkipPlayedEpisode) {
         f.needPlayIntroChapter = false;
       }
     }

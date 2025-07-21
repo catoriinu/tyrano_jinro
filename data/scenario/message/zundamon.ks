@@ -48,7 +48,7 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 [playse storage="chara/zundamon/zundamon_noticeRole_werewolf_01.ogg" buf="1"]
 
-僕は人狼……。[r]
+僕は人狼…。[r]
 みんな僕がおいしく食べてやるのだ！[p]
 [return]
 
@@ -58,7 +58,7 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 [playse storage="chara/zundamon/zundamon_noticeRole_madman_01.ogg" buf="1"]
 
-僕は狂人なのだ……。[r]
+僕は狂人なのだ…。[r]
 僕がご主人の野望を手助けするのだ！[p]
 [return]
 
@@ -328,7 +328,7 @@
 [playse storage="chara/zundamon/zundamon_doAction_suspect_emotional_04.ogg" buf="1"]
 [endif]
 
-もしかして[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]が人狼なのだ……？[r]
+もしかして[j_callName targetId="&tf.targetId" targetName="&tf.targetName"]が人狼なのだ…？[r]
 そんな気がするのだ。[p]
 [return]
 
@@ -447,7 +447,7 @@
 
 ; シーン：「聞き出す」アクションの実行対象になった時
 *doAction_reaction_ask
-もうなんにも分からないのだ……！[p]
+もうなんにも分からないのだ…！[p]
 [return]
 
 
@@ -476,7 +476,7 @@
 ; シーン：処刑後の反応
 ; TODO：どのように呼び出すかから考えること
 *afterExecution
-この決断が、間違ってないといいのだ……。[p]
+この決断が、間違ってないといいのだ…。[p]
 [return]
 
 
@@ -487,7 +487,7 @@
 [call storage="./message/utility.ks" target="prepareMessage"]
 [playse storage="chara/zundamon/zundamon_chooseWhoToBite_01.ogg" buf="1"]
 
-くくく、今夜は誰を食べちゃおうかな……。[r]
+くくく、今夜は誰を食べちゃおうかな…。[r]
 いただきまーすなのだ！[p]
 [return]
 

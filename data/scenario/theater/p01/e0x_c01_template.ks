@@ -30,7 +30,7 @@ tf.playbgmParams = {
 [endscript]
 [t_setupChapter titleText="&f.titleText" actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
 
-; ここからチャプター視聴開始
+; ここからチャプター再生開始
 
 
 ; セリフ例
