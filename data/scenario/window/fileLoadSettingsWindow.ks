@@ -11,14 +11,13 @@
       エピソード再生開始時にまとめてロードしますか？`;
     tf.preloadTrueText = `
       開始時にロード時間がかかるが、再生中は軽快<br>
-      ブラウザ版ならオススメ`;
+      基本こちらを推奨`;
     tf.preloadFalseText = `
       再生中につどつどロードするが、開始は早い<br>
-      Win版、Mac版ならオススメ`;
+      開始の早さを優先したい場合はこちら<br>`;
 
     tf.firstText = `
       この設定は「コンフィグ」→「ファイルロード設定」から再変更可能です。`;
-    // TODO firstTextを表示するのは、初回起動時のみにする
   [endscript]
 
   [w_openWindow]
@@ -28,7 +27,8 @@
   [ptext layer="2" page="back" text="&tf.preloadTrueText" face="MPLUSRounded" size="26" x="220" y="280" width="920" align="left" name="preloadTrueText" overwrite="true"]
   [ptext layer="2" page="back" text="&tf.preloadFalseText" face="MPLUSRounded" size="26" x="220" y="390" width="920" align="left" name="preloadFalseText" overwrite="true"]
 
-  [ptext layer="2" page="back" text="&tf.firstText" face="MPLUSRounded" size="26" x="205" y="500" width="920" align="left" name="firstText" overwrite="true"]
+; PC,スマホどちらでもまとめてロードのほうが優秀だったので、あえて初回起動時に選択させる理由がなくなったのでコメントアウト
+;  [ptext layer="2" page="back" text="&tf.firstText" face="MPLUSRounded" size="26" x="205" y="500" width="920" align="left" name="firstText" overwrite="true"]
 
   [ptext layer="2" page="back" text="ローディングアイコン表示：" face="MPLUSRounded" size="26" x="350" y="580" width="920" align="left" name="loadingIconText"]
 
