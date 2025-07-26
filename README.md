@@ -1,10 +1,17 @@
 # tyrano_jinro
 『汝は人狼なりや？』をティラノスクリプト製のノベルゲームとして制作・プレイするためのプラグインやマクロ集、  
 およびその実装例としてのサンプルゲームです。  
-  
-※まだ製作中なので利用はお控えください。  
-完成の暁にはティラノスクリプト用プラグイン、マクロとして利用いただけるようにいたします。
-  
+tyrano_jinroプラグイン本体：[./data/others/plugin/jinro](./data/others/plugin/jinro)  
+
+## 注意事項
+プラグインを利用していただくこと自体は問題ありませんが、  
+ver.0.14.0時点ではプラグインとサンプルゲームが密結合なため、プラグイン単体で利用するのは非常に難しい状態です。  
+将来のアップデートで結合度を下げたり、大規模なリファクタリングを行う予定です。ご了承ください。  
+
+## サンプルゲーム『ボイボ人狼』
+Booth（Windows版・Mac版）：準備中  
+PLiCy（ブラウザ版）：準備中
+
 # 動作確認バージョン
 - Windows11
 - ティラノスクリプト v600beta5(ver.0.12.2から)
@@ -17,12 +24,13 @@
 # 更新履歴
 [CHANGELOG.md](./CHANGELOG.md)参照
 
-# 製作者
-香取犬  
+# 制作者
+tyrano_jinroプラグイン開発者：香取犬  
 Twitter：[@catoriinu8190](https://twitter.com/catoriinu8190)  
-ブログ：[ハイグレ郵便局 香取犬支店](http://highglepostoffice.blog.fc2.com/)  
-ニコニコ動画：[香取犬](https://www.nicovideo.jp/user/128529457)  
-  
+
+『ボイボ人狼』制作者：尾取犬  
+Twitter：[@otoriinu0981](https://twitter.com/otoriinu0981)  
+ニコニコ動画：[user/128529457](https://www.nicovideo.jp/user/128529457)  
 
 # special thanks
 [https://github.com/ShikemokuMK/tyranoscript](https://github.com/ShikemokuMK/tyranoscript)  
