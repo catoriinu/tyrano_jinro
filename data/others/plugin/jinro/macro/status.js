@@ -312,7 +312,7 @@ function createVoteHistoryInfoBoxes(characterObjects, characterId) {
   let voteHistoryInfoBoxes = [];
   // 一日ごとにループを回す
   for (let day of Object.keys(voteHistory)) {
-    console.log(characterId + day);
+    console.debug(characterId + day);
     voteHistoryInfoBoxes = voteHistoryInfoBoxes.concat(createVoteDayInfoBoxes(day, voteHistory[day]));
   }
   // TODO 被投票数は表示する？するならどうやって？

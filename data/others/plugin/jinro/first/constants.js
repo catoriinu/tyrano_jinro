@@ -1,11 +1,4 @@
 // 定数定義
-// jinroプラグインのバージョン
-const JINRO_PLUGIN_VERSION = {
-  major: 0,
-  minor: 13,
-  patch: 1,
-};
-
 // キャラクターID
 const CHARACTER_ID_AI     = 'ai'; // アイ
 const CHARACTER_ID_HIYORI = 'hiyori'; // ヒヨリ
@@ -141,11 +134,6 @@ const CLASS_GLINK_DEFAULT = 'btn_voivo'; // glinkのcolor用。ゲーム内で�
 const CLASS_GLINK_SELECTED = 'btn_voivo_selected'; // glinkのname用。現在選択されているボタンや、戻る系ボタン（つまり何も選択しなかった扱い）用のテーマ
 const CLASS_GLINK_WHITE = 'btn_voivo_white'; // glinkのname用。白色のテーマ（未作成）
 const CLASS_GLINK_BLACK = 'btn_voivo_black'; // glinkのname用。黒色のテーマ（未作成）
-
-// ボタンにカーソルが乗ったときの処理
-const CLASS_BUTTON_SE_HOVER = 'button-se-hover';
-//const CLASS_BUTTON_SE_HOVER_SELECT = 'button-se-hover button-se-select';
-//const CLASS_BUTTON_SE_HOVER_CANCEL = 'button-se-hover button-se-cancel';
 
 // 設定値
 // ボタン配置範囲

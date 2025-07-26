@@ -8,7 +8,8 @@
 [start_keyconfig]
 
 [bg storage="living_night_close.jpg" time="500"]
-[fadeoutse time="500"]
+[fadeoutse time="500" buf="1"]
+[fadeoutse time="500" buf="2"]
 [fadeoutbgm time="500"]
 
 ;このゲームで登場するキャラクターを宣言、表情登録
@@ -17,10 +18,10 @@
 ; ステータス、バックログ、メニューボタン表示
 [j_displayFixButton status="true" backlog="true" menu="true"]
 
-[playse storage="dodon.ogg" buf="1" loop="false" volume="40" sprite_time="50-20000"]
+[playse storage="se/wadaiko_dodon.ogg" buf="2" loop="false" volume="60" sprite_time="50-20000"]
 [m_changeFrameWithId]
 #
-人狼ゲームの幕開けです……！[p]
+人狼ゲームの幕開けです…！[p]
 
 [w_noticeStartingSituation]
 
@@ -129,7 +130,7 @@
   [eval exp="f.notExistCOCandidateNPC = true"]
   [m_changeFrameWithId]
   #
-  ……沈黙が流れた。これ以上、COしたい者はいないようだ。[p]
+  …沈黙が流れた。これ以上、COしたい者はいないようだ。[p]
 
   [j_setIsNeedToAskPCWantToCO]
   ; COフェイズ終了(PCはCO確認する必要がない状態のため、これ以上COする者はいないとする)

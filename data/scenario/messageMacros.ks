@@ -24,7 +24,7 @@
   [endscript]
 
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
-  [stopse]
+  [stopse buf="1"]
 [endmacro]
 
 
@@ -38,7 +38,7 @@
   [endscript]
 
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
-  [stopse]
+  [stopse buf="1"]
 [endmacro]
 
 
@@ -58,7 +58,7 @@
 [macro name="m_COFortuneTelling"]
   [iscript]
     tf.targetLabel = getLabelForCOFortuneTelling(f.actionObject);
-    console.log(tf.targetLabel);
+    console.debug(tf.targetLabel);
 
     tf.side = 'left';
     tf.messageStorage = './message/' + f.actionObject.characterId + '.ks';
@@ -66,7 +66,7 @@
   [endscript]
 
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
-  [stopse]
+  [stopse buf="1"]
 [endmacro]
 
 
@@ -75,7 +75,7 @@
 [macro name="m_doAction"]
   [iscript]
     tf.targetLabel = getLabelForDoAction(f.actionObject, f.triggerActionObject);
-    console.log(tf.targetLabel);
+    console.debug(tf.targetLabel);
 
     tf.side = getSideForDoAction(f.actionObject, f.triggerActionObject);
     tf.messageStorage = './message/' + f.actionObject.characterId + '.ks';
@@ -83,7 +83,7 @@
   [endscript]
 
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
-  [stopse]
+  [stopse buf="1"]
 [endmacro]
 
 
@@ -100,7 +100,7 @@
   [endscript]
 
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
-  [stopse]
+  [stopse buf="1"]
   [m_exitCharacter characterId="&mp.characterId"]
 [endmacro]
 
@@ -132,7 +132,7 @@
   [endscript]
 
   [call storage="&tf.messageStorage" target="&tf.messageTarget"]
-  [stopse]
+  [stopse buf="1"]
 [endmacro]
 
 
@@ -336,7 +336,7 @@
 ; @param side 発言者が登場する位置。'left'で左側。それ以外または未指定の場合は右側。
 [macro name="m_enterCharacter"]
   [iscript]
-    console.log('★enter ' + mp.characterId);
+    console.debug('★enter ' + mp.characterId);
 
     mp.side = (('side' in mp) && mp.side === 'left') ? 'left' : 'right';
 
@@ -394,7 +394,7 @@
   ; 現在そのキャラが表示されていないなら、何もせず終了
   [jump target="*end_m_exitCharacter" cond="tf.side === null"]
 
-  [eval exp="console.log('★exit ' + mp.characterId)"]
+  [eval exp="console.debug('★exit ' + mp.characterId)"]
 
   ; そのキャラをデフォルトの待機位置に移動させる
   [chara_move name="&mp.characterId" time="&mp.time" left="&f.defaultPosition[mp.characterId].leftOnDefautRight" wait="&mp.wait"]

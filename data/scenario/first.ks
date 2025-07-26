@@ -34,7 +34,6 @@
 [loadjs storage="voivoJinro/theater/theaterScripts.js"]
 [loadjs storage="voivoJinro/theater/episodeData.js"]
 [loadjs storage="voivoJinro/record/recordScripts.js"]
-[loadjs storage="voivoJinro/front/buttonScripts.js"]
 [loadjs storage="voivoJinro/sf/Version.js"]
 
 [iscript]
@@ -45,15 +44,14 @@ if (!('isDebugMode' in sf)) {
 }
 
 // ゲーム本体のバージョンをシナリオ変数に設定
-sf.version = buildSfVersion(0, 13, 1, sf.isDebugMode, false);
+sf.version = buildSfVersion(1, 0, 0, sf.isDebugMode, false);
 
 // jinroプラグインのバージョンをシナリオ変数に設定
-sf.jinroPluginVersion = buildSfVersion(
-  JINRO_PLUGIN_VERSION.major,
-  JINRO_PLUGIN_VERSION.minor,
-  JINRO_PLUGIN_VERSION.patch,
-  false,
-  true
+sf.jinroPluginVersion = new Version(
+  sf.jinro.version.major,
+  sf.jinro.version.minor,
+  sf.jinro.version.patch,
+  sf.jinro.isDebugMode,
 );
 
 // シナリオ変数初期設定
@@ -65,9 +63,9 @@ if (!('theaterProgress' in sf)) {
 if (!('jinroGameDataObjects' in sf)) {
   resetJinroGameDataObjectsToDefault();
 }
-// 視聴済みエピソードスキップ要否フラグ
-if (!('doSkipWatchedEpisode' in sf)) {
-  sf.doSkipWatchedEpisode = true;
+// 再生済みエピソードスキップ要否フラグ
+if (!('doSkipPlayedEpisode' in sf)) {
+  sf.doSkipPlayedEpisode = true;
 }
 // 紹介動画表示用の進捗
 // MEMO:必要になったら復活させる
@@ -84,11 +82,12 @@ if (!('record' in sf)) {
 
 // コンフィグ用初期設定
 if (!('config' in sf)) {
-  console.log("★RESET config★");
+  console.debug("★RESET config★");
   sf.config = {
-    current_bgm_vol:    70, // TG.config.defaultBgmVolume, // BGM音量
-    current_se_vol:     70, // TG.config.defaultSeVolume, // SE音量
-    current_voice_vol:  70, // TG.config.defaultSeVolume, // VOICE音量 デフォルトではSEと同じ
+    current_bgm_vol:       70, // TG.config.defaultBgmVolume, // BGM音量
+    current_button_se_vol: 70, // TG.config.defaultSeVolume, // ボタンSE音量
+    current_se_vol:        70, // TG.config.defaultSeVolume, // その他SE音量
+    current_voice_vol:     70, // TG.config.defaultSeVolume, // VOICE音量 デフォルトではSEと同じ
     current_ch_speed:   TG.config.chSpeed, // テキスト表示速度
     current_auto_speed: TG.config.autoSpeed, // オート時のテキスト表示速度 現在未使用
     mute_bgm:   false,
@@ -98,21 +97,61 @@ if (!('config' in sf)) {
     show_icon: false, // キャラアイコン表示の有無 現在未使用
   }
 }
-tf.tmp_bgm_vol = sf.config.mute_bgm ? "0" : String(sf.config.current_bgm_vol);
-tf.tmp_se_vol = sf.config.mute_se ? "0" : String(sf.config.current_se_vol);
-tf.tmp_voice_vol = sf.config.mute_voice ? "0" : String(sf.config.current_voice_vol);
-tf.tmp_ch_speed = String(sf.config.current_ch_speed);
+tf.tmp_bgm_vol       = sf.config.mute_bgm       ? "0" : String(sf.config.current_bgm_vol);
+tf.tmp_button_se_vol = sf.config.mute_button_se ? "0" : String(sf.config.current_button_se_vol);
+tf.tmp_se_vol        = sf.config.mute_se        ? "0" : String(sf.config.current_se_vol);
+tf.tmp_voice_vol     = sf.config.mute_voice     ? "0" : String(sf.config.current_voice_vol);
+tf.tmp_ch_speed      = String(sf.config.current_ch_speed);
+
+// ローディング表示
+if (!('doShowLoadingIcon' in sf)) {
+  sf.doShowLoadingIcon = true;
+}
+// loading_logのiconを有効にするには、文字列の'true'を設定する必要があるため変換
+tf.doShowLoadingIcon = sf.doShowLoadingIcon ? 'true' : 'false';
+
+// 必須ファイルのプリロード用
+tf.preloadList = {
+  multiUse: [
+    // タイトル画面の背景画像
+    "data/bgimage/voivojinrou_title_v4.png",
+    // タイトル画面のBGM
+    "data/bgm/fun_fun_Ukelele_1loop.ogg",
+    // ボタンホバー時、クリック時のSE
+    "data/sound/se/button34.ogg",
+    "data/sound/se/button13.ogg",
+    "data/sound/se/button15.ogg",
+    // メッセージウィンドウ
+    "data/image/message_window_none.png",
+    "data/image/message_window_left.png",
+    "data/image/message_window_right.png",
+    "data/image/message_window_double.png",
+    // ウィンドウ
+    "data/fgimage/window_rectangle.png"
+  ]
+};
+
+// まとめてロードするか
+// TODO:タイトル画面で、初期値入ってなければ強制的にウィンドウ出す
+if (!('needPreload' in sf)) {
+  sf.needPreload = true;
+}
 [endscript]
+
+; 素材ロード中にローディング表示をするか
+[loading_log preload="notext" icon="&tf.doShowLoadingIcon"]
 
 ; タイトル表示
 [title name="&sf.version.getVersionText('ボイボ人狼 ver.')"]
 
-; ボタンホバー時のSEをプリロードしておく（jsで非同期で鳴らす処理が遅れることによるボタン表示系のバグが頻発しているため、おまじないとして）
-[preload storage="data/sound/se/button34.ogg" single_use="false"]
+; 必須ファイルのプリロード
+[preload storage="&tf.preloadList.multiUse" single_use="false"]
 
+; 音量（BGM、ボタンSE、その他SE、VOICE）、テキスト速度の初期値を設定
 [bgmopt volume="&tf.tmp_bgm_vol"]
-[seopt volume="&tf.tmp_se_vol" buf="1"]
-[seopt volume="&tf.tmp_voice_vol" buf="0"]
+[seopt volume="&tf.tmp_button_se_vol" buf="0"]
+[seopt volume="&tf.tmp_voice_vol" buf="1"]
+[seopt volume="&tf.tmp_se_vol" buf="2"]
 [configdelay speed="&tf.tmp_ch_speed"]
 
 ; デフォルトフォントの設定

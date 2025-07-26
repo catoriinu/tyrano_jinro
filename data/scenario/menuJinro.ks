@@ -13,16 +13,13 @@
 [iscript]
   tf.buttonColor = CLASS_GLINK_DEFAULT;
   tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
-  tf.classButtonSeHover = CLASS_BUTTON_SE_HOVER;
 [endscript]
 
-[glink color="&tf.buttonColor" size="30" width="400" x="439" y="180" name="&tf.classButtonSeHover" text="タイトルに戻る" target="*returnTitle"]
-[glink color="&tf.buttonColor" size="30" width="400" x="439" y="320" name="&tf.classButtonSeHover" text="コンフィグ" target="*config"]
-[glink color="&tf.selectedButtonColor" size="30" width="400" x="439" y="460" name="&tf.classButtonSeHover" text="メニューを閉じる" target="*closeMenu"]
+[glink color="&tf.buttonColor" size="30" width="400" x="439" y="180" enterse="se/button34.ogg" clickse="se/button13.ogg" text="タイトルに戻る" target="*returnTitle"]
+[glink color="&tf.buttonColor" size="30" width="400" x="439" y="320" enterse="se/button34.ogg" clickse="se/button13.ogg" text="コンフィグ" target="*config"]
+[glink color="&tf.selectedButtonColor" size="30" width="400" x="439" y="460" enterse="se/button34.ogg" clickse="se/button15.ogg" text="メニューを閉じる" target="*closeMenu"]
 ; 「現在の変数を出力」はデバッグモード時のみ表示する。ただし他のボタンの邪魔にならないよう、枠外で。
-[glink color="&tf.buttonColor" size="26" width="450" x="412" y="600" name="&tf.classButtonSeHover" text="問い合わせ用 現在の変数を出力" target="*exportJson" cond="sf.isDebugMode"]
-
-[eval exp="setButtonSe()"]
+[glink color="&tf.buttonColor" size="26" width="450" x="412" y="600" enterse="se/button34.ogg" clickse="se/button13.ogg" text="問い合わせ用 現在の変数を出力" target="*exportJson" cond="sf.isDebugMode"]
 [s]
 
 

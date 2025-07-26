@@ -41,7 +41,7 @@ function isOutroUnlockConditionMet(outroUnlockCondition, resultCondition) {
     // isPlayerWin条件のチェック
     if (outroUnlockCondition.isPlayerWin !== null) {
         if (outroUnlockCondition.isPlayerWin !== resultCondition.isPlayerWin) {
-            console.log('★false isPlayerWin');
+            console.debug('★false isPlayerWin');
             return false;
         }
     }
@@ -49,7 +49,7 @@ function isOutroUnlockConditionMet(outroUnlockCondition, resultCondition) {
     // winnerFaction条件のチェック
     if (outroUnlockCondition.winnerFaction !== null) {
         if (outroUnlockCondition.winnerFaction !== resultCondition.winnerFaction) {
-            console.log('★false winnerFaction');
+            console.debug('★false winnerFaction');
             return false;
         }
     }
@@ -66,7 +66,7 @@ function isOutroUnlockConditionMet(outroUnlockCondition, resultCondition) {
                 outroUnlockCondition.characterConditions[characterId],
                 resultCondition.characterConditions[characterId]
             )) {
-                console.log('★false isCharacterConditionMet:' + characterId);
+                console.debug('★false isCharacterConditionMet:' + characterId);
                 return false;
             }
         }

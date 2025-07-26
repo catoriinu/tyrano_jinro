@@ -64,7 +64,7 @@
   ; 最終的に押下したボタンを判定するために、ボタン情報をpreexpに格納しておく
   ; 補足：ティラノスクリプトv521fにて、preexpの評価タイミングがボタン押下時ではなくボタン生成時に修正された
   ; 　　　そのおかげで、ホバーしたボタンのクラスからボタン情報を取得していた場合に存在した「ボタン表示時にカーソルが初めからボタンの位置にあると、hoverイベントが発生しないのでクラス名を取得できない」バグが解消された
-  [glink color="&tf.buttonObj.color" size="26" width="300" x="&tf.x" y="&tf.y" name="&tf.glink_name" text="&tf.buttonObj.text" preexp="[tf.buttonObj.side, tf.buttonObj.id]" exp="[f.selectedSide, f.selectedButtonId] = preexp" target="*glinkFromButtonObjects_end"]
+  [glink color="&tf.buttonObj.color" size="26" width="300" x="&tf.x" y="&tf.y" name="&tf.glink_name" text="&tf.buttonObj.text" preexp="[tf.buttonObj.side, tf.buttonObj.id]" exp="[f.selectedSide, f.selectedButtonId] = preexp" target="*glinkFromButtonObjects_end" clickse="&tf.buttonObj.clickse" enterse="&tf.buttonObj.enterse"]
 
   ; TODO なぜか勢い余ってtf.cntが終了条件以上に超えてしまうことがあるので、>=での判定にしている。それでもたまに1週多くループするバグが起きるので修正する。
   [jump target="*loopend" cond="tf.cnt >= (tf.buttonCount - 1)"]
@@ -76,16 +76,6 @@
   // ボタンにカーソルが乗ったときの処理
   $(".buttonhover").hover(
     function(e) {
-      // glinkのenterse属性だと細かい設定ができないため独自に設定（特にbufがデフォルトだと他で鳴っている効果音を打ち消してしまう）
-      TYRANO.kag.ftag.startTag(
-        "playse",
-        {
-          storage: "se/button34.ogg",
-          volume: 30,
-          buf: 1
-        }
-      );
-
       // ホバーしたボタンのclass属性の中から、ボタン生成時に付与しておいたId部分を抽出する
       const classList = $(this).attr("class").split(" ");
 
@@ -113,7 +103,7 @@
 
 *glinkFromButtonObjects_end
 [iscript]
-  console.log('button clicked side=' + f.selectedSide + ' id=' + f.selectedButtonId);
+  console.debug('button clicked side=' + f.selectedSide + ' id=' + f.selectedButtonId);
 
   // ボタン用変数の初期化
   f.buttonObjects = []

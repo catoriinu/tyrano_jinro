@@ -13,7 +13,10 @@
   [t_playChapter target="introChapter"]
 
   ; 開始する人狼ゲームデータを読み込む
-  [j_prepareJinroGame jinroGameData="&f.targetJinroGameData" preload="true"]
+  [j_prepareJinroGame jinroGameData="&f.targetJinroGameData"]
+
+  ; 人狼ゲームのプレイに必要なファイルをプリロードする
+  [call storage="prepareJinro.ks" target="*preloadFiles" cond="sf.needPreload"]
 
   ; 人狼ゲーム開始
   [jump storage="playJinro.ks"]
@@ -57,6 +60,33 @@
   ; 規定のチャプターリストの登録
   [call storage="theater/chapterList.ks" target="*addNotice" cond="tf.needAddNotice"]
   [call storage="theater/chapterList.ks" target="*addInstruction" cond="tf.needAddInstruction"]
+
+  [return]
+[s]
+
+
+
+; playJinro内で使うファイルをプリロードするサブルーチン
+*preloadFiles
+  ; 人狼ゲームに参加するキャラクターのボイスをプリロードする
+  [call storage="message/utility.ks" target="*preloadVoice"]
+
+  [iscript]
+    tf.preloadList = [
+      // BGM
+      "data/bgm/nc282335.ogg",
+      // SE
+      "data/sound/se/wadaiko_dodon.ogg",
+      "data/sound/se/shakiin1.ogg",
+      "data/sound/se/megaten.ogg",
+      "data/sound/se/kirakira4.ogg",
+      "data/sound/se/chiin1.ogg",
+      // 画像
+      "data/bgimage/living_night_close.jpg",
+      "data/bgimage/living_day.jpg",
+    ];
+  [endscript]
+  [preload storage="&tf.preloadList" single_use="false" name="jinroFiles"]
 
   [return]
 [s]

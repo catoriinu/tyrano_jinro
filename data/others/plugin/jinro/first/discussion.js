@@ -54,7 +54,7 @@ function randomDecide(originalProbability, randomRange = 0) {
   // probabilityの確率でtrueを返す。判定時の乱数も呼び元で優先度を判定するために返す。
   const randomValue = Math.random();
   const result = randomValue < probability;
-  console.log('判定結果:' + result + ' 元の確率:' + probability + ' 判定時の乱数:' + randomValue);
+  console.debug('判定結果:' + result + ' 元の確率:' + probability + ' 判定時の乱数:' + randomValue);
   return [randomValue, result];
 }
 
@@ -96,10 +96,10 @@ function zeronize(perspective, characterId, zeroRoleIds, distributeCharacterIds)
     throw new Error('zeronize error. all roles are 0.');
   }
   
-  console.log('start zeronize');
-  console.log(perspective);
-  console.log(characterId);
-  console.log(zeroRoleIds);
+  console.debug('start zeronize');
+  console.debug(perspective);
+  console.debug(characterId);
+  console.debug(zeroRoleIds);
   
   // そのキャラクター内の役職ごとの割合を正規化
   for (let roleId of Object.keys(perspective[characterId])) {
@@ -141,7 +141,7 @@ function zeronize(perspective, characterId, zeroRoleIds, distributeCharacterIds)
   for (let roleId of Object.keys(perspective.uncertified)) {
     
     if (perspective.uncertified[roleId] > 0) {
-      //console.log('縦に確認 : ' + roleId);
+      //console.debug('縦に確認 : ' + roleId);
       let uncertifiedCharacterIds = [];
       for (let characterId of Object.keys(perspective)) {
         if (characterId == 'uncertified') continue;
@@ -149,8 +149,8 @@ function zeronize(perspective, characterId, zeroRoleIds, distributeCharacterIds)
           uncertifiedCharacterIds.push(characterId);
         }
       }
-      //console.log(uncertifiedCharacterIds);
-      //console.log(perspective.uncertified[roleId]);
+      //console.debug(uncertifiedCharacterIds);
+      //console.debug(perspective.uncertified[roleId]);
       if (uncertifiedCharacterIds.length == perspective.uncertified[roleId]) {
         let noOtherCandidatesRoleIds = Object.keys(perspective.uncertified).filter(rId => rId != roleId);
         for (let i = 0; i < uncertifiedCharacterIds.length; i++) {
@@ -219,8 +219,8 @@ function organizePerspective(originalPerspective, characterId, originalZeroRoleI
     }
   }
   
-  console.log('result organizePerspective');
-  console.log(perspective);
+  console.debug('result organizePerspective');
+  console.debug(perspective);
   
   return perspective;
 }
@@ -251,14 +251,14 @@ function generateRegalAnnouncements(candidateIdList, perspective) {
           }
         );
       } catch (zeronizeError) {
-        console.log('zeronizeError : ' + candidateIdList[i] + ' is ' + boolArray[j]);
+        console.debug('zeronizeError : ' + candidateIdList[i] + ' is ' + boolArray[j]);
         continue;
       }
     }
   }
   
-  console.log('regalAnnouncements');
-  console.log(regalAnnouncements);
+  console.debug('regalAnnouncements');
+  console.debug(regalAnnouncements);
   return regalAnnouncements;
 }
 
@@ -277,30 +277,30 @@ function getRoleIdsForOrganizePerspective(color) {
 
 
 function updateCommonPerspective(characterId, zeroRoleIds) {
-  console.log('j_updateCommonPerspective');
+  console.debug('j_updateCommonPerspective');
   // 共通視点オブジェクトを更新する
-  console.log('【共通視点】');
+  console.debug('【共通視点】');
   try {
     TYRANO.kag.stat.f.commonPerspective = organizePerspective(TYRANO.kag.stat.f.commonPerspective, characterId, zeroRoleIds);
   } catch (error) {
-    console.log('共通視点オブジェクトが破綻しました美味しい水そうめん');
-    console.log(characterId);
-    console.log(zeroRoleIds);
-    console.log(TYRANO.kag.stat.f.commonPerspective);
+    console.debug('共通視点オブジェクトが破綻しました美味しい水そうめん');
+    console.debug(characterId);
+    console.debug(zeroRoleIds);
+    console.debug(TYRANO.kag.stat.f.commonPerspective);
     alert('共通視点オブジェクトが破綻しました美味しい水そうめん');
     return;
   }
 
   // 各キャラの視点オブジェクトも更新する
   for (let cId of Object.keys(TYRANO.kag.stat.f.characterObjects)) {
-    console.log('【' + cId + 'の視点】');
-    console.log(TYRANO.kag.stat.f.characterObjects[cId].perspective);
+    console.debug('【' + cId + 'の視点】');
+    console.debug(TYRANO.kag.stat.f.characterObjects[cId].perspective);
     
     try {
       TYRANO.kag.stat.f.characterObjects[cId].perspective = organizePerspective(TYRANO.kag.stat.f.characterObjects[cId].perspective, characterId, zeroRoleIds);
       TYRANO.kag.stat.f.characterObjects[cId].role.rolePerspective = organizePerspective(TYRANO.kag.stat.f.characterObjects[cId].role.rolePerspective, characterId, zeroRoleIds);
     } catch (error) {
-      console.log(cId + 'の視点が破綻しました！');
+      console.debug(cId + 'の視点が破綻しました！');
       // 破綻したときの処理を行う
       updateCharacterObjectToContradicted(cId);
     }
@@ -422,9 +422,9 @@ function decideVote(characterObjects, day) {
     // 投票対象者をその日の投票履歴に格納する
     characterObjects[characterId].voteHistory[day] = pushElement(characterObjects[characterId].voteHistory[day], voteTargetId);
     TYRANO.kag.stat.f.characterObjects = characterObjects;
-    //console.log('【voteHistory】');
-    //console.log(characterId);
-    //console.log(characterObjects[characterId].voteHistory);
+    //console.debug('【voteHistory】');
+    //console.debug(characterId);
+    //console.debug(characterObjects[characterId].voteHistory);
   }
 }
 
@@ -560,15 +560,19 @@ function countTargetedId(actionObjects, countId) {
  * @param {String} additionalClassName ボタンに追加したいクラス名。追加不要の場合は空文字。以下補足
  * ・glinkのnameに追加され、ボタンのclass属性になる。colorのclass属性より後ろに追加されるので、より優先される。
  * ・基本的にaddClassName()を使って追加すること。使えない理由がある場合、同等の処理をしておくこと。
- * @param {*} target ボタン押下時にジャンプするラベル名
- * @param {*} storage ボタン押下時にジャンプするファイル名
+ * @param {*} enterse ボタンにマウスオーバーしたときのSE
+ * @param {*} clickse ボタン押下時のSE
+ * //@param {*} target ボタン押下時にジャンプするラベル名
+ * //@param {*} storage ボタン押下時にジャンプするファイル名
  */
-function Button (id, text, side = 'center', color = '', additionalClassName = '', target = '', storage = '') {
+function Button (id, text, side = 'center', color = '', additionalClassName = '', enterse = '', clickse = '', target = '', storage = '') {
   this.id = id;
   this.text = text;
   this.side = side;
   this.color = color;
   this.additionalClassName = ''; // this.addClassName()を定義したあとで引数を入れるので、今は空文字固定
+  this.enterse = enterse;
+  this.clickse = clickse;
   //this.target = target;
   //this.storage = storage;
 
@@ -612,8 +616,8 @@ function Action (characterId = '', actionId = '', targetId = '', result = null, 
  */
 function updateReliabirityForAction(characterObjects, actionObject) {
 
-  console.log('updateReliabirityForAction actionObject:');
-  console.log(actionObject);
+  console.debug('updateReliabirityForAction actionObject:');
+  console.debug(actionObject);
 
   // アクションの実行者の影響力倍率を計算する（以降の処理で共通の値なので最初に行う）
   // NOTE:実行者のいないアクションの場合は1（今のところ実行者のいないアクションはここに来ない）
@@ -626,7 +630,7 @@ function updateReliabirityForAction(characterObjects, actionObject) {
     // リアクションもスキップ。リアクションでは信頼度更新しないため
     if (actionObject.actionId == ACTION_REACTION) continue;
 
-    console.log('character:' + characterObjects[cId].name);
+    console.debug('character:' + characterObjects[cId].name);
 
     if (actionObject.actionId == ACTION_SUSPECT) {
       updateReliabirityForSucpect(characterObjects[cId], actionObject, influenceMultiplier);
@@ -982,7 +986,7 @@ function updateReliabirityForVote(character, action, influenceMultiplier) {
 
 
 function loggingObjects(characterObjects, actionObject) {
-  console.log('loggingCharacterObjects...');
+  console.debug('loggingCharacterObjects...');
 
   // アクションオブジェクトの中身をログ用配列に格納
   //const actionObjectForLog = [actionObject.characterId, actionObject.actionId, actionObject.targetId];
@@ -1027,16 +1031,16 @@ function loggingObjects(characterObjects, actionObject) {
       //perspective: perspectiveObject
     };
   }
-  console.log(logObject);
+  console.debug(logObject);
   TYRANO.kag.stat.f.logArrayList.push(logArray.join(','));
   //const logString = logArray.join(',');
-  //console.log(logString);
+  //console.debug(logString);
 }
 
 function outputLog(){
-  console.log('実行者,アクション,対象者,結果,【仲間度】ずんだもん→ずんだもん,【仲間度】ずんだもん→四国めたん,【仲間度】ずんだもん→春日部つむぎ,【仲間度】ずんだもん→雨晴はう,【仲間度】ずんだもん→波音リツ,【信頼度】ずんだもん→ずんだもん,【信頼度】ずんだもん→四国めたん,【信頼度】ずんだもん→春日部つむぎ,【信頼度】ずんだもん→雨晴はう,【信頼度】ずんだもん→波音リツ,【仲間度】四国めたん→ずんだもん,【仲間度】四国めたん→四国めたん,【仲間度】四国めたん→春日部つむぎ,【仲間度】四国めたん→雨晴はう,【仲間度】四国めたん→波音リツ,【信頼度】四国めたん→ずんだもん,【信頼度】四国めたん→四国めたん,【信頼度】四国めたん→春日部つむぎ,【信頼度】四国めたん→雨晴はう,【信頼度】四国めたん→波音リツ,【仲間度】春日部つむぎ→ずんだもん,【仲間度】春日部つむぎ→四国めたん,【仲間度】春日部つむぎ→春日部つむぎ,【仲間度】春日部つむぎ→雨晴はう,【仲間度】春日部つむぎ→波音リツ,【信頼度】春日部つむぎ→ずんだもん,【信頼度】春日部つむぎ→四国めたん,【信頼度】春日部つむぎ→春日部つむぎ,【信頼度】春日部つむぎ→雨晴はう,【信頼度】春日部つむぎ→波音リツ,【仲間度】雨晴はう→ずんだもん,【仲間度】雨晴はう→四国めたん,【仲間度】雨晴はう→春日部つむぎ,【仲間度】雨晴はう→雨晴はう,【仲間度】雨晴はう→波音リツ,【信頼度】雨晴はう→ずんだもん,【信頼度】雨晴はう→四国めたん,【信頼度】雨晴はう→春日部つむぎ,【信頼度】雨晴はう→雨晴はう,【信頼度】雨晴はう→波音リツ,【仲間度】波音リツ→ずんだもん,【仲間度】波音リツ→四国めたん,【仲間度】波音リツ→春日部つむぎ,【仲間度】波音リツ→雨晴はう,【仲間度】波音リツ→波音リツ,【信頼度】波音リツ→ずんだもん,【信頼度】波音リツ→四国めたん,【信頼度】波音リツ→春日部つむぎ,【信頼度】波音リツ→雨晴はう,【信頼度】波音リツ→波音リツ');
+  console.debug('実行者,アクション,対象者,結果,【仲間度】ずんだもん→ずんだもん,【仲間度】ずんだもん→四国めたん,【仲間度】ずんだもん→春日部つむぎ,【仲間度】ずんだもん→雨晴はう,【仲間度】ずんだもん→波音リツ,【信頼度】ずんだもん→ずんだもん,【信頼度】ずんだもん→四国めたん,【信頼度】ずんだもん→春日部つむぎ,【信頼度】ずんだもん→雨晴はう,【信頼度】ずんだもん→波音リツ,【仲間度】四国めたん→ずんだもん,【仲間度】四国めたん→四国めたん,【仲間度】四国めたん→春日部つむぎ,【仲間度】四国めたん→雨晴はう,【仲間度】四国めたん→波音リツ,【信頼度】四国めたん→ずんだもん,【信頼度】四国めたん→四国めたん,【信頼度】四国めたん→春日部つむぎ,【信頼度】四国めたん→雨晴はう,【信頼度】四国めたん→波音リツ,【仲間度】春日部つむぎ→ずんだもん,【仲間度】春日部つむぎ→四国めたん,【仲間度】春日部つむぎ→春日部つむぎ,【仲間度】春日部つむぎ→雨晴はう,【仲間度】春日部つむぎ→波音リツ,【信頼度】春日部つむぎ→ずんだもん,【信頼度】春日部つむぎ→四国めたん,【信頼度】春日部つむぎ→春日部つむぎ,【信頼度】春日部つむぎ→雨晴はう,【信頼度】春日部つむぎ→波音リツ,【仲間度】雨晴はう→ずんだもん,【仲間度】雨晴はう→四国めたん,【仲間度】雨晴はう→春日部つむぎ,【仲間度】雨晴はう→雨晴はう,【仲間度】雨晴はう→波音リツ,【信頼度】雨晴はう→ずんだもん,【信頼度】雨晴はう→四国めたん,【信頼度】雨晴はう→春日部つむぎ,【信頼度】雨晴はう→雨晴はう,【信頼度】雨晴はう→波音リツ,【仲間度】波音リツ→ずんだもん,【仲間度】波音リツ→四国めたん,【仲間度】波音リツ→春日部つむぎ,【仲間度】波音リツ→雨晴はう,【仲間度】波音リツ→波音リツ,【信頼度】波音リツ→ずんだもん,【信頼度】波音リツ→四国めたん,【信頼度】波音リツ→春日部つむぎ,【信頼度】波音リツ→雨晴はう,【信頼度】波音リツ→波音リツ');
   for (let logString of TYRANO.kag.stat.f.logArrayList) {
-    console.log(logString);
+    console.debug(logString);
   }
 }
 
@@ -1091,7 +1095,7 @@ function getCharacterIdBySameFactionPerspective(characterObject, perspective, ro
         sumSameFactionPerspective += perspective[cId][rId];
       }
     }
-    console.log('★SameFactionPerspective targetCharacterId:' + cId + ' sumSameFactionPerspective:' + sumSameFactionPerspective);
+    console.debug('★SameFactionPerspective targetCharacterId:' + cId + ' sumSameFactionPerspective:' + sumSameFactionPerspective);
 
     // 同陣営割合の合計の値を確認し、キャラクターIDを格納するか判定する
     if (sumSameFactionPerspective == maxOrMinValue) {
@@ -1117,8 +1121,8 @@ function getCharacterIdBySameFactionPerspective(characterObject, perspective, ro
     // 候補が複数なら、候補の中で最も仲間度が高い（低い）キャラクターを候補とする
     // 基本的には、信頼度の差の影響で仲間度にも差が出る。ただしlogicalが1の場合だけは差が出ないことに注意。
     let sameFactionPossivility = calcSameFactionPossivility(characterObject, perspective, targetCharacterIdList);
-    console.log('★SameFactionPerspective sameFactionPossivility:');
-    console.log(sameFactionPossivility);
+    console.debug('★SameFactionPerspective sameFactionPossivility:');
+    console.debug(sameFactionPossivility);
 
     targetCharacterIdList = [];
     // 比較用の値の初期値を格納。最大値が必要なら0、最小値が必要なら1
@@ -1145,7 +1149,7 @@ function getCharacterIdBySameFactionPerspective(characterObject, perspective, ro
       targetCharacterId = getRandomElement(targetCharacterIdList);
     }
   }
-  console.log('★getCharacterIdBySameFactionPerspective targetCharacterId:' + targetCharacterId);
+  console.debug('★getCharacterIdBySameFactionPerspective targetCharacterId:' + targetCharacterId);
 
   return targetCharacterId;
 }
@@ -1170,7 +1174,7 @@ function getCharacterIdByReliability(characterObject, needsMax) {
     if (!TYRANO.kag.stat.f.characterObjects[cId].isAlive) continue;
 
     let tmpReliability = characterObject.reliability[cId]
-    console.log('★Reliability targetCharacterId:' + cId + ' Reliability:' + tmpReliability);
+    console.debug('★Reliability targetCharacterId:' + cId + ' Reliability:' + tmpReliability);
 
     // 同陣営割合の合計の値を確認し、キャラクターIDを格納するか判定する
     if (tmpReliability == maxOrMinValue) {
@@ -1200,8 +1204,8 @@ function getCharacterIdByReliability(characterObject, needsMax) {
       characterObject.perspective, // 発言は嘘をつくため、perspectiveを渡す
       targetCharacterIdList
     );
-    console.log('★Reliability sameFactionPossivility:');
-    console.log(sameFactionPossivility);
+    console.debug('★Reliability sameFactionPossivility:');
+    console.debug(sameFactionPossivility);
 
     targetCharacterIdList = [];
     // 比較用の値の初期値を格納。最大値が必要なら0、最小値が必要なら1
@@ -1228,7 +1232,7 @@ function getCharacterIdByReliability(characterObject, needsMax) {
       targetCharacterId = getRandomElement(targetCharacterIdList);
     }
   }
-  console.log('getCharacterIdByReliability targetCharacterId:' + targetCharacterId);
+  console.debug('getCharacterIdByReliability targetCharacterId:' + targetCharacterId);
 
   return targetCharacterId;
 }
@@ -1242,7 +1246,7 @@ function getCharacterIdByReliability(characterObject, needsMax) {
  * @param {String} actorId アクション実行者のキャラクターID
  */
 function increaseFrustration(characterObjects, participantsIdList, actionCandidateObjects, actorId) {
-  console.log("start increaseFrustration actorId:" + actorId);
+  console.debug("start increaseFrustration actorId:" + actorId);
 
   // 生存者のキャラクターオブジェクト配列を取得
   const survivorObjects = getSurvivorObjects(characterObjects);
@@ -1254,8 +1258,8 @@ function increaseFrustration(characterObjects, participantsIdList, actionCandida
     if (candidateObject.characterId === actorId) continue;
     // 「そのときの主張力 * 軽減用係数」の値を、実行者に対するフラストレーションとして溜める
     characterObjects[candidateObject.characterId].currentFrustration[actorId] += (candidateObject.probability * frustrationDecreasingRate);
-    console.log("candidateObject:");
-    console.log(candidateObject);
+    console.debug("candidateObject:");
+    console.debug(candidateObject);
   }
 }
 
@@ -1290,7 +1294,7 @@ function getLatestAction(characterId, thisTimeActionHistory, targetActionIdList)
  * @returns 
  */
 function getCounterAction(triggerActionHistory) {
-  console.log("start getCounterAction");
+  console.debug("start getCounterAction");
 
   // 同一トリガー内でアクション済みのキャラクターを取得する。アクション済みなら候補から外すため
   const doneActionCharacterIds = getValuesFromObjectArray(triggerActionHistory, 'characterId');
@@ -1302,8 +1306,8 @@ function getCounterAction(triggerActionHistory) {
   // 優先度0のカウンターアクションの実行判定
   if (lastAction.priority <= 0) {
     const counterActionForPriority0 = getCounterActionForPriority0(triggerAction, doneActionCharacterIds);
-    console.log("getCounterActionForPriority0 result:");
-    console.log(counterActionForPriority0);
+    console.debug("getCounterActionForPriority0 result:");
+    console.debug(counterActionForPriority0);
     if (counterActionForPriority0) return counterActionForPriority0;
   }
 
@@ -1311,19 +1315,19 @@ function getCounterAction(triggerActionHistory) {
   const actionCandidateObjects = getActionCandidateCharacter(doneActionCharacterIds);
   // 候補者が誰もいなければ終了
   if (actionCandidateObjects.length === 0) {
-    console.log("getCounterAction result: No ActionCandidateCharacter");
+    console.debug("getCounterAction result: No ActionCandidateCharacter");
     return {};
   }
 
   // 優先度2のカウンターアクションの実行判定
   if (lastAction.priority <= 2) {
     const counterActionForPriority2 = getCounterActionForPriority2(triggerAction, actionCandidateObjects);
-    console.log("getCounterActionForPriority2 result:");
-    console.log(counterActionForPriority2);
+    console.debug("getCounterActionForPriority2 result:");
+    console.debug(counterActionForPriority2);
     if (counterActionForPriority2) return counterActionForPriority2;
   }
 
-  console.log("getCounterAction result: No CounterAction");
+  console.debug("getCounterAction result: No CounterAction");
   return {};
 }
 
@@ -1403,7 +1407,7 @@ function getActionCandidateCharacter(excludeCharacterIds = []) {
     if (excludeCharacterIds.includes(cId)) continue;
 
     // 現在の主張力をもとに、アクション実行確率とアクション実行したいかを取得する
-    console.log('キャラクター: ' + characterObjects[cId].name);
+    console.debug('キャラクター: ' + characterObjects[cId].name);
     const [probability, doesAction] = randomDecide(characterObjects[cId].personality.assertiveness.current);
 
     // アクション実行したくない判定なら除外
@@ -1418,7 +1422,7 @@ function getActionCandidateCharacter(excludeCharacterIds = []) {
 
   // probabilityの大きい順にソート（すなわち、配列の要素による逆順ソート）
   actionCandidateObjects.sort((a, b) => b.probability - a.probability);
-  console.log('ActionCandidateCharacter result:');
-  console.log(actionCandidateObjects);
+  console.debug('ActionCandidateCharacter result:');
+  console.debug(actionCandidateObjects);
   return actionCandidateObjects;
 }

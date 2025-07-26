@@ -9,7 +9,7 @@
   // （現在の）ボイボ人狼ではエピソード数は1ページにつき8つ（e01-e08）
   const episodeIdList = ['e01', 'e02', 'e03', 'e04', 'e05', 'e06', 'e07', 'e08']
   // 導入編が未解放（取得できなかった、または0：導入編未解放かつ現時点では解放不可）のエピソードは、代わりに未解放用のエピソードを格納する
-  console.log(f.episodeList);
+  console.debug(f.episodeList);
   for (let episodeId of episodeIdList) {
     const theaterProgress = getTheaterProgress(mp.pageId, episodeId);
     if (!(episodeId in f.episodeList) || theaterProgress === EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE){
@@ -41,7 +41,7 @@
 [endmacro]
 
 
-; チャプター視聴開始時の準備用マクロ
+; チャプター再生開始時の準備用マクロ
 ; @param titleText
 ; @param actorsList
 ; @param bgParams
@@ -76,6 +76,9 @@
     }
   [endscript]
 
+  ; シアター内のファイルのプリロード
+  [call storage="&f.chapterStorage" target="*preloadFiles" cond="sf.needPreload"]
+
   [t_waitClickCutIn]
 
   [bg storage="&mp.bgParams.storage" time="1" wait="true"]
@@ -88,13 +91,13 @@
 [endmacro]
 
 
-; チャプター視聴終了時の後片付け用マクロ
+; チャプター再生終了時の後片付け用マクロ
 ; @param pageId
 ; @param episodeId
 ; @param chapterId
 [macro name="t_teardownChapter"]
-  [fadeoutse buf="0" time="500"]
   [fadeoutse buf="1" time="500"]
+  [fadeoutse buf="2" time="500"]
   [fadeoutbgm time="500"]
 
   ; キャラ名を消すための#
@@ -118,7 +121,7 @@
     }
   [endscript]
 
-  ; 視聴終了時に解放すべきシアター進捗があれば解放する
+  ; 再生終了時に解放すべきシアター進捗があれば解放する
   [call storage="theater/episodeSubroutines.ks" target="*unlockNextEpisode"]
 
   ; チャプター再生中に表示している可能性があるものは全て画面から消す（途中でスキップされた場合もここで消せるようにするため）
@@ -132,7 +135,8 @@
 ; @param text 表示するテキスト。タイトルなど。
 ; @param waitAnime true: アニメーション処理待機する（デフォルト） | false: 待機しない（String型のfalseを渡してもこちらになる）[t_waitClickCutIn]を併用するならfalseでよい
 [macro name="t_cutIn"]
-  [fadeoutse time="500"]
+  [fadeoutse time="500" buf="1"]
+  [fadeoutse time="500" buf="2"]
   [fadeoutbgm time="500"]
 
   [iscript]
@@ -235,7 +239,7 @@
     // 「1:導入編未解放かつ解放可」のエピソードに対して、シチュエーション開始条件に合致したかのチェック
     const introAvailableEpisodes = getEpisodesByStatus(EPISODE_STATUS.INTRO_LOCKED_AVAILABLE, sf.theaterProgress);
     [f.needPlayIntroChapter, f.startingSituation.pageId, f.startingSituation.episodeId, f.targetJinroGameData] = checkMatchingEpisodeSituation(introAvailableEpisodes, f.targetJinroGameData);
-    // 合致したエピソードがあった場合、視聴済みエピソードをスキップする設定でも自動再生する（未視聴なので）
+    // 合致したエピソードがあった場合、再生済みエピソードをスキップする設定でも自動再生する（未再生なので）
 
     // シチュエーション開始条件に合致した「1:導入編未解放かつ解放可」のエピソードがなかった場合
     if (!f.needPlayIntroChapter) {
@@ -243,14 +247,14 @@
       const introUnlockedEpisodes = getEpisodesByStatus(EPISODE_STATUS.INTRO_UNLOCKED_OUTRO_LOCKED, sf.theaterProgress);
       [f.needPlayIntroChapter, f.startingSituation.pageId, f.startingSituation.episodeId, f.targetJinroGameData] = checkMatchingEpisodeSituation(introUnlockedEpisodes, f.targetJinroGameData);
 
-      // 合致したエピソードがあったとしても、視聴済みエピソードをスキップする設定なら自動再生はしない（ここに入ってきている＝視聴済みなので）
-      if (sf.doSkipWatchedEpisode) {
+      // 合致したエピソードがあったとしても、再生済みエピソードをスキップする設定なら自動再生はしない（ここに入ってきている＝再生済みなので）
+      if (sf.doSkipPlayedEpisode) {
         f.needPlayIntroChapter = false;
       }
     }
 
-    console.log('★f.startingSituation');
-    console.log(f.startingSituation);
+    console.debug('★f.startingSituation');
+    console.debug(f.startingSituation);
   [endscript]
 [endmacro]
 

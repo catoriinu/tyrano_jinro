@@ -30,7 +30,7 @@ tf.playbgmParams = {
 [endscript]
 [t_setupChapter titleText="&f.titleText" actorsList="&tf.actorsList" bgParams="&tf.bgParams" playbgmParams="&tf.playbgmParams"]
 
-; ここからチャプター視聴開始
+; ここからチャプター再生開始
 
 
 ; セリフ例
@@ -44,4 +44,22 @@ tf.playbgmParams = {
 
 [t_teardownChapter pageId="&f.pageId" episodeId="&f.episodeId" chapterId="&f.chapterId"]
 [jump storage="theater/main.ks" target="*start"]
+[s]
+
+
+
+; チャプター内で使うファイルをプリロードするサブルーチン
+*preloadFiles
+  [iscript]
+    tf.preloadList = {
+      singleUse: [
+      ],
+      multiUse: [
+      ]
+    };
+  [endscript]
+  [preload storage="&tf.preloadList.singleUse" single_use="true"  name="chapterFilesSingleUse" cond="tf.preloadList.singleUse.length > 0"]
+  [preload storage="&tf.preloadList.multiUse"  single_use="false" name="chapterFilesMultiUse" cond="tf.preloadList.multiUse.length > 0"]
+
+  [return]
 [s]

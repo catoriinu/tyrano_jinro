@@ -45,7 +45,7 @@
 [iscript]
     $(document).ready(function() {
         // ラジオボタンをクリックした時の処理
-        $('input[type="radio"]').click(function() {
+        $('input[type="radio"]').on('change', function() {
             // 「住人一覧」をクリックしたら情報を表示。それ以外の場合は非表示
             if ($(this).val() === "participants") {
                 $('.participantsInfo').show();
@@ -80,47 +80,47 @@
             $('.plusButton').css({'background': '#80da87'});
         }
 
-    });
-    // 「投票履歴」のカウンターの処理
-    $('.openedVoteDaycounter').each(function() {
-        const $minusButton = $(this).find('.minusButton');
-        const $plusButton = $(this).find('.plusButton');
-        const $value = $(this).find('.value');
-        const disableCssObject = {'background': '#80da87'};
+        // 「投票履歴」のカウンターの処理
+        $('.openedVoteDaycounter').each(function() {
+            const $minusButton = $(this).find('.minusButton');
+            const $plusButton = $(this).find('.plusButton');
+            const $value = $(this).find('.value');
+            const disableCssObject = {'background': '#80da87'};
 
-        // 開票オブジェクトのキーの最大値、すなわち表示可能な最新の開票日を取得
-        const maxDay = Math.max(...Object.keys(f.openedVote));
+            // 開票オブジェクトのキーの最大値、すなわち表示可能な最新の開票日を取得
+            const maxDay = Math.max(...Object.keys(f.openedVote));
 
-        $minusButton.on('click', function() {
-            const nowDay = parseInt($value.text());
-            // 最低値は1まで
-            if (nowDay > 1) {
-                const displayDay = nowDay - 1;
-                changeDisplayVoteDayHistory(displayDay, nowDay, $value);
+            $minusButton.on('click', function() {
+                const nowDay = parseInt($value.text());
+                // 最低値は1まで
+                if (nowDay > 1) {
+                    const displayDay = nowDay - 1;
+                    changeDisplayVoteDayHistory(displayDay, nowDay, $value);
 
-                // 1日目以下には減らせないので、マイナスボタンの色を変える
-                if (displayDay <= 1) {
-                    $minusButton.css(disableCssObject);
+                    // 1日目以下には減らせないので、マイナスボタンの色を変える
+                    if (displayDay <= 1) {
+                        $minusButton.css(disableCssObject);
+                    }
+                    // 減らせた=増やせるなので、プラスボタンの色をリセットする
+                    $plusButton.removeAttr('style');
                 }
-                // 減らせた=増やせるなので、プラスボタンの色をリセットする
-                $plusButton.removeAttr('style');
-            }
-        });
+            });
 
-        $plusButton.on('click', function() {
-            const nowDay = parseInt($value.text());
-            // 最大値は最新の開票日まで
-            if (nowDay < maxDay) {
-                const displayDay = nowDay + 1;
-                changeDisplayVoteDayHistory(displayDay, nowDay, $value);
+            $plusButton.on('click', function() {
+                const nowDay = parseInt($value.text());
+                // 最大値は最新の開票日まで
+                if (nowDay < maxDay) {
+                    const displayDay = nowDay + 1;
+                    changeDisplayVoteDayHistory(displayDay, nowDay, $value);
 
-                // 最新の開票日以上には増やせないので、プラスボタンの色を変える
-                if (displayDay >= maxDay) {
-                    $plusButton.css(disableCssObject);
+                    // 最新の開票日以上には増やせないので、プラスボタンの色を変える
+                    if (displayDay >= maxDay) {
+                        $plusButton.css(disableCssObject);
+                    }
+                    // 増やせた=減らせるなので、マイナスボタンの色をリセットする
+                    $minusButton.removeAttr('style');
                 }
-                // 増やせた=減らせるなので、マイナスボタンの色をリセットする
-                $minusButton.removeAttr('style');
-            }
+            });
         });
     });
     // 表示する開票日を変更
