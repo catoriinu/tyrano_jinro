@@ -75,8 +75,9 @@
   [glink color="&tf.skipButtonColor" size="24" width="140" x="298" y="600" enterse="se/button34.ogg" clickse="&tf.skipButtonSe" text="スキップ" exp="sf.doSkipPlayedEpisode = true" target="*displayButton"]
 [endif]
 
-; デバッグ系ボタン表示
-[glink color="black" size="15" x="1125" y="4" width="90" text="進捗リセット" enterse="se/button34.ogg" clickse="se/button13.ogg" target="*resetProgress" cond="sf.isDebugMode"]
+; 進捗リセット
+[glink color="black" size="15" x="1125" y="4" width="90" text="進捗リセット" enterse="se/button34.ogg" clickse="se/button13.ogg" target="*resetProgress"]
+; 開発者用メニュー（デバッグモード時限定）
 [glink color="black" size="15" x="1125" y="40" width="90" text="開発者用" enterse="se/button34.ogg" clickse="se/button13.ogg" target="*developerSettings" cond="sf.isDebugMode"]
 
 
@@ -129,59 +130,6 @@
 ;[jump storage="window/noticeClearedWindow.ks" target="*displayNoticeClearedWindow"]
 
 *resetProgress
-[html top="130" left="413.813" name="pause_menu_button_window"]
-[endhtml]
-[glink color="&tf.buttonColor" size="26" width="400" x="439" y="153" enterse="se/button34.ogg" clickse="se/button13.ogg" text="設定含めて完全初期化" target="*resetAll"]
-[glink color="&tf.buttonColor" size="26" width="400" x="439" y="238" enterse="se/button34.ogg" clickse="se/button13.ogg" text="シアターのみ初期化" target="*resetTheater"]
-[glink color="&tf.buttonColor" size="26" width="400" x="439" y="323" enterse="se/button34.ogg" clickse="se/button13.ogg" text="チュートリアル完了後" target="*resetAfterTutorial"]
-[glink color="&tf.buttonColor" size="26" width="400" x="439" y="408" enterse="se/button34.ogg" clickse="se/button13.ogg" text="エンディング後" target="*resetAfterEnding"]
-[glink color="&tf.selectedButtonColor" size="26" width="400" x="439" y="493" enterse="se/button34.ogg" clickse="se/button15.ogg" text="何もしない" target="*start"]
-[s]
-
-*resetAll
-[clearvar]
-[jump target="*doneReset"]
-
-*resetTheater
-[clearvar exp="sf.theaterProgress"]
-[jump target="*doneReset"]
-
-*resetAfterTutorial
-[iscript]
-sf.theaterProgress = 
-  {
-    'p01': {
-      'e01': EPISODE_STATUS.OUTRO_UNLOCKED,
-      'e02': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
-      'e03': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
-      'e04': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
-      'e05': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
-      'e06': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
-      'e07': EPISODE_STATUS.INTRO_LOCKED_AVAILABLE,
-      'e08': EPISODE_STATUS.INTRO_LOCKED_UNAVAILABLE,
-    }
-  }
-[endscript]
-[jump target="*doneReset"]
-
-*resetAfterEnding
-[iscript]
-sf.theaterProgress = 
-  {
-    'p01': {
-      'e01': EPISODE_STATUS.OUTRO_UNLOCKED,
-      'e02': EPISODE_STATUS.OUTRO_UNLOCKED,
-      'e03': EPISODE_STATUS.OUTRO_UNLOCKED,
-      'e04': EPISODE_STATUS.OUTRO_UNLOCKED,
-      'e05': EPISODE_STATUS.OUTRO_UNLOCKED,
-      'e06': EPISODE_STATUS.OUTRO_UNLOCKED,
-      'e07': EPISODE_STATUS.OUTRO_UNLOCKED,
-      'e08': EPISODE_STATUS.OUTRO_UNLOCKED,
-    }
-  }
-[endscript]
-
-*doneReset
-[ptext layer="1" x="181" y="490" text="リセット完了 再起動してください" color="black" size="60"]
-[layopt layer="1" visible="true"]
+; 進捗リセットウィンドウを表示する
+[jump storage="window/resetProgressWindow.ks"]
 [s]
