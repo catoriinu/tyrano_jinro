@@ -3,8 +3,8 @@
   sf.jinro = {};
   sf.jinro.version = {
     major: 0,
-    minor: 13,
-    patch: 1,
+    minor: 14,
+    patch: 0,
   };
   // TODO: リリース時にはfalseにすること！
   sf.jinro.isDebugMode = true;
