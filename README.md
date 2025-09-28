@@ -9,11 +9,13 @@ ver.0.14.0時点ではプラグインとサンプルゲームが密結合なた�
 将来のアップデートで結合度を下げたり、大規模なリファクタリングを行う予定です。ご了承ください。  
 
 ## サンプルゲーム『ボイボ人狼』
-Booth（Windows版・Mac版）：準備中  
-PLiCy（ブラウザ版）：準備中
+Booth（Windows版・Mac版）：[https://otoriinu.booth.pm/items/7234182](https://otoriinu.booth.pm/items/7234182)  
+PLiCy（ブラウザ版）：[https://plicy.net/GamePlay/209716](https://plicy.net/GamePlay/209716)  
+ボイボ人狼 README・利用素材・クレジット：[https://gist.github.com/otoriinu/3e165953fa2d6c686188b09dfde680ec](https://gist.github.com/otoriinu/3e165953fa2d6c686188b09dfde680ec)
 
 # 動作確認バージョン
-- Windows11
+- Windows版：Windows10, 11
+- Mac版：macOS 14 Sonoma
 - ティラノスクリプト v600beta5(ver.0.12.2から)
 - ティラノスタジオ v601a(ver.0.12.2から)
 
@@ -29,7 +31,7 @@ tyrano_jinroプラグイン開発者：香取犬
 Twitter：[@catoriinu8190](https://twitter.com/catoriinu8190)  
 
 『ボイボ人狼』制作者：尾取犬  
-Twitter：[@otoriinu0981](https://twitter.com/otoriinu0981)  
+Twitter：[@otoriinu0918](https://twitter.com/otoriinu0918)  
 ニコニコ動画：[user/128529457](https://www.nicovideo.jp/user/128529457)  
 
 # special thanks
