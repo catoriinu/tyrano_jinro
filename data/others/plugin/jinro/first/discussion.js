@@ -1176,7 +1176,7 @@ function getCharacterIdByReliability(characterObject, needsMax) {
     let tmpReliability = characterObject.reliability[cId]
     console.debug('★Reliability targetCharacterId:' + cId + ' Reliability:' + tmpReliability);
 
-    // 同陣営割合の合計の値を確認し、キャラクターIDを格納するか判定する
+    // 信頼度の値を確認し、キャラクターIDを格納するか判定する
     if (tmpReliability == maxOrMinValue) {
       // 値が、現在の比較用の値と同値なら候補配列に追加する（取得したいのが最大値でも最小値でも、ここの処理は共通でよい）
       targetCharacterIdList.push(cId);
