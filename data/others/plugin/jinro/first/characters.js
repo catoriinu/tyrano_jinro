@@ -20,7 +20,7 @@ function Character(participant) {
   this.characterId = participant.characterId;
   this.name = PARTICIPANTS_LIST.find(ptp => ptp.characterId === this.characterId).name;
   this.personality = (function(){
-    const name = participant.personalityName || this.characterId;
+    const name = participant.personalityName || participant.characterId;
     return getPersonality(name, participant.adjustParameters);
   })();
   this.role = roleAssignment(participant.roleId);
