@@ -4,7 +4,7 @@
   sf.jinro.version = {
     major: 0,
     minor: 14,
-    patch: 0,
+    patch: 1,
   };
   // TODO: リリース時にはfalseにすること！
   sf.jinro.isDebugMode = true;
