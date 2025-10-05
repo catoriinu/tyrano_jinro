@@ -1,4 +1,4 @@
-[iscript]
+﻿[iscript]
   // jinroプラグイン用の変数をシナリオ変数に格納する
   sf.jinro = {};
   sf.jinro.version = {
@@ -23,7 +23,15 @@
 [loadjs storage="plugin/jinro/first/roles/madman.js"]
 [loadjs storage="plugin/jinro/first/roles/index.js"]
 [loadjs storage="plugin/jinro/first/characters.js"]
-[loadjs storage="plugin/jinro/first/personalities.js"]
+[loadjs storage="plugin/jinro/first/personalities/personalityBase.js"]
+[loadjs storage="plugin/jinro/first/personalities/tester.js"]
+[loadjs storage="plugin/jinro/first/personalities/zundamon.js"]
+[loadjs storage="plugin/jinro/first/personalities/metan.js"]
+[loadjs storage="plugin/jinro/first/personalities/tsumugi.js"]
+[loadjs storage="plugin/jinro/first/personalities/hau.js"]
+[loadjs storage="plugin/jinro/first/personalities/ritsu.js"]
+[loadjs storage="plugin/jinro/first/personalities/index.js"]
+[loadjs storage="plugin/jinro/first/personalities/factory.js"]
 [loadjs storage="plugin/jinro/first/discussion.js"]
 [loadjs storage="plugin/jinro/first/prepare.js"]
 [loadjs storage="plugin/jinro/first/calcReliability.js"]
