@@ -2,7 +2,16 @@ jinro
 ├─first // 最初にfirst.ksで必ず[loadjs]しておくファイル。loadjsの順番は以下 or 不問（この中では定義しかしないので）
 │ ├─constants.js
 │ ├─utils.js
-│ ├─roles.js
+│ ├─roles
+│ │ ├─roleBase.js
+│ │ ├─villager.js
+│ │ ├─fortuneTeller
+│ │ │ ├─actions.js
+│ │ │ ├─decisions.js
+│ │ │ └─main.js
+│ │ ├─werewolf.js
+│ │ ├─madman.js
+│ │ └─index.js
 │ └─charactors.js
 │
 ├─macro
