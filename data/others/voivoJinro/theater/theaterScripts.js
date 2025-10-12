@@ -6,12 +6,6 @@ const EPISODE_STATUS = {
   OUTRO_UNLOCKED: 3               // 解決編まで解放済み
 };
 
-const PARTICIPATION = {
-  CONFIRMED: 0, // 参加確定
-  CANDIDATE: 1, // 参加候補
-  DECLINED: 2,  // 不参加
-}
-
 
 /**
  * シアター進捗の初期化
@@ -52,9 +46,9 @@ function resetTheaterProgressToDefault() {
 /**
  * 表示したいページ配下のエピソード情報を取得する
  * この時点では「シアター進捗に存在するエピソード」をすべて取得するので、チャプターごとに非表示にするのは別で行うこと
- * @param {*} pageId 
- * @param {*} theaterProgress 
- * @returns 
+ * @param {*} pageId
+ * @param {*} theaterProgress
+ * @returns
  */
 function getEpisodes(
   pageId,
@@ -118,8 +112,8 @@ function everyProgressMatch(targetEpisodeStatus, pageIdList, episodeIdList) {
 /**
  * 指定されたエピソードのエピソード進捗ステータスを、進めたいステータスに進めることができればそれを返す
  * 進められない場合は元々のステータスを返す
- * @param {String} pageId 
- * @param {String} episodeId 
+ * @param {String} pageId
+ * @param {String} episodeId
  * @param {Number} targetStatus 進めたいエピソード進捗ステータス
  * @returns {Array} [true:更新あり|false:更新なし, 更新結果となるエピソード進捗ステータス]
  */
@@ -308,4 +302,35 @@ function isMatchEpisodeSituation(situationJinroGameData, targetJinroGameData) {
 
   // 全てのチェックを満たした場合、このメソッド内で書き換えられた人狼ゲームデータを返却する
   return [true, tmpTargetJinroGameData];
+}
+
+
+function updateRoleIdInParticipant(participant, roleId) {
+  if (!validateParticipantStatus(participant.participationStatus, roleId)) {
+    throw new Error('参加確定ではないキャラに、何らかの役職IDを設定することはできません');
+  }
+  participant.roleId = roleId;
+}
+
+
+function updateParticipationStatusInParticipant(participant, participationStatus) {
+  if (!Object.values(PARTICIPATION).includes(participationStatus)) {
+    throw new Error('PARTICIPATION定数に未定義の参加ステータスには更新できません');
+  }
+
+  if (!validateParticipantStatus(participationStatus, participant.roleId)) {
+      throw new Error('役職ID設定済みのキャラを、「参加確定」以外の参加ステータスに更新することはできません');
+  }
+  participant.participationStatus = participationStatus;
+}
+
+
+function validateParticipantStatus(participationStatus, roleId) {
+  // 参加ステータスが「参加確定」ではないキャラに、何らかの役職IDを設定することはできない
+  if (participationStatus !== PARTICIPATION.CONFIRMED) {
+    if (!(roleId === null || roleId === ROLE_ID_UNKNOWN)) {
+      return false;
+    }
+  }
+  return true;
 }

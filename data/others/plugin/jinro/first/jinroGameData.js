@@ -16,7 +16,7 @@ function JinroGameData(roleData = {}, participantList = [], playerCharacterId = 
 /**
  * シアターのページIDごとに、基本となる人狼ゲームデータオブジェクトを返却する
  * そのページIDのエピソードの全ての開始条件の最大公約数となるデータを設定しておくこと
- * @param {String} pageId 
+ * @param {String} pageId
  * @returns {JinroGameData|null} 人狼ゲームデータオブジェクト
  */
 function getJinroGameDataForTheater(pageId) {
