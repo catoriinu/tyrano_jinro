@@ -14,19 +14,6 @@ function shuffleElements(targetArray) {
 
 
 /**
- * 役職IDから役職オブジェクトを生成し、返却する
- * @param {String} roleId 役職ID
- * @param {Object} [adjustParameters={}] 役職調整用パラメータ
- */
-function roleAssignment(roleId, adjustParameters = {}) {
-  if (typeof roleId !== 'string' || roleId.length === 0 || roleId === ROLE_ID_UNKNOWN) {
-    throw new Error('[jinroRoles] roleAssignment requires resolved roleId. given: ' + roleId);
-  }
-  return getRole(roleId, adjustParameters);
-}
-
-
-/**
  * 勝利陣営がいるかを判定する
  * TODO 第三陣営（妖狐など）には対応できていないため、実装するなら、呼び先メソッドや各役職クラスのフィールドなどを修正すること
  * @param {Array} characterObjects キャラクターオブジェクトの配列

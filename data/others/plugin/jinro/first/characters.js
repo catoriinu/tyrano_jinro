@@ -23,7 +23,7 @@ function Character(participant) {
     const name = participant.personalityName || participant.characterId;
     return getPersonality(name, participant.adjustParameters);
   })();
-  this.role = roleAssignment(participant.roleId);
+  this.role = getRole(participant.roleId);
   this.fakeRole = {};
   this.CORoleId = '';
   this.isAlive = true;
