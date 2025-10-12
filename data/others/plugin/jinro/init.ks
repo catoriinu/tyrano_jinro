@@ -45,4 +45,5 @@
 [loadjs storage="plugin/jinro/macro/status.js"]
 ; 自作タグも読み込む が、現在未使用
 [loadjs storage="plugin/jinro/tag/j_graph.js"]
+[call storage="plugin/jinro/macro.ks"]
 [return ]

@@ -2,22 +2,6 @@
 ;first.ksでサブルーチンとして読み込んでおくこと
 
 
-; 人狼ゲーム準備マクロ
-; @param jinroGameData 利用する人狼ゲームデータ。指定しない場合、sf.jinroGameDataObjects[sf.currentJinroGameDataKey]を利用する
-[macro name="j_prepareJinroGame"]
-  [iscript]
-    const jinroGameData = mp.jinroGameData || sf.jinroGameDataObjects[sf.currentJinroGameDataKey];
-
-    console.debug('★jinroGameData');
-    console.debug(jinroGameData);
-
-    // キャラクターオブジェクト生成と各種変数の初期化
-    initializeCharacterObjectsForJinro(jinroGameData);
-    initializeTyranoValiableForJinro();
-  [endscript]
-[endmacro]
-
-
 ; キャラの名前を表示するマクロ
 ; このマクロでキャラの名前を表示させると、コンフィグのキャラ判別サポート設定を適用することができる
 ; @param targetId 表示するキャラのキャラクターID
