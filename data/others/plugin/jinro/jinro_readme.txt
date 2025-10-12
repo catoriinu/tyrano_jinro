@@ -7,7 +7,7 @@ jinro プラグイン 取扱メモ（v0.14.0 時点）
 
 ▼初期化フロー
 1. init.ks で sf.jinro.version／sf.jinro.isDebugMode を初期化します。
-2. 同ファイルの [loadjs] で first/ 配下のモジュールを読み込みます。roles は roleBase → 個別役職 → index.js の順で依存しています。
+2. 同ファイルの [loadjs] で first/ 配下のモジュールを読み込みます。roles は roleBase → 個別役職 → factory.js の順で依存しています。
 3. 続いて macro/impl.js と macro/status.js を読み込み、シナリオマクロから利用する実装を公開します。
 4. 最後に tag/j_graph.js を読み込みます（現在は未使用。復活させる場合は jQuery 前提です）。
 
@@ -25,14 +25,12 @@ jinro/
 |  |- prepare.js                  … Participant 定義と初期化。initializeCharacterObjectsForJinro などを提供。
 |  |- jinroGameData.js            … JinroGameData とシナリオ既定値 (getJinroGameDataForTheater)。
 |  `- roles/                      … 役職ごとの AI 実装。
-|     |- roleBase.js              … 共通ロジック。各役職はこれを継承。
-|     |- villager.js              … 村人のスタブ実装。
+|     |- roleBase.js              … 共通ロジックとレジストリ定義。各役職はここを継承し registerRole で登録する。
+|     |- villager.js              … 村人ロール定義。
 |     |- werewolf.js              … 人狼の夜行動・襲撃ロジック。
-|     |- madman.js                … 狂人ロジック。
-|     `- fortuneTeller/           … 占い師モジュール。
-|        |- actions.js            … 行動テーブル生成。
-|        |- decisions.js          … 判定・リアクション処理。
-|        `- main.js               … FortuneTeller のエントリーポイント。
+|     |- madman.js                … 狂人ロール定義。
+|     |- fortuneTeller.js         … 占い師ロール定義（占い実行・候補選定ロジックを内包）。
+|     `- factory.js               … 登録済みロールからインスタンスを生成するユーティリティ（getRole）。
 |- macro/                         … TyranoScript マクロから叩く JS 実装。
 |  |- impl.js                     … m_changeCharacter/m_enterCharacter 等の表示制御と getLabelFor～ 系ユーティリティ。
 |  `- status.js                   … 住民一覧や履歴パネルを生成する DOM 操作群。
@@ -53,4 +51,3 @@ jinro/
 - 各 JavaScript は 2 スペースインデント・末尾カンマなし・説明的な camelCase（calcReliability など）というプロジェクト規約を守ってください。
 - macro/impl.js から Tyrano のタグを直接呼ぶとページ送りが発生するため、wait:"false" 付与や既存実装を参考にしてください。
 - 性格や役職を増やす場合は personalities.js と roles/ 系ファイルを同時に更新し、discussion.js の行動選択テーブルにも反映する必要があります。
-

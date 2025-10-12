@@ -16,23 +16,13 @@ function shuffleElements(targetArray) {
 /**
  * 役職IDから役職オブジェクトを生成し、返却する
  * @param {String} roleId 役職ID
+ * @param {Object} [adjustParameters={}] 役職調整用パラメータ
  */
-function roleAssignment(roleId) {
-  switch (roleId) {
-    case ROLE_ID_VILLAGER: // 村人
-      return new Villager();
-    case ROLE_ID_WEREWOLF: // 人狼
-      return new Werewolf();
-    case ROLE_ID_FORTUNE_TELLER: // 占い師
-      return new FortuneTeller();
-    case ROLE_ID_MADMAN: // 狂人
-      return new Madman();
-    case ROLE_ID_PHYCHIC: // 霊媒師（未実装）
-    case ROLE_ID_HUNTER:  // 狩人（未実装）
-    case ROLE_ID_FOX:  // 妖狐（未実装）
-    default:
-      break;
+function roleAssignment(roleId, adjustParameters = {}) {
+  if (typeof roleId !== 'string' || roleId.length === 0 || roleId === ROLE_ID_UNKNOWN) {
+    throw new Error('[jinroRoles] roleAssignment requires resolved roleId. given: ' + roleId);
   }
+  return getRole(roleId, adjustParameters);
 }
 
 

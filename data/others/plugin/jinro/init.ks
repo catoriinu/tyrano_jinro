@@ -14,15 +14,15 @@
 ;人狼プラグインのfirstディレクトリ以下を読み込む
 [loadjs storage="plugin/jinro/first/constants.js"]
 [loadjs storage="plugin/jinro/first/utils.js"]
+
+;
 [loadjs storage="plugin/jinro/first/roles/roleBase.js"]
 [loadjs storage="plugin/jinro/first/roles/villager.js"]
-[loadjs storage="plugin/jinro/first/roles/fortuneTeller/actions.js"]
-[loadjs storage="plugin/jinro/first/roles/fortuneTeller/decisions.js"]
-[loadjs storage="plugin/jinro/first/roles/fortuneTeller/main.js"]
+[loadjs storage="plugin/jinro/first/roles/fortuneTeller.js"]
 [loadjs storage="plugin/jinro/first/roles/werewolf.js"]
 [loadjs storage="plugin/jinro/first/roles/madman.js"]
-[loadjs storage="plugin/jinro/first/roles/index.js"]
-[loadjs storage="plugin/jinro/first/characters.js"]
+; レジストリから役職を取得するユーティリティ（個別の役職定義はここまでに読み込んでおくこと）
+[loadjs storage="plugin/jinro/first/roles/factory.js"]
 
 ; 性格定義の読み込み
 [loadjs storage="plugin/jinro/first/personalities/personalityBase.js"] 
@@ -35,6 +35,7 @@
 ; レジストリから性格を取得するユーティリティ（個別の性格定義はここまでに読み込んでおくこと）
 [loadjs storage="plugin/jinro/first/personalities/factory.js"] 
 
+[loadjs storage="plugin/jinro/first/characters.js"]
 [loadjs storage="plugin/jinro/first/discussion.js"]
 [loadjs storage="plugin/jinro/first/prepare.js"]
 [loadjs storage="plugin/jinro/first/calcReliability.js"]

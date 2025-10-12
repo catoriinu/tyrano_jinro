@@ -1,12 +1,15 @@
 /**
- * @classdec 狂人クラス（個別の役職クラス）
+ * @classdesc 狂人の役職定義。
  */
 (function(global) {
   const namespace = global.jinroRoles = global.jinroRoles || {};
+  const Role = namespace.Role;
 
-  function Madman() {
-    return new namespace.Role(ROLE_ID_MADMAN, '狂人', false, [ROLE_ID_FORTUNE_TELLER]);
+  class MadmanRole extends Role {
+    constructor() {
+      super(ROLE_ID_MADMAN, '狂人', false, [ROLE_ID_FORTUNE_TELLER]);
+    }
   }
 
-  namespace.Madman = Madman;
-})(typeof window !== "undefined" ? window : this);
+  namespace.registerRole(ROLE_ID_MADMAN, MadmanRole);
+})(typeof window !== 'undefined' ? window : this);

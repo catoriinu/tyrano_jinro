@@ -1,23 +1,62 @@
 /**
- * @classdec 役職の基底クラス。個別の役職クラスに継承され、コンストラクタから呼び出される。
- * @prop {string} roleId 役職ID
- * @prop {String} roleName 役職名
- * @prop {String} faction 陣営。どの陣営が勝利したときに、自身の役職が勝利になるのか（※勝利陣営判定とは別）
- * @prop {Boolean} isWerewolves 人狼か。勝利陣営判定時に人狼陣営として扱うか。また、占い・霊能結果で人狼判定が出るかにも利用する。
- * @prop {Array} allowCORoles 村役職COすることができる役職か。false=ない場合、CO候補者判定の対象外にする。
- * @prop {Object} rolePerspective その役職の視点オブジェクト。本人の思考はこちらを元にする。ただし騙り時、fakeRole.rolePerspectiveは利用しないので空オブジェクトのままとなる。
+ * @classdesc 人狼プラグインにおける役職定義の基底クラス。
+ * すべての個別役職クラスはこのクラスを継承し、super() 経由で共通プロパティを初期化する。
  */
 (function(global) {
   const namespace = global.jinroRoles = global.jinroRoles || {};
+  const registry = namespace.registry || (namespace.registry = {});
 
-  function Role(roleId, roleName, isWerewolves, allowCORoles) {
-    this.roleId = roleId;
-    this.roleName = roleName;
-    this.faction = ROLE_ID_TO_FACTION[roleId];
-    this.isWerewolves = isWerewolves;
-    this.allowCORoles = allowCORoles;
-    this.rolePerspective = {};
+  class Role {
+    /**
+     * @param {string} roleId 役職ID（必須）
+     * @param {string} roleName 役職名
+     * @param {boolean} isWerewolves 人狼陣営として扱うか
+     * @param {Array<string>} allowCORoles CO可能な役職IDリスト
+     */
+    constructor(roleId, roleName, isWerewolves, allowCORoles = []) {
+      if (typeof roleId !== 'string' || roleId.length === 0) {
+        throw new Error('[jinroRoles] Role requires non-empty string roleId.');
+      }
+
+      this.roleId = roleId;
+      this.roleName = roleName || roleId;
+      this.faction = ROLE_ID_TO_FACTION[roleId] || null;
+      if (!this.faction) {
+        console.warn('[jinroRoles] ROLE_ID_TO_FACTION does not define faction for roleId: ' + roleId);
+      }
+      this.isWerewolves = Boolean(isWerewolves);
+      this.allowCORoles = Array.isArray(allowCORoles) ? allowCORoles : [];
+      this.rolePerspective = {};
+    }
+  }
+
+  /**
+   * 役職クラスをレジストリへ登録する。
+   * @param {string} roleId 役職ID
+   * @param {Function} constructorFunction Role を継承したコンストラクタ
+   */
+  function registerRole(roleId, constructorFunction) {
+    if (typeof roleId !== 'string' || roleId.length === 0) {
+      console.error('[jinroRoles] registerRole requires non-empty string roleId.');
+      return;
+    }
+    if (typeof constructorFunction !== 'function') {
+      console.error('[jinroRoles] registerRole requires constructor function.');
+      return;
+    }
+    if (registry[roleId]) {
+      console.warn('[jinroRoles] role "' + roleId + '" is already registered. Overwriting.');
+    }
+
+    registry[roleId] = constructorFunction;
   }
 
   namespace.Role = Role;
-})(typeof window !== "undefined" ? window : this);
+  namespace.registerRole = registerRole;
+  namespace.getRegisteredRole = function(roleId) {
+    return registry[roleId];
+  };
+  namespace.listRegisteredRoles = function() {
+    return Object.keys(registry);
+  };
+})(typeof window !== 'undefined' ? window : this);
