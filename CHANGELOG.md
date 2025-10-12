@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### jinroプラグイン
+- 役職と性格の定義をそれぞれサブディレクトリへ分割し、`roleBase.js`／`personalityBase.js`＋ファクトリ経由で `getRole`／`getPersonality` を解決するレジストリ構成へ刷新。
+- `init.ks` の読み込み順と `Character`／シナリオマクロ内の参照を更新し、新しい `getRole` を利用するよう統一。
+- `initializeCharacterObjectsForJinro` に生成結果の `console.debug` 出力を追加し、初期化内容を確認しやすく変更。
+
+### ドキュメント
+- `data/others/plugin/jinro/jinro_readme.txt` を全面加筆し、モジュール構成と初期化フローの運用メモを追記。
+
 ## [0.14.1] - 2025-09-29
 ### jinroプラグイン
 #### バグ修正
