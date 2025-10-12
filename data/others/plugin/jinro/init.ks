@@ -23,15 +23,18 @@
 [loadjs storage="plugin/jinro/first/roles/madman.js"]
 [loadjs storage="plugin/jinro/first/roles/index.js"]
 [loadjs storage="plugin/jinro/first/characters.js"]
-[loadjs storage="plugin/jinro/first/personalities/personalityBase.js"]
+
+; 性格定義の読み込み
+[loadjs storage="plugin/jinro/first/personalities/personalityBase.js"] 
 [loadjs storage="plugin/jinro/first/personalities/tester.js"]
 [loadjs storage="plugin/jinro/first/personalities/zundamon.js"]
 [loadjs storage="plugin/jinro/first/personalities/metan.js"]
 [loadjs storage="plugin/jinro/first/personalities/tsumugi.js"]
 [loadjs storage="plugin/jinro/first/personalities/hau.js"]
 [loadjs storage="plugin/jinro/first/personalities/ritsu.js"]
-[loadjs storage="plugin/jinro/first/personalities/index.js"]
-[loadjs storage="plugin/jinro/first/personalities/factory.js"]
+; レジストリから性格を取得するユーティリティ（個別の性格定義はここまでに読み込んでおくこと）
+[loadjs storage="plugin/jinro/first/personalities/factory.js"] 
+
 [loadjs storage="plugin/jinro/first/discussion.js"]
 [loadjs storage="plugin/jinro/first/prepare.js"]
 [loadjs storage="plugin/jinro/first/calcReliability.js"]

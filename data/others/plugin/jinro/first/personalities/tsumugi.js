@@ -1,43 +1,48 @@
-﻿/**
- * @classdec Personality definition for 春日部つむぎ.
+/**
+ * @classdesc Personality definition for 春日部つむぎ.
  */
 (function(global) {
   const namespace = global.jinroPersonalities = global.jinroPersonalities || {};
+  const Personality = namespace.Personality;
 
-  namespace.tsumugi = function() {
-    return new namespace.Personality(
-      '春日部つむぎ',
-      0.4,
-      1.1,
-      {
-        action: {}
-      },
-      0.8,
-      {
-        action: {},
-        actor: {}
-      },
-      {
-        original: 1.25,
-        current: 1.25,
-        decrease: 0.3
-      },
-      1.7,
-      {
-        [ROLE_ID_FORTUNE_TELLER]: {
-          [ROLE_ID_FORTUNE_TELLER]: 0.8
+  class TsumugiPersonality extends Personality {
+    constructor() {
+      super(
+        '春日部つむぎ',
+        0.4,
+        1.1,
+        {
+          action: {}
         },
-        [ROLE_ID_WEREWOLF]: {
-          [ROLE_ID_FORTUNE_TELLER]: 0.5
+        0.8,
+        {
+          action: {},
+          actor: {}
         },
-        [ROLE_ID_MADMAN]: {
-          [ROLE_ID_FORTUNE_TELLER]: 0.6
+        {
+          original: 1.25,
+          current: 1.25,
+          decrease: 0.3
+        },
+        1.7,
+        {
+          [ROLE_ID_FORTUNE_TELLER]: {
+            [ROLE_ID_FORTUNE_TELLER]: 0.8
+          },
+          [ROLE_ID_WEREWOLF]: {
+            [ROLE_ID_FORTUNE_TELLER]: 0.5
+          },
+          [ROLE_ID_MADMAN]: {
+            [ROLE_ID_FORTUNE_TELLER]: 0.6
+          }
+        },
+        {
+          hate: 0.3,
+          love: 0.7
         }
-      },
-      {
-        hate: 0.3,
-        love: 0.7
-      }
-    );
-  };
-})(typeof window !== "undefined" ? window : this);
+      );
+    }
+  }
+
+  namespace.registerPersonality('tsumugi', TsumugiPersonality);
+})(typeof window !== 'undefined' ? window : this);
