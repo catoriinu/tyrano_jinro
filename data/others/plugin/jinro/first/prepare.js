@@ -48,61 +48,6 @@ function validateParticipantStatus (participationStatus, roleId) {
 
 
 /**
- * 人狼ゲームで利用するキャラクターオブジェクト配列を生成し、ティラノのゲーム変数に格納する
- * 人狼ゲーム開始前に毎回呼び出すこと
- * @param {JinroGameData} jinroGameDataParam 人狼ゲームデータ
- */
-function initializeCharacterObjectsForJinro(jinroGameDataParam) {
-  // 渡し元のjinroGameDataを更新してしまわないようにディープコピー
-  const jinroGameData = clone( jinroGameDataParam);
-
-  // 開発モードの設定に基づき、logical を補正する
-  const adjustlogicalObject = buildAdjustParametersForDevelopment();
-  const roleDataWithRemainingCapacity = Object.assign({}, jinroGameData.roleData);
-  const participantList = jinroGameData.participantList;
-
-  // 役職が確定している参加者からキャラクターオブジェクトを生成する
-  const tmpCharacterObjects = createCharacterObjectsForConfirmedParticipants(
-    participantList,
-    adjustlogicalObject,
-    roleDataWithRemainingCapacity
-  );
-
-  // 役職未確定の参加者へ役職を割り当て、キャラクターオブジェクトを追加する
-  assignRolesToPendingParticipants(
-    participantList,
-    adjustlogicalObject,
-    roleDataWithRemainingCapacity,
-    tmpCharacterObjects
-  );
-
-  // 参加者リストの順序に合わせたキャラクターオブジェクトへ並び替える
-  const characterObjects = reorderCharacterObjectsByParticipants(
-    participantList,
-    tmpCharacterObjects,
-    jinroGameData
-  );
-
-  // 参加者のキャラクターID配列をティラノ変数に格納する（ゲーム内での並び順の基準になる）
-  TYRANO.kag.stat.f.participantsIdList = Object.keys(characterObjects);
-
-  // 共通の視点オブジェクトをティラノ変数に、各キャラの視点オブジェクトをそのcharacterObject.perspectiveに格納する
-  setDefaultPerspective(characterObjects, TYRANO.kag.stat.f.participantsIdList, jinroGameData.roleData);
-
-  // 信頼度オブジェクトを各characterObject.reliabilityに格納する
-  setDefaultReliability(characterObjects, TYRANO.kag.stat.f.participantsIdList, TYRANO.kag.stat.f.playerCharacterId);
-
-  // 現在のフラストレーションオブジェクトを各characterObject.currentFrustrationに格納する
-  setDefaultCurrentFrustration(characterObjects, TYRANO.kag.stat.f.participantsIdList);
-
-  // キャラクターオブジェクト配列と役職ID配列をティラノのゲーム変数に格納する
-  TYRANO.kag.stat.f.characterObjects = characterObjects;
-  TYRANO.kag.stat.f.villagersRoleIdList = convertNumberValueObjectToArray(jinroGameData.roleData);
-
-  console.debug('★★characterObjects:', TYRANO.kag.stat.f.characterObjects);
-}
-
-/**
  * 開発モードの設定に応じて logical を補正するパラメータオブジェクトを生成する。
  * @return {Object} logical の上書き値を含む調整パラメータ
  */
@@ -316,6 +261,61 @@ function setDefaultCurrentFrustration(characterObjects, participantsIdList) {
   }
 }
 
+
+/**
+ * 人狼ゲームで利用するキャラクターオブジェクト配列を生成し、ティラノのゲーム変数に格納する
+ * 人狼ゲーム開始前に毎回呼び出すこと
+ * @param {JinroGameData} jinroGameDataParam 人狼ゲームデータ
+ */
+function initializeCharacterObjectsForJinro(jinroGameDataParam) {
+  // 渡し元のjinroGameDataを更新してしまわないようにディープコピー
+  const jinroGameData = clone( jinroGameDataParam);
+
+  // 開発モードの設定に基づき、logical を補正する
+  const adjustlogicalObject = buildAdjustParametersForDevelopment();
+  const roleDataWithRemainingCapacity = Object.assign({}, jinroGameData.roleData);
+  const participantList = jinroGameData.participantList;
+
+  // 役職が確定している参加者からキャラクターオブジェクトを生成する
+  const tmpCharacterObjects = createCharacterObjectsForConfirmedParticipants(
+    participantList,
+    adjustlogicalObject,
+    roleDataWithRemainingCapacity
+  );
+
+  // 役職未確定の参加者へ役職を割り当て、キャラクターオブジェクトを追加する
+  assignRolesToPendingParticipants(
+    participantList,
+    adjustlogicalObject,
+    roleDataWithRemainingCapacity,
+    tmpCharacterObjects
+  );
+
+  // 参加者リストの順序に合わせたキャラクターオブジェクトへ並び替える
+  const characterObjects = reorderCharacterObjectsByParticipants(
+    participantList,
+    tmpCharacterObjects,
+    jinroGameData
+  );
+
+  // 参加者のキャラクターID配列をティラノ変数に格納する（ゲーム内での並び順の基準になる）
+  TYRANO.kag.stat.f.participantsIdList = Object.keys(characterObjects);
+
+  // 共通の視点オブジェクトをティラノ変数に、各キャラの視点オブジェクトをそのcharacterObject.perspectiveに格納する
+  setDefaultPerspective(characterObjects, TYRANO.kag.stat.f.participantsIdList, jinroGameData.roleData);
+
+  // 信頼度オブジェクトを各characterObject.reliabilityに格納する
+  setDefaultReliability(characterObjects, TYRANO.kag.stat.f.participantsIdList, TYRANO.kag.stat.f.playerCharacterId);
+
+  // 現在のフラストレーションオブジェクトを各characterObject.currentFrustrationに格納する
+  setDefaultCurrentFrustration(characterObjects, TYRANO.kag.stat.f.participantsIdList);
+
+  // キャラクターオブジェクト配列と役職ID配列をティラノのゲーム変数に格納する
+  TYRANO.kag.stat.f.characterObjects = characterObjects;
+  TYRANO.kag.stat.f.villagersRoleIdList = convertNumberValueObjectToArray(jinroGameData.roleData);
+
+  console.debug('★★characterObjects:', TYRANO.kag.stat.f.characterObjects);
+}
 
 /**
  * 人狼ゲームで利用するティラノのゲーム変数を初期化する
