@@ -14,29 +14,6 @@ function shuffleElements(targetArray) {
 
 
 /**
- * 役職IDから役職オブジェクトを生成し、返却する
- * @param {String} roleId 役職ID
- */
-function roleAssignment(roleId) {
-  switch (roleId) {
-    case ROLE_ID_VILLAGER: // 村人
-      return new Villager();
-    case ROLE_ID_WEREWOLF: // 人狼
-      return new Werewolf();
-    case ROLE_ID_FORTUNE_TELLER: // 占い師
-      return new FortuneTeller();
-    case ROLE_ID_MADMAN: // 狂人
-      return new Madman();
-    case ROLE_ID_PHYCHIC: // 霊媒師（未実装）
-    case ROLE_ID_HUNTER:  // 狩人（未実装）
-    case ROLE_ID_FOX:  // 妖狐（未実装）
-    default:
-      break;
-  }
-}
-
-
-/**
  * 勝利陣営がいるかを判定する
  * TODO 第三陣営（妖狐など）には対応できていないため、実装するなら、呼び先メソッドや各役職クラスのフィールドなどを修正すること
  * @param {Array} characterObjects キャラクターオブジェクトの配列

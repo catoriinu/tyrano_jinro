@@ -152,6 +152,8 @@ function initializeCharacterObjectsForJinro(jinroGameDataParam) {
   // キャラクターオブジェクト配列と役職ID配列をティラノのゲーム変数に格納する
   TYRANO.kag.stat.f.characterObjects = characterObjects;
   TYRANO.kag.stat.f.villagersRoleIdList = convertNumberValueObjectToArray(jinroGameData.roleData);
+
+  console.debug('★★characterObjects:', TYRANO.kag.stat.f.characterObjects);
 }
 
 

@@ -288,7 +288,7 @@
   [iscript]
     // 偽役職COしていない場合のみ実行 NOTE 撤回COさせたくなったらマクロの引数で強制できるようにする
     if (Object.keys(f.characterObjects[mp.characterId].fakeRole).length === 0) {
-      f.characterObjects[mp.characterId].fakeRole = roleAssignment(mp.roleId);
+      f.characterObjects[mp.characterId].fakeRole = getRole(mp.roleId);
 
       // 今までの表の視点を破棄。現在の共通視点から新しく騙り役職についた状態での表の視点を上書きする。
       // ちなみに、fakeRole.rolePerspectiveは利用しないので空オブジェクトのままとなるので注意。
