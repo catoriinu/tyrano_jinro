@@ -1,15 +1,17 @@
 ﻿/**
- * @classdec Base class for personalities.
- * @param {String} name Name of the personality.
- * @param {Number} logical Logical parameter value.
- * @param {Number} influenceMultiplier Multiplier for influence.
- * @param {Object} adjustmentInfluenceMultiplier Adjustment map for influence multiplier.
- * @param {Number} registanceMultiplier Multiplier for resistance.
- * @param {Object} adjustmentRegistanceMultiplier Adjustment map for resistance multiplier.
- * @param {Number} assertiveness Assertiveness configuration {original,current,decrease}.
- * @param {Number} limitFrustration Frustration threshold.
- * @param {Object} roleCOProbability Probability map for role CO actions.
- * @param {Object} feelingBorder Emotion border definition.
+ * @classdesc 人狼プラグインにおける「性格」定義の基底クラス。
+ * 各キャラクターの意思決定に影響する係数やしきい値（影響力・抵抗力・主張性・感情境界、
+ * 役職COの確率など）を保持します。派生の性格実装は本クラスに値を渡して初期化します。
+ * @param {String} name 性格名。
+ * @param {Number} logical 論理性パラメータ値。
+ * @param {Number} influenceMultiplier 影響力の基本係数。
+ * @param {Object} adjustmentInfluenceMultiplier 影響力係数の調整マップ。
+ * @param {Number} registanceMultiplier 抵抗力の基本係数。
+ * @param {Object} adjustmentRegistanceMultiplier 抵抗力係数の調整マップ。
+ * @param {Object} assertiveness 主張性の設定。{original, current, decrease} を持つオブジェクト。
+ * @param {Number} limitFrustration フラストレーションのしきい値。
+ * @param {Object} roleCOProbability 役職CO（カミングアウト）の確率マップ。
+ * @param {Object} feelingBorder 感情の境界値定義。
  */
 (function(global) {
   const namespace = global.jinroPersonalities = global.jinroPersonalities || {};
