@@ -15,7 +15,7 @@
 [loadjs storage="plugin/jinro/first/constants.js"]
 [loadjs storage="plugin/jinro/first/utils.js"]
 
-;
+; 役職定義の読み込み
 [loadjs storage="plugin/jinro/first/roles/roleBase.js"]
 [loadjs storage="plugin/jinro/first/roles/villager.js"]
 [loadjs storage="plugin/jinro/first/roles/fortuneTeller.js"]
