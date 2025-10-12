@@ -6,10 +6,10 @@ function buildAdjustParametersForDevelopment() {
   // 開発者モード：「NPCの思考方針」によってlogicalを調整する。logicalを上書きすることで仲間度の計算結果が変わる。
   const adjustlogicalObject = {};
   if (TYRANO.kag.variable.sf.j_development.thinking === DECISION_LOGICAL) {
-  // 「論理的」の場合、全キャラクターのlogicalを0.9999に上書きする（1だと仲間度の計算に全く信頼度が反映されなくなってしまうため）
+    // 「論理的」の場合、全キャラクターのlogicalを0.9999に上書きする（1だと仲間度の計算に全く信頼度が反映されなくなってしまうため）
     adjustlogicalObject.logical = 0.9999;
   } else if (TYRANO.kag.variable.sf.j_development.thinking === DECISION_EMOTIONAL) {
-  // 「感情的」の場合、全キャラクターのlogicalを0.0001に上書きする（0だと仲間度の計算に全く同陣営割合が反映されなくなってしまうため）
+    // 「感情的」の場合、全キャラクターのlogicalを0.0001に上書きする（0だと仲間度の計算に全く同陣営割合が反映されなくなってしまうため）
     adjustlogicalObject.logical = 0.0001;
   }
   return adjustlogicalObject;
@@ -26,16 +26,16 @@ function createCharacterObjectsForConfirmedParticipants(participantList, adjustl
   // 最初に、参加確定かつ役職確定している参加者のキャラクターオブジェクトを作成する
   const tmpCharacterObjects = {};
   for (const participant of participantList) {
-  // 役職が未確定の参加者は後回し
+    // 役職が未確定の参加者は後回し
     if (!participant.roleId) continue;
 
-  // 開発者モード用のlogical上書き処理
+    // 開発者モード用のlogical上書き処理
     participant.adjustParameters = Object.assign(participant.adjustParameters, adjustlogicalObject);
 
-  // キャラクターオブジェクトを生成
+    // キャラクターオブジェクトを生成
     tmpCharacterObjects[participant.characterId] = new Character(participant);
 
-  // 配役した役職IDは残り役職人数オブジェクトから減らしていく
+    // 配役した役職IDは残り役職人数オブジェクトから減らしていく
     roleDataWithRemainingCapacity[participant.roleId]--;
     if (roleDataWithRemainingCapacity[participant.roleId] < 0) {
       alert('役職人数不足エラー: 役職人数不足のため、' + participant.characterId + 'に' + participant.roleId + 'を配役できませんでした');
@@ -51,28 +51,27 @@ function createCharacterObjectsForConfirmedParticipants(participantList, adjustl
  * @param {Object} roleDataWithRemainingCapacity 役職ごとの残数を保持するオブジェクト
  * @param {Object} tmpCharacterObjects キャラクターIDをキーとしたキャラクターオブジェクトのマップ
  */
-function   // 役職未確定の参加者へ役職を割り当て、キャラクターオブジェクトを追加する
-  assignRolesToPendingParticipants(participantList, adjustlogicalObject, roleDataWithRemainingCapacity, tmpCharacterObjects) {
+function assignRolesToPendingParticipants(participantList, adjustlogicalObject, roleDataWithRemainingCapacity, tmpCharacterObjects) {
   // 未確定の役職配列を、シャッフルした状態で取得する
   let unconfirmedRoleIdList = shuffleElements(convertNumberValueObjectToArray(roleDataWithRemainingCapacity));
   let roleIdListIndex = 0;
 
   // 次に、参加確定かつ役職未確定の参加者のキャラクターオブジェクトを生成する
   for (const participant of participantList) {
-  // 役職確定の参加者はスキップ（前のループで生成済み）
+    // 役職確定の参加者はスキップ（前のループで生成済み）
     if (participant.roleId) continue;
-  // TODO: 参加未確定の参加者もスキップ。初期リリースではあり得ないパターンなので実装後回し
+    // TODO: 参加未確定の参加者もスキップ。初期リリースではあり得ないパターンなので実装後回し
 
-  // 未確定の役職配列からroleIdを取得し、上書きする
+    // 未確定の役職配列からroleIdを取得し、上書きする
     const roleId = unconfirmedRoleIdList[roleIdListIndex];
     participant.roleId = roleId;
     participant.adjustParameters = Object.assign(participant.adjustParameters, adjustlogicalObject);
     roleIdListIndex++;
 
-  // キャラクターオブジェクトを生成
+    // キャラクターオブジェクトを生成
     tmpCharacterObjects[participant.characterId] = new Character(participant);
 
-  // 配役した役職IDは残り役職人数オブジェクトから減らしていく
+    // 配役した役職IDは残り役職人数オブジェクトから減らしていく
     roleDataWithRemainingCapacity[participant.roleId]--;
     if (roleDataWithRemainingCapacity[participant.roleId] < 0) {
       alert('役職人数不足エラー: 役職人数不足のため、' + participant.characterId + 'に' + participant.roleId + 'を配役できませんでした');
@@ -104,7 +103,7 @@ function reorderCharacterObjectsByParticipants(participantList, tmpCharacterObje
 
     characterObjects[characterId] = tmpCharacterObjects[characterId];
 
-  // 人狼ゲームデータで指定されているキャラをプレイヤーキャラとする
+    // 人狼ゲームデータで指定されていたキャラをプレイヤーキャラとする
     if (characterId === jinroGameData.playerCharacterId) {
       characterObjects[characterId].isPlayer = true;
       TYRANO.kag.stat.f.playerCharacterId = characterId;
@@ -143,8 +142,8 @@ function setDefaultPerspective(characterObjects, participantsIdList, roleData) {
 
   // 各キャラクターの自分視点オブジェクトを生成し、更新する
   for (let characterId of Object.keys(characterObjects)) {
-  // 役職ごとに処理を分ける。
-  // perspectiveはCO状態に合わせた視点
+    // 役職ごとに処理を分ける。
+    // perspectiveはCO状態に合わせた視点
     characterObjects[characterId].perspective = organizePerspective(
       commonPerspective,
       characterId,
@@ -172,10 +171,10 @@ function setDefaultReliability(characterObjects, participantsIdList, playerChara
   for (let characterId of Object.keys(characterObjects)) {
     let reliabilityObject = {};
     for (let i = 0; i < participantsIdList.length; i++) {
-    const targetCharacterId = participantsIdList[i];
+      const targetCharacterId = participantsIdList[i];
       if (targetCharacterId === playerCharacterId) {
-      // プレイヤーキャラに対しては高めの信頼度を設定する
-      // MEMO: この値を変えると難易度調整ができそう
+        // プレイヤーキャラに対しては高めの信頼度を設定する
+        // MEMO: この値を変えると難易度調整ができそう
         reliabilityObject[targetCharacterId] = generateRandomReliability(0.4, 0.8);
       } else {
         reliabilityObject[targetCharacterId] = generateRandomReliability(0.3, 0.7);
