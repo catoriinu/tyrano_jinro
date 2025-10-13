@@ -15,6 +15,7 @@ function buildAdjustParametersForDevelopment() {
   return adjustlogicalObject;
 }
 
+
 /**
  * 役職が確定している参加者についてキャラクターオブジェクトを作成する。
  * @param {Array<Participant>} participantList 参加者リスト
@@ -43,6 +44,7 @@ function createCharacterObjectsForConfirmedParticipants(participantList, adjustl
   }
   return tmpCharacterObjects;
 }
+
 
 /**
  * 役職が未確定の参加者に役職を割り当て、キャラクターオブジェクトを作成する。
@@ -284,9 +286,6 @@ function initializeTyranoValiableForJinro() {
   TYRANO.kag.stat.f.executionHistory = {};
   // 勝利陣営の初期化
   TYRANO.kag.stat.f.winnerFaction = null;
-
-  // 全占い結果履歴オブジェクトの初期化
-  TYRANO.kag.stat.f.allFortuneTellingHistoryObject = {};
 
   // アクション履歴オブジェクトの初期化
   TYRANO.kag.stat.f.doActionHistory = {};

@@ -1,4 +1,3 @@
-
 const PARTICIPATION = {
   CONFIRMED: 0, // 参加確定
   CANDIDATE: 1, // 参加候補
