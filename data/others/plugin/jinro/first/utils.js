@@ -144,7 +144,7 @@ function causeDeathToCharacter(actionObject) {
 
 /**
  * 渡された配列からランダムな1要素を取り出して返却する。
- * @param {Array} targetArray 
+ * @param {Array} targetArray
  * @return {*} 配列の1要素
  */
 function getRandomElement(targetArray) {
@@ -185,8 +185,8 @@ function getCharacterObjectsFromCharacterIds(characterObjects, CharacterIds, sea
 
 /**
  * オブジェクトを要素に持つ配列に対してキーを指定する。各オブジェクト要素の中のそのキーに対応する値を配列で返却する。
- * @param {Array} objectArray 
- * @param {String} key 
+ * @param {Array} objectArray
+ * @param {String} key
  * @return {Array} 値の配列
  */
 function getValuesFromObjectArray(objectArray, key) {
@@ -367,8 +367,8 @@ function getHaveTheRoleObjects(characterObjects, searchRoleIds, searchFlg = true
 
 /**
  * 渡された変数が配列なら末尾にelementをpushし、そうでなければ配列を作りつつelementを格納する
- * @param {*} array 
- * @param {*} element 
+ * @param {*} array
+ * @param {*} element
  * @returns 要素を追加した配列
  */
 function pushElement(array, element) {
@@ -399,7 +399,7 @@ function convertNumberValueObjectToArray(object) {
 
 /**
  * chara/{characterId}.ksで設定した、そのキャラクターのイメージカラーのコードを取得する
- * @param {string} characterId 
+ * @param {string} characterId
  * @param {boolean} isAlive 生存者かフラグ。退場済みと区別したいときのみ渡す。デフォルト:true
  * @returns {string} 16進数カラーコード 例:'#ffffff'
  */
@@ -410,6 +410,16 @@ function getBgColorFromCharacterId(characterId, isAlive = true) {
     // 退場済みなら黒固定
     return '#000000';
   }
+}
+
+
+/**
+ * chara/{characterId}.ksで設定した、そのキャラクターの立ち絵の向きを取得する
+ * @param {string} characterId
+ * @returns {string} キャラが右側に登場したときの立ち絵の向き。立ち絵が左向きならfalse, 右向きならtrue
+ */
+function getReflectFromCharacterId(characterId, isAlive = true) {
+  return TYRANO.kag.stat.f.defaultPosition[characterId].reflect;
 }
 
 
@@ -450,7 +460,7 @@ function setSpeakersName(characterId = '', name = '') {
 /**
  * 引数をbool型として評価した結果を返却する
  * 注意：String型の'false'はfalseと判定する
- * @param {*} value 
+ * @param {*} value
  * @returns 引数をbool型として評価した結果
  */
 function parseBool(value) {
@@ -473,10 +483,10 @@ function parseBool(value) {
  * 指定しなければ全てコピー元のオブジェクトと同じになる;
  * 第三引数はコピーさせたくない型(親のprototype)を配列で渡す;
  * 第四引数はコピーさせたくないオブジェクトを配列で渡す;
- * 
+ *
  * 使い方;
  * clone(object, homogeneity, excludedPrototypes, excludedObjects);
- * 
+ *
  * 引用元：{@link https://webkatu.com/201407132011-clone-function-to-deepcopy-object/}
  * Copyright (c) 2016 shigure
  * Released under the MIT license

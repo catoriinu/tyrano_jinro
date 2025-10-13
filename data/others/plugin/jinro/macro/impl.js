@@ -17,7 +17,7 @@ function changeCharacter(characterId, face = null, side = 'right') {
     side = 'right';
     counterSide = 'left';
   }
-  
+
   // 自分自身がすでに登場済み、かつ逆側に登場させる場合、まず自分自身を退場させる
   if (TYRANO.kag.stat.f.displayedCharacter[counterSide].characterId === characterId) {
     exitCharacter(characterId);
@@ -96,7 +96,7 @@ function enterCharacter(characterId, face, side) {
   const reflect = TYRANO.kag.stat.f.defaultPosition[characterId].reflect;
   // 反転フラグとsideを考慮して画像の向きを決める
   const reflectForMod = ((!reflect && side === 'left') || (reflect && side === 'right')) ? 'true' : 'false';
-  // 画面の内側向きになるように画像の向きを変える 
+  // 画面の内側向きになるように画像の向きを変える
   TYRANO.kag.ftag.startTag('chara_mod', {
     name: characterId,
     reflect: reflectForMod,
@@ -190,13 +190,15 @@ function DisplayCharactersHorizontally(characterList = [], displacedPxToRight = 
  * @param {String} bgColor 背景色のカラーコード
  * @param {String} topText box上部に横書きで表示するテキスト。表示不要なら引数不要
  * @param {String} leftText box左部に縦書きで表示するテキスト。表示不要なら引数不要
+ * @param {Boolean} reflect 画像を左右反転するか true:反転する（=元が右向き画像である） | false:反転しない（=元が左向き画像である）
  */
-function DisplayCharactersHorizontallySingle(characterId, fileName, bgColor, topText = '', leftText = '') {
+function DisplayCharactersHorizontallySingle(characterId, fileName, bgColor, topText = '', leftText = '', reflect = false) {
   this.characterId = characterId;
   this.fileName = fileName;
   this.bgColor = bgColor;
   this.topText = topText;
   this.leftText = leftText;
+  this.reflect = reflect;
 }
 
 

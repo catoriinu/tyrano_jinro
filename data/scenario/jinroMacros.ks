@@ -358,6 +358,7 @@
         getBgColorFromCharacterId(f.voteResultObjects[i].targetId),
         votedCountText,
         '投票→' + f.characterObjects[f.voteResultObjects[i].targetId].name
+        getReflectFromCharacterId(cId),
       ))
 
       // 投票数の先頭が'★'ではない場合、' 'を追加する（行頭を揃えるため）
@@ -413,7 +414,8 @@
         'normal.png',
         getBgColorFromCharacterId(cId),
         '',
-        f.characterObjects[cId].name
+        f.characterObjects[cId].name,
+        getReflectFromCharacterId(cId),
       ))
     }
 
@@ -463,7 +465,8 @@
         fileName,
         bgColor,
         '',
-        f.characterObjects[cId].name
+        f.characterObjects[cId].name,
+        getReflectFromCharacterId(cId),
       ))
     }
 
@@ -526,6 +529,7 @@
         bgColor,
         '',
         f.characterObjects[cId].name
+        getReflectFromCharacterId(cId),
       ))
     }
 

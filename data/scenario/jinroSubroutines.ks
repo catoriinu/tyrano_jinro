@@ -54,7 +54,7 @@
 
     // glinkのname（＝ボタンのclass要素）に設定するクラス名を文字列結合する
     tf.buttonObj = f.buttonObjects[tf.cnt];
-    tf.glink_name = 
+    tf.glink_name =
       'buttonhover,' + // ボタンにカーソルが乗ったときの処理を設定する用
       'selected_side_' + tf.buttonObj.side + '_buttonid_' + tf.buttonObj.id + // ホバーしたボタンの判定用
       tf.buttonObj.additionalClassName; // ボタンに追加したいクラスがあれば追加する（例：選択中）
@@ -84,7 +84,7 @@
       const regResult = classList.find(className => className.match(classNameReg)).match(classNameReg);
       f.selectedSide = regResult[1];
       f.selectedButtonId = regResult[2];
-      
+
       if (tf.doSlideInCharacter) {
         // 表示中のキャラを画面外に出してから、ホバーされたキャラを登場させる
         changeCharacter(f.selectedButtonId, '通常');
@@ -151,12 +151,15 @@
     tf.imageTop = f.defaultPosition[tf.characterId].top + f.dch.displacedPxToTop;
     // キャラクター画像のクラス名。のちほどキャラ画像のimg要素をbox内に移動させるためのセレクタになる。
     tf.imageName = 'dch_' + tf.characterId + '_' + tf.cnt;
+    // 立ち絵が右向きならクラス名にreflectを追加する
+    const reflect = f.defaultPosition[tf.characterId].reflect ? ' reflect' : '';
+    tf.className = tf.imageName + reflect;
     // キャラクター画像の格納パス
     tf.storage = 'chara/' + tf.characterId + '/' + f.dch.characterList[tf.cnt].fileName;
   [endscript]
 
   ; キャラクター画像、横テキスト、上テキストを表示
-  [image storage="&tf.storage" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" left="&tf.imageLeft" top="&tf.imageTop" name="&tf.imageName" layer="1"]
+  [image storage="&tf.storage" width="&f.defaultPosition[tf.characterId].width" haight="&f.defaultPosition[tf.characterId].haight" left="&tf.imageLeft" top="&tf.imageTop" name="&tf.className" layer="1"]
   [ptext layer="1" text="&f.dch.characterList[tf.cnt].leftText" x="&tf.boxLeft" y="&tf.mergin" vertical="true" face="にくまるフォント" color="0x28332a" size="38" edge="2px 0xFFFFFF"]
   [ptext layer="1" text="&f.dch.characterList[tf.cnt].topText" x="&tf.boxLeft" y="&tf.mergin" width="&tf.boxWidth" align="center" face="にくまるフォント" color="0x28332a" size="38" edge="2px 0xFFFFFF"]
 
@@ -241,6 +244,9 @@ MEMO 最終的には以下の構成のHTMLが生成される。
     tf.imageTop = f.defaultPosition[tf.characterId].top + f.dch.displacedPxToTop;
     // キャラクター画像のクラス名。のちほどキャラ画像のimg要素をbox内に移動させるためのセレクタになる。
     tf.imageName = 'dch_' + tf.characterId + '_' + tf.cnt;
+    // 立ち絵が右向きならクラス名にreflectを追加する
+    const reflect = f.defaultPosition[tf.characterId].reflect ? ' reflect' : '';
+    tf.className = tf.imageName + reflect;
     // キャラクター画像の格納パス
     tf.storage = 'chara/' + tf.characterId + '/' + f.dch.characterList[tf.cnt].fileName;
   [endscript]
@@ -282,7 +288,7 @@ MEMO 最終的には以下の構成のHTMLが生成される。
     // キャラ画像表示
     const $characterImg = $('<img>').attr({
       'src': './data/fgimage/chara/' + tf.characterId + '/' + f.dch.characterList[tf.cnt].fileName,
-      'class': 'statusBoxCharaImg ' + tf.imageName
+      'class': 'statusBoxCharaImg ' + tf.className
     }).css({
       'top': tf.imageTop,
       'left': tf.imageLeft,
