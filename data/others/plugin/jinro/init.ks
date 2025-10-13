@@ -14,6 +14,12 @@
 ;人狼プラグインのfirstディレクトリ以下を読み込む
 [loadjs storage="plugin/jinro/first/constants.js"]
 [loadjs storage="plugin/jinro/first/utils.js"]
+[loadjs storage="plugin/jinro/first/discussion.js"]
+[loadjs storage="plugin/jinro/first/prepare.js"]
+[loadjs storage="plugin/jinro/first/calcReliability.js"]
+[loadjs storage="plugin/jinro/first/character.js"]
+[loadjs storage="plugin/jinro/first/participant.js"]
+[loadjs storage="plugin/jinro/first/jinroGameData.js"]
 
 ; 役職定義の読み込み
 [loadjs storage="plugin/jinro/first/roles/roleBase.js"]
@@ -25,7 +31,7 @@
 [loadjs storage="plugin/jinro/first/roles/factory.js"]
 
 ; 性格定義の読み込み
-[loadjs storage="plugin/jinro/first/personalities/personalityBase.js"] 
+[loadjs storage="plugin/jinro/first/personalities/personalityBase.js"]
 [loadjs storage="plugin/jinro/first/personalities/tester.js"]
 [loadjs storage="plugin/jinro/first/personalities/zundamon.js"]
 [loadjs storage="plugin/jinro/first/personalities/metan.js"]
@@ -33,16 +39,15 @@
 [loadjs storage="plugin/jinro/first/personalities/hau.js"]
 [loadjs storage="plugin/jinro/first/personalities/ritsu.js"]
 ; レジストリから性格を取得するユーティリティ（個別の性格定義はここまでに読み込んでおくこと）
-[loadjs storage="plugin/jinro/first/personalities/factory.js"] 
+[loadjs storage="plugin/jinro/first/personalities/factory.js"]
 
-[loadjs storage="plugin/jinro/first/characters.js"]
-[loadjs storage="plugin/jinro/first/discussion.js"]
-[loadjs storage="plugin/jinro/first/prepare.js"]
-[loadjs storage="plugin/jinro/first/calcReliability.js"]
-[loadjs storage="plugin/jinro/first/jinroGameData.js"]
 ; ゲーム内のマクロから呼び出す実体メソッドを実装したファイルも読み込む
 [loadjs storage="plugin/jinro/macro/impl.js"]
 [loadjs storage="plugin/jinro/macro/status.js"]
+
+; マクロ集を読み込む
+[call storage="../others/plugin/jinro/macro.ks"]
+
 ; 自作タグも読み込む が、現在未使用
 [loadjs storage="plugin/jinro/tag/j_graph.js"]
 [return ]

@@ -1,62 +1,9 @@
 /**
- * 参加者オブジェクト
- * 人狼ゲームの準備段階で生成する、参加者としての最低限の情報のみを格納できるオブジェクト。人狼ゲーム内では用いない
- * @param {String} characterId キャラクターID。必須
- * @param {String|Array|null} roleId 文字列の場合、役職ID。配列の場合、候補となる役職ID。指定しない場合、役職はランダムに決定される
- * @param {String} personalityName 性格名。指定しない場合、キャラクターのデフォルトの性格になる
- * @param {Object} adjustParameters 性格調整用のパラメータオブジェクト。なければ無調整。
+ * 開発モードの設定に応じて logical を補正するパラメータオブジェクトを生成する。
+ * @return {Object} logical の上書き値を含む調整パラメータ
  */
-function Participant(characterId, roleIdParam = null, personalityName = null, adjustParameters = {}) {
-  this.characterId = characterId;
-  this.roleId = Array.isArray(roleIdParam) ? null : roleIdParam; // roleIdParamが配列でなければ、役職IDをいれる
-  this.candidateRoleIds = Array.isArray(roleIdParam) ? roleIdParam : []; // roleIdParamが配列なら、候補となる役職ID配列にいれる
-  this.participationStatus = PARTICIPATION.CONFIRMED // PARTICIPATION.DECLINED、PARTICIPATION.CANDIDATE
-  this.personalityName = personalityName;
-  this.adjustParameters = adjustParameters;
-}
-
-
-function updateRoleIdInParticipant (participant, roleId) {
-  if (!validateParticipantStatus(participant.participationStatus, roleId)) {
-    throw new Error('参加確定ではないキャラに、何らかの役職IDを設定することはできません');
-  }
-  participant.roleId = roleId;
-}
-
-
-function updateParticipationStatusInParticipant (participant, participationStatus) {
-  if (!Object.values(PARTICIPATION).includes(participationStatus)) {
-    throw new Error('PARTICIPATION定数に未定義の参加ステータスには更新できません');
-  }
-
-  if (!validateParticipantStatus(participationStatus, participant.roleId)) {
-      throw new Error('役職ID設定済みのキャラを、「参加確定」以外の参加ステータスに更新することはできません');
-  }
-  participant.participationStatus = participationStatus;
-}
-
-
-function validateParticipantStatus (participationStatus, roleId) {
-  // 参加ステータスが「参加確定」ではないキャラに、何らかの役職IDを設定することはできない
-  if (participationStatus !== PARTICIPATION.CONFIRMED) {
-    if (!(roleId === null || roleId === ROLE_ID_UNKNOWN)) {
-      return false;
-    }
-  }
-  return true;
-}
-
-
-/**
- * 人狼ゲームで利用するキャラクターオブジェクト配列を生成し、ティラノのゲーム変数に格納する
- * 人狼ゲーム開始前に毎回呼び出すこと
- * @param {JinroGameData} jinroGameDataParam 人狼ゲームデータ
- */
-function initializeCharacterObjectsForJinro(jinroGameDataParam) {
-  // 渡し元のjinroGameDataを更新してしまわないようにディープコピー
-  const jinroGameData = clone( jinroGameDataParam);
-
-  // 開発者モード：「NPCの思考方針」によってlogicalを調整する。logicalを上書きすることで仲間度の算出結果が変わる。
+function buildAdjustParametersForDevelopment() {
+  // 開発者モード：「NPCの思考方針」によってlogicalを調整する。logicalを上書きすることで仲間度の計算結果が変わる。
   const adjustlogicalObject = {};
   if (TYRANO.kag.variable.sf.j_development.thinking === DECISION_LOGICAL) {
     // 「論理的」の場合、全キャラクターのlogicalを0.9999に上書きする（1だと仲間度の計算に全く信頼度が反映されなくなってしまうため）
@@ -65,13 +12,20 @@ function initializeCharacterObjectsForJinro(jinroGameDataParam) {
     // 「感情的」の場合、全キャラクターのlogicalを0.0001に上書きする（0だと仲間度の計算に全く同陣営割合が反映されなくなってしまうため）
     adjustlogicalObject.logical = 0.0001;
   }
+  return adjustlogicalObject;
+}
 
-  // 残り役職人数の把握のために、現在のroleDataをコピーする
-  const roleDataWithRemainingCapacity = Object.assign({}, jinroGameData.roleData);
 
-  // 最初に、参加確定かつ役職確定している参加者のキャラクターオブジェクトを生成する
+/**
+ * 役職が確定している参加者についてキャラクターオブジェクトを作成する。
+ * @param {Array<Participant>} participantList 参加者リスト
+ * @param {Object} adjustlogicalObject 開発モード用の logical 調整パラメータ
+ * @param {Object} roleDataWithRemainingCapacity 役職ごとの残数を保持するオブジェクト
+ * @return {Object} キャラクターIDをキーとしたキャラクターオブジェクトのマップ
+ */
+function createCharacterObjectsForConfirmedParticipants(participantList, adjustlogicalObject, roleDataWithRemainingCapacity) {
+  // 最初に、参加確定かつ役職確定している参加者のキャラクターオブジェクトを作成する
   const tmpCharacterObjects = {};
-  const participantList = jinroGameData.participantList;
   for (const participant of participantList) {
     // 役職が未確定の参加者は後回し
     if (!participant.roleId) continue;
@@ -88,7 +42,18 @@ function initializeCharacterObjectsForJinro(jinroGameDataParam) {
       alert('役職人数不足エラー: 役職人数不足のため、' + participant.characterId + 'に' + participant.roleId + 'を配役できませんでした');
     }
   }
+  return tmpCharacterObjects;
+}
 
+
+/**
+ * 役職が未確定の参加者に役職を割り当て、キャラクターオブジェクトを作成する。
+ * @param {Array<Participant>} participantList 参加者リスト
+ * @param {Object} adjustlogicalObject 開発モード用の logical 調整パラメータ
+ * @param {Object} roleDataWithRemainingCapacity 役職ごとの残数を保持するオブジェクト
+ * @param {Object} tmpCharacterObjects キャラクターIDをキーとしたキャラクターオブジェクトのマップ
+ */
+function assignRolesToPendingParticipants(participantList, adjustlogicalObject, roleDataWithRemainingCapacity, tmpCharacterObjects) {
   // 未確定の役職配列を、シャッフルした状態で取得する
   let unconfirmedRoleIdList = shuffleElements(convertNumberValueObjectToArray(roleDataWithRemainingCapacity));
   let roleIdListIndex = 0;
@@ -121,8 +86,18 @@ function initializeCharacterObjectsForJinro(jinroGameDataParam) {
   // もう一度unconfirmedRoleIdList = shuffleElements(convertNumberValueObjectToArray(roleDataWithRemainingCapacity));を取得し、ループしてキャラクターオブジェクトを生成する。
   // 最後までループしきったら終了（配役に対して参加者の方が多くて余ってしまった場合は登場させない）
   // 役職未確定の参加者の方が先に終わってしまった場合は人数不足エラー
+}
 
-  // 元々の参加者オブジェクト配列に入っていた順番に、キャラクターオブジェクトを並び替える
+
+/**
+ * 参加者リストの順序に合わせてキャラクターオブジェクトを並び替える。
+ * @param {Array<Participant>} participantList 参加者リスト
+ * @param {Object} tmpCharacterObjects キャラクターIDをキーとしたキャラクターオブジェクトのマップ
+ * @param {JinroGameData} jinroGameData ゲームデータ（プレイヤーキャラ判定に利用）
+ * @return {Object} 並び替え後のキャラクターオブジェクトマップ
+ */
+function reorderCharacterObjectsByParticipants(participantList, tmpCharacterObjects, jinroGameData) {
+  // 順番どおり参加者オブジェクト配列に入っている前提で、キャラクターオブジェクトを並び替える
   const characterObjects = {};
   for (const participant of participantList) {
     const characterId = participant.characterId;
@@ -136,24 +111,7 @@ function initializeCharacterObjectsForJinro(jinroGameDataParam) {
       TYRANO.kag.stat.f.playerCharacterId = characterId;
     }
   }
-
-  // 参加者のキャラクターID配列をティラノ変数に格納する（ゲーム内での並び順の基準になる）
-  TYRANO.kag.stat.f.participantsIdList = Object.keys(characterObjects);
-
-  // 共通の視点オブジェクトをティラノ変数に、各キャラの視点オブジェクトを各自のcharacterObject.perspectiveに格納する
-  setDefaultPerspective(characterObjects, TYRANO.kag.stat.f.participantsIdList, jinroGameData.roleData);
-
-  // 信頼度オブジェクトを各自のcharacterObject.reliabilityに格納する
-  setDefaultReliability(characterObjects, TYRANO.kag.stat.f.participantsIdList, TYRANO.kag.stat.f.playerCharacterId);
-
-  // 現在のフラストレーションオブジェクトを各自のcharacterObject.currentFrustrationに格納する
-  setDefaultCurrentFrustration(characterObjects, TYRANO.kag.stat.f.participantsIdList);
-
-  // キャラクターオブジェクト配列と役職ID配列をティラノのゲーム変数に格納する
-  TYRANO.kag.stat.f.characterObjects = characterObjects;
-  TYRANO.kag.stat.f.villagersRoleIdList = convertNumberValueObjectToArray(jinroGameData.roleData);
-
-  console.debug('★★characterObjects:', TYRANO.kag.stat.f.characterObjects);
+  return characterObjects;
 }
 
 
@@ -257,6 +215,61 @@ function setDefaultCurrentFrustration(characterObjects, participantsIdList) {
 
 
 /**
+ * 人狼ゲームで利用するキャラクターオブジェクト配列を生成し、ティラノのゲーム変数に格納する
+ * 人狼ゲーム開始前に毎回呼び出すこと
+ * @param {JinroGameData} jinroGameDataParam 人狼ゲームデータ
+ */
+function initializeCharacterObjectsForJinro(jinroGameDataParam) {
+  // 渡し元のjinroGameDataを更新してしまわないようにディープコピー
+  const jinroGameData = clone( jinroGameDataParam);
+
+  // 開発モードの設定に基づき、logical を補正する
+  const adjustlogicalObject = buildAdjustParametersForDevelopment();
+  const roleDataWithRemainingCapacity = Object.assign({}, jinroGameData.roleData);
+  const participantList = jinroGameData.participantList;
+
+  // 役職が確定している参加者からキャラクターオブジェクトを生成する
+  const tmpCharacterObjects = createCharacterObjectsForConfirmedParticipants(
+    participantList,
+    adjustlogicalObject,
+    roleDataWithRemainingCapacity
+  );
+
+  // 役職未確定の参加者へ役職を割り当て、キャラクターオブジェクトを追加する
+  assignRolesToPendingParticipants(
+    participantList,
+    adjustlogicalObject,
+    roleDataWithRemainingCapacity,
+    tmpCharacterObjects
+  );
+
+  // 参加者リストの順序に合わせたキャラクターオブジェクトへ並び替える
+  const characterObjects = reorderCharacterObjectsByParticipants(
+    participantList,
+    tmpCharacterObjects,
+    jinroGameData
+  );
+
+  // 参加者のキャラクターID配列をティラノ変数に格納する（ゲーム内での並び順の基準になる）
+  TYRANO.kag.stat.f.participantsIdList = Object.keys(characterObjects);
+
+  // 共通の視点オブジェクトをティラノ変数に、各キャラの視点オブジェクトをそのcharacterObject.perspectiveに格納する
+  setDefaultPerspective(characterObjects, TYRANO.kag.stat.f.participantsIdList, jinroGameData.roleData);
+
+  // 信頼度オブジェクトを各characterObject.reliabilityに格納する
+  setDefaultReliability(characterObjects, TYRANO.kag.stat.f.participantsIdList, TYRANO.kag.stat.f.playerCharacterId);
+
+  // 現在のフラストレーションオブジェクトを各characterObject.currentFrustrationに格納する
+  setDefaultCurrentFrustration(characterObjects, TYRANO.kag.stat.f.participantsIdList);
+
+  // キャラクターオブジェクト配列と役職ID配列をティラノのゲーム変数に格納する
+  TYRANO.kag.stat.f.characterObjects = characterObjects;
+  TYRANO.kag.stat.f.villagersRoleIdList = convertNumberValueObjectToArray(jinroGameData.roleData);
+
+  console.debug('★★characterObjects:', TYRANO.kag.stat.f.characterObjects);
+}
+
+/**
  * 人狼ゲームで利用するティラノのゲーム変数を初期化する
  * 人狼ゲーム開始前に毎回呼び出すこと
  */
@@ -273,9 +286,6 @@ function initializeTyranoValiableForJinro() {
   TYRANO.kag.stat.f.executionHistory = {};
   // 勝利陣営の初期化
   TYRANO.kag.stat.f.winnerFaction = null;
-
-  // 全占い結果履歴オブジェクトの初期化
-  TYRANO.kag.stat.f.allFortuneTellingHistoryObject = {};
 
   // アクション履歴オブジェクトの初期化
   TYRANO.kag.stat.f.doActionHistory = {};
