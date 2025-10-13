@@ -15,7 +15,7 @@
       width: 545, // 画像の幅（画面幅1280pxの中での幅）
       haight: 726, // 画像の高さ（画面高さ720pxの中での高さ）
       top: 173, // キャラが登場したときのtopの値
-      widthCenter: 241, // 画像の幅の中央（立ち絵の見た目の中央の位置。画像の左端からのpxで指定）
+      widthCenter: 255, // 画像の幅の中央（立ち絵の見た目の中央の位置。画像の左端からのpxで指定）
       leftOnLeft: -126, // キャラが左側に登場したときのleftの値
       leftOnRight: 829, // キャラが右側に登場したときのleftの値
       reflect: false, // キャラが右側に登場したときの立ち絵の向き。立ち絵が左向きならfalse, 右向きならtrueを指定する
@@ -25,7 +25,7 @@
     f.defaultPosition[tf.characterId].leftOnDefautRight = f.defaultPosition[tf.characterId].leftOnRight + 1000;
 
     // TODO キャラクターのイメージカラーのカラーコード
-    f.color.character[tf.characterId] = '#65e3ef';
+    f.color.character[tf.characterId] = '#79ee36ff';
     // TODO ステータス画面等の立ち絵
     f.statusFace[tf.characterId] = {
       alive: 'normal.png',

@@ -25,7 +25,7 @@
     f.defaultPosition[tf.characterId].leftOnDefautRight = f.defaultPosition[tf.characterId].leftOnRight + 1090;
 
     // キャラクターのイメージカラーのカラーコード
-    f.color.character[tf.characterId] = '#ffccc5';
+    f.color.character[tf.characterId] = '#f1a7b7ff';
     // ステータス画面等の立ち絵
     f.statusFace[tf.characterId] = {
       alive: 'normal.png',
