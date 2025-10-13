@@ -206,97 +206,6 @@
 [endmacro]
 
 
-; NPCの中からアクション実行候補者、実行するアクション、アクションの対象キャラクターを決定し、
-; f.doActionCandidateIdとf.npcActionObjectに格納する。
-; また、アクション実行しようとした候補者をf.actionCandidateObjects配列に格納する（フラストレーション増加用）
-[macro name="j_decideDoActionByNPC"]
-  [iscript]
-    // 変数の初期化
-    f.npcActionObject = {};
-    // アクション実行候補者を取得
-    f.actionCandidateObjects = getActionCandidateCharacter();
-  [endscript]
-  ; アクション実行候補者がいなければマクロ終了
-  [jump target="*end_j_decideDoActionByNPC" cond="f.actionCandidateObjects.length === 0"]
-
-  ; 実行するアクションとその対象を決定する
-  [iscript]
-    f.doActionCandidateId = f.actionCandidateObjects[0].characterId;
-
-    // 論理的な判断をするか感情的な判断をするか、論理力をもとに決める
-    // MEMO ここで仲間度を用いないのは、仲間度のみに限定すると中途半端な対象しか選択されないため。
-    // 論理力の低いキャラでも論理的な判断（＝そのキャラ視点における人狼ゲーム的な正解）で発言するチャンスを設けることで、プレイヤーを悩ませられると思う。
-    const [probability, isLogicalDecision] = randomDecide(f.characterObjects[f.doActionCandidateId].personality.logical);
-    const decision = isLogicalDecision ? DECISION_LOGICAL : DECISION_EMOTIONAL;
-
-    // 実行するアクションを決める
-    // TODO 選ばれるアクションは一旦ランダムとする。何らかの基準で比重を変えたい場合はここを修正する。
-    // MEMO ここはアクションを増やすときには絶対に仕組みごと作り直すこと
-    const timeStr = getTimeStr();
-    const thisTimeActionHistory = f.doActionHistory[f.day][timeStr];
-    let actionId = "";
-    if (!Array.isArray(f.doActionHistory[f.day][timeStr]) || f.doActionHistory[f.day][timeStr].length === 0) {
-      // まだその日のアクションがない場合は、疑うか信じるかをランダムで決める
-      actionId = getRandomElement([ACTION_SUSPECT, ACTION_TRUST]);
-
-    } else {
-      // その日のアクションの中から、自分の直前のアクションを取得する
-      const latestAction = getLatestAction(f.doActionCandidateId, thisTimeActionHistory, [ACTION_SUSPECT, ACTION_TRUST]);
-      console.debug("★★latestAction");
-      console.debug(latestAction);
-      if (latestAction === null) {
-        // まだアクションしていなかった場合は、疑うか信じるかをランダムで決める
-        actionId = getRandomElement([ACTION_SUSPECT, ACTION_TRUST]);
-      } else {
-        // すでにアクションしていた場合は、自分の直前のアクションとは違うアクションを取る
-        const latestActionId = latestAction.actionId;
-        actionId = (latestActionId === ACTION_SUSPECT) ? ACTION_TRUST : ACTION_SUSPECT;
-      }
-    }
-
-
-    // アクションの対象を決める
-    // TODO アクションID定数の中にmax,minを持っていた方が、アクションを増やしやすいかも
-    let needsMax = true;
-    if (actionId == ACTION_SUSPECT) {
-      needsMax = false;
-    } else if (actionId == ACTION_TRUST) {
-      needsMax = true;
-    } else {
-      alert('未定義のactionIdです');
-    }
-
-    // 同陣営判定の対象となる役職は、CO中の役職（COがなければ村人）とする
-    const roleId = (f.characterObjects[f.doActionCandidateId].CORoleId == '') ? ROLE_ID_VILLAGER : f.characterObjects[f.doActionCandidateId].CORoleId;
-
-    let targetCharacterId = '';
-    if (decision == DECISION_LOGICAL) {
-      // 論理的な判断
-
-      // 同陣営判定の対象となる役職は、CO中の役職（COがなければ村人）とする
-      const roleId = (f.characterObjects[f.doActionCandidateId].CORoleId == '') ? ROLE_ID_VILLAGER : f.characterObjects[f.doActionCandidateId].CORoleId;
-      // perspectiveをもとに同陣営割合を出して対象を決める（役職騙り中の人狼や狂人は騙り役職としての視点オブジェクトで判定する。発言は嘘をつくため）
-      targetCharacterId = getCharacterIdBySameFactionPerspective(
-        f.characterObjects[f.doActionCandidateId],
-        f.characterObjects[f.doActionCandidateId].perspective,
-        roleId,
-        needsMax
-      );
-    } else {
-      // 感情的な判断
-      // 信頼度をもとに対象を決める
-      targetCharacterId = getCharacterIdByReliability(f.characterObjects[f.doActionCandidateId], needsMax);
-    }
-    console.debug('actionId:' + actionId);
-
-    // ここまでに決定した情報を、NPCのアクションオブジェクトに格納する
-    f.npcActionObject = new Action(f.doActionCandidateId, actionId, targetCharacterId);
-    f.npcActionObject.decision = decision;
-  [endscript]
-
-  *end_j_decideDoActionByNPC
-[endmacro]
-
 
 ; アクション実行
 ; TODO サブルーチン化したい
@@ -390,8 +299,6 @@
     }
   [endscript]
 [endmacro]
-
-
 
 
 
