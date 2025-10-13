@@ -40,6 +40,15 @@ class Version {
         if (this.minor < otherVersion.minor) return false;
         return this.patch > otherVersion.patch;
     }
+
+    /**
+     * メジャーバージョンが指定された値かどうかを判定する
+     * @param {number} majorVersion 判定したいメジャーバージョン番号
+     * @returns {boolean} メジャーバージョンが一致するかどうか
+     */
+    isMajorVersion(majorVersion) {
+        return this.major === majorVersion;
+    }
 }
 
 /**

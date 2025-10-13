@@ -38,6 +38,32 @@ function getJinroGameDataForTheater(pageId) {
         ],
         CHARACTER_ID_ZUNDAMON
       );
+    // TODO テスト用
+    case 'p02':
+      return new JinroGameData(
+        {
+            [ROLE_ID_VILLAGER]: 8,
+            [ROLE_ID_FORTUNE_TELLER]: 1,
+            [ROLE_ID_WEREWOLF]: 3,
+            [ROLE_ID_MADMAN]: 1
+        },
+        [
+            new Participant(CHARACTER_ID_ZUNDAMON),
+            new Participant(CHARACTER_ID_METAN),
+            new Participant(CHARACTER_ID_TSUMUGI),
+            new Participant(CHARACTER_ID_HAU),
+            new Participant(CHARACTER_ID_RITSU),
+            new Participant(CHARACTER_ID_TAKEHIRO),
+            new Participant(CHARACTER_ID_KOTARO),
+            new Participant(CHARACTER_ID_RYUSEI),
+            new Participant(CHARACTER_ID_HIMARI),
+            new Participant(CHARACTER_ID_SORA),
+            new Participant(CHARACTER_ID_MESUO),
+            new Participant(CHARACTER_ID_MOCHIKO),
+            new Participant(CHARACTER_ID_MIKO),
+        ],
+        CHARACTER_ID_ZUNDAMON
+      );
     default:
       return null;
   }
@@ -49,7 +75,8 @@ function getJinroGameDataForTheater(pageId) {
  */
 function resetJinroGameDataObjectsToDefault() {
   TYRANO.kag.variable.sf.jinroGameDataObjects = {
-    current: getJinroGameDataForTheater('p01')
+    // TODO テスト用
+    current: getJinroGameDataForTheater('p02')
   };
   TYRANO.kag.variable.sf.currentJinroGameDataKey = 'current';
 }

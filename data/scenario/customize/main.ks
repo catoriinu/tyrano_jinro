@@ -26,10 +26,14 @@ tf.allowShowEditButton = (isPage01AllCleared || sf.isDebugMode);
 *return_from_EditMode
 [iscript]
 tf.participantCount = 0;
-tf.participantMaxCount = 4; // TODO:実装キャラが増えたら可変にすること
+tf.participantMaxCount = sf.version.isMajorVersion(2) ? 12 : 4; // TODO:実装キャラが増えたら可変にすること
 tf.iconSize = 105;
 tf.baseTop = 155;
 tf.offsetTop = 110;
+
+tf.baseSdLeft = 100; // SDアイコンの基準となる左座標
+tf.columnGap = (tf.iconSize * 2) + 50; // SDと役職アイコン幅に余白を加えた列間隔
+tf.maxRow = 5;
 
 tf.buttonColor = CLASS_GLINK_DEFAULT;
 tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
@@ -80,7 +84,12 @@ tf.selectedButtonColor = CLASS_GLINK_DEFAULT + " " + CLASS_GLINK_SELECTED;
 ; 参加者のキャラアイコン、役職アイコン、クリッカブル領域を表示するサブルーチン
 *displayParticipantIcon
 [iscript]
-tf.top = tf.baseTop + (tf.offsetTop * tf.participantCount);
+const columnIndex = Math.floor(tf.participantCount / tf.maxRow);
+const rowIndex = tf.participantCount % tf.maxRow;
+tf.top = tf.baseTop + (tf.offsetTop * rowIndex);
+tf.sdLeft = tf.baseSdLeft + (tf.columnGap * columnIndex);
+tf.roleLeft = tf.sdLeft + tf.iconSize;
+
 tf.targetprofile = '*window_profile_' + tf.participantCount;
 tf.targetSelectRole = '*window_selectRole_' + tf.participantCount;
 
@@ -117,16 +126,16 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 [free layer="0" page="back" name="&tf.pcFrameName"]
 
 ; キャラアイコンと役職アイコン表示
-[image folder="image" page="back" storage="&tf.sdStorage" layer="0" width="&tf.iconSize" height="&tf.iconSize" left="100" top="&tf.top" name="&tf.charaIconName" cond="tf.needUpdateCharaIcon"]
-[image folder="image" page="back" storage="&tf.roleStorage" layer="0" width="&tf.iconSize" height="&tf.iconSize" left="205" top="&tf.top" name="&tf.roleIconName" cond="tf.needUpdateRoleIcon"]
+[image folder="image" page="back" storage="&tf.sdStorage" layer="0" width="&tf.iconSize" height="&tf.iconSize" left="&tf.sdLeft" top="&tf.top" name="&tf.charaIconName" cond="tf.needUpdateCharaIcon"]
+[image folder="image" page="back" storage="&tf.roleStorage" layer="0" width="&tf.iconSize" height="&tf.iconSize" left="&tf.roleLeft" top="&tf.top" name="&tf.roleIconName" cond="tf.needUpdateRoleIcon"]
 
 ; プレイヤーの役職アイコンには金枠を表示
-[image folder="image" page="back" storage="role/icon_gold_frame.png" layer="0" width="&tf.iconSize" height="&tf.iconSize" left="205" top="&tf.top" name="&tf.pcFrameName" cond="tf.isPlayer"]
+[image folder="image" page="back" storage="role/icon_gold_frame.png" layer="0" width="&tf.iconSize" height="&tf.iconSize" left="&tf.roleLeft" top="&tf.top" name="&tf.pcFrameName" cond="tf.isPlayer"]
 
 ; キャラアイコンには「プロフィール」への、役職アイコンには「役職設定」へのクリッカブル領域を作成
 ; MEMO ver0.12.5to6 「プロフィール」へ遷移するクリッカブル領域は撤廃する。将来的に参加・不参加・参加候補の切り替え用にする予定
-;[clickable width="&tf.iconSize" height="&tf.iconSize" x="100" y="&tf.top" color="0x333333" opacity="0" mouseopacity="40" target="&tf.targetprofile"]
-[clickable width="&tf.iconSize" height="&tf.iconSize" x="205" y="&tf.top" color="0x333333" opacity="0" mouseopacity="40" target="&tf.targetSelectRole"]
+;[clickable width="&tf.iconSize" height="&tf.iconSize" x="&tf.sdLeft" y="&tf.top" color="0x333333" opacity="0" mouseopacity="40" target="&tf.targetprofile"]
+[clickable width="&tf.iconSize" height="&tf.iconSize" x="&tf.roleLeft" y="&tf.top" color="0x333333" opacity="0" mouseopacity="40" target="&tf.targetSelectRole"]
 [return]
 
 
@@ -200,6 +209,62 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 [endscript]
 [jump target="*jump_customizeWindow"]
 
+*window_profile_5
+[iscript]
+  f.selectedParticipantIndex = 5;
+  tf.windowElements = 'profile';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
+*window_profile_6
+[iscript]
+  f.selectedParticipantIndex = 6;
+  tf.windowElements = 'profile';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
+*window_profile_7
+[iscript]
+  f.selectedParticipantIndex = 7;
+  tf.windowElements = 'profile';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
+*window_profile_8
+[iscript]
+  f.selectedParticipantIndex = 8;
+  tf.windowElements = 'profile';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
+*window_profile_9
+[iscript]
+  f.selectedParticipantIndex = 9;
+  tf.windowElements = 'profile';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
+*window_profile_10
+[iscript]
+  f.selectedParticipantIndex = 10;
+  tf.windowElements = 'profile';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
+*window_profile_11
+[iscript]
+  f.selectedParticipantIndex = 11;
+  tf.windowElements = 'profile';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
+*window_profile_12
+[iscript]
+  f.selectedParticipantIndex = 12;
+  tf.windowElements = 'profile';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
 *window_selectRole_0
 [iscript]
   f.selectedParticipantIndex = 0;
@@ -231,6 +296,62 @@ tf.roleStorage = 'role/icon_' + roleId + '.png';
 *window_selectRole_4
 [iscript]
   f.selectedParticipantIndex = 4;
+  tf.windowElements = 'selectRole';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
+*window_selectRole_5
+[iscript]
+  f.selectedParticipantIndex = 5;
+  tf.windowElements = 'selectRole';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
+*window_selectRole_6
+[iscript]
+  f.selectedParticipantIndex = 6;
+  tf.windowElements = 'selectRole';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
+*window_selectRole_7
+[iscript]
+  f.selectedParticipantIndex = 7;
+  tf.windowElements = 'selectRole';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
+*window_selectRole_8
+[iscript]
+  f.selectedParticipantIndex = 8;
+  tf.windowElements = 'selectRole';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
+*window_selectRole_9
+[iscript]
+  f.selectedParticipantIndex = 9;
+  tf.windowElements = 'selectRole';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
+*window_selectRole_10
+[iscript]
+  f.selectedParticipantIndex = 10;
+  tf.windowElements = 'selectRole';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
+*window_selectRole_11
+[iscript]
+  f.selectedParticipantIndex = 11;
+  tf.windowElements = 'selectRole';
+[endscript]
+[jump target="*jump_customizeWindow"]
+
+*window_selectRole_12
+[iscript]
+  f.selectedParticipantIndex = 12;
   tf.windowElements = 'selectRole';
 [endscript]
 [jump target="*jump_customizeWindow"]
