@@ -30,6 +30,24 @@
 [endmacro]
 
 
+
+; -------------------------
+; 時間進行系マクロ
+; -------------------------
+
+; 昼時間開始時のゲーム変数初期化マクロ
+[macro name="j_daytimeInitialize"]
+  [eval exp="daytimeInitialize()"]
+[endmacro]
+
+
+; 夜時間開始時のゲーム変数初期化マクロ
+[macro name="j_nightInitialize"]
+  [eval exp="nightInitialize()"]
+[endmacro]
+
+
+
 ; -------------------------
 ; アクション系マクロ
 ; -------------------------

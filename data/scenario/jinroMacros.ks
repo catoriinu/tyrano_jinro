@@ -749,8 +749,8 @@
   ; TODO 襲撃死と同時に別の死亡者が出る（例：呪殺）ようになった場合は修正する。配列で複数オブジェクトを取得することになるはず
   [eval exp="f.bitingObjectLastNight = f.bitingHistory[f.day]"]
 
-  ; 昼時間開始時用の初期化を行う
-  [eval exp="daytimeInitialize()"]
+  ; 昼時間開始時用のゲーム変数初期化を行う
+  [j_daytimeInitialize]
 
   [bg storage="black.png" time="1000" wait="true" effect="fadeInDown"]
 
@@ -794,14 +794,14 @@
   ; PCを退場させる
   [m_exitCharacter characterId="&f.displayedCharacter.left.characterId"]
 
-  ; 夜時間開始時用の初期化を行う
-  [eval exp="nightInitialize()"]
+  ; 夜時間開始時のゲーム変数初期化を行う
+  [j_nightInitialize]
+
   [bg storage="living_night_close.jpg" time="1000" wait="true" effect="fadeInUp"]
 
   恐ろしい夜がやってきました。[p]
 
 [endmacro]
-
 
 
 ; @param buf 必須。保存バッファ。任意のキー名を指定すること。
