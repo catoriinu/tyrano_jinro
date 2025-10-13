@@ -29,12 +29,12 @@
     // ステータス画面等の立ち絵
     f.statusFace[tf.characterId] = {
       alive: 'normal.png',
-      lose: 'sad.png',
+      lose: 'normal.png',
       win: {
-        [FACTION_VILLAGERS]: 'happy.png',
-        [FACTION_WEREWOLVES]: 'smug.png',
+        [FACTION_VILLAGERS]: 'normal.png',
+        [FACTION_WEREWOLVES]: 'normal.png',
       },
-      draw: 'panicked.png',
+      draw: 'normal.png',
     };
 
     // キャラ立ち絵のfaceとstorageの紐づけ

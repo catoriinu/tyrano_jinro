@@ -29,12 +29,12 @@
     // ステータス画面等の立ち絵
     f.statusFace[tf.characterId] = {
       alive: 'normal.png',
-      lose: 'cry.png',
+      lose: 'normal.png',
       win: {
-        [FACTION_VILLAGERS]: 'smile.png',
-        [FACTION_WEREWOLVES]: 'plotting.png',
+        [FACTION_VILLAGERS]: 'normal.png',
+        [FACTION_WEREWOLVES]: 'normal.png',
       },
-      draw: 'surprise.png',
+      draw: 'normal.png',
     };
 
     f.charaFaceObjects = [
@@ -52,6 +52,12 @@
       {face: 'ドヤ顔', storage: 'doyagao'},
       {face: '説明', storage: 'instruction'},
     ];
+
+    // 規定のイベントとfaceの紐づけ
+    f.charaFaceForEvent[tf.characterId] = {
+      '被襲撃': '通常',
+      '投票': '通常',
+    }
   [endscript]
 
   [call storage="./chara/common.ks" target="*executeCharaNewFaceShow"]

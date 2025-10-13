@@ -29,12 +29,12 @@
     // TODO ステータス画面等の立ち絵
     f.statusFace[tf.characterId] = {
       alive: 'normal.png',
-      lose: 'astonished.png',
+      lose: 'normal.png',
       win: {
-        [FACTION_VILLAGERS]: 'relieved.png',
-        [FACTION_WEREWOLVES]: 'wrysmile.png',
+        [FACTION_VILLAGERS]: 'normal.png',
+        [FACTION_WEREWOLVES]: 'normal.png',
       },
-      draw: 'tired.png',
+      draw: 'normal.png',
     };
 
     f.charaFaceObjects = [
@@ -42,6 +42,12 @@
       {face: '煽り', storage: 'scorn'},
       {face: '囁き', storage: 'whisper'},
     ];
+
+    // 規定のイベントとfaceの紐づけ
+    f.charaFaceForEvent[tf.characterId] = {
+      '被襲撃': '通常',
+      '投票': '通常',
+    }
   [endscript]
 
   [call storage="./chara/common.ks" target="*executeCharaNewFaceShow"]
