@@ -118,8 +118,18 @@
 ; 横並びでキャラクター画像を表示するサブルーチン
 ; 事前にf.dchオブジェクトに必要な情報を格納しておくこと
 *displayCharactersHorizontally
-; キャラクターを表示するレイヤーを可視化する
 [layopt layer="1" page="fore" visible="true"]
+[iscript]
+  tf.__useLegacyDisplayCharacters = true;
+  if (typeof renderHorizontalCharacters === "function") {
+    renderHorizontalCharacters("default");
+    tf.__useLegacyDisplayCharacters = false;
+  }
+[endscript]
+[jump target="*displayCharactersHorizontally_legacy" cond="tf.__useLegacyDisplayCharacters"]
+[return]
+
+*displayCharactersHorizontally_legacy
 [iscript]
   // レイヤーに、FlexboxのCSSが適用されるdiv要素を追加する
   $('.1_fore').append('<div class="dch_container">');
@@ -209,7 +219,17 @@ MEMO 最終的には以下の構成のHTMLが生成される。
 ; 横並びでキャラクター画像を表示するサブルーチン
 ; 事前にf.dchオブジェクトに必要な情報を格納しておくこと
 *displayCharactersHorizontallyForStatus
-; キャラクターを表示するレイヤーを可視化する
+[iscript]
+  tf.__useLegacyDisplayCharactersForStatus = true;
+  if (typeof renderHorizontalCharacters === "function") {
+    renderHorizontalCharacters("status");
+    tf.__useLegacyDisplayCharactersForStatus = false;
+  }
+[endscript]
+[jump target="*displayCharactersHorizontallyForStatus_legacy" cond="tf.__useLegacyDisplayCharactersForStatus"]
+[return]
+
+*displayCharactersHorizontallyForStatus_legacy
 ;[layopt layer="1" page="fore" visible="true"]
 [iscript]
   // レイヤーに、FlexboxのCSSが適用されるdiv要素を追加する

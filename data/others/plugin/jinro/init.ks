@@ -44,6 +44,7 @@
 ; ゲーム内のマクロから呼び出す実体メソッドを実装したファイルも読み込む
 [loadjs storage="plugin/jinro/macro/impl.js"]
 [loadjs storage="plugin/jinro/macro/status.js"]
+[loadjs storage="plugin/jinro/macro/displayCharacters.js"]
 
 ; マクロ集を読み込む
 [call storage="../others/plugin/jinro/macro.ks"]
