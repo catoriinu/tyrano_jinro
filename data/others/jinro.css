@@ -1,4 +1,4 @@
-/* ボタンの背景枠用CSS */
+﻿/* ボタンの背景枠用CSS */
 .left_button_window,.right_button_window,.center_button_window {
     background-color: rgba(255,255,255,0.82);
     border:solid 3px rgba(0,0,0,0.82);
@@ -71,13 +71,13 @@
     color: #242424;
 }
 
-/* 横並びでキャラクター画像を表示するサブルーチン用CSS */
-.dch_container {
+/* キャラクターボード表示用CSS */
+.cb_container {
     display: flex;
     flex-direction: row;
 }
 
-.dch_box {
+.cb_box {
     /* width: 256px; */
     height: 720px;
 }
@@ -178,7 +178,7 @@ input:checked + label {
     border: 1px solid #4C614F;
 }
 
-.dchStatusContainer {
+.cbStatusContainer {
     display: flex;
     flex-direction: row;
     height: 584px;
@@ -331,3 +331,5 @@ input:checked + label {
     border-right: 14px solid #28332a;
     z-index: 1;
 }
+
+

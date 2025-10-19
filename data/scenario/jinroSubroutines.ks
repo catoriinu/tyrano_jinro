@@ -116,18 +116,18 @@
 
 
 ; 横並びでキャラクター画像を表示するサブルーチン
-; 事前にf.dchオブジェクトに必要な情報を格納しておくこと
-*displayCharactersHorizontally
+; 事前にf.characterBoardオブジェクトに必要な情報を格納しておくこと
+*renderCharacterBoard
 [layopt layer="1" page="fore" visible="true"]
 [iscript]
-  renderHorizontalCharacters("default");
+  renderCharacterBoard("default");
 [endscript]
 [return]
 
 
-*displayCharactersHorizontallyForStatus
+*renderCharacterBoardForStatus
 [iscript]
-  renderHorizontalCharacters("status");
+  renderCharacterBoard("status");
 [endscript]
 [return]
 

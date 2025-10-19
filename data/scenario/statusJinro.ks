@@ -1,4 +1,4 @@
-*statusJinroMain
+﻿*statusJinroMain
 [cm]
 [clearfix]
 
@@ -27,10 +27,10 @@
             <button type="button" class="plusButton">+</button>
         </div>
     </div>
-    <div class="dchStatusContainer">
-        <!-- ここはdisplayCharactersHorizontallyForStatusサブルーチン内で生成する
-        <div class="dchStatusBox">
-            <p class="dchStatusBoxVerticalText">キャラクター名</p>
+    <div class="cbStatusContainer">
+        <!-- ここはrenderCharacterBoardForStatusサブルーチン内で生成する
+        <div class="statusBox">
+            <p class="statusBoxVerticalText">キャラクター名</p>
             <img src="./data/fgimage/chara/キャラクター画像" />
             <div class="infoContainer">
                 <div class="infoBox line1"></div>
@@ -130,7 +130,7 @@
         }
 
         $('.voteDay' + displayDay).show();
-        
+
         if ($value instanceof jQuery) {
             $value.text(displayDay);
         }
@@ -138,8 +138,8 @@
 [endscript]
 
 ; キャラクタ－画像を表示
-[j_setDchForStatus winnerFaction="&f.winnerFaction"]
-[call storage="jinroSubroutines.ks" target="*displayCharactersHorizontallyForStatus"]
+[j_setCharacterBoardForStatus winnerFaction="&f.winnerFaction"]
+[call storage="jinroSubroutines.ks" target="*renderCharacterBoardForStatus"]
 
 ; 【チャプター再生】
 [t_playChapter target="statusButton"]

@@ -1,11 +1,11 @@
-/**
- * Tyranoシナリオにおける横並びキャラクター表示の共通処理ユーティリティ。
- * `*displayCharactersHorizontally` / `*displayCharactersHorizontallyForStatus` から呼び出される。
+﻿/**
+ * Tyranoシナリオにおけるキャラクターボード表示の共通処理ユーティリティ。
+ * `*renderCharacterBoard` / `*renderCharacterBoardForStatus` から呼び出される。
  */
 /* global TYRANO, $, createInfoContainer, isShouldOpenRoleInfo */
 
 /** 画面横幅（px） */
-const HORIZONTAL_DISPLAY_CONTAINER_WIDTH = 1280;
+const CHARACTER_BOARD_CONTAINER_WIDTH = 1280;
 /** テキストを描画する際の上下余白（px） */
 const DEFAULT_TEXT_MARGIN = 3;
 /** キャラクターボックス同士の左右余白（px） */
@@ -15,7 +15,7 @@ const DEFAULT_IMAGE_Z_INDEX = 1;
 /** 縦書き／横書きテキストで使用するフォント */
 const DEFAULT_FONT_FAMILY = 'にくまるフォント';
 /** テキスト縁取り用のシャドウ設定 */
-const HORIZONTAL_TEXT_SHADOW =
+const CHARACTER_BOARD_TEXT_SHADOW =
   'rgb(255, 255, 255) 2px 0px 0px, rgb(255, 255, 255) 1.76px 0.96px 0px, ' +
   'rgb(255, 255, 255) 1.08px 1.68px 0px, rgb(255, 255, 255) 0.14px 1.99px 0px, ' +
   'rgb(255, 255, 255) -0.83px 1.82px 0px, rgb(255, 255, 255) -1.6px 1.2px 0px, ' +
@@ -25,7 +25,7 @@ const HORIZONTAL_TEXT_SHADOW =
   'rgb(255, 255, 255) 1.92px -0.56px 0px';
 
 /** 旧マクロが使用していたデフォルトの表示位置調整量（box の右寄せ／上寄せを統一制御する） */
-const DEFAULT_CHARACTER_DISPLACEMENT = {
+const DEFAULT_BOARD_OFFSET = {
   right: 20,
   top: -100
 };
@@ -47,17 +47,17 @@ const DRAW_BY_REVOTE_FACTION =
  * 表示モードごとの描画設定。
  * default: シナリオ画面、status: ステータス画面。
  */
-const HORIZONTAL_DISPLAY_CONFIG = {
+const CHARACTER_BOARD_CONFIG = {
   default: {
     rootSelector: '.1_fore',
     /** シナリオ画面のレイヤーを初期化 */
     cleanup: function cleanupDefaultRoot($root) {
-      $root.find('.dch_container').remove();
-      $root.find('.dch_text').remove();
+      $root.find('.cb_container').remove();
+      $root.find('.cb_text').remove();
     },
     /** シナリオ画面用のコンテナを生成 */
     getContainer: function createDefaultContainer($root) {
-      return $('<div>').addClass('dch_container').appendTo($root);
+      return $('<div>').addClass('cb_container').appendTo($root);
     },
     /** シナリオ画面での 1 キャラクター分の描画 */
     renderCharacter: function renderDefaultCharacter(options) {
@@ -73,8 +73,8 @@ const HORIZONTAL_DISPLAY_CONFIG = {
         defaultPos
       } = options;
 
-      const classNum = 'dch_' + index;
-      const imageName = 'dch_' + character.characterId + '_' + index;
+      const classNum = 'cb_' + index;
+      const imageName = 'cb_' + character.characterId + '_' + index;
       const reflectClass = character.reflect ? ' reflect' : '';
       const storagePath = './data/fgimage/chara/' + character.characterId + '/' + character.fileName;
       const boxLeft = (boxWidth * index) + DEFAULT_BOX_MARGIN;
@@ -86,7 +86,7 @@ const HORIZONTAL_DISPLAY_CONFIG = {
       const backgroundColor = character.bgColor || 'rgba(0, 0, 0, 1)';
 
       // キャラクターを収めるボックスを生成
-      const $box = $('<div>').addClass('dch_box ' + classNum).css({
+      const $box = $('<div>').addClass('cb_box ' + classNum).css({
         width: boxWidth + 'px',
         'background-image': 'linear-gradient(' + backgroundColor + ' 10%, rgba(0, 0, 0, 1) 150%)'
       });
@@ -117,7 +117,7 @@ const HORIZONTAL_DISPLAY_CONFIG = {
     }
   },
   status: {
-    rootSelector: '.dchStatusContainer',
+    rootSelector: '.cbStatusContainer',
     /** ステータス画面のレイヤーを初期化 */
     cleanup: function cleanupStatusRoot($root) {
       $root.find('.statusBox').remove();
@@ -140,8 +140,8 @@ const HORIZONTAL_DISPLAY_CONFIG = {
         f
       } = options;
 
-      const classNum = 'dch_' + index;
-      const imageName = 'dch_' + character.characterId + '_' + index;
+      const classNum = 'cb_' + index;
+      const imageName = 'cb_' + character.characterId + '_' + index;
       const reflectClass = character.reflect ? ' reflect' : '';
       const storagePath = './data/fgimage/chara/' + character.characterId + '/' + character.fileName;
       const widthCenter = Number(defaultPos.widthCenter || 0);
@@ -209,11 +209,11 @@ const HORIZONTAL_DISPLAY_CONFIG = {
  * 横並び表示を実行する。
  * @param {'default' | 'status'} mode 表示モード
  */
-function renderHorizontalCharacters(mode) {
-  const config = HORIZONTAL_DISPLAY_CONFIG[mode];
+function renderCharacterBoard(mode) {
+  const config = CHARACTER_BOARD_CONFIG[mode];
   // 想定外のモードが来た場合は開発者向けに例外を投げて早期に気付けるようにする
   if (!config) {
-    throw new Error('[renderHorizontalCharacters] 未対応のモードです: ' + mode);
+    throw new Error('[renderCharacterBoard] 未対応のモードです: ' + mode);
   }
 
   // Tyrano本体が初期化されていない場合は描画処理を行わない
@@ -223,11 +223,11 @@ function renderHorizontalCharacters(mode) {
   }
 
   const f = kag.stat.f || {};
-  const dch = f.dch || {};
-  const characterList = Array.isArray(dch.characterList) ? dch.characterList : [];
+  const board = f.characterBoard || {};
+  const characterList = Array.isArray(board.characterList) ? board.characterList : [];
   const defaultPosition = f.defaultPosition || {};
-  const displacedPxToRight = Number(dch.displacedPxToRight || 0);
-  const displacedPxToTop = Number(dch.displacedPxToTop || 0);
+  const displacedPxToRight = Number(board.displacedPxToRight || 0);
+  const displacedPxToTop = Number(board.displacedPxToTop || 0);
 
   const $root = $(config.rootSelector);
   if ($root.length === 0) {
@@ -243,7 +243,7 @@ function renderHorizontalCharacters(mode) {
     return;
   }
 
-  const containerWidth = HORIZONTAL_DISPLAY_CONTAINER_WIDTH;
+  const containerWidth = CHARACTER_BOARD_CONTAINER_WIDTH;
   const boxWidth = containerWidth / characterList.length;
   const halfBoxWidth = boxWidth / 2;
   const $container = config.getContainer($root);
@@ -324,7 +324,7 @@ function appendVerticalText($root, text, boxLeft) {
   if (!text) {
     return;
   }
-  $('<p>').addClass('vertical_text dch_text').css({
+  $('<p>').addClass('vertical_text cb_text').css({
     position: 'absolute',
     top: DEFAULT_TEXT_MARGIN + 'px',
     left: boxLeft + 'px',
@@ -333,7 +333,7 @@ function appendVerticalText($root, text, boxLeft) {
     'font-size': '38px',
     'font-family': DEFAULT_FONT_FAMILY,
     'z-index': 999,
-    'text-shadow': HORIZONTAL_TEXT_SHADOW,
+    'text-shadow': CHARACTER_BOARD_TEXT_SHADOW,
     'writing-mode': 'vertical-rl',
     'text-orientation': 'upright'
   }).text(text).appendTo($root);
@@ -350,7 +350,7 @@ function appendTopText($root, text, boxLeft, boxWidth) {
   if (!text) {
     return;
   }
-  $('<p>').addClass('dch_text dch_top_text').css({
+  $('<p>').addClass('cb_text cb_top_text').css({
     position: 'absolute',
     top: DEFAULT_TEXT_MARGIN + 'px',
     left: boxLeft + 'px',
@@ -360,37 +360,37 @@ function appendTopText($root, text, boxLeft, boxWidth) {
     'font-size': '38px',
     'font-family': DEFAULT_FONT_FAMILY,
     'z-index': 999,
-    'text-shadow': HORIZONTAL_TEXT_SHADOW
+    'text-shadow': CHARACTER_BOARD_TEXT_SHADOW
   }).text(text).appendTo($root);
 }
 
-window.renderHorizontalCharacters = renderHorizontalCharacters;
+window.renderCharacterBoard = renderCharacterBoard;
 
 /**
- * `f.dch` に横並び表示用データを組み立てる。
+ * `f.characterBoard` に一覧表示用データを組み立てる。
  * @param {'introduction'|'status'|'winnerFaction'|'openVote'} mode 表示準備モード
  * @param {Object} [options] 将来的な拡張用オプション
- * @returns {{dch: DisplayCharactersHorizontally, extras?: Object}|null} 設定したオブジェクトと付随情報
+ * @returns {{board: CharacterBoard, extras?: Object}|null} 設定したオブジェクトと付随情報
  */
-function prepareHorizontalCharacters(mode, options) {
-  const context = createHorizontalDisplayContext(options);
+function prepareCharacterBoard(mode, options) {
+  const context = createCharacterBoardContext(options);
   if (!context) {
     return null;
   }
 
   const preparer = HORIZONTAL_DISPLAY_PREPARERS[mode];
   if (!preparer) {
-    throw new Error('[prepareHorizontalCharacters] 未対応のモードです: ' + mode);
+    throw new Error('[prepareCharacterBoard] 未対応のモードです: ' + mode);
   }
 
-  const dch = preparer(context);
-  if (!dch) {
+  const boardData = preparer(context);
+  if (!boardData) {
     return null;
   }
 
-  context.f.dch = dch;
+  context.f.characterBoard = boardData;
   const result = {
-    dch: dch
+    board: boardData
   };
   if (context.extras && Object.keys(context.extras).length > 0) {
     result.extras = context.extras;
@@ -403,7 +403,7 @@ function prepareHorizontalCharacters(mode, options) {
  * @param {Object} [options] 呼び出し側から渡される追加オプション
  * @returns {{kag: *, f: *, mp: *, tf: *, options: Object, extras: Object}|null}
  */
-function createHorizontalDisplayContext(options) {
+function createCharacterBoardContext(options) {
   const kag = (typeof TYRANO !== 'undefined' && TYRANO && TYRANO.kag) ? TYRANO.kag : null;
   if (!kag || !kag.stat) {
     return null;
@@ -422,14 +422,14 @@ function createHorizontalDisplayContext(options) {
 }
 
 /**
- * `DisplayCharactersHorizontallySingle` を生成するヘルパー。
+ * `BoardCharacter` を生成するヘルパー。
  * 必須プロパティ以外は既存マクロのデフォルト値（通常立ち絵など）に合わせる。
  * @param {Object} params パラメータ
- * @returns {DisplayCharactersHorizontallySingle}
+ * @returns {BoardCharacter}
  */
-function createHorizontalCharacter(params) {
+function createBoardCharacter(params) {
   const fileName = (typeof params.fileName === 'undefined') ? 'normal.png' : params.fileName;
-  return new DisplayCharactersHorizontallySingle(
+  return new BoardCharacter(
     params.characterId,
     fileName,
     typeof params.bgColor === 'undefined' ? '' : params.bgColor,
@@ -440,13 +440,13 @@ function createHorizontalCharacter(params) {
 }
 
 /**
- * `DisplayCharactersHorizontally` を生成するヘルパー。
- * @param {Array<DisplayCharactersHorizontallySingle>} characterList キャラクターリスト
+ * `CharacterBoard` を生成するヘルパー。
+ * @param {Array<BoardCharacter>} characterList キャラクターリスト
  * @param {{right: number, top: number}} displacement 表示位置調整量
- * @returns {DisplayCharactersHorizontally}
+ * @returns {CharacterBoard}
  */
-function createHorizontalDisplay(characterList, displacement) {
-  return new DisplayCharactersHorizontally(
+function createCharacterBoard(characterList, displacement) {
+  return new CharacterBoard(
     characterList,
     displacement.right,
     displacement.top
@@ -454,7 +454,7 @@ function createHorizontalDisplay(characterList, displacement) {
 }
 
 /**
- * 表示モード別の `f.dch` 組み立てロジック。
+ * 表示モード別の `f.characterBoard` 組み立てロジック。
  */
 const HORIZONTAL_DISPLAY_PREPARERS = {
   introduction: function prepareIntroductionCharacters(context) {
@@ -476,7 +476,7 @@ const HORIZONTAL_DISPLAY_PREPARERS = {
         ? getReflectFromCharacterId(characterId)
         : false;
 
-      characterList.push(createHorizontalCharacter({
+      characterList.push(createBoardCharacter({
         characterId: characterId,
         fileName: 'normal.png',
         bgColor: bgColor,
@@ -485,7 +485,7 @@ const HORIZONTAL_DISPLAY_PREPARERS = {
       }));
     }
 
-    return createHorizontalDisplay(characterList, DEFAULT_CHARACTER_DISPLACEMENT);
+    return createCharacterBoard(characterList, DEFAULT_BOARD_OFFSET);
   },
   status: function prepareStatusCharacters(context) {
     const f = context.f || {};
@@ -522,7 +522,7 @@ const HORIZONTAL_DISPLAY_PREPARERS = {
         fileName = statusFaceEntry.lose || fileName;
       }
 
-      characterList.push(createHorizontalCharacter({
+      characterList.push(createBoardCharacter({
         characterId: characterId,
         fileName: fileName,
         bgColor: bgColor,
@@ -533,7 +533,7 @@ const HORIZONTAL_DISPLAY_PREPARERS = {
       }));
     }
 
-    return createHorizontalDisplay(characterList, DEFAULT_CHARACTER_DISPLACEMENT);
+    return createCharacterBoard(characterList, DEFAULT_BOARD_OFFSET);
   },
   winnerFaction: function prepareWinnerFactionCharacters(context) {
     const f = context.f || {};
@@ -564,7 +564,7 @@ const HORIZONTAL_DISPLAY_PREPARERS = {
         continue;
       }
 
-      characterList.push(createHorizontalCharacter({
+      characterList.push(createBoardCharacter({
         characterId: characterId,
         fileName: fileName,
         bgColor: (typeof getBgColorFromCharacterId === 'function')
@@ -577,7 +577,7 @@ const HORIZONTAL_DISPLAY_PREPARERS = {
       }));
     }
 
-    return createHorizontalDisplay(characterList, DEFAULT_CHARACTER_DISPLACEMENT);
+    return createCharacterBoard(characterList, DEFAULT_BOARD_OFFSET);
   },
   openVote: function prepareOpenVoteCharacters(context) {
     const f = context.f || {};
@@ -603,7 +603,7 @@ const HORIZONTAL_DISPLAY_PREPARERS = {
       const voteCount = (characterId in votedCountObject) ? votedCountObject[characterId] : 0;
       const voteCountText = electedMark + voteCount + OPEN_VOTE_STRINGS.voteSuffix;
 
-      characterList.push(createHorizontalCharacter({
+      characterList.push(createBoardCharacter({
         characterId: characterId,
         fileName: 'normal.png',
         bgColor: (typeof getBgColorFromCharacterId === 'function')
@@ -629,8 +629,20 @@ const HORIZONTAL_DISPLAY_PREPARERS = {
     tf.voteBacklog = backlogText;
     context.extras.backlogText = backlogText;
 
-    return createHorizontalDisplay(characterList, DEFAULT_CHARACTER_DISPLACEMENT);
+    return createCharacterBoard(characterList, DEFAULT_BOARD_OFFSET);
   }
 };
 
-window.prepareHorizontalCharacters = prepareHorizontalCharacters;
+window.renderCharacterBoard = renderCharacterBoard;
+window.prepareCharacterBoard = prepareCharacterBoard;
+
+// 後方互換性を維持するため旧関数名も公開しておく。移行完了後に削除予定。
+
+
+
+
+
+
+
+
+

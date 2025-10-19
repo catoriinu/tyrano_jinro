@@ -1,4 +1,4 @@
-/**
+﻿/**
  * m_changeCharacterマクロのjsポーティング版メソッド
  * ※基本的にはマクロの方を使うべき。jsから呼び出したいときのみこのメソッドを使うことを許容。
  * 　jsでティラノタグを呼び出し実行すると、ページ送りが行われてしまうことに注意すること。
@@ -169,13 +169,13 @@ function DisplayedCharacterSingle(isDisplay = false, characterId = null, face = 
 
 
 /**
- * 横並びでキャラクター画像を表示するサブルーチン(displayCharactersHorizontally)用の情報オブジェクト
- * 生成したオブジェクトはf.dchに格納しておくこと
- * @param {Array} characterList 表示するキャラクター情報（DisplayCharactersHorizontallySingleオブジェクト）を値に持つ配列
- * @param {Number} displacedPxToRight キャラクター画像の左側からの表示位置を、標準からどれだけ右にずらしたいか(px)(負の値なら左にずれる)
- * @param {Number} displacedPxToTop キャラクター画像の上側からの表示位置を、標準からどれだけ下にずらしたいか(px)(負の値なら上にずれる)
+ * キャラクターボード表示で利用する一覧情報オブジェクト
+ * 生成したオブジェクトは f.characterBoard（互換目的で f.dch）に格納しておくこと
+ * @param {Array} characterList 表示するキャラクター情報（BoardCharacter オブジェクト）の配列
+ * @param {Number} displacedPxToRight キャラクター画像の表示位置を右へどれだけずらすか(px)
+ * @param {Number} displacedPxToTop キャラクター画像の表示位置を上へどれだけずらすか(px)
  */
-function DisplayCharactersHorizontally(characterList = [], displacedPxToRight = 0, displacedPxToTop = 0) {
+function CharacterBoard(characterList = [], displacedPxToRight = 0, displacedPxToTop = 0) {
   this.characterList = characterList;
   this.displacedPxToRight = displacedPxToRight;
   this.displacedPxToTop = displacedPxToTop;
@@ -183,8 +183,8 @@ function DisplayCharactersHorizontally(characterList = [], displacedPxToRight = 
 
 
 /**
- * 横並びでキャラクター画像を表示する際のキャラクター単体についての情報オブジェクト
- * 生成したオブジェクトは、DisplayCharactersHorizontallyオブジェクトのcharacterList配列の値として格納すること
+ * キャラクターボード表示で1キャラクター分の情報を保持するオブジェクト
+ * 生成したオブジェクトは CharacterBoard オブジェクトの characterList 配列に格納すること
  * @param {String} characterId キャラクターID
  * @param {String} fileName 表示する画像のファイルパス。拡張子も必要。最終的には[image storage="chara/{characterId}/{fileName}"]形式で渡される。
  * @param {String} bgColor 背景色のカラーコード
@@ -192,7 +192,7 @@ function DisplayCharactersHorizontally(characterList = [], displacedPxToRight = 
  * @param {String} leftText box左部に縦書きで表示するテキスト。表示不要なら引数不要
  * @param {Boolean} reflect 画像を左右反転するか true:反転する（=元が右向き画像である） | false:反転しない（=元が左向き画像である）
  */
-function DisplayCharactersHorizontallySingle(characterId, fileName, bgColor, topText = '', leftText = '', reflect = false) {
+function BoardCharacter(characterId, fileName, bgColor, topText = '', leftText = '', reflect = false) {
   this.characterId = characterId;
   this.fileName = fileName;
   this.bgColor = bgColor;
@@ -312,3 +312,4 @@ function getSideForDoAction(actionObject, triggerActionObject) {
   // 上記以外
   return 'right';
 }
+

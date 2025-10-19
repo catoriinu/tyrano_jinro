@@ -310,8 +310,8 @@
   [layopt layer="message0" visible="false"]
 
   ; 投票結果を表示
-  [j_setDchForOpenVote]
-  [call storage="jinroSubroutines.ks" target="*displayCharactersHorizontally"]
+  [j_setCharacterBoardForOpenVote]
+  [call storage="jinroSubroutines.ks" target="*renderCharacterBoard"]
   [p]
   ; 投票結果を表示していたレイヤーを解放
   [freeimage layer="1" time="400" wait="true"]
@@ -334,12 +334,12 @@
 
 
 ; 投票結果画面用のキャラクター画像表示オブジェクトを設定する
-[macro name="j_setDchForOpenVote"]
+[macro name="j_setCharacterBoardForOpenVote"]
   ; バックログ用変数を初期化する
   [eval exp="tf.voteBacklog = ''"]
 
   [iscript]
-    const preparation = prepareHorizontalCharacters("openVote");
+    const preparation = prepareCharacterBoard("openVote");
     const extras = (preparation && preparation.extras) ? preparation.extras : {};
     tf.voteBacklog = extras.backlogText || '';
   [endscript]
@@ -358,8 +358,8 @@
   [j_clearFixButton]
 
   ; キャラクタ－画像を表示
-  [j_setDchForintroductionCharacters]
-  [call storage="jinroSubroutines.ks" target="*displayCharactersHorizontally"]
+  [j_setCharacterBoardForIntroduction]
+  [call storage="jinroSubroutines.ks" target="*renderCharacterBoard"]
   [p]
   ; キャラクター画像を表示していたレイヤーを解放
   [freeimage layer="1" time="400" wait="true"]
@@ -370,18 +370,18 @@
 
 
 ; キャラクター紹介画面用のキャラクター画像表示オブジェクトを設定する
-[macro name="j_setDchForintroductionCharacters"]
+[macro name="j_setCharacterBoardForIntroduction"]
   [iscript]
-    prepareHorizontalCharacters("introduction");
+    prepareCharacterBoard("introduction");
   [endscript]
 [endmacro]
 
 
 
 ; ステータス画面用のキャラクター画像表示オブジェクトを設定する
-[macro name="j_setDchForStatus"]
+[macro name="j_setCharacterBoardForStatus"]
   [iscript]
-    prepareHorizontalCharacters("status");
+    prepareCharacterBoard("status");
   [endscript]
 [endmacro]
 
@@ -397,8 +397,8 @@
   [m_displayGameOver][p]
 
   ; 勝利陣営を表示、プレイヤー視点での勝敗結果効果音を鳴らす
-  [j_setDchForWinnerFactionCharacters winnerFaction="&f.winnerFaction"]
-  [call storage="jinroSubroutines.ks" target="*displayCharactersHorizontally"]
+  [j_setCharacterBoardForWinnerFaction winnerFaction="&f.winnerFaction"]
+  [call storage="jinroSubroutines.ks" target="*renderCharacterBoard"]
   [j_playSePlayerResult winnerFaction="&f.winnerFaction"]
   [m_displayWinnerFaction winnerFaction="&f.winnerFaction"]
 
@@ -413,9 +413,9 @@
 
 ; 勝敗結果画面用のキャラクター画像表示オブジェクトを設定する
 ; @param winnerFaction 勝利陣営。必須
-[macro name="j_setDchForWinnerFactionCharacters"]
+[macro name="j_setCharacterBoardForWinnerFaction"]
   [iscript]
-    prepareHorizontalCharacters("winnerFaction");
+    prepareCharacterBoard("winnerFaction");
   [endscript]
 [endmacro]
 
