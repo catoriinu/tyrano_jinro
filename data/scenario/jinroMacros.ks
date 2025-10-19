@@ -357,8 +357,8 @@
         'normal.png',
         getBgColorFromCharacterId(f.voteResultObjects[i].targetId),
         votedCountText,
-        '投票→' + f.characterObjects[f.voteResultObjects[i].targetId].name
-        getReflectFromCharacterId(cId),
+        '投票→' + f.characterObjects[f.voteResultObjects[i].targetId].name,
+        getReflectFromCharacterId(cId)
       ))
 
       // 投票数の先頭が'★'ではない場合、' 'を追加する（行頭を揃えるため）
@@ -374,7 +374,7 @@
     f.dch = new DisplayCharactersHorizontally(
       tmpCharacterList,
       20, // キャラクター画像の表示位置を中央より右へずらす。leftTextの文字を表示するスペースを作るため
-      -100, // キャラクター画像の表示位置を中央より上へずらす。メニューボタンは非表示にしているので、干渉しない分上げておく
+      -100 // キャラクター画像の表示位置を中央より上へずらす。メニューボタンは非表示にしているので、干渉しない分上げておく
     );
   [endscript]
 
@@ -415,7 +415,7 @@
         getBgColorFromCharacterId(cId),
         '',
         f.characterObjects[cId].name,
-        getReflectFromCharacterId(cId),
+        getReflectFromCharacterId(cId)
       ))
     }
 
@@ -466,7 +466,7 @@
         bgColor,
         '',
         f.characterObjects[cId].name,
-        getReflectFromCharacterId(cId),
+        getReflectFromCharacterId(cId)
       ))
     }
 
@@ -528,8 +528,8 @@
         fileName,
         bgColor,
         '',
-        f.characterObjects[cId].name
-        getReflectFromCharacterId(cId),
+        f.characterObjects[cId].name,
+        getReflectFromCharacterId(cId)
       ))
     }
 
