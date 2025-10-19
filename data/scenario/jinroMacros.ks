@@ -1,4 +1,4 @@
-;人狼用マクロ
+﻿;人狼用マクロ
 ;first.ksでサブルーチンとして読み込んでおくこと
 
 
@@ -339,43 +339,9 @@
   [eval exp="tf.voteBacklog = ''"]
 
   [iscript]
-    let tmpCharacterList = [];
-    for (let i = 0; i < f.voteResultObjects.length; i++) {
-      let cId = f.voteResultObjects[i].characterId;
-
-      let votedCountText = (function(){
-        if (cId in f.votedCountObject) {
-          let electedMark = f.electedIdList.includes(cId) ? '★' : '';
-          return electedMark + f.votedCountObject[cId] + '票';
-        } else {
-          return '0票';
-        }
-      })();
-
-      tmpCharacterList.push(new DisplayCharactersHorizontallySingle(
-        cId,
-        'normal.png',
-        getBgColorFromCharacterId(f.voteResultObjects[i].targetId),
-        votedCountText,
-        '投票→' + f.characterObjects[f.voteResultObjects[i].targetId].name,
-        getReflectFromCharacterId(cId)
-      ))
-
-      // 投票数の先頭が'★'ではない場合、' 'を追加する（行頭を揃えるため）
-      if (votedCountText.charAt(0) != '★') {
-        votedCountText = '　' + votedCountText;
-      }
-      // 最後以外の要素の行末に、<br>を追加する（最後以外は改行するため）
-      let br = (i == (f.voteResultObjects.length - 1)) ? '' : '<br>';
-      // 必要な文字列を連結してバックログ用変数に格納する
-      tf.voteBacklog += (votedCountText + ' ' + f.characterObjects[cId].name + '→' + f.characterObjects[f.voteResultObjects[i].targetId].name + br);
-    }
-
-    f.dch = new DisplayCharactersHorizontally(
-      tmpCharacterList,
-      20, // キャラクター画像の表示位置を中央より右へずらす。leftTextの文字を表示するスペースを作るため
-      -100 // キャラクター画像の表示位置を中央より上へずらす。メニューボタンは非表示にしているので、干渉しない分上げておく
-    );
+    const preparation = prepareHorizontalCharacters("openVote");
+    const extras = (preparation && preparation.extras) ? preparation.extras : {};
+    tf.voteBacklog = extras.backlogText || '';
   [endscript]
 
   ; バックログ用変数が初期状態でなければ、バックログに記録する
@@ -406,24 +372,7 @@
 ; キャラクター紹介画面用のキャラクター画像表示オブジェクトを設定する
 [macro name="j_setDchForintroductionCharacters"]
   [iscript]
-    let tmpCharacterList = [];
-    for (let i = 0; i < f.participantsIdList.length; i++) {
-      let cId = f.participantsIdList[i];
-      tmpCharacterList.push(new DisplayCharactersHorizontallySingle(
-        cId,
-        'normal.png',
-        getBgColorFromCharacterId(cId),
-        '',
-        f.characterObjects[cId].name,
-        getReflectFromCharacterId(cId)
-      ))
-    }
-
-    f.dch = new DisplayCharactersHorizontally(
-      tmpCharacterList,
-      20, // キャラクター画像の表示位置を中央より右へずらす。leftTextの文字を表示するスペースを作るため
-      -100, // キャラクター画像の表示位置を中央より上へずらす。メニューボタンは非表示にしているので、干渉しない分上げておく
-    );
+    prepareHorizontalCharacters("introduction");
   [endscript]
 [endmacro]
 
@@ -432,49 +381,7 @@
 ; ステータス画面用のキャラクター画像表示オブジェクトを設定する
 [macro name="j_setDchForStatus"]
   [iscript]
-    let tmpCharacterList = [];
-    for (let i = 0; i < f.participantsIdList.length; i++) {
-      let cId = f.participantsIdList[i];
-
-      let bgColor = '';
-      let fileName = '';
-
-      if (mp.winnerFaction == null) {
-        // 勝利陣営が未確定（ゲーム進行中）に開いた場合
-        // TODO：夜の場合は夜時間開始時のオブジェクト（f.characterObjectsHistory[f.day]）のほうがいい？isAlive判定など。どちらの方が自然か検討する。
-        bgColor = getBgColorFromCharacterId(cId, f.characterObjects[cId].isAlive);
-        if (f.characterObjects[cId].isAlive) {
-          fileName = f.statusFace[cId].alive;
-        } else {
-          fileName = f.statusFace[cId].lose;
-        }
-      } else {
-        // 勝利陣営が確定済み（ゲーム終了後）に開いた場合
-        bgColor = getBgColorFromCharacterId(cId, f.characterObjects[cId].isAlive);
-        if (mp.winnerFaction == FACTION_DRAW_BY_REVOTE) {
-          fileName = f.statusFace[cId].draw;
-        } else if (f.characterObjects[cId].role.faction == mp.winnerFaction){
-          fileName = f.statusFace[cId].win[mp.winnerFaction];
-        } else {
-          fileName = f.statusFace[cId].lose;
-        }
-      }
-
-      tmpCharacterList.push(new DisplayCharactersHorizontallySingle(
-        cId,
-        fileName,
-        bgColor,
-        '',
-        f.characterObjects[cId].name,
-        getReflectFromCharacterId(cId)
-      ))
-    }
-
-    f.dch = new DisplayCharactersHorizontally(
-      tmpCharacterList,
-      20, // キャラクター画像の表示位置を中央より右へずらす。leftTextの文字を表示するスペースを作るため
-      -100, // キャラクター画像の表示位置を中央より上へずらす。メニューボタンは非表示にしているので、干渉しない分上げておく
-    );
+    prepareHorizontalCharacters("status");
   [endscript]
 [endmacro]
 
@@ -508,36 +415,7 @@
 ; @param winnerFaction 勝利陣営。必須
 [macro name="j_setDchForWinnerFactionCharacters"]
   [iscript]
-    let tmpCharacterList = [];
-    for (let i = 0; i < f.participantsIdList.length; i++) {
-      let cId = f.participantsIdList[i];
-
-      let fileName = '';
-      if (mp.winnerFaction == FACTION_DRAW_BY_REVOTE) {
-        fileName = f.statusFace[cId].draw;
-      } else if (f.characterObjects[cId].role.faction == mp.winnerFaction){
-        fileName = f.statusFace[cId].win[mp.winnerFaction];
-      } else {
-        // 敗北陣営のキャラクターは表示しない
-        continue;
-      }
-      let bgColor = getBgColorFromCharacterId(cId);
-
-      tmpCharacterList.push(new DisplayCharactersHorizontallySingle(
-        cId,
-        fileName,
-        bgColor,
-        '',
-        f.characterObjects[cId].name,
-        getReflectFromCharacterId(cId)
-      ))
-    }
-
-    f.dch = new DisplayCharactersHorizontally(
-      tmpCharacterList,
-      20, // キャラクター画像の表示位置を中央より右へずらす。leftTextの文字を表示するスペースを作るため
-      -100, // キャラクター画像の表示位置を中央より上へずらす。メニューボタンは非表示にしているので、干渉しない分上げておく
-    );
+    prepareHorizontalCharacters("winnerFaction");
   [endscript]
 [endmacro]
 

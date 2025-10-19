@@ -24,6 +24,25 @@ const HORIZONTAL_TEXT_SHADOW =
   'rgb(255, 255, 255) 0.57px -1.92px 0px, rgb(255, 255, 255) 1.42px -1.41px 0px, ' +
   'rgb(255, 255, 255) 1.92px -0.56px 0px';
 
+/** 旧マクロが使用していたデフォルトの表示位置調整量（box の右寄せ／上寄せを統一制御する） */
+const DEFAULT_CHARACTER_DISPLACEMENT = {
+  right: 20,
+  top: -100
+};
+
+/** 旧 openVote マクロで使用していた表示用文字列群（ログ表示も含めた表記揺れを保持する） */
+const OPEN_VOTE_STRINGS = {
+  electedMark: '★',
+  voteSuffix: '票',
+  paddingSpace: '　',
+  targetPrefix: '投票→',
+  backlogConnector: '→'
+};
+
+/** 再投票引き分けを表す定数（環境によっては未定義のため存在チェックする） */
+const DRAW_BY_REVOTE_FACTION =
+  (typeof FACTION_DRAW_BY_REVOTE !== 'undefined') ? FACTION_DRAW_BY_REVOTE : null;
+
 /**
  * 表示モードごとの描画設定。
  * default: シナリオ画面、status: ステータス画面。
@@ -346,3 +365,272 @@ function appendTopText($root, text, boxLeft, boxWidth) {
 }
 
 window.renderHorizontalCharacters = renderHorizontalCharacters;
+
+/**
+ * `f.dch` に横並び表示用データを組み立てる。
+ * @param {'introduction'|'status'|'winnerFaction'|'openVote'} mode 表示準備モード
+ * @param {Object} [options] 将来的な拡張用オプション
+ * @returns {{dch: DisplayCharactersHorizontally, extras?: Object}|null} 設定したオブジェクトと付随情報
+ */
+function prepareHorizontalCharacters(mode, options) {
+  const context = createHorizontalDisplayContext(options);
+  if (!context) {
+    return null;
+  }
+
+  const preparer = HORIZONTAL_DISPLAY_PREPARERS[mode];
+  if (!preparer) {
+    throw new Error('[prepareHorizontalCharacters] 未対応のモードです: ' + mode);
+  }
+
+  const dch = preparer(context);
+  if (!dch) {
+    return null;
+  }
+
+  context.f.dch = dch;
+  const result = {
+    dch: dch
+  };
+  if (context.extras && Object.keys(context.extras).length > 0) {
+    result.extras = context.extras;
+  }
+  return result;
+}
+
+/**
+ * 横並び表示用のコンテキストを生成する。
+ * @param {Object} [options] 呼び出し側から渡される追加オプション
+ * @returns {{kag: *, f: *, mp: *, tf: *, options: Object, extras: Object}|null}
+ */
+function createHorizontalDisplayContext(options) {
+  const kag = (typeof TYRANO !== 'undefined' && TYRANO && TYRANO.kag) ? TYRANO.kag : null;
+  if (!kag || !kag.stat) {
+    return null;
+  }
+  if (!kag.stat.tf) {
+    kag.stat.tf = {};
+  }
+  return {
+    kag: kag,
+    f: kag.stat.f || {},
+    mp: kag.stat.mp || {},
+    tf: kag.stat.tf,
+    options: options || {},
+    extras: {}
+  };
+}
+
+/**
+ * `DisplayCharactersHorizontallySingle` を生成するヘルパー。
+ * 必須プロパティ以外は既存マクロのデフォルト値（通常立ち絵など）に合わせる。
+ * @param {Object} params パラメータ
+ * @returns {DisplayCharactersHorizontallySingle}
+ */
+function createHorizontalCharacter(params) {
+  const fileName = (typeof params.fileName === 'undefined') ? 'normal.png' : params.fileName;
+  return new DisplayCharactersHorizontallySingle(
+    params.characterId,
+    fileName,
+    typeof params.bgColor === 'undefined' ? '' : params.bgColor,
+    typeof params.topText === 'undefined' ? '' : params.topText,
+    typeof params.leftText === 'undefined' ? '' : params.leftText,
+    typeof params.reflect === 'undefined' ? false : params.reflect
+  );
+}
+
+/**
+ * `DisplayCharactersHorizontally` を生成するヘルパー。
+ * @param {Array<DisplayCharactersHorizontallySingle>} characterList キャラクターリスト
+ * @param {{right: number, top: number}} displacement 表示位置調整量
+ * @returns {DisplayCharactersHorizontally}
+ */
+function createHorizontalDisplay(characterList, displacement) {
+  return new DisplayCharactersHorizontally(
+    characterList,
+    displacement.right,
+    displacement.top
+  );
+}
+
+/**
+ * 表示モード別の `f.dch` 組み立てロジック。
+ */
+const HORIZONTAL_DISPLAY_PREPARERS = {
+  introduction: function prepareIntroductionCharacters(context) {
+    const f = context.f || {};
+    const characterObjects = f.characterObjects || {};
+    const participantsIdList = Array.isArray(f.participantsIdList) ? f.participantsIdList : [];
+    const characterList = [];
+
+    for (let idx = 0; idx < participantsIdList.length; idx += 1) {
+      const characterId = participantsIdList[idx];
+      if (!characterId) {
+        continue;
+      }
+      const characterObject = characterObjects[characterId] || {};
+      const bgColor = (typeof getBgColorFromCharacterId === 'function')
+        ? getBgColorFromCharacterId(characterId)
+        : '';
+      const reflect = (typeof getReflectFromCharacterId === 'function')
+        ? getReflectFromCharacterId(characterId)
+        : false;
+
+      characterList.push(createHorizontalCharacter({
+        characterId: characterId,
+        fileName: 'normal.png',
+        bgColor: bgColor,
+        leftText: characterObject.name || '',
+        reflect: reflect
+      }));
+    }
+
+    return createHorizontalDisplay(characterList, DEFAULT_CHARACTER_DISPLACEMENT);
+  },
+  status: function prepareStatusCharacters(context) {
+    const f = context.f || {};
+    const mp = context.mp || {};
+    const characterObjects = f.characterObjects || {};
+    const statusFace = f.statusFace || {};
+    const participantsIdList = Array.isArray(f.participantsIdList) ? f.participantsIdList : [];
+    const characterList = [];
+    const winnerFaction = mp.winnerFaction;
+
+    for (let idx = 0; idx < participantsIdList.length; idx += 1) {
+      const characterId = participantsIdList[idx];
+      if (!characterId) {
+        continue;
+      }
+      const characterObject = characterObjects[characterId] || {};
+      const statusFaceEntry = statusFace[characterId] || {};
+      const isAlive = Boolean(characterObject.isAlive);
+      const bgColor = (typeof getBgColorFromCharacterId === 'function')
+        ? getBgColorFromCharacterId(characterId, isAlive)
+        : '';
+      let fileName = statusFaceEntry.alive || '';
+
+      if (winnerFaction == null) {
+        fileName = isAlive ? (statusFaceEntry.alive || '') : (statusFaceEntry.lose || '');
+      } else if (
+        (DRAW_BY_REVOTE_FACTION !== null && winnerFaction === DRAW_BY_REVOTE_FACTION) ||
+        winnerFaction === 'DRAW_BY_REVOTE'
+      ) {
+        fileName = statusFaceEntry.draw || fileName;
+      } else if (characterObject.role && characterObject.role.faction === winnerFaction) {
+        fileName = (statusFaceEntry.win && statusFaceEntry.win[winnerFaction]) || fileName;
+      } else {
+        fileName = statusFaceEntry.lose || fileName;
+      }
+
+      characterList.push(createHorizontalCharacter({
+        characterId: characterId,
+        fileName: fileName,
+        bgColor: bgColor,
+        leftText: characterObject.name || '',
+        reflect: (typeof getReflectFromCharacterId === 'function')
+          ? getReflectFromCharacterId(characterId)
+          : false
+      }));
+    }
+
+    return createHorizontalDisplay(characterList, DEFAULT_CHARACTER_DISPLACEMENT);
+  },
+  winnerFaction: function prepareWinnerFactionCharacters(context) {
+    const f = context.f || {};
+    const mp = context.mp || {};
+    const characterObjects = f.characterObjects || {};
+    const statusFace = f.statusFace || {};
+    const participantsIdList = Array.isArray(f.participantsIdList) ? f.participantsIdList : [];
+    const characterList = [];
+    const winnerFaction = mp.winnerFaction;
+
+    for (let idx = 0; idx < participantsIdList.length; idx += 1) {
+      const characterId = participantsIdList[idx];
+      if (!characterId) {
+        continue;
+      }
+      const characterObject = characterObjects[characterId] || {};
+      const statusFaceEntry = statusFace[characterId] || {};
+
+      let fileName = '';
+      if (
+        (DRAW_BY_REVOTE_FACTION !== null && winnerFaction === DRAW_BY_REVOTE_FACTION) ||
+        winnerFaction === 'DRAW_BY_REVOTE'
+      ) {
+        fileName = statusFaceEntry.draw || '';
+      } else if (characterObject.role && characterObject.role.faction === winnerFaction) {
+        fileName = (statusFaceEntry.win && statusFaceEntry.win[winnerFaction]) || '';
+      } else {
+        continue;
+      }
+
+      characterList.push(createHorizontalCharacter({
+        characterId: characterId,
+        fileName: fileName,
+        bgColor: (typeof getBgColorFromCharacterId === 'function')
+          ? getBgColorFromCharacterId(characterId)
+          : '',
+        leftText: characterObject.name || '',
+        reflect: (typeof getReflectFromCharacterId === 'function')
+          ? getReflectFromCharacterId(characterId)
+          : false
+      }));
+    }
+
+    return createHorizontalDisplay(characterList, DEFAULT_CHARACTER_DISPLACEMENT);
+  },
+  openVote: function prepareOpenVoteCharacters(context) {
+    const f = context.f || {};
+    const tf = context.tf || {};
+    const characterObjects = f.characterObjects || {};
+    const voteResultObjects = Array.isArray(f.voteResultObjects) ? f.voteResultObjects : [];
+    const votedCountObject = f.votedCountObject || {};
+    const electedIdList = Array.isArray(f.electedIdList) ? f.electedIdList : [];
+    const characterList = [];
+    const backlogParts = [];
+
+    for (let idx = 0; idx < voteResultObjects.length; idx += 1) {
+      const voteResult = voteResultObjects[idx] || {};
+      const characterId = voteResult.characterId;
+      if (!characterId) {
+        continue;
+      }
+      const targetId = voteResult.targetId;
+      const actorObject = characterObjects[characterId] || {};
+      const targetObject = characterObjects[targetId] || {};
+
+      const electedMark = electedIdList.includes(characterId) ? OPEN_VOTE_STRINGS.electedMark : '';
+      const voteCount = (characterId in votedCountObject) ? votedCountObject[characterId] : 0;
+      const voteCountText = electedMark + voteCount + OPEN_VOTE_STRINGS.voteSuffix;
+
+      characterList.push(createHorizontalCharacter({
+        characterId: characterId,
+        fileName: 'normal.png',
+        bgColor: (typeof getBgColorFromCharacterId === 'function')
+          ? getBgColorFromCharacterId(targetId)
+          : '',
+        topText: voteCountText,
+        leftText: OPEN_VOTE_STRINGS.targetPrefix + (targetObject.name || ''),
+        reflect: (typeof getReflectFromCharacterId === 'function')
+          ? getReflectFromCharacterId(characterId)
+          : false
+      }));
+
+      let backlogCountText = voteCountText;
+      if (!backlogCountText.startsWith(OPEN_VOTE_STRINGS.electedMark)) {
+        backlogCountText = OPEN_VOTE_STRINGS.paddingSpace + backlogCountText;
+      }
+      const backlogLine = backlogCountText + ' ' + (actorObject.name || '') + OPEN_VOTE_STRINGS.backlogConnector + (targetObject.name || '');
+      backlogParts.push(backlogLine);
+    }
+
+    // 既存マクロが参照する `tf.voteBacklog` と戻り値の両方に同じ文字列を格納する
+    const backlogText = backlogParts.join('<br>');
+    tf.voteBacklog = backlogText;
+    context.extras.backlogText = backlogText;
+
+    return createHorizontalDisplay(characterList, DEFAULT_CHARACTER_DISPLACEMENT);
+  }
+};
+
+window.prepareHorizontalCharacters = prepareHorizontalCharacters;
