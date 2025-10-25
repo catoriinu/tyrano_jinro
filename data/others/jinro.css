@@ -82,6 +82,46 @@
     height: 720px;
 }
 
+.cb_text {
+    position: absolute;
+    top: 3px;
+    color: #28332a;
+    font-size: 38px;
+    font-family: 'にくまるフォント', sans-serif;
+    z-index: 999;
+    text-shadow: rgb(255, 255, 255) 2px 0px 0px,
+        rgb(255, 255, 255) 1.76px 0.96px 0px,
+        rgb(255, 255, 255) 1.08px 1.68px 0px,
+        rgb(255, 255, 255) 0.14px 1.99px 0px,
+        rgb(255, 255, 255) -0.83px 1.82px 0px,
+        rgb(255, 255, 255) -1.6px 1.2px 0px,
+        rgb(255, 255, 255) -1.98px 0.28px 0px,
+        rgb(255, 255, 255) -1.87px -0.7px 0px,
+        rgb(255, 255, 255) -1.31px -1.51px 0px,
+        rgb(255, 255, 255) -0.42px -1.96px 0px,
+        rgb(255, 255, 255) 0.57px -1.92px 0px,
+        rgb(255, 255, 255) 1.42px -1.41px 0px,
+        rgb(255, 255, 255) 1.92px -0.56px 0px;
+}
+
+.cb_top_text {
+    text-align: center;
+}
+
+.cb_text.vertical_text {
+    text-align: left;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+}
+
+.cb_size_compact .cb_text {
+    font-size: 32px;
+}
+
+.cb_size_spacious .cb_text {
+    font-size: 42px;
+}
+
 /* ステータス画面用 */
 .main {
     background-color: rgba(0, 0, 0, 1);

@@ -175,10 +175,12 @@ function DisplayedCharacterSingle(isDisplay = false, characterId = null, face = 
  * @param {Number} displacedPxToRight キャラクター画像の表示位置を右へどれだけずらすか(px)
  * @param {Number} displacedPxToTop キャラクター画像の表示位置を上へどれだけずらすか(px)
  */
-function CharacterBoard(characterList = [], displacedPxToRight = 0, displacedPxToTop = 0) {
+function CharacterBoard(characterList = [], displacedPxToRight = 0, displacedPxToTop = 0, options = {}) {
   this.characterList = characterList;
   this.displacedPxToRight = displacedPxToRight;
   this.displacedPxToTop = displacedPxToTop;
+  const boardOptions = options || {};
+  this.sizePreset = (typeof boardOptions.sizePreset === 'string') ? boardOptions.sizePreset : null;
 }
 
 

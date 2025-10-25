@@ -6,23 +6,12 @@
 
 /** 画面横幅（px） */
 const CHARACTER_BOARD_CONTAINER_WIDTH = 1280;
-/** テキストを描画する際の上下余白（px） */
-const DEFAULT_TEXT_MARGIN = 3;
-/** キャラクターボックス同士の左右余白（px） */
+/* テキストを描画する際の上下余白（px） */
 const DEFAULT_BOX_MARGIN = 3;
 /** キャラクター画像用の基準 z-index */
 const DEFAULT_IMAGE_Z_INDEX = 1;
-/** 縦書き／横書きテキストで使用するフォント */
-const DEFAULT_FONT_FAMILY = 'にくまるフォント';
-/** テキスト縁取り用のシャドウ設定 */
-const CHARACTER_BOARD_TEXT_SHADOW =
-  'rgb(255, 255, 255) 2px 0px 0px, rgb(255, 255, 255) 1.76px 0.96px 0px, ' +
-  'rgb(255, 255, 255) 1.08px 1.68px 0px, rgb(255, 255, 255) 0.14px 1.99px 0px, ' +
-  'rgb(255, 255, 255) -0.83px 1.82px 0px, rgb(255, 255, 255) -1.6px 1.2px 0px, ' +
-  'rgb(255, 255, 255) -1.98px 0.28px 0px, rgb(255, 255, 255) -1.87px -0.7px 0px, ' +
-  'rgb(255, 255, 255) -1.31px -1.51px 0px, rgb(255, 255, 255) -0.42px -1.96px 0px, ' +
-  'rgb(255, 255, 255) 0.57px -1.92px 0px, rgb(255, 255, 255) 1.42px -1.41px 0px, ' +
-  'rgb(255, 255, 255) 1.92px -0.56px 0px';
+/* キャラクターボードのサイズクラス接頭語 */
+const CHARACTER_BOARD_SIZE_CLASS_PREFIX = 'cb_size_';
 
 /** 旧マクロが使用していたデフォルトの表示位置調整量（box の右寄せ／上寄せを統一制御する） */
 const DEFAULT_BOARD_OFFSET = {
@@ -228,11 +217,15 @@ function renderCharacterBoard(mode) {
   const defaultPosition = f.defaultPosition || {};
   const displacedPxToRight = Number(board.displacedPxToRight || 0);
   const displacedPxToTop = Number(board.displacedPxToTop || 0);
+  const sizePreset = (typeof board.sizePreset === 'string' && board.sizePreset.length > 0)
+    ? board.sizePreset
+    : null;
 
   const $root = $(config.rootSelector);
   if ($root.length === 0) {
     return;
   }
+  stripCharacterBoardSizeClasses($root);
 
   // 描画前に対象レイヤーを一度クリーンナップする
   if (typeof config.cleanup === 'function') {
@@ -247,6 +240,7 @@ function renderCharacterBoard(mode) {
   const boxWidth = containerWidth / characterList.length;
   const halfBoxWidth = boxWidth / 2;
   const $container = config.getContainer($root);
+  applyCharacterBoardSizeClass($root, $container, sizePreset);
 
   // モードごとの描画ロジックに委譲して各キャラクターを配置する
   for (let idx = 0; idx < characterList.length; idx += 1) {
@@ -272,6 +266,40 @@ function renderCharacterBoard(mode) {
       defaultPos: defaultPos,
       f: f
     });
+  }
+}
+
+function stripCharacterBoardSizeClasses($element) {
+  if (!$element || !$element.removeClass) {
+    return;
+  }
+  const classAttr = $element.attr('class') || '';
+  if (!classAttr) {
+    return;
+  }
+  const classNames = classAttr.split(/\s+/);
+  for (let idx = 0; idx < classNames.length; idx += 1) {
+    const className = classNames[idx];
+    if (className && className.indexOf(CHARACTER_BOARD_SIZE_CLASS_PREFIX) === 0) {
+      $element.removeClass(className);
+    }
+  }
+}
+
+function applyCharacterBoardSizeClass($root, $container, sizePreset) {
+  stripCharacterBoardSizeClasses($root);
+  if ($container && $container.removeClass) {
+    stripCharacterBoardSizeClasses($container);
+  }
+  if (!sizePreset) {
+    return;
+  }
+  const sizeClass = CHARACTER_BOARD_SIZE_CLASS_PREFIX + sizePreset;
+  if ($root && $root.addClass) {
+    $root.addClass(sizeClass);
+  }
+  if ($container && $container.addClass) {
+    $container.addClass(sizeClass);
   }
 }
 
@@ -324,18 +352,8 @@ function appendVerticalText($root, text, boxLeft) {
   if (!text) {
     return;
   }
-  $('<p>').addClass('vertical_text cb_text').css({
-    position: 'absolute',
-    top: DEFAULT_TEXT_MARGIN + 'px',
-    left: boxLeft + 'px',
-    'text-align': 'left',
-    color: '#28332a',
-    'font-size': '38px',
-    'font-family': DEFAULT_FONT_FAMILY,
-    'z-index': 999,
-    'text-shadow': CHARACTER_BOARD_TEXT_SHADOW,
-    'writing-mode': 'vertical-rl',
-    'text-orientation': 'upright'
+  $('<p>').addClass('cb_text vertical_text').css({
+    left: boxLeft + 'px'
   }).text(text).appendTo($root);
 }
 
@@ -351,16 +369,8 @@ function appendTopText($root, text, boxLeft, boxWidth) {
     return;
   }
   $('<p>').addClass('cb_text cb_top_text').css({
-    position: 'absolute',
-    top: DEFAULT_TEXT_MARGIN + 'px',
     left: boxLeft + 'px',
-    width: boxWidth + 'px',
-    'text-align': 'center',
-    color: '#28332a',
-    'font-size': '38px',
-    'font-family': DEFAULT_FONT_FAMILY,
-    'z-index': 999,
-    'text-shadow': CHARACTER_BOARD_TEXT_SHADOW
+    width: boxWidth + 'px'
   }).text(text).appendTo($root);
 }
 
@@ -445,13 +455,26 @@ function createBoardCharacter(params) {
  * @param {{right: number, top: number}} displacement 表示位置調整量
  * @returns {CharacterBoard}
  */
-function createCharacterBoard(characterList, displacement) {
+function createCharacterBoard(characterList, displacement, options) {
+  const boardOptions = options || {};
   return new CharacterBoard(
     characterList,
     displacement.right,
-    displacement.top
+    displacement.top,
+    boardOptions
   );
 }
+
+function resolveCharacterBoardOptions(context) {
+  const options = (context && context.options) || {};
+  if (typeof options.sizePreset === 'string' && options.sizePreset.length > 0) {
+    return {
+      sizePreset: options.sizePreset
+    };
+  }
+  return {};
+}
+
 
 /**
  * 表示モード別の `f.characterBoard` 組み立てロジック。
@@ -485,7 +508,7 @@ const HORIZONTAL_DISPLAY_PREPARERS = {
       }));
     }
 
-    return createCharacterBoard(characterList, DEFAULT_BOARD_OFFSET);
+    return createCharacterBoard(characterList, DEFAULT_BOARD_OFFSET, resolveCharacterBoardOptions(context));
   },
   status: function prepareStatusCharacters(context) {
     const f = context.f || {};
@@ -533,7 +556,7 @@ const HORIZONTAL_DISPLAY_PREPARERS = {
       }));
     }
 
-    return createCharacterBoard(characterList, DEFAULT_BOARD_OFFSET);
+    return createCharacterBoard(characterList, DEFAULT_BOARD_OFFSET, resolveCharacterBoardOptions(context));
   },
   winnerFaction: function prepareWinnerFactionCharacters(context) {
     const f = context.f || {};
@@ -577,7 +600,7 @@ const HORIZONTAL_DISPLAY_PREPARERS = {
       }));
     }
 
-    return createCharacterBoard(characterList, DEFAULT_BOARD_OFFSET);
+    return createCharacterBoard(characterList, DEFAULT_BOARD_OFFSET, resolveCharacterBoardOptions(context));
   },
   openVote: function prepareOpenVoteCharacters(context) {
     const f = context.f || {};
@@ -629,7 +652,7 @@ const HORIZONTAL_DISPLAY_PREPARERS = {
     tf.voteBacklog = backlogText;
     context.extras.backlogText = backlogText;
 
-    return createCharacterBoard(characterList, DEFAULT_BOARD_OFFSET);
+    return createCharacterBoard(characterList, DEFAULT_BOARD_OFFSET, resolveCharacterBoardOptions(context));
   }
 };
 
@@ -637,6 +660,7 @@ window.renderCharacterBoard = renderCharacterBoard;
 window.prepareCharacterBoard = prepareCharacterBoard;
 
 // 後方互換性を維持するため旧関数名も公開しておく。移行完了後に削除予定。
+
 
 
 
