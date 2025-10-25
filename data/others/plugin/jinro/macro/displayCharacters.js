@@ -576,10 +576,7 @@ const HORIZONTAL_DISPLAY_PREPARERS = {
       const statusFaceEntry = statusFace[characterId] || {};
 
       let fileName = '';
-      if (
-        (DRAW_BY_REVOTE_FACTION !== null && winnerFaction === DRAW_BY_REVOTE_FACTION) ||
-        winnerFaction === 'DRAW_BY_REVOTE'
-      ) {
+      if (winnerFaction === 'DRAW_BY_REVOTE') {
         fileName = statusFaceEntry.draw || '';
       } else if (characterObject.role && characterObject.role.faction === winnerFaction) {
         fileName = (statusFaceEntry.win && statusFaceEntry.win[winnerFaction]) || '';
@@ -658,15 +655,3 @@ const HORIZONTAL_DISPLAY_PREPARERS = {
 
 window.renderCharacterBoard = renderCharacterBoard;
 window.prepareCharacterBoard = prepareCharacterBoard;
-
-// 後方互換性を維持するため旧関数名も公開しておく。移行完了後に削除予定。
-
-
-
-
-
-
-
-
-
-
