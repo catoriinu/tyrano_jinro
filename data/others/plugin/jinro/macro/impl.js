@@ -181,6 +181,39 @@ function CharacterBoard(characterList = [], displacedPxToRight = 0, displacedPxT
   this.displacedPxToTop = displacedPxToTop;
   const boardOptions = options || {};
   this.sizePreset = (typeof boardOptions.sizePreset === 'string') ? boardOptions.sizePreset : null;
+  this.layout = sanitizeCharacterBoardLayout(boardOptions.layout);
+}
+
+function sanitizeCharacterBoardLayout(layoutOptions) {
+  if (!layoutOptions || typeof layoutOptions !== 'object') {
+    return null;
+  }
+  const sanitized = {};
+  if (isPositiveIntegerForLayout(layoutOptions.maxColumns)) {
+    sanitized.maxColumns = layoutOptions.maxColumns;
+  }
+  if (isNonNegativeNumberForLayout(layoutOptions.columnGap)) {
+    sanitized.columnGap = Number(layoutOptions.columnGap);
+  }
+  if (isNonNegativeNumberForLayout(layoutOptions.rowGap)) {
+    sanitized.rowGap = Number(layoutOptions.rowGap);
+  }
+  if (isFiniteNumberForLayout(layoutOptions.rowOffset)) {
+    sanitized.rowOffset = Number(layoutOptions.rowOffset);
+  }
+  return Object.keys(sanitized).length > 0 ? sanitized : null;
+}
+
+function isPositiveIntegerForLayout(value) {
+  return Number.isInteger(value) && value > 0;
+}
+
+function isNonNegativeNumberForLayout(value) {
+  return Number.isFinite(Number(value)) && Number(value) >= 0;
+}
+
+function isFiniteNumberForLayout(value) {
+  return Number.isFinite(Number(value));
 }
 
 

@@ -465,12 +465,47 @@ function createCharacterBoard(characterList, displacement, options) {
 
 function resolveCharacterBoardOptions(context) {
   const options = (context && context.options) || {};
+  const resolvedOptions = {};
   if (typeof options.sizePreset === 'string' && options.sizePreset.length > 0) {
-    return {
-      sizePreset: options.sizePreset
-    };
+    resolvedOptions.sizePreset = options.sizePreset;
   }
-  return {};
+  const layoutOptions = sanitizeCharacterBoardLayoutOptions(options.layout);
+  if (layoutOptions) {
+    resolvedOptions.layout = layoutOptions;
+  }
+  return resolvedOptions;
+}
+
+function sanitizeCharacterBoardLayoutOptions(layout) {
+  if (!layout || typeof layout !== 'object') {
+    return null;
+  }
+  const sanitized = {};
+  if (isPositiveIntegerForBoardOptions(layout.maxColumns)) {
+    sanitized.maxColumns = layout.maxColumns;
+  }
+  if (isNonNegativeNumberForBoardOptions(layout.columnGap)) {
+    sanitized.columnGap = Number(layout.columnGap);
+  }
+  if (isNonNegativeNumberForBoardOptions(layout.rowGap)) {
+    sanitized.rowGap = Number(layout.rowGap);
+  }
+  if (isFiniteNumberForBoardOptions(layout.rowOffset)) {
+    sanitized.rowOffset = Number(layout.rowOffset);
+  }
+  return Object.keys(sanitized).length > 0 ? sanitized : null;
+}
+
+function isPositiveIntegerForBoardOptions(value) {
+  return Number.isInteger(value) && value > 0;
+}
+
+function isNonNegativeNumberForBoardOptions(value) {
+  return Number.isFinite(Number(value)) && Number(value) >= 0;
+}
+
+function isFiniteNumberForBoardOptions(value) {
+  return Number.isFinite(Number(value));
 }
 
 
