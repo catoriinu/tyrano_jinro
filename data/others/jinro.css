@@ -78,17 +78,23 @@
 }
 
 .cb_box {
-    /* width: 256px; */
+    position: relative;
     height: 720px;
+    --cb-text-margin-left: 3px;
+    --cb-text-top-base: 3px;
+    --cb-board-offset-x: 0px;
+    --cb-board-offset-y: 0px;
+    --cb-row-offset: 0px;
 }
 
 .cb_text {
     position: absolute;
-    top: 3px;
+    top: calc(var(--cb-text-row-offset, var(--cb-row-offset, 0px)) + var(--cb-text-top-base, 3px));
     color: #28332a;
     font-size: 38px;
     font-family: 'にくまるフォント', sans-serif;
     z-index: 999;
+    margin: 0;
     text-shadow: rgb(255, 255, 255) 2px 0px 0px,
         rgb(255, 255, 255) 1.76px 0.96px 0px,
         rgb(255, 255, 255) 1.08px 1.68px 0px,
@@ -105,10 +111,13 @@
 }
 
 .cb_top_text {
+    left: var(--cb-text-margin-left, 3px);
+    width: calc(100% - (2 * var(--cb-text-margin-left, 3px)));
     text-align: center;
 }
 
 .cb_text.vertical_text {
+    left: var(--cb-text-margin-left, 3px);
     text-align: left;
     writing-mode: vertical-rl;
     text-orientation: upright;

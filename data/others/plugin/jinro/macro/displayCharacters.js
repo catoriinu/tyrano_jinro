@@ -53,7 +53,6 @@ const CHARACTER_BOARD_CONFIG = {
     /** シナリオ画面での 1 キャラクター分の描画 */
     renderCharacter: function renderDefaultCharacter(options) {
       const {
-        $root,
         $container,
         character,
         index,
@@ -68,30 +67,48 @@ const CHARACTER_BOARD_CONFIG = {
       const imageName = 'cb_' + character.characterId + '_' + index;
       const reflectClass = character.reflect ? ' reflect' : '';
       const storagePath = './data/fgimage/chara/' + character.characterId + '/' + character.fileName;
-      const baseBoxLeft = Number.isFinite(options.boxLeft) ? options.boxLeft : (boxWidth * index);
-      const boxLeft = baseBoxLeft + DEFAULT_BOX_MARGIN;
-      const widthCenter = Number(defaultPos.widthCenter || 0);
-      const boxCenter = baseBoxLeft + halfBoxWidth;
-      const imageLeft = boxCenter - widthCenter + displacedPxToRight;
-      const rowTopOffset = Number.isFinite(options.rowTopOffset) ? options.rowTopOffset : 0;
-      const imageTop = Number(defaultPos.top || 0) + displacedPxToTop + rowTopOffset;
+      const defaultWidthCenterValue = Number(defaultPos.widthCenter);
+      const widthCenter = Number.isFinite(defaultWidthCenterValue) ? defaultWidthCenterValue : 0;
+      const boxCenter = halfBoxWidth;
+      const imageLeftBase = boxCenter - widthCenter;
+      const rowTopOffset = Number.isFinite(options.rowTopOffset) ? Number(options.rowTopOffset) : 0;
+      const defaultTopValue = Number(defaultPos.top);
+      const baseImageTop = Number.isFinite(defaultTopValue) ? defaultTopValue : 0;
+      const defaultWidthValue = Number(defaultPos.width);
+      const imageWidth = Number.isFinite(defaultWidthValue) ? defaultWidthValue : 0;
       const clipLeft = widthCenter - halfBoxWidth - displacedPxToRight;
-      const clipRight = Number(defaultPos.width || 0) - widthCenter - halfBoxWidth + displacedPxToRight;
+      const clipRight = imageWidth - widthCenter - halfBoxWidth + displacedPxToRight;
       const backgroundColor = character.bgColor || 'rgba(0, 0, 0, 1)';
+      const rowIndex = Number.isInteger(options.rowIndex) ? options.rowIndex : null;
+      const columnIndex = Number.isInteger(options.columnIndex) ? options.columnIndex : null;
 
       // キャラクターを収めるボックスを生成
       const $box = $('<div>').addClass('cb_box ' + classNum).css({
         width: boxWidth + 'px',
-        'background-image': 'linear-gradient(' + backgroundColor + ' 10%, rgba(0, 0, 0, 1) 150%)'
+        'background-image': 'linear-gradient(' + backgroundColor + ' 10%, rgba(0, 0, 0, 1) 150%)',
+        '--cb-text-margin-left': DEFAULT_BOX_MARGIN + 'px',
+        '--cb-text-top-base': DEFAULT_TEXT_TOP + 'px',
+        '--cb-board-offset-x': displacedPxToRight + 'px',
+        '--cb-board-offset-y': displacedPxToTop + 'px',
+        '--cb-row-offset': rowTopOffset + 'px'
       });
+
+      if (rowIndex !== null) {
+        $box.addClass('cb_row_index_' + rowIndex);
+        $box.attr('data-cb-row-index', rowIndex);
+      }
+      if (columnIndex !== null) {
+        $box.attr('data-cb-column-index', columnIndex);
+      }
+
       $box.appendTo($container);
 
       // 画像を表示するためのスタイルを算出
       const imageCss = {
         position: 'absolute',
-        top: imageTop + 'px',
-        left: imageLeft + 'px',
-        width: Number(defaultPos.width || 0) + 'px',
+        top: 'calc(' + baseImageTop + 'px + var(--cb-board-offset-y, 0px) + var(--cb-row-offset, 0px))',
+        left: 'calc(' + imageLeftBase + 'px + var(--cb-board-offset-x, 0px))',
+        width: imageWidth + 'px',
         'z-index': DEFAULT_IMAGE_Z_INDEX,
         'clip-path': buildClipPath(clipLeft, clipRight)
       };
@@ -106,8 +123,8 @@ const CHARACTER_BOARD_CONFIG = {
         'class': imageName + reflectClass
       }).css(imageCss).appendTo($box);
 
-      appendVerticalText($root, character.leftText, boxLeft, rowTopOffset);
-      appendTopText($root, character.topText, boxLeft, boxWidth, rowTopOffset);
+      appendVerticalText($box, character.leftText);
+      appendTopText($box, character.topText);
     }
   },
   status: {
@@ -369,43 +386,27 @@ function getCharacterHeight(defaultPos) {
 }
 
 /**
- * 縦書きテキストをレイヤーに追加する。
- * @param {JQuery} $root レイヤー要素
+ * 縦書きテキストをボックス内に追加する。
+ * @param {JQuery} $box ボックス要素
  * @param {string} text 表示する文字列
- * @param {number} boxLeft 左端の位置（px）
  */
-function appendVerticalText($root, text, boxLeft, topOffset) {
+function appendVerticalText($box, text) {
   if (!text) {
     return;
   }
-  const css = {
-    left: boxLeft + 'px'
-  };
-  if (Number.isFinite(topOffset) && topOffset !== 0) {
-    css.top = (DEFAULT_TEXT_TOP + topOffset) + 'px';
-  }
-  $('<p>').addClass('cb_text vertical_text').css(css).text(text).appendTo($root);
+  $('<p>').addClass('cb_text vertical_text').text(text).appendTo($box);
 }
 
 /**
- * 横書きテキストをレイヤーに追加する。
- * @param {JQuery} $root レイヤー要素
+ * 横書きテキストをボックス内に追加する。
+ * @param {JQuery} $box ボックス要素
  * @param {string} text 表示する文字列
- * @param {number} boxLeft 左端の位置（px）
- * @param {number} boxWidth ボックス幅（px）
  */
-function appendTopText($root, text, boxLeft, boxWidth, topOffset) {
+function appendTopText($box, text) {
   if (!text) {
     return;
   }
-  const css = {
-    left: boxLeft + 'px',
-    width: boxWidth + 'px'
-  };
-  if (Number.isFinite(topOffset) && topOffset !== 0) {
-    css.top = (DEFAULT_TEXT_TOP + topOffset) + 'px';
-  }
-  $('<p>').addClass('cb_text cb_top_text').css(css).text(text).appendTo($root);
+  $('<p>').addClass('cb_text cb_top_text').text(text).appendTo($box);
 }
 
 /**
