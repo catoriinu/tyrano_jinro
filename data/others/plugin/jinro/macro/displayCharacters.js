@@ -6,12 +6,6 @@
 
 /** 画面横幅（px） */
 const CHARACTER_BOARD_CONTAINER_WIDTH = 1280;
-/* テキストを描画する際の左右余白（px） */
-const DEFAULT_BOX_MARGIN = 3;
-/* テキスト描画時のベース top 値（px） */
-const DEFAULT_TEXT_TOP = 3;
-/** キャラクター画像用の基準 z-index */
-const DEFAULT_IMAGE_Z_INDEX = 1;
 /* キャラクターボードのサイズクラス接頭語 */
 const CHARACTER_BOARD_SIZE_CLASS_PREFIX = 'cb_size_';
 
@@ -65,7 +59,6 @@ const CHARACTER_BOARD_CONFIG = {
 
       const classNum = 'cb_' + index;
       const imageName = 'cb_' + character.characterId + '_' + index;
-      const reflectClass = character.reflect ? ' reflect' : '';
       const storagePath = './data/fgimage/chara/' + character.characterId + '/' + character.fileName;
       const defaultWidthCenterValue = Number(defaultPos.widthCenter);
       const widthCenter = Number.isFinite(defaultWidthCenterValue) ? defaultWidthCenterValue : 0;
@@ -83,15 +76,14 @@ const CHARACTER_BOARD_CONFIG = {
       const columnIndex = Number.isInteger(options.columnIndex) ? options.columnIndex : null;
 
       // キャラクターを収めるボックスを生成
-      const $box = $('<div>').addClass('cb_box ' + classNum).css({
+      const boxCss = {
         width: boxWidth + 'px',
-        'background-image': 'linear-gradient(' + backgroundColor + ' 10%, rgba(0, 0, 0, 1) 150%)',
-        '--cb-text-margin-left': DEFAULT_BOX_MARGIN + 'px',
-        '--cb-text-top-base': DEFAULT_TEXT_TOP + 'px',
+        '--cb-background-color': backgroundColor,
         '--cb-board-offset-x': displacedPxToRight + 'px',
         '--cb-board-offset-y': displacedPxToTop + 'px',
         '--cb-row-offset': rowTopOffset + 'px'
-      });
+      };
+      const $box = $('<div>').addClass('cb_box ' + classNum).css(boxCss);
 
       if (rowIndex !== null) {
         $box.addClass('cb_row_index_' + rowIndex);
@@ -105,11 +97,9 @@ const CHARACTER_BOARD_CONFIG = {
 
       // 画像を表示するためのスタイルを算出
       const imageCss = {
-        position: 'absolute',
         top: 'calc(' + baseImageTop + 'px + var(--cb-board-offset-y, 0px) + var(--cb-row-offset, 0px))',
         left: 'calc(' + imageLeftBase + 'px + var(--cb-board-offset-x, 0px))',
         width: imageWidth + 'px',
-        'z-index': DEFAULT_IMAGE_Z_INDEX,
         'clip-path': buildClipPath(clipLeft, clipRight)
       };
 
@@ -118,9 +108,14 @@ const CHARACTER_BOARD_CONFIG = {
         imageCss.height = imageHeight + 'px';
       }
 
+      const imageClassNames = ['cb_character_image', imageName];
+      if (character.reflect) {
+        imageClassNames.push('reflect');
+      }
+
       $('<img>').attr({
         src: storagePath,
-        'class': imageName + reflectClass
+        'class': imageClassNames.join(' ')
       }).css(imageCss).appendTo($box);
 
       appendVerticalText($box, character.leftText);
@@ -154,7 +149,6 @@ const CHARACTER_BOARD_CONFIG = {
 
       const classNum = 'cb_' + index;
       const imageName = 'cb_' + character.characterId + '_' + index;
-      const reflectClass = character.reflect ? ' reflect' : '';
       const storagePath = './data/fgimage/chara/' + character.characterId + '/' + character.fileName;
       const widthCenter = Number(defaultPos.widthCenter || 0);
       const imageLeft = boxWidth - halfBoxWidth - widthCenter + displacedPxToRight;
@@ -168,15 +162,19 @@ const CHARACTER_BOARD_CONFIG = {
       const $statusBox = $('<div>').attr({
         'class': 'statusBox ' + classNum
       }).css({
-        width: boxWidth + 'px',
-        'background-image': 'linear-gradient(to bottom, ' + backgroundColor + ' 5%, rgba(0, 0, 0, 1) 130%)'
+        width: boxWidth + 'px'
       });
+      $statusBox.css('--status-background-color', backgroundColor);
 
-      $('<p>').attr({
+      const $verticalText = $('<p>').attr({
         'class': 'statusBoxVerticalText ' + classNum + 'VerticalText'
-      }).css({
-        'text-shadow': $.generateTextShadowStrokeCSS('2px #FFFFFF')
       }).text(character.leftText || '').appendTo($statusBox);
+      if (typeof $ !== 'undefined' && $ && typeof $.generateTextShadowStrokeCSS === 'function') {
+        const strokeCss = $.generateTextShadowStrokeCSS('2px #FFFFFF');
+        if (strokeCss) {
+          $verticalText.css('--status-vertical-text-shadow', strokeCss);
+        }
+      }
 
       const statusImageCss = {
         top: imageTop + 'px',
@@ -190,9 +188,14 @@ const CHARACTER_BOARD_CONFIG = {
         statusImageCss.height = statusImageHeight + 'px';
       }
 
+      const statusImageClassNames = ['statusBoxCharaImg', imageName];
+      if (character.reflect) {
+        statusImageClassNames.push('reflect');
+      }
+
       $('<img>').attr({
         src: storagePath,
-        'class': 'statusBoxCharaImg ' + imageName + reflectClass
+        'class': statusImageClassNames.join(' ')
       }).css(statusImageCss).appendTo($statusBox);
 
       if (typeof isShouldOpenRoleInfo === 'function' && typeof createInfoContainer === 'function') {

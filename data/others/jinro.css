@@ -75,16 +75,29 @@
 .cb_container {
     display: flex;
     flex-direction: row;
+    flex-wrap: var(--cb-flex-wrap, nowrap);
+    column-gap: var(--cb-column-gap, 0px);
+    row-gap: var(--cb-row-gap, 0px);
+    align-content: flex-start;
 }
 
 .cb_box {
     position: relative;
     height: 720px;
+    background-image: linear-gradient(var(--cb-background-color, rgba(0, 0, 0, 1)) 10%, rgba(0, 0, 0, 1) 150%);
+    background-repeat: no-repeat;
+    background-size: cover;
     --cb-text-margin-left: 3px;
     --cb-text-top-base: 3px;
     --cb-board-offset-x: 0px;
     --cb-board-offset-y: 0px;
     --cb-row-offset: 0px;
+}
+
+.cb_character_image {
+    position: absolute;
+    z-index: var(--cb-image-z-index, 1);
+    pointer-events: none;
 }
 
 .cb_text {
@@ -235,6 +248,9 @@ input:checked + label {
 
 .statusBox {
     position: relative;
+    background-image: linear-gradient(to bottom, var(--status-background-color, rgba(0, 0, 0, 1)) 5%, rgba(0, 0, 0, 1) 130%);
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .statusBoxVerticalText {
@@ -244,7 +260,22 @@ input:checked + label {
     font-family: にくまるフォント;
     font-size: 30pt;
     color: #28332a;
-    /* text-shadow: $.generateTextShadowStrokeCSS('2px #FFFFFF'), /* tyrano/libs.jsの縁取り用メソッドを借用するので、ここでは設定せずに処理内で呼び出す */
+    text-shadow: var(
+        --status-vertical-text-shadow,
+        rgb(255, 255, 255) 2px 0px 0px,
+        rgb(255, 255, 255) 1.76px 0.96px 0px,
+        rgb(255, 255, 255) 1.08px 1.68px 0px,
+        rgb(255, 255, 255) 0.14px 1.99px 0px,
+        rgb(255, 255, 255) -0.83px 1.82px 0px,
+        rgb(255, 255, 255) -1.6px 1.2px 0px,
+        rgb(255, 255, 255) -1.98px 0.28px 0px,
+        rgb(255, 255, 255) -1.87px -0.7px 0px,
+        rgb(255, 255, 255) -1.31px -1.51px 0px,
+        rgb(255, 255, 255) -0.42px -1.96px 0px,
+        rgb(255, 255, 255) 0.57px -1.92px 0px,
+        rgb(255, 255, 255) 1.42px -1.41px 0px,
+        rgb(255, 255, 255) 1.92px -0.56px 0px
+    );
     margin-left: -7px;
     margin-top: 5px;
     z-index: 2; /* 文字は画像より上に出す*/
@@ -252,7 +283,7 @@ input:checked + label {
 
 .statusBoxCharaImg {
     position: relative;
-    z-index: 1; /* 画像は文字より下に出す*/
+    z-index: var(--status-image-z-index, 1); /* 画像は文字より下に出す*/
 }
 
 
