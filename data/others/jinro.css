@@ -74,15 +74,32 @@
 /* キャラクターボード表示用CSS */
 .cb_container {
     display: flex;
-    flex-direction: row;
-    flex-wrap: var(--cb-flex-wrap, nowrap);
-    column-gap: var(--cb-column-gap, 0px);
+    flex-direction: column;
     row-gap: var(--cb-row-gap, 0px);
-    align-content: flex-start;
+    align-items: stretch;
+}
+
+.cb_row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    column-gap: var(--cb-column-gap, 0px);
+    align-items: flex-start;
+}
+
+.cbStatusContainer .cb_row {
+    flex: 1 1 auto;
+    min-height: 100%;
+    align-items: stretch;
+}
+
+.cbStatusContainer .statusBox {
+    height: 100%;
 }
 
 .cb_box {
     position: relative;
+    flex: 0 0 auto;
     height: 720px;
     background-image: linear-gradient(var(--cb-background-color, rgba(0, 0, 0, 1)) 10%, rgba(0, 0, 0, 1) 150%);
     background-repeat: no-repeat;
@@ -92,6 +109,19 @@
     --cb-board-offset-x: 0px;
     --cb-board-offset-y: 0px;
     --cb-row-offset: 0px;
+}
+
+.cb_box--spacer {
+    background-image: none;
+    background-color: #000000;
+    min-height: 100%;
+    pointer-events: none;
+}
+
+.cb_box--spacer .cb_character_image,
+.cb_box--spacer .cb_text,
+.cb_box--spacer .cb_top_text {
+    display: none;
 }
 
 .cb_character_image {
@@ -242,7 +272,8 @@ input:checked + label {
 
 .cbStatusContainer {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    row-gap: var(--cb-row-gap, 0px);
     height: 584px;
 }
 

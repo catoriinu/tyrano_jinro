@@ -28,6 +28,21 @@ const OPEN_VOTE_STRINGS = {
 const DRAW_BY_REVOTE_FACTION =
   (typeof FACTION_DRAW_BY_REVOTE !== 'undefined') ? FACTION_DRAW_BY_REVOTE : null;
 
+/** キャラクターボードを1段で表示する人数上限のデフォルト */
+const DEFAULT_MAX_SINGLE_ROW_COUNT = 10;
+/** キャラクターボード多段表示の組み合わせプリセット */
+const DEFAULT_MULTI_ROW_OVERRIDES = Object.freeze({
+  11: [5, 6],
+  12: [6, 6],
+  21: [7, 7, 7],
+  22: [7, 7, 8]
+});
+/** 多段表示のデフォルト設定 */
+const DEFAULT_MULTI_ROW_CONFIG = Object.freeze({
+  maxSingleRowCount: DEFAULT_MAX_SINGLE_ROW_COUNT,
+  rowOverrides: DEFAULT_MULTI_ROW_OVERRIDES
+});
+
 /**
  * 表示モードごとの描画設定。
  * default: シナリオ画面、status: ステータス画面。
@@ -35,6 +50,7 @@ const DRAW_BY_REVOTE_FACTION =
 const CHARACTER_BOARD_CONFIG = {
   default: {
     rootSelector: '.1_fore',
+    multiRow: DEFAULT_MULTI_ROW_CONFIG,
     /** シナリオ画面のレイヤーを初期化 */
     cleanup: function cleanupDefaultRoot($root) {
       $root.find('.cb_container').remove();
@@ -124,9 +140,11 @@ const CHARACTER_BOARD_CONFIG = {
   },
   status: {
     rootSelector: '.cbStatusContainer',
+    multiRow: DEFAULT_MULTI_ROW_CONFIG,
     /** ステータス画面のレイヤーを初期化 */
     cleanup: function cleanupStatusRoot($root) {
       $root.find('.statusBox').remove();
+      $root.find('.cb_row').remove();
     },
     /** ステータス画面は既存のコンテナに直接追加する */
     getContainer: function getStatusContainer($root) {
@@ -265,20 +283,55 @@ function renderCharacterBoard(mode) {
   }
 
   const containerWidth = CHARACTER_BOARD_CONTAINER_WIDTH;
-  const layoutInfo = createCharacterBoardLayoutInfo(characterList.length, containerWidth, layoutOptions);
+  const columnsPerRow = Array.isArray(board.columnsPerRow) ? board.columnsPerRow : null;
+  const layoutInfo = createCharacterBoardLayoutInfo(characterList.length, containerWidth, layoutOptions, columnsPerRow);
   const $container = config.getContainer($root);
   applyCharacterBoardSizeClass($root, $container, sizePreset);
   if (typeof console !== 'undefined' && console && typeof console.debug === 'function') {
-    console.debug('[renderCharacterBoard] mode=%s characters=%d columns=%d rows=%d layout=%o',
+    console.debug('[renderCharacterBoard] mode=%s characters=%d columns=%d rows=%d columnsPerRow=%o layout=%o',
       mode,
       characterList.length,
-      layoutInfo.columns,
+      layoutInfo.maxColumns || layoutInfo.columns,
       layoutInfo.rows,
+      layoutInfo.columnsPerRow || null,
       board.layout || null
     );
   }
 
   // モードごとの描画ロジックに委譲して各キャラクターを配置する
+  if ($container && typeof $container.css === 'function') {
+    $container.css('--cb-column-gap', layoutInfo.columnGap + 'px');
+    $container.css('--cb-row-gap', layoutInfo.rowGap + 'px');
+  }
+  const rowContainers = [];
+  const pendingRightSpacers = [];
+  const resolvedColumnsPerRow = Array.isArray(layoutInfo.columnsPerRow) ? layoutInfo.columnsPerRow : [];
+  if (resolvedColumnsPerRow.length > 0) {
+    for (let rowIdx = 0; rowIdx < resolvedColumnsPerRow.length; rowIdx += 1) {
+      const $row = $('<div>').addClass('cb_row').attr('data-cb-row-index', rowIdx);
+      if (typeof $row.css === 'function') {
+        $row.css('--cb-column-gap', layoutInfo.columnGap + 'px');
+      }
+      $row.appendTo($container);
+      rowContainers[rowIdx] = $row;
+      const actualColumns = resolvedColumnsPerRow[rowIdx] || 0;
+      if (layoutInfo.maxColumns > actualColumns) {
+        const spacerWidth = layoutInfo.boxWidth / 2;
+        const $leftSpacer = createCharacterBoardSpacer(spacerWidth);
+        $leftSpacer.attr('data-cb-row-index', rowIdx);
+        $row.append($leftSpacer);
+        const $rightSpacer = createCharacterBoardSpacer(spacerWidth);
+        $rightSpacer.attr('data-cb-row-index', rowIdx);
+        pendingRightSpacers.push({
+          $row: $row,
+          $spacer: $rightSpacer
+        });
+      }
+    }
+  } else {
+    rowContainers[0] = $container;
+  }
+
   for (let idx = 0; idx < characterList.length; idx += 1) {
     const character = characterList[idx];
     if (!character || !character.characterId) {
@@ -295,9 +348,22 @@ function renderCharacterBoard(mode) {
 
     const itemLayout = getCharacterBoardItemLayout(layoutInfo, idx);
 
+    let $targetContainer = $container;
+    if (Array.isArray(rowContainers) && rowContainers.length > 0) {
+      const candidateRow = rowContainers[itemLayout.rowIndex];
+      if (candidateRow && candidateRow.length) {
+        $targetContainer = candidateRow;
+      } else {
+        const fallbackRow = rowContainers[rowContainers.length - 1];
+        if (fallbackRow && fallbackRow.length) {
+          $targetContainer = fallbackRow;
+        }
+      }
+    }
+
     config.renderCharacter({
       $root: $root,
-      $container: $container,
+      $container: $targetContainer,
       character: character,
       index: idx,
       boxWidth: layoutInfo.boxWidth,
@@ -312,6 +378,13 @@ function renderCharacterBoard(mode) {
       defaultPos: defaultPos,
       f: f
     });
+  }
+
+  for (let spacerIdx = 0; spacerIdx < pendingRightSpacers.length; spacerIdx += 1) {
+    const entry = pendingRightSpacers[spacerIdx];
+    if (entry && entry.$row && entry.$spacer) {
+      entry.$row.append(entry.$spacer);
+    }
   }
 }
 
@@ -492,12 +565,26 @@ function createBoardCharacter(params) {
  * @returns {CharacterBoard}
  */
 function createCharacterBoard(characterList, displacement, options) {
-  const boardOptions = options || {};
+  const baseOptions = options ? Object.assign({}, options) : {};
+  const totalCharacters = Array.isArray(characterList) ? characterList.length : 0;
+  const multiRowOptions = resolveCharacterBoardMultiRowOptions(DEFAULT_MULTI_ROW_CONFIG, baseOptions.multiRow);
+  if (multiRowOptions) {
+    baseOptions.multiRow = multiRowOptions;
+  } else {
+    delete baseOptions.multiRow;
+  }
+  const layoutOptions = (baseOptions.layout && typeof baseOptions.layout === 'object') ? baseOptions.layout : null;
+  const columnsPerRow = resolveCharacterBoardColumnsPerRow(totalCharacters, baseOptions.multiRow, layoutOptions);
+  if (columnsPerRow.length > 0) {
+    baseOptions.columnsPerRow = columnsPerRow;
+  } else {
+    delete baseOptions.columnsPerRow;
+  }
   return new CharacterBoard(
     characterList,
     displacement.right,
     displacement.top,
-    boardOptions
+    baseOptions
   );
 }
 
@@ -511,7 +598,131 @@ function resolveCharacterBoardOptions(context) {
   if (layoutOptions) {
     resolvedOptions.layout = layoutOptions;
   }
+  const multiRowOptions = resolveCharacterBoardMultiRowOptions(DEFAULT_MULTI_ROW_CONFIG, options.multiRow);
+  if (multiRowOptions) {
+    resolvedOptions.multiRow = multiRowOptions;
+  }
   return resolvedOptions;
+}
+
+function resolveCharacterBoardMultiRowOptions(defaultOptions, overrideOptions) {
+  const base = sanitizeCharacterBoardMultiRowOptions(defaultOptions);
+  const override = sanitizeCharacterBoardMultiRowOptions(overrideOptions);
+  if (!base && !override) {
+    return null;
+  }
+  const resolved = {};
+  if (base) {
+    if (typeof base.maxSingleRowCount === 'number') {
+      resolved.maxSingleRowCount = base.maxSingleRowCount;
+    }
+    if (base.rowOverrides) {
+      resolved.rowOverrides = Object.assign({}, base.rowOverrides);
+    }
+  }
+  if (override) {
+    if (typeof override.maxSingleRowCount === 'number') {
+      resolved.maxSingleRowCount = override.maxSingleRowCount;
+    }
+    if (override.rowOverrides) {
+      const existingOverrides = resolved.rowOverrides || {};
+      resolved.rowOverrides = Object.assign({}, existingOverrides, override.rowOverrides);
+    }
+  }
+  return resolved;
+}
+
+function sanitizeCharacterBoardMultiRowOptions(multiRow) {
+  if (!multiRow || typeof multiRow !== 'object') {
+    return null;
+  }
+  const sanitized = {};
+  if (Number.isInteger(multiRow.maxSingleRowCount) && multiRow.maxSingleRowCount > 0) {
+    sanitized.maxSingleRowCount = multiRow.maxSingleRowCount;
+  }
+  const rowOverrides = sanitizeCharacterBoardRowOverrides(multiRow.rowOverrides);
+  if (rowOverrides) {
+    sanitized.rowOverrides = rowOverrides;
+  }
+  return Object.keys(sanitized).length > 0 ? sanitized : null;
+}
+
+function sanitizeCharacterBoardRowOverrides(rowOverrides) {
+  if (!rowOverrides || typeof rowOverrides !== 'object') {
+    return null;
+  }
+  const sanitized = {};
+  const keys = Object.keys(rowOverrides);
+  for (let idx = 0; idx < keys.length; idx += 1) {
+    const key = keys[idx];
+    const total = Number(key);
+    if (!Number.isInteger(total) || total <= 0) {
+      continue;
+    }
+    const rows = rowOverrides[key];
+    if (!Array.isArray(rows) || rows.length === 0) {
+      continue;
+    }
+    const normalized = [];
+    let sum = 0;
+    let isValid = true;
+    for (let rowIdx = 0; rowIdx < rows.length; rowIdx += 1) {
+      const value = Number(rows[rowIdx]);
+      if (!Number.isInteger(value) || value <= 0) {
+        isValid = false;
+        break;
+      }
+      normalized.push(value);
+      sum += value;
+    }
+    if (!isValid || sum !== total) {
+      continue;
+    }
+    sanitized[total] = normalized;
+  }
+  return Object.keys(sanitized).length > 0 ? sanitized : null;
+}
+
+function resolveCharacterBoardColumnsPerRow(totalCharacters, multiRowOptions, layoutOptions) {
+  if (!Number.isInteger(totalCharacters) || totalCharacters <= 0) {
+    return [];
+  }
+  const sanitizedOptions = sanitizeCharacterBoardMultiRowOptions(multiRowOptions)
+    || sanitizeCharacterBoardMultiRowOptions(DEFAULT_MULTI_ROW_CONFIG)
+    || {};
+  let maxSingleRowCount = (Number.isInteger(sanitizedOptions.maxSingleRowCount) && sanitizedOptions.maxSingleRowCount > 0)
+    ? sanitizedOptions.maxSingleRowCount
+    : DEFAULT_MAX_SINGLE_ROW_COUNT;
+  const maxColumnsLimit = (layoutOptions && isPositiveIntegerForBoardOptions(layoutOptions.maxColumns))
+    ? layoutOptions.maxColumns
+    : null;
+  if (Number.isInteger(maxColumnsLimit) && maxColumnsLimit > 0) {
+    maxSingleRowCount = Math.min(maxSingleRowCount, maxColumnsLimit);
+  }
+  if (!Number.isInteger(maxSingleRowCount) || maxSingleRowCount <= 0) {
+    maxSingleRowCount = 1;
+  }
+  const overrides = sanitizedOptions.rowOverrides || {};
+  const overrideCandidate = overrides[totalCharacters] || overrides[String(totalCharacters)];
+  if (Array.isArray(overrideCandidate) && overrideCandidate.length > 0) {
+    if (!maxColumnsLimit || overrideCandidate.every(function validateOverride(value) {
+      return Number.isInteger(value) && value > 0 && value <= maxColumnsLimit;
+    })) {
+      return overrideCandidate.slice();
+    }
+  }
+  if (totalCharacters <= maxSingleRowCount) {
+    return [totalCharacters];
+  }
+  const rowsNeeded = Math.ceil(totalCharacters / maxSingleRowCount);
+  const baseCount = Math.floor(totalCharacters / rowsNeeded);
+  const remainder = totalCharacters % rowsNeeded;
+  const result = new Array(rowsNeeded).fill(baseCount);
+  for (let idx = 0; idx < remainder; idx += 1) {
+    const targetIndex = result.length - 1 - idx;
+    result[targetIndex] += 1;
+  }
+  return result;
 }
 
 function sanitizeCharacterBoardLayoutOptions(layout) {
@@ -546,24 +757,39 @@ function isFiniteNumberForBoardOptions(value) {
   return Number.isFinite(Number(value));
 }
 
-function createCharacterBoardLayoutInfo(characterCount, containerWidth, layoutOptions) {
-  const columns = resolveCharacterBoardColumnCount(characterCount, layoutOptions);
+function createCharacterBoardLayoutInfo(characterCount, containerWidth, layoutOptions, columnsPerRow) {
   const columnGap = (layoutOptions && Number.isFinite(layoutOptions.columnGap)) ? Number(layoutOptions.columnGap) : 0;
   const rowGap = (layoutOptions && Number.isFinite(layoutOptions.rowGap)) ? Number(layoutOptions.rowGap) : 0;
   const rowOffset = (layoutOptions && Number.isFinite(layoutOptions.rowOffset)) ? Number(layoutOptions.rowOffset) : 0;
-  const effectiveColumns = Math.max(1, columns);
+  const normalizedColumnsPerRow = normalizeColumnsPerRow(columnsPerRow, characterCount, layoutOptions);
+  const rows = normalizedColumnsPerRow.length;
+  const maxColumns = rows > 0 ? Math.max.apply(null, normalizedColumnsPerRow) : 0;
+  const effectiveColumns = Math.max(1, maxColumns);
   const totalGapWidth = columnGap * (effectiveColumns - 1);
   const effectiveContainerWidth = Math.max(0, containerWidth - totalGapWidth);
   const boxWidth = effectiveColumns > 0 ? (effectiveContainerWidth / effectiveColumns) : 0;
+  const halfBoxWidth = boxWidth / 2;
+  const rowStartIndices = [];
+  const cumulativeCounts = [];
+  let runningCount = 0;
+  for (let idx = 0; idx < rows; idx += 1) {
+    rowStartIndices.push(runningCount);
+    runningCount += normalizedColumnsPerRow[idx];
+    cumulativeCounts.push(runningCount);
+  }
   return {
     characterCount: characterCount,
     columns: effectiveColumns,
-    rows: effectiveColumns > 0 ? Math.ceil(characterCount / effectiveColumns) : 0,
+    rows: rows,
     columnGap: columnGap,
     rowGap: rowGap,
     rowOffset: rowOffset,
     boxWidth: boxWidth,
-    halfBoxWidth: boxWidth / 2
+    halfBoxWidth: halfBoxWidth,
+    columnsPerRow: normalizedColumnsPerRow,
+    rowStartIndices: rowStartIndices,
+    cumulativeCounts: cumulativeCounts,
+    maxColumns: effectiveColumns
   };
 }
 
@@ -574,25 +800,116 @@ function resolveCharacterBoardColumnCount(characterCount, layoutOptions) {
   return Math.min(characterCount, layoutOptions.maxColumns);
 }
 
+function normalizeColumnsPerRow(columnsPerRow, characterCount, layoutOptions) {
+  const normalized = [];
+  if (Array.isArray(columnsPerRow) && columnsPerRow.length > 0) {
+    let total = 0;
+    for (let idx = 0; idx < columnsPerRow.length; idx += 1) {
+      const value = Number(columnsPerRow[idx]);
+      if (!Number.isInteger(value) || value <= 0) {
+        total = null;
+        break;
+      }
+      normalized.push(value);
+      total += value;
+    }
+    if (total !== null) {
+      const maxColumnsLimit = (layoutOptions && isPositiveIntegerForBoardOptions(layoutOptions.maxColumns))
+        ? layoutOptions.maxColumns
+        : null;
+      const withinLimit = !maxColumnsLimit || normalized.every(function(value) {
+        return value <= maxColumnsLimit;
+      });
+      if (withinLimit && (!Number.isInteger(characterCount) || characterCount <= 0 || total === characterCount)) {
+        return normalized;
+      }
+    }
+  }
+  if (!Number.isInteger(characterCount) || characterCount <= 0) {
+    return [];
+  }
+  const columns = resolveCharacterBoardColumnCount(characterCount, layoutOptions);
+  if (!Number.isInteger(columns) || columns <= 0) {
+    return [];
+  }
+  const result = [];
+  let remaining = characterCount;
+  while (remaining > 0) {
+    const count = Math.min(columns, remaining);
+    result.push(count);
+    remaining -= count;
+  }
+  return result;
+}
+
 function getCharacterBoardItemLayout(layoutInfo, index) {
-  if (!layoutInfo || layoutInfo.columns <= 0) {
+  if (!layoutInfo) {
     return {
       columnIndex: 0,
       rowIndex: 0,
       boxLeft: 0,
-      rowTopOffset: layoutInfo ? layoutInfo.rowOffset : 0
+      rowTopOffset: 0
     };
   }
-  const columnIndex = index % layoutInfo.columns;
-  const rowIndex = Math.floor(index / layoutInfo.columns);
+  const columnsPerRow = Array.isArray(layoutInfo.columnsPerRow) ? layoutInfo.columnsPerRow : null;
+  const rowStartIndices = Array.isArray(layoutInfo.rowStartIndices) ? layoutInfo.rowStartIndices : null;
+  if (!columnsPerRow || columnsPerRow.length === 0 || !rowStartIndices || rowStartIndices.length === 0) {
+    const columns = layoutInfo.columns || 0;
+    if (!columns) {
+      return {
+        columnIndex: 0,
+        rowIndex: 0,
+        boxLeft: 0,
+        rowTopOffset: layoutInfo.rowOffset || 0
+      };
+    }
+    const fallbackColumnIndex = index % columns;
+    const fallbackRowIndex = Math.floor(index / columns);
+    const fallbackBoxLeft = (layoutInfo.boxWidth + layoutInfo.columnGap) * fallbackColumnIndex;
+    const fallbackRowTopOffset = (layoutInfo.rowOffset || 0) + (layoutInfo.rowGap * fallbackRowIndex);
+    return {
+      columnIndex: fallbackColumnIndex,
+      rowIndex: fallbackRowIndex,
+      boxLeft: fallbackBoxLeft,
+      rowTopOffset: fallbackRowTopOffset
+    };
+  }
+  let resolvedRowIndex = 0;
+  for (let idx = rowStartIndices.length - 1; idx >= 0; idx -= 1) {
+    if (index >= rowStartIndices[idx]) {
+      resolvedRowIndex = idx;
+      break;
+    }
+  }
+  if (resolvedRowIndex >= columnsPerRow.length) {
+    resolvedRowIndex = columnsPerRow.length - 1;
+  }
+  const rowStart = rowStartIndices[resolvedRowIndex] || 0;
+  const rowSize = columnsPerRow[resolvedRowIndex] || 1;
+  let columnIndex = index - rowStart;
+  if (columnIndex < 0) {
+    columnIndex = 0;
+  } else if (columnIndex >= rowSize) {
+    columnIndex = rowSize - 1;
+  }
   const boxLeft = (layoutInfo.boxWidth + layoutInfo.columnGap) * columnIndex;
-  const rowTopOffset = layoutInfo.rowOffset + (layoutInfo.rowGap * rowIndex);
+  const rowTopOffset = (layoutInfo.rowOffset || 0) + (layoutInfo.rowGap * resolvedRowIndex);
   return {
     columnIndex: columnIndex,
-    rowIndex: rowIndex,
+    rowIndex: resolvedRowIndex,
     boxLeft: boxLeft,
     rowTopOffset: rowTopOffset
   };
+}
+
+function createCharacterBoardSpacer(width) {
+  const numericWidth = Number(width);
+  const resolvedWidth = (Number.isFinite(numericWidth) && numericWidth > 0) ? numericWidth : 0;
+  return $('<div>').addClass('cb_box cb_box--spacer').attr({
+    'aria-hidden': 'true'
+  }).css({
+    width: resolvedWidth + 'px'
+  });
 }
 
 

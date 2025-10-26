@@ -180,8 +180,17 @@ function CharacterBoard(characterList = [], displacedPxToRight = 0, displacedPxT
   this.displacedPxToRight = displacedPxToRight;
   this.displacedPxToTop = displacedPxToTop;
   const boardOptions = options || {};
+  const totalCharacters = Array.isArray(characterList) ? characterList.length : 0;
   this.sizePreset = (typeof boardOptions.sizePreset === 'string') ? boardOptions.sizePreset : null;
   this.layout = sanitizeCharacterBoardLayout(boardOptions.layout);
+  const columnsPerRow = sanitizeCharacterBoardColumnsPerRow(boardOptions.columnsPerRow, totalCharacters);
+  if (columnsPerRow) {
+    this.columnsPerRow = columnsPerRow;
+  } else if (totalCharacters > 0) {
+    this.columnsPerRow = [totalCharacters];
+  } else {
+    this.columnsPerRow = [];
+  }
 }
 
 function sanitizeCharacterBoardLayout(layoutOptions) {
@@ -214,6 +223,26 @@ function isNonNegativeNumberForLayout(value) {
 
 function isFiniteNumberForLayout(value) {
   return Number.isFinite(Number(value));
+}
+
+function sanitizeCharacterBoardColumnsPerRow(columnsPerRow, expectedTotal) {
+  if (!Array.isArray(columnsPerRow) || columnsPerRow.length === 0) {
+    return null;
+  }
+  const sanitized = [];
+  let total = 0;
+  for (let idx = 0; idx < columnsPerRow.length; idx += 1) {
+    const count = Number(columnsPerRow[idx]);
+    if (!Number.isInteger(count) || count <= 0) {
+      return null;
+    }
+    sanitized.push(count);
+    total += count;
+  }
+  if (Number.isInteger(expectedTotal) && expectedTotal > 0 && total !== expectedTotal) {
+    return null;
+  }
+  return sanitized;
 }
 
 
