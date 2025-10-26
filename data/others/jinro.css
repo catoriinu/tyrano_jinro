@@ -94,13 +94,13 @@
 }
 
 .cbStatusContainer .statusBox {
-    height: 100%;
+    height: var(--status-box-height, 100%);
 }
 
 .cb_box {
     position: relative;
     flex: 0 0 auto;
-    height: 720px;
+    height: var(--cb-box-height, 720px);
     background-image: linear-gradient(var(--cb-background-color, rgba(0, 0, 0, 1)) 10%, rgba(0, 0, 0, 1) 150%);
     background-repeat: no-repeat;
     background-size: cover;
@@ -114,6 +114,7 @@
 .cb_box--spacer {
     background-image: none;
     background-color: #000000;
+    height: var(--cb-box-height, 720px);
     min-height: 100%;
     pointer-events: none;
 }
