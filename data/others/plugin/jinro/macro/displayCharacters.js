@@ -374,8 +374,6 @@ function appendTopText($root, text, boxLeft, boxWidth) {
   }).text(text).appendTo($root);
 }
 
-window.renderCharacterBoard = renderCharacterBoard;
-
 /**
  * `f.characterBoard` に一覧表示用データを組み立てる。
  * @param {'introduction'|'status'|'winnerFaction'|'openVote'} mode 表示準備モード
@@ -388,7 +386,7 @@ function prepareCharacterBoard(mode, options) {
     return null;
   }
 
-  const preparer = HORIZONTAL_DISPLAY_PREPARERS[mode];
+  const preparer = CHARACTER_BOARD_PREPARERS[mode];
   if (!preparer) {
     throw new Error('[prepareCharacterBoard] 未対応のモードです: ' + mode);
   }
@@ -477,9 +475,9 @@ function resolveCharacterBoardOptions(context) {
 
 
 /**
- * 表示モード別の `f.characterBoard` 組み立てロジック。
+ * Prepare character board data per mode.
  */
-const HORIZONTAL_DISPLAY_PREPARERS = {
+const CHARACTER_BOARD_PREPARERS = {
   introduction: function prepareIntroductionCharacters(context) {
     const f = context.f || {};
     const characterObjects = f.characterObjects || {};
