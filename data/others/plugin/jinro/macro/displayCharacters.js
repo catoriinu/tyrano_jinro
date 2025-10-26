@@ -6,8 +6,10 @@
 
 /** 画面横幅（px） */
 const CHARACTER_BOARD_CONTAINER_WIDTH = 1280;
-/* テキストを描画する際の上下余白（px） */
+/* テキストを描画する際の左右余白（px） */
 const DEFAULT_BOX_MARGIN = 3;
+/* テキスト描画時のベース top 値（px） */
+const DEFAULT_TEXT_TOP = 3;
 /** キャラクター画像用の基準 z-index */
 const DEFAULT_IMAGE_Z_INDEX = 1;
 /* キャラクターボードのサイズクラス接頭語 */
@@ -66,10 +68,13 @@ const CHARACTER_BOARD_CONFIG = {
       const imageName = 'cb_' + character.characterId + '_' + index;
       const reflectClass = character.reflect ? ' reflect' : '';
       const storagePath = './data/fgimage/chara/' + character.characterId + '/' + character.fileName;
-      const boxLeft = (boxWidth * index) + DEFAULT_BOX_MARGIN;
+      const baseBoxLeft = Number.isFinite(options.boxLeft) ? options.boxLeft : (boxWidth * index);
+      const boxLeft = baseBoxLeft + DEFAULT_BOX_MARGIN;
       const widthCenter = Number(defaultPos.widthCenter || 0);
-      const imageLeft = (boxWidth * (index + 1)) - halfBoxWidth - widthCenter + displacedPxToRight;
-      const imageTop = Number(defaultPos.top || 0) + displacedPxToTop;
+      const boxCenter = baseBoxLeft + halfBoxWidth;
+      const imageLeft = boxCenter - widthCenter + displacedPxToRight;
+      const rowTopOffset = Number.isFinite(options.rowTopOffset) ? options.rowTopOffset : 0;
+      const imageTop = Number(defaultPos.top || 0) + displacedPxToTop + rowTopOffset;
       const clipLeft = widthCenter - halfBoxWidth - displacedPxToRight;
       const clipRight = Number(defaultPos.width || 0) - widthCenter - halfBoxWidth + displacedPxToRight;
       const backgroundColor = character.bgColor || 'rgba(0, 0, 0, 1)';
@@ -101,8 +106,8 @@ const CHARACTER_BOARD_CONFIG = {
         'class': imageName + reflectClass
       }).css(imageCss).appendTo($box);
 
-      appendVerticalText($root, character.leftText, boxLeft);
-      appendTopText($root, character.topText, boxLeft, boxWidth);
+      appendVerticalText($root, character.leftText, boxLeft, rowTopOffset);
+      appendTopText($root, character.topText, boxLeft, boxWidth, rowTopOffset);
     }
   },
   status: {
@@ -126,6 +131,7 @@ const CHARACTER_BOARD_CONFIG = {
         displacedPxToRight,
         displacedPxToTop,
         defaultPos,
+        rowTopOffset,
         f
       } = options;
 
@@ -135,7 +141,8 @@ const CHARACTER_BOARD_CONFIG = {
       const storagePath = './data/fgimage/chara/' + character.characterId + '/' + character.fileName;
       const widthCenter = Number(defaultPos.widthCenter || 0);
       const imageLeft = boxWidth - halfBoxWidth - widthCenter + displacedPxToRight;
-      const imageTop = Number(defaultPos.top || 0) + displacedPxToTop;
+      const additionalRowOffset = Number.isFinite(rowTopOffset) ? rowTopOffset : 0;
+      const imageTop = Number(defaultPos.top || 0) + displacedPxToTop + additionalRowOffset;
       const clipLeft = widthCenter - halfBoxWidth - displacedPxToRight;
       const clipRight = Number(defaultPos.width || 0) - widthCenter - halfBoxWidth + displacedPxToRight;
       const backgroundColor = character.bgColor || 'rgba(0, 0, 0, 1)';
@@ -220,6 +227,7 @@ function renderCharacterBoard(mode) {
   const sizePreset = (typeof board.sizePreset === 'string' && board.sizePreset.length > 0)
     ? board.sizePreset
     : null;
+  const layoutOptions = (board.layout && typeof board.layout === 'object') ? board.layout : null;
 
   const $root = $(config.rootSelector);
   if ($root.length === 0) {
@@ -237,10 +245,18 @@ function renderCharacterBoard(mode) {
   }
 
   const containerWidth = CHARACTER_BOARD_CONTAINER_WIDTH;
-  const boxWidth = containerWidth / characterList.length;
-  const halfBoxWidth = boxWidth / 2;
+  const layoutInfo = createCharacterBoardLayoutInfo(characterList.length, containerWidth, layoutOptions);
   const $container = config.getContainer($root);
   applyCharacterBoardSizeClass($root, $container, sizePreset);
+  if (typeof console !== 'undefined' && console && typeof console.debug === 'function') {
+    console.debug('[renderCharacterBoard] mode=%s characters=%d columns=%d rows=%d layout=%o',
+      mode,
+      characterList.length,
+      layoutInfo.columns,
+      layoutInfo.rows,
+      board.layout || null
+    );
+  }
 
   // モードごとの描画ロジックに委譲して各キャラクターを配置する
   for (let idx = 0; idx < characterList.length; idx += 1) {
@@ -251,16 +267,26 @@ function renderCharacterBoard(mode) {
 
     const defaultPos = defaultPosition[character.characterId];
     if (!defaultPos) {
+      if (typeof console !== 'undefined' && console && typeof console.warn === 'function') {
+        console.warn('[renderCharacterBoard] defaultPos not found mode=%s characterId=%s index=%d', mode, character.characterId, idx);
+      }
       continue;
     }
+
+    const itemLayout = getCharacterBoardItemLayout(layoutInfo, idx);
 
     config.renderCharacter({
       $root: $root,
       $container: $container,
       character: character,
       index: idx,
-      boxWidth: boxWidth,
-      halfBoxWidth: halfBoxWidth,
+      boxWidth: layoutInfo.boxWidth,
+      halfBoxWidth: layoutInfo.halfBoxWidth,
+      boxLeft: itemLayout.boxLeft,
+      columnIndex: itemLayout.columnIndex,
+      rowIndex: itemLayout.rowIndex,
+      rowTopOffset: itemLayout.rowTopOffset,
+      layout: layoutInfo,
       displacedPxToRight: displacedPxToRight,
       displacedPxToTop: displacedPxToTop,
       defaultPos: defaultPos,
@@ -348,13 +374,17 @@ function getCharacterHeight(defaultPos) {
  * @param {string} text 表示する文字列
  * @param {number} boxLeft 左端の位置（px）
  */
-function appendVerticalText($root, text, boxLeft) {
+function appendVerticalText($root, text, boxLeft, topOffset) {
   if (!text) {
     return;
   }
-  $('<p>').addClass('cb_text vertical_text').css({
+  const css = {
     left: boxLeft + 'px'
-  }).text(text).appendTo($root);
+  };
+  if (Number.isFinite(topOffset) && topOffset !== 0) {
+    css.top = (DEFAULT_TEXT_TOP + topOffset) + 'px';
+  }
+  $('<p>').addClass('cb_text vertical_text').css(css).text(text).appendTo($root);
 }
 
 /**
@@ -364,14 +394,18 @@ function appendVerticalText($root, text, boxLeft) {
  * @param {number} boxLeft 左端の位置（px）
  * @param {number} boxWidth ボックス幅（px）
  */
-function appendTopText($root, text, boxLeft, boxWidth) {
+function appendTopText($root, text, boxLeft, boxWidth, topOffset) {
   if (!text) {
     return;
   }
-  $('<p>').addClass('cb_text cb_top_text').css({
+  const css = {
     left: boxLeft + 'px',
     width: boxWidth + 'px'
-  }).text(text).appendTo($root);
+  };
+  if (Number.isFinite(topOffset) && topOffset !== 0) {
+    css.top = (DEFAULT_TEXT_TOP + topOffset) + 'px';
+  }
+  $('<p>').addClass('cb_text cb_top_text').css(css).text(text).appendTo($root);
 }
 
 /**
@@ -508,6 +542,55 @@ function isFiniteNumberForBoardOptions(value) {
   return Number.isFinite(Number(value));
 }
 
+function createCharacterBoardLayoutInfo(characterCount, containerWidth, layoutOptions) {
+  const columns = resolveCharacterBoardColumnCount(characterCount, layoutOptions);
+  const columnGap = (layoutOptions && Number.isFinite(layoutOptions.columnGap)) ? Number(layoutOptions.columnGap) : 0;
+  const rowGap = (layoutOptions && Number.isFinite(layoutOptions.rowGap)) ? Number(layoutOptions.rowGap) : 0;
+  const rowOffset = (layoutOptions && Number.isFinite(layoutOptions.rowOffset)) ? Number(layoutOptions.rowOffset) : 0;
+  const effectiveColumns = Math.max(1, columns);
+  const totalGapWidth = columnGap * (effectiveColumns - 1);
+  const effectiveContainerWidth = Math.max(0, containerWidth - totalGapWidth);
+  const boxWidth = effectiveColumns > 0 ? (effectiveContainerWidth / effectiveColumns) : 0;
+  return {
+    characterCount: characterCount,
+    columns: effectiveColumns,
+    rows: effectiveColumns > 0 ? Math.ceil(characterCount / effectiveColumns) : 0,
+    columnGap: columnGap,
+    rowGap: rowGap,
+    rowOffset: rowOffset,
+    boxWidth: boxWidth,
+    halfBoxWidth: boxWidth / 2
+  };
+}
+
+function resolveCharacterBoardColumnCount(characterCount, layoutOptions) {
+  if (!layoutOptions || !isPositiveIntegerForBoardOptions(layoutOptions.maxColumns)) {
+    return characterCount;
+  }
+  return Math.min(characterCount, layoutOptions.maxColumns);
+}
+
+function getCharacterBoardItemLayout(layoutInfo, index) {
+  if (!layoutInfo || layoutInfo.columns <= 0) {
+    return {
+      columnIndex: 0,
+      rowIndex: 0,
+      boxLeft: 0,
+      rowTopOffset: layoutInfo ? layoutInfo.rowOffset : 0
+    };
+  }
+  const columnIndex = index % layoutInfo.columns;
+  const rowIndex = Math.floor(index / layoutInfo.columns);
+  const boxLeft = (layoutInfo.boxWidth + layoutInfo.columnGap) * columnIndex;
+  const rowTopOffset = layoutInfo.rowOffset + (layoutInfo.rowGap * rowIndex);
+  return {
+    columnIndex: columnIndex,
+    rowIndex: rowIndex,
+    boxLeft: boxLeft,
+    rowTopOffset: rowTopOffset
+  };
+}
+
 
 /**
  * Prepare character board data per mode.
@@ -551,6 +634,7 @@ const CHARACTER_BOARD_PREPARERS = {
     const participantsIdList = Array.isArray(f.participantsIdList) ? f.participantsIdList : [];
     const characterList = [];
     const winnerFaction = mp.winnerFaction;
+    const isDrawByRevote = winnerFaction === DRAW_BY_REVOTE_FACTION;
 
     for (let idx = 0; idx < participantsIdList.length; idx += 1) {
       const characterId = participantsIdList[idx];
@@ -567,10 +651,7 @@ const CHARACTER_BOARD_PREPARERS = {
 
       if (winnerFaction == null) {
         fileName = isAlive ? (statusFaceEntry.alive || '') : (statusFaceEntry.lose || '');
-      } else if (
-        (DRAW_BY_REVOTE_FACTION !== null && winnerFaction === DRAW_BY_REVOTE_FACTION) ||
-        winnerFaction === 'DRAW_BY_REVOTE'
-      ) {
+      } else if (winnerFaction === DRAW_BY_REVOTE_FACTION) {
         fileName = statusFaceEntry.draw || fileName;
       } else if (characterObject.role && characterObject.role.faction === winnerFaction) {
         fileName = (statusFaceEntry.win && statusFaceEntry.win[winnerFaction]) || fileName;
@@ -599,6 +680,7 @@ const CHARACTER_BOARD_PREPARERS = {
     const participantsIdList = Array.isArray(f.participantsIdList) ? f.participantsIdList : [];
     const characterList = [];
     const winnerFaction = mp.winnerFaction;
+    const isDrawByRevote = winnerFaction === DRAW_BY_REVOTE_FACTION;
 
     for (let idx = 0; idx < participantsIdList.length; idx += 1) {
       const characterId = participantsIdList[idx];
@@ -609,7 +691,7 @@ const CHARACTER_BOARD_PREPARERS = {
       const statusFaceEntry = statusFace[characterId] || {};
 
       let fileName = '';
-      if (winnerFaction === 'DRAW_BY_REVOTE') {
+      if (isDrawByRevote) {
         fileName = statusFaceEntry.draw || '';
       } else if (characterObject.role && characterObject.role.faction === winnerFaction) {
         fileName = (statusFaceEntry.win && statusFaceEntry.win[winnerFaction]) || '';
