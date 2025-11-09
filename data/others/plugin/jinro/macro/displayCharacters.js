@@ -44,9 +44,20 @@ const DEFAULT_MULTI_ROW_CONFIG = Object.freeze({
 });
 
 /** キャラクターボックスの標準高さ(px) */
+/** キャラクターボードの表示領域上限(px) */
+const DEFAULT_CHARACTER_BOARD_AREA_HEIGHT = 720;
+/** キャラクター描画の基準高さ(px) */
 const DEFAULT_CHARACTER_BOX_HEIGHT = 720;
 /** ステータス画面のキャラクターボックス高さ(px) */
+/** ステータス表示のボード領域上限(px) */
+const STATUS_CHARACTER_BOARD_AREA_HEIGHT = 584;
+/** ステータス時の描画基準高さ(px) */
 const STATUS_CHARACTER_BOX_HEIGHT = 584;
+const DEFAULT_ROW_SCALE_BY_ROW_COUNT = Object.freeze({
+  1: 1,
+  2: 0.75,
+  3: 0.5
+});
 
 /**
  * 表示モードごとの描画設定。
@@ -56,7 +67,9 @@ const CHARACTER_BOARD_CONFIG = {
   default: {
     rootSelector: '.1_fore',
     boxBaseHeight: DEFAULT_CHARACTER_BOX_HEIGHT,
+    boxAreaHeight: DEFAULT_CHARACTER_BOARD_AREA_HEIGHT,
     multiRow: DEFAULT_MULTI_ROW_CONFIG,
+    rowScaleOverrides: DEFAULT_ROW_SCALE_BY_ROW_COUNT,
     /** シナリオ画面のレイヤーを初期化 */
     cleanup: function cleanupDefaultRoot($root) {
       $root.find('.cb_container').remove();
@@ -77,21 +90,27 @@ const CHARACTER_BOARD_CONFIG = {
         boxHeight,
         displacedPxToRight,
         displacedPxToTop,
-        defaultPos
+        defaultPos,
+        rowScale,
+        layout
       } = options;
 
+      const resolvedRowScale = resolveRowScaleValue(rowScale);
       const classNum = 'cb_' + index;
       const imageName = 'cb_' + character.characterId + '_' + index;
       const storagePath = './data/fgimage/chara/' + character.characterId + '/' + character.fileName;
       const defaultWidthCenterValue = Number(defaultPos.widthCenter);
-      const widthCenter = Number.isFinite(defaultWidthCenterValue) ? defaultWidthCenterValue : 0;
+      const rawWidthCenter = Number.isFinite(defaultWidthCenterValue) ? defaultWidthCenterValue : 0;
+      const widthCenter = rawWidthCenter * resolvedRowScale;
       const boxCenter = halfBoxWidth;
       const imageLeftBase = boxCenter - widthCenter;
       const rowTopOffset = Number.isFinite(options.rowTopOffset) ? Number(options.rowTopOffset) : 0;
       const defaultTopValue = Number(defaultPos.top);
-      const baseImageTop = Number.isFinite(defaultTopValue) ? defaultTopValue : 0;
+      const totalRows = Number.isInteger(options.rows) ? options.rows : null;
+      const baseImageTop = resolveCharacterTop(defaultPos, totalRows);
       const defaultWidthValue = Number(defaultPos.width);
-      const imageWidth = Number.isFinite(defaultWidthValue) ? defaultWidthValue : 0;
+      const rawImageWidth = Number.isFinite(defaultWidthValue) ? defaultWidthValue : 0;
+      const imageWidth = rawImageWidth * resolvedRowScale;
       const clipLeft = widthCenter - halfBoxWidth - displacedPxToRight;
       const clipRight = imageWidth - widthCenter - halfBoxWidth + displacedPxToRight;
       const resolvedBoxHeight = Number.isFinite(boxHeight) ? boxHeight : DEFAULT_CHARACTER_BOX_HEIGHT;
@@ -107,7 +126,8 @@ const CHARACTER_BOARD_CONFIG = {
         '--cb-board-offset-x': displacedPxToRight + 'px',
         '--cb-board-offset-y': displacedPxToTop + 'px',
         '--cb-row-offset': rowTopOffset + 'px',
-        '--cb-box-height': resolvedBoxHeight + 'px'
+        '--cb-box-height': resolvedBoxHeight + 'px',
+        '--cb-box-scale': resolvedRowScale
       };
       const $box = $('<div>').addClass('cb_box ' + classNum).css(boxCss);
 
@@ -131,7 +151,7 @@ const CHARACTER_BOARD_CONFIG = {
 
       const imageHeight = getCharacterHeight(defaultPos);
       if (imageHeight) {
-        imageCss.height = imageHeight + 'px';
+        imageCss.height = (imageHeight * resolvedRowScale) + 'px';
       }
 
       const imageClassNames = ['cb_character_image', imageName];
@@ -151,7 +171,9 @@ const CHARACTER_BOARD_CONFIG = {
   status: {
     rootSelector: '.cbStatusContainer',
     boxBaseHeight: STATUS_CHARACTER_BOX_HEIGHT,
+    boxAreaHeight: STATUS_CHARACTER_BOARD_AREA_HEIGHT,
     multiRow: DEFAULT_MULTI_ROW_CONFIG,
+    rowScaleOverrides: DEFAULT_ROW_SCALE_BY_ROW_COUNT,
     /** ステータス画面のレイヤーを初期化 */
     cleanup: function cleanupStatusRoot($root) {
       $root.find('.statusBox').remove();
@@ -174,18 +196,27 @@ const CHARACTER_BOARD_CONFIG = {
         displacedPxToTop,
         defaultPos,
         rowTopOffset,
-        f
+        f,
+        rowScale,
+        layout,
+        rows
       } = options;
 
+      const resolvedRowScale = resolveRowScaleValue(rowScale);
       const classNum = 'cb_' + index;
       const imageName = 'cb_' + character.characterId + '_' + index;
       const storagePath = './data/fgimage/chara/' + character.characterId + '/' + character.fileName;
-      const widthCenter = Number(defaultPos.widthCenter || 0);
+      const widthCenterRaw = Number(defaultPos.widthCenter || 0);
+      const widthCenter = widthCenterRaw * resolvedRowScale;
       const imageLeft = boxWidth - halfBoxWidth - widthCenter + displacedPxToRight;
       const additionalRowOffset = Number.isFinite(rowTopOffset) ? rowTopOffset : 0;
-      const imageTop = Number(defaultPos.top || 0) + displacedPxToTop + additionalRowOffset;
+      const totalRows = Number.isInteger(rows) ? rows : null;
+      const baseImageTop = resolveCharacterTop(defaultPos, totalRows);
+      const imageTop = baseImageTop + displacedPxToTop + additionalRowOffset;
+      const widthRaw = Number(defaultPos.width || 0);
+      const imageWidth = widthRaw * resolvedRowScale;
       const clipLeft = widthCenter - halfBoxWidth - displacedPxToRight;
-      const clipRight = Number(defaultPos.width || 0) - widthCenter - halfBoxWidth + displacedPxToRight;
+      const clipRight = imageWidth - widthCenter - halfBoxWidth + displacedPxToRight;
       const backgroundColor = character.bgColor || 'rgba(0, 0, 0, 1)';
 
       // ステータス用ボックスを構築
@@ -195,7 +226,8 @@ const CHARACTER_BOARD_CONFIG = {
       }).css({
         width: boxWidth + 'px',
         height: resolvedBoxHeight + 'px',
-        '--status-box-height': resolvedBoxHeight + 'px'
+        '--status-box-height': resolvedBoxHeight + 'px',
+        '--cb-box-scale': resolvedRowScale
       });
       $statusBox.css('--status-background-color', backgroundColor);
 
@@ -212,13 +244,13 @@ const CHARACTER_BOARD_CONFIG = {
       const statusImageCss = {
         top: imageTop + 'px',
         left: imageLeft + 'px',
-        width: Number(defaultPos.width || 0) + 'px',
+        width: imageWidth + 'px',
         'clip-path': buildClipPath(clipLeft, clipRight)
       };
 
       const statusImageHeight = getCharacterHeight(defaultPos);
       if (statusImageHeight) {
-        statusImageCss.height = statusImageHeight + 'px';
+        statusImageCss.height = (statusImageHeight * resolvedRowScale) + 'px';
       }
 
       const statusImageClassNames = ['statusBoxCharaImg', imageName];
@@ -300,7 +332,16 @@ function renderCharacterBoard(mode) {
   const containerWidth = CHARACTER_BOARD_CONTAINER_WIDTH;
   const columnsPerRow = Array.isArray(board.columnsPerRow) ? board.columnsPerRow : null;
   const baseBoxHeight = Number.isFinite(config.boxBaseHeight) ? config.boxBaseHeight : DEFAULT_CHARACTER_BOX_HEIGHT;
-  const layoutInfo = createCharacterBoardLayoutInfo(characterList.length, containerWidth, layoutOptions, columnsPerRow, baseBoxHeight);
+  const rowScaleOverrides = config.rowScaleOverrides || DEFAULT_ROW_SCALE_BY_ROW_COUNT;
+  const layoutInfo = createCharacterBoardLayoutInfo(
+    characterList.length,
+    containerWidth,
+    layoutOptions,
+    columnsPerRow,
+    baseBoxHeight,
+    rowScaleOverrides,
+    config.boxAreaHeight
+  );
   const $container = config.getContainer($root);
   applyCharacterBoardSizeClass($root, $container, sizePreset);
   if (typeof console !== 'undefined' && console && typeof console.debug === 'function') {
@@ -372,6 +413,7 @@ function renderCharacterBoard(mode) {
     const rowHeight = (Array.isArray(layoutInfo.boxHeightByRow) && layoutInfo.boxHeightByRow[itemLayout.rowIndex])
       ? layoutInfo.boxHeightByRow[itemLayout.rowIndex]
       : layoutInfo.boxHeight;
+    const rowScale = getRowScaleForRow(layoutInfo, itemLayout.rowIndex);
 
     let $targetContainer = $container;
     if (Array.isArray(rowContainers) && rowContainers.length > 0) {
@@ -398,7 +440,9 @@ function renderCharacterBoard(mode) {
       columnIndex: itemLayout.columnIndex,
       rowIndex: itemLayout.rowIndex,
       rowTopOffset: itemLayout.rowTopOffset,
+      rowScale: rowScale,
       layout: layoutInfo,
+      rows: layoutInfo.rows,
       displacedPxToRight: displacedPxToRight,
       displacedPxToTop: displacedPxToTop,
       defaultPos: defaultPos,
@@ -472,6 +516,28 @@ function sanitizeClipValue(value) {
     return Math.max(0, Math.round(value));
   }
   return 0;
+}
+
+function resolveRowScaleValue(scale) {
+  const numericScale = Number(scale);
+  if (Number.isFinite(numericScale) && numericScale > 0) {
+    return numericScale;
+  }
+  return 1;
+}
+
+function resolveCharacterTop(defaultPos, totalRows) {
+  const baseTopValue = defaultPos ? Number(defaultPos.top) : null;
+  const fallbackTop = Number.isFinite(baseTopValue) ? baseTopValue : 0;
+  if (!defaultPos || !defaultPos.multiRowTop || !Number.isInteger(totalRows) || totalRows <= 1) {
+    return fallbackTop;
+  }
+  const overrides = defaultPos.multiRowTop;
+  const overrideValue = overrides ? overrides[String(totalRows)] : undefined;
+  if (Number.isFinite(Number(overrideValue))) {
+    return Number(overrideValue);
+  }
+  return fallbackTop;
 }
 
 /**
@@ -770,11 +836,22 @@ function sanitizeCharacterBoardLayoutOptions(layout) {
   if (isFiniteNumberForBoardOptions(layout.rowOffset)) {
     sanitized.rowOffset = Number(layout.rowOffset);
   }
+  if (isPositiveNumberForBoardOptions(layout.boxAreaHeight)) {
+    sanitized.boxAreaHeight = Number(layout.boxAreaHeight);
+  }
+  const sanitizedRowScale = normalizeRowScaleOverrides(layout.rowScaleOverrides);
+  if (sanitizedRowScale && Object.keys(sanitizedRowScale).length > 0) {
+    sanitized.rowScaleOverrides = sanitizedRowScale;
+  }
   return Object.keys(sanitized).length > 0 ? sanitized : null;
 }
 
 function isPositiveIntegerForBoardOptions(value) {
   return Number.isInteger(value) && value > 0;
+}
+
+function isPositiveNumberForBoardOptions(value) {
+  return Number.isFinite(Number(value)) && Number(value) > 0;
 }
 
 function isNonNegativeNumberForBoardOptions(value) {
@@ -785,7 +862,7 @@ function isFiniteNumberForBoardOptions(value) {
   return Number.isFinite(Number(value));
 }
 
-function createCharacterBoardLayoutInfo(characterCount, containerWidth, layoutOptions, columnsPerRow, boxBaseHeight) {
+function createCharacterBoardLayoutInfo(characterCount, containerWidth, layoutOptions, columnsPerRow, boxBaseHeight, rowScaleOverrides, boxAreaHeight) {
   const columnGap = (layoutOptions && Number.isFinite(layoutOptions.columnGap)) ? Number(layoutOptions.columnGap) : 0;
   const rowGap = (layoutOptions && Number.isFinite(layoutOptions.rowGap)) ? Number(layoutOptions.rowGap) : 0;
   const rowOffset = (layoutOptions && Number.isFinite(layoutOptions.rowOffset)) ? Number(layoutOptions.rowOffset) : 0;
@@ -801,8 +878,23 @@ function createCharacterBoardLayoutInfo(characterCount, containerWidth, layoutOp
   const boxWidth = effectiveColumns > 0 ? (effectiveContainerWidth / effectiveColumns) : 0;
   const halfBoxWidth = boxWidth / 2;
   const baseHeight = Number.isFinite(boxBaseHeight) ? boxBaseHeight : DEFAULT_CHARACTER_BOX_HEIGHT;
-  const boxHeight = rows > 0 ? Math.max(baseHeight / rows, 1) : baseHeight;
+  const configAreaHeight = Number.isFinite(boxAreaHeight) ? boxAreaHeight : baseHeight;
+  const layoutAreaHeight = (layoutOptions && Number.isFinite(layoutOptions.boxAreaHeight))
+    ? Number(layoutOptions.boxAreaHeight)
+    : null;
+  const totalRowGapHeight = rowGap * Math.max(rows - 1, 0);
+  const availableAreaHeight = Math.max(((layoutAreaHeight !== null ? layoutAreaHeight : configAreaHeight) - totalRowGapHeight), 1);
+  const boxHeight = rows > 0 ? Math.max(availableAreaHeight / Math.max(rows, 1), 1) : availableAreaHeight;
+  const configRowScaleOverrides = normalizeRowScaleOverrides(rowScaleOverrides);
+  const layoutRowScaleOverrides = normalizeRowScaleOverrides(layoutOptions && layoutOptions.rowScaleOverrides);
+  const mergedRowScaleOverrides = mergeRowScaleOverrides(configRowScaleOverrides, layoutRowScaleOverrides);
+  const fallbackRowScale = 1;
+  const resolvedRowScale = resolveRowScaleFromOverrides(rows, mergedRowScaleOverrides, fallbackRowScale);
+  const safeRowScale = (resolvedRowScale > 0) ? resolvedRowScale : fallbackRowScale;
+  const maxScaleByArea = baseHeight > 0 ? (boxHeight / baseHeight) : safeRowScale;
+  const normalizedRowScale = Math.min(safeRowScale, maxScaleByArea);
   const boxHeightByRow = rows > 0 ? new Array(rows).fill(boxHeight) : [];
+  const rowScaleByRow = rows > 0 ? new Array(rows).fill(normalizedRowScale) : [];
   const rowStartIndices = [];
   const cumulativeCounts = [];
   let runningCount = 0;
@@ -826,7 +918,10 @@ function createCharacterBoardLayoutInfo(characterCount, containerWidth, layoutOp
     rowStartIndices: rowStartIndices,
     cumulativeCounts: cumulativeCounts,
     maxColumns: effectiveColumns,
-    baseBoxHeight: baseHeight
+    baseBoxHeight: baseHeight,
+    boxAreaHeight: configAreaHeight,
+    rowScale: normalizedRowScale,
+    rowScaleByRow: rowScaleByRow
   };
 }
 
@@ -877,6 +972,38 @@ function normalizeColumnsPerRow(columnsPerRow, characterCount, layoutOptions) {
     remaining -= count;
   }
   return result;
+}
+
+function normalizeRowScaleOverrides(rowScaleOverrides) {
+  if (!rowScaleOverrides || typeof rowScaleOverrides !== 'object') {
+    return {};
+  }
+  const normalized = {};
+  Object.keys(rowScaleOverrides).forEach(function(key) {
+    const rowCount = Number(key);
+    const scaleValue = Number(rowScaleOverrides[key]);
+    if (Number.isInteger(rowCount) && rowCount > 0 && Number.isFinite(scaleValue) && scaleValue > 0) {
+      normalized[rowCount] = scaleValue;
+    }
+  });
+  return normalized;
+}
+
+function mergeRowScaleOverrides(baseOverrides, overridingOverrides) {
+  const merged = Object.assign({}, baseOverrides || {});
+  if (overridingOverrides) {
+    Object.keys(overridingOverrides).forEach(function(key) {
+      merged[key] = overridingOverrides[key];
+    });
+  }
+  return merged;
+}
+
+function resolveRowScaleFromOverrides(rowCount, overrides, fallback) {
+  if (rowCount > 0 && overrides && Object.prototype.hasOwnProperty.call(overrides, rowCount)) {
+    return Number(overrides[rowCount]);
+  }
+  return fallback;
 }
 
 function getCharacterBoardItemLayout(layoutInfo, index) {
@@ -937,6 +1064,19 @@ function getCharacterBoardItemLayout(layoutInfo, index) {
     boxLeft: boxLeft,
     rowTopOffset: rowTopOffset
   };
+}
+
+function getRowScaleForRow(layoutInfo, rowIndex) {
+  if (!layoutInfo) {
+    return 1;
+  }
+  if (Array.isArray(layoutInfo.rowScaleByRow) && Number.isFinite(layoutInfo.rowScaleByRow[rowIndex])) {
+    return layoutInfo.rowScaleByRow[rowIndex];
+  }
+  if (Number.isFinite(layoutInfo.rowScale)) {
+    return layoutInfo.rowScale;
+  }
+  return 1;
 }
 
 function createCharacterBoardSpacer(width, height) {
@@ -1135,3 +1275,5 @@ const CHARACTER_BOARD_PREPARERS = {
 
 window.renderCharacterBoard = renderCharacterBoard;
 window.prepareCharacterBoard = prepareCharacterBoard;
+
+

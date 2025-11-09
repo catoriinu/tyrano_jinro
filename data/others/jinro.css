@@ -95,12 +95,15 @@
 
 .cbStatusContainer .statusBox {
     height: var(--status-box-height, 100%);
+    position: relative;
+    overflow: hidden;
 }
 
 .cb_box {
     position: relative;
     flex: 0 0 auto;
     height: var(--cb-box-height, 720px);
+    overflow: hidden;
     background-image: linear-gradient(var(--cb-background-color, rgba(0, 0, 0, 1)) 10%, rgba(0, 0, 0, 1) 150%);
     background-repeat: no-repeat;
     background-size: cover;

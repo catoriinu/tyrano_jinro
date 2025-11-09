@@ -210,6 +210,13 @@ function sanitizeCharacterBoardLayout(layoutOptions) {
   if (isFiniteNumberForLayout(layoutOptions.rowOffset)) {
     sanitized.rowOffset = Number(layoutOptions.rowOffset);
   }
+  if (isPositiveNumberForLayout(layoutOptions.boxAreaHeight)) {
+    sanitized.boxAreaHeight = Number(layoutOptions.boxAreaHeight);
+  }
+  const rowScaleOverrides = sanitizeRowScaleOverrides(layoutOptions.rowScaleOverrides);
+  if (rowScaleOverrides) {
+    sanitized.rowScaleOverrides = rowScaleOverrides;
+  }
   return Object.keys(sanitized).length > 0 ? sanitized : null;
 }
 
@@ -221,8 +228,27 @@ function isNonNegativeNumberForLayout(value) {
   return Number.isFinite(Number(value)) && Number(value) >= 0;
 }
 
+function isPositiveNumberForLayout(value) {
+  return Number.isFinite(Number(value)) && Number(value) > 0;
+}
+
 function isFiniteNumberForLayout(value) {
   return Number.isFinite(Number(value));
+}
+
+function sanitizeRowScaleOverrides(rawOverrides) {
+  if (!rawOverrides || typeof rawOverrides !== 'object') {
+    return null;
+  }
+  const sanitized = {};
+  Object.keys(rawOverrides).forEach(function(key) {
+    const rowCount = Number(key);
+    const scaleValue = Number(rawOverrides[key]);
+    if (Number.isInteger(rowCount) && rowCount > 0 && Number.isFinite(scaleValue) && scaleValue > 0) {
+      sanitized[rowCount] = scaleValue;
+    }
+  });
+  return Object.keys(sanitized).length > 0 ? sanitized : null;
 }
 
 function sanitizeCharacterBoardColumnsPerRow(columnsPerRow, expectedTotal) {
